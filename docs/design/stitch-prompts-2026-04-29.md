@@ -3,7 +3,7 @@
 > **Source**: `DESIGN.md` (Calm Engineering 방향)
 > **Target**: Claude (claude.ai) 아티팩트 또는 Google Stitch
 > **Output type**: 단일 HTML 파일 (inline CSS, Pretendard CDN)
-> **사용법**: 한 번에 **하나의 프롬프트만** 붙여넣기. 4 화면 × A/B/C 3 변형 = 12 프롬프트.
+> **사용법**: 한 번에 **하나의 프롬프트만** 붙여넣기. 8 화면 × A/B/C 3 변형 = 24 프롬프트.
 >
 > **A (Safe)** = Linear/Stripe 클론에 가장 가까움
 > **B (Bold)** = Calm 톤 유지 + LG 와인레드 strip 1줄로 정체성 살림
@@ -412,9 +412,403 @@ Variant A의 "패널 카드 1개" 대신 패널 카드 2개를 위·아래로 �
 5. 픽 결과 → `/design-shotgun` 또는 `/design-html` 로 프로덕션 HTML/CSS 변환
 6. 그 결과를 Streamlit `st.markdown('<style>…</style>', unsafe_allow_html=True)` 로 주입
 
-## 다음 단계
+---
 
-이 12 프롬프트로 시안을 받아 화면별 픽이 정해지면:
-- (a) 통합 디자인 토큰 CSS 1벌 추출
-- (b) Streamlit 페이지별 `<style>` 블록 패치
-- (c) 8 페이지 모두 같은 디자인 시스템 적용
+## S5 — UPH Dashboard
+
+> 원본 라벨: `docs/design/originals/04-uph-dashboard.md`
+> 단일 패널 + 6개 분석 섹션 (UPH 요약 / Best·Worst / Trend / 편차동작 / 증가추세 / 하락추세).
+
+### 🅐 S5·Variant A (Safe)
+
+```
+[공통 컨텍스트 위 블록 그대로 붙여넣기]
+
+Screen: UPH / 동작시간 분석 Dashboard
+
+Variant strategy — Safe (Stripe Dashboard 톤):
+사이드바(활성 "UPH Dashboard") + 콘텐츠. 콘텐츠는 헤더 + 필터 + 6개 섹션 수직 스택.
+
+Page header:
+- eyebrow "PRODUCTIVITY · UPH"
+- H1 "UPH / 동작시간 분석 Dashboard"
+- sub "선택 날짜: 2026-04-28 · Gumi Campus 1 Area / APS Test / R53A"
+- 우측 toolbar [↻ 새로고침] [↓ Export]
+
+Filter bar (1줄):
+- 공장 선택 (select, 기본 "Gumi Campus 1 Area")
+- 공정 선택 (select, 기본 "APS Test")
+- 모델 선택 (select, 기본 "R53A")
+- 날짜 선택 (date)
+- "Trend 분석 기간(일)" segmented control [30] [90] (활성 30 — 와인레드 2px 밑줄)
+- 우측 끝 toggle "I-TAS 가능만 보기" (switch)
+
+Section 1 — "1. UPH 요약 (I-TAS)":
+- 가로 4 KPI 카드 (Plex Mono 32px 숫자): UPH / Cycle Time / 동작시간 합계 / 가동률
+- 카드 우상단 작은 link "MES 데이터로 보기" (13px Ink Muted)
+- 섹션 우측 회색 박스 "AI 분석 의견" 폭 320px, padding 12px, border 1px, 12px 본문 4-5줄 차분한 한국어 분석 멘트
+
+Section 2 — "2. Best Worst 동작차이":
+- 좌우 2단 (Best / Worst)
+- 각 단: 헤더 "Best" 또는 "Worst" + 14px Ink Muted "자동선정 Best: #1003 / Worst: #1116"
+- 그 아래 표 (8행, 컬럼: 동작명 / 동작시간 / 차이 / 빈도)
+
+Section 3 — "3. UPH / 편차율 Trend":
+- 가로 폭 100% 차트 카드, height 280px
+- monotone 와인레드 line + Status warn dashed 보조선만 (2색)
+- x축 30개 일자, y축 좌(UPH 막대) + y축 우(편차율 라인)
+
+Section 4 — "4. 주요 편차동작":
+- 표 12행 (동작명 / 평균 / 편차 / 빈도 / 추세 sparkline 작게)
+
+Section 5 — "5. 동작시간이 증가 추세인 동작":
+- 표 8행 (동작명 / 시작 / 현재 / 증가율 / 30일 sparkline)
+- 증가율 셀 색은 Status Bad
+
+Section 6 — "6. 동작시간이 하락 추세인 동작":
+- 표 8행 (동작명 / 시작 / 현재 / 하락율 / 30일 sparkline)
+- 하락율 셀 색은 Status Good
+
+샘플 데이터는 R53A · APS Test 공정 가정으로 사실적인 한국어 동작명을 채울 것.
+```
+
+### 🅑 S5·Variant B (Bold)
+
+```
+[공통 컨텍스트 위 블록 그대로 붙여넣기]
+
+Screen: UPH / 동작시간 분석 Dashboard
+
+Variant strategy — Bold:
+Variant A 그대로. 차이만:
+- 콘텐츠 최상단 8px 와인레드 단색 strip
+- 6개 섹션 헤딩 좌측 4px 와인레드 vertical bar (1번~6번)
+- KPI 카드 4개 좌측 3px 와인레드 vertical bar
+- "AI 분석 의견" 박스 좌측 3px 와인레드 bar 추가, 박스 헤더 "AI" 11px uppercase 와인레드
+
+남은 룰 모두 Variant A 동일.
+```
+
+### 🅒 S5·Variant C (Wild for engineers)
+
+```
+[공통 컨텍스트 위 블록 그대로 붙여넣기]
+
+Screen: UPH / 동작시간 분석 Dashboard
+
+Variant strategy — Wild (한 화면 압축, 표 주도):
+6개 섹션을 2단 그리드(좌 60% / 우 40%)로 압축.
+
+좌측 (60%):
+- KPI row 4개 (가로)
+- 큰 Trend 차트 카드 (height 240px)
+- "주요 편차동작" 표 20행 (sparkline 컬럼 포함, 행 28px)
+
+우측 (40%):
+- 상단 카드 "Best · Worst" — 좌우 2단 미니표 6행씩
+- 중단 카드 "증가 추세 동작" 8행 (sparkline)
+- 하단 카드 "하락 추세 동작" 8행 (sparkline)
+- 우측 카드 모두 폭 동일, 16px gap
+
+"AI 분석 의견" 은 KPI row 우측 인라인으로 좁게 폭 280px (Variant A의 320px → 280px).
+
+다크모드 X. 정보 밀도만 ↑.
+```
+
+---
+
+## S6 — MTBA Dashboard
+
+> 원본 라벨: `docs/design/originals/05-mtba-dashboard.md`
+> 다중 패널 구조 (패널 1개 시작, 추가/제거 가능). 패널 안: 필터 → 비교 차트 → 요약 표 → 메모/이미지 업로드.
+
+### 🅐 S6·Variant A (Safe)
+
+```
+[공통 컨텍스트 위 블록 그대로 붙여넣기]
+
+Screen: MTBA Dashboard
+
+Variant strategy — Safe:
+사이드바 활성 "MTBA Dashboard". 콘텐츠는 페이지 헤더 + 패널 카드 1개(펼침 상태) + 빈 "+ 패널 추가" 버튼.
+
+Page header:
+- eyebrow "PRODUCTIVITY · MTBA"
+- H1 "MTBA Dashboard"
+- sub "선택한 기간 기준으로 기간별 MTBA / 공정 통계 / 클릭 Drill-down 기반 MTBA 현황 / Alarm 차이 분석"
+- 우측 toolbar [↻ 새로고침] [↓ Export]
+
+패널 카드 #1 (`soft-card`, padding 16px, radius 8px, border 1px):
+- 카드 헤더: "MTBA 분석 Reporting #1" (14px 700) + 우측 [▾ 접기] [✕ 제거]
+
+- 패널 안 1열: 필터 행 (3 입력)
+  · "팀 선택 #1" (select, 기본 "전체")
+  · "모델 선택 #1" (select, 기본 "R50")
+  · "기간 선택 #1" (date range, "2026-04-27 ~ 2026-04-28")
+- 그 아래 12px Ink Muted 안내문 4줄:
+  · "※ 팀 = 전체 : 모든 공정을 대상으로 조회합니다."
+  · "※ 그래프 구간: 선택한 기간 / 1주전 / 2주전 / 지난달 전체 / 2달전 전체 / 지난해 전체"
+  · "※ MTBA가 0이거나 없는 설비는 자동 제외 후, 유효 설비만 평균하여 MTBA를 계산합니다."
+  · "※ 그래프 가시성을 위해 막대 높이는 최대 120까지만 표시되며, 라벨은 실제 MTBA 값을 표시합니다."
+
+- 섹션 1 — "1. R50 공정별 MTBA 기간 비교":
+  · 좌측 4px 와인레드 vertical bar + 18px 700 헤딩
+  · 6개 시리즈 그룹 막대 차트, height 320px
+  · 막대는 monotone 와인레드 그라디언트 또는 Status 3색만 (선택한기간/1주전/2주전 등 6 구간)
+  · 차트 우측 미니 컨트롤 [그래프 데이터 보기] [선택 초기화] (보더 버튼)
+  · 차트 아래 12px Ink Muted "※ Shift+클릭 / Box / Lasso로 여러 공정을 선택할 수 있습니다."
+
+- 섹션 2 — "2. MTBA 현황(2026-04-27 ~ 2026-04-28)":
+  · 헤딩 + 우측 작은 toggle "공정명 축약" (switch)
+  · 표 (sticky thead, 행 32px) — 컬럼: 공정명 / 호기 / 모델명 / 설비세그먼트명 / MTBA / 생산수량 / 알람구분 / Δ
+  · 12행 샘플
+  · 한 행 active 가정 (좌측 2px 와인 마커 + Primary Tint bg)
+  · 안내문 12px Ink Muted "※ 알람구분 셀을 더블클릭하면 메모/이미지 팝업이 열립니다."
+
+- 섹션 3 — "3. 공정별 요약" (작은 표 6행, 컬럼: 공정 / 평균 MTBA / 알람 / 생산수량)
+
+- 섹션 4 — "4. 메모 / 이미지 업로드":
+  · 좌측 (60%) "메모 입력 #1" — textarea height 120px, border 1px, radius 8px, placeholder "메모를 입력하세요"
+  · 우측 (40%) "이미지 업로드 #1" — dropzone box border 1px dashed #CBD0D6, padding 24px, 가운데 정렬:
+    - 라인 아이콘 (upload-cloud)
+    - 14px "Drag and drop file here"
+    - 12px Ink Muted "Limit 200MB per file • PNG, JPG, JPEG, BMP"
+    - 작은 보더 버튼 [Browse files]
+  · 카드 하단 우측 [메모/이미지 저장 #1] (Primary 와인레드)
+
+- 패널 카드 풋 행 (보더 버튼 2개): [이 패널 아래에 추가 #1] [이 패널 제거 #1]
+
+패널 카드 아래 16px gap → 빈 [+ 패널 추가] 점선 보더 버튼 (height 56px, 가운데 정렬, 12px Ink Muted "패널을 추가하면 새 분석 보고서가 생성됩니다")
+
+샘플 공정명은 originals 의 실제 한국어 라벨 사용 (Lens AA / Flip Chip Bonding / IRCF Attach 등).
+```
+
+### 🅑 S6·Variant B (Bold)
+
+```
+[공통 컨텍스트 위 블록 그대로 붙여넣기]
+
+Screen: MTBA Dashboard
+
+Variant strategy — Bold:
+Variant A 그대로. 차이만:
+- 콘텐츠 최상단 8px 와인레드 단색 strip
+- 패널 카드 좌측 4px 와인레드 vertical bar (패널 정체성)
+- 섹션 헤딩 좌측 vertical bar 두께 4px → 6px
+- "메모/이미지 저장 #1" 버튼 좌측에 라인 아이콘 [save]
+- "이미지 업로드" dropzone 활성/hover 시 border 색 와인레드로 변경
+- "+ 패널 추가" 버튼 hover 시 와인레드 점선
+
+남은 룰 모두 Variant A 동일.
+```
+
+### 🅒 S6·Variant C (Wild for engineers)
+
+```
+[공통 컨텍스트 위 블록 그대로 붙여넣기]
+
+Screen: MTBA Dashboard
+
+Variant strategy — Wild (다중 패널 + 압축 레이아웃):
+패널 카드를 1개가 아니라 **2개** 표시 (서로 다른 모델, R50 / R53A). 각 패널 안 안내문 4줄을 "?" 아이콘 hover 툴팁으로 압축. 표는 28px 행에 sparkline 컬럼 추가.
+
+레이아웃:
+- 페이지 헤더 동일
+- 패널 #1 (R50): 펼침, 표 16행, sparkline 30일 컬럼 추가
+- 패널 #2 (R53A): 펼침, 표 14행, sparkline 30일 컬럼 추가
+- 두 패널 사이 16px gap
+- "메모/이미지 업로드" 섹션은 각 패널 하단에 그대로 유지 (텍스트영역만, 이미지 업로드는 작게 1줄 inline 형태)
+
+패널 카드 헤더에 작은 메타 행 (12px Plex Mono Ink Muted): "panel #1 · R50 · 12 procs · last sync 23:50"
+
+다크모드 X. 정보 밀도만 ↑.
+```
+
+---
+
+## S7 — MTBA Detail View · 빈 상태 (Empty / Initial)
+
+> S4 의 데이터-있는 상태와 짝. 첫 진입·조회 전 상태로, "조회 시작" 안내가 핵심.
+
+### 🅐 S7·Variant A (Safe)
+
+```
+[공통 컨텍스트 위 블록 그대로 붙여넣기]
+
+Screen: MTBA Detail View — 빈 상태 (Empty / Initial)
+
+Variant strategy — Safe:
+S4 Variant A 와 동일한 사이드바·페이지 헤더·상단 컨트롤 라인. 단 패널 카드 안 표 자리가 "빈 상태"로 표시되며, 우측 슬라이드인 디테일 패널은 표시되지 않음.
+
+Page header:
+- eyebrow "PRODUCTIVITY · MTBA · DETAIL"
+- H1 "MTBA Detail View"
+- sub "실행 복구 안정판 · Comment 이력 포함"
+- 우측 toolbar [페이지 상태 초기화] [+ 패널 추가] (Primary 와인레드)
+
+상단 컨트롤 라인:
+- "모델 선택 #1" (select, 비어있는 placeholder "모델을 선택하세요")
+- 우측 12px Ink Muted "조회 전 · 모델을 선택하면 데이터가 로드됩니다"
+
+패널 카드 #1 (`soft-card`):
+- 카드 헤더: "조회 패널 #1" + 우측 [▾] [✕]
+- 카드 안 info chip 행: 칩 placeholder 4개 (회색 dashed 보더, 텍스트 "—") · "—"
+- 표 자리에 빈 상태 컴포넌트:
+  · 가운데 정렬, padding 64px 0
+  · 라인 아이콘 (database / search) 32×32, color #CBD0D6
+  · 14px 600 "조회 전입니다" (Ink Body)
+  · 13px Ink Muted "상단 모델 선택 후 [조회 실행] 버튼을 눌러 데이터를 불러옵니다."
+  · 그 아래 [조회 실행] 버튼 (Primary 와인레드, height 36px) — 비활성 상태 (모델 미선택 시 disabled, opacity 0.5)
+- "디버그 정보 (패널 1)" expander 접힘 상태로 표시 (라인 아이콘 ▸ + 텍스트만)
+
+빈 상태 카피는 차분한 한국어, 느낌표 X.
+```
+
+### 🅑 S7·Variant B (Bold)
+
+```
+[공통 컨텍스트 위 블록 그대로 붙여넣기]
+
+Screen: MTBA Detail View — 빈 상태
+
+Variant strategy — Bold:
+Variant A 그대로. 차이만:
+- 콘텐츠 최상단 8px 와인레드 strip
+- 패널 카드 좌측 4px 와인레드 vertical bar
+- 빈 상태 안내 영역 좌측에 작은 와인레드 dot (6px)
+- [조회 실행] 버튼 비활성 시도 와인레드 보더만 유지 (배경은 회색)
+
+남은 룰 모두 Variant A 동일. 빈 상태에서도 정체성 표시.
+```
+
+### 🅒 S7·Variant C (Wild for engineers)
+
+```
+[공통 컨텍스트 위 블록 그대로 붙여넣기]
+
+Screen: MTBA Detail View — 빈 상태
+
+Variant strategy — Wild (빈 상태에서 가이드 + 단축키 안내):
+Variant A 의 빈 상태 영역을 더 정보형으로. 엔지니어에게 "다음에 무엇을 할 수 있는지" 미리 보여주는 콘솔 톤.
+
+빈 상태 영역 (padding 48px, 가운데):
+- 14px 600 "조회 전입니다"
+- 13px Ink Muted 안내 4줄, 좌측 정렬, 가운데 정렬된 박스 안:
+  · "1. 상단 모델을 선택"
+  · "2. 패널이 비어있으면 [+ 패널 추가] 로 새 패널 생성"
+  · "3. 표 셀 클릭 시 우측 디테일 패널 오픈"
+  · "4. 단축키: Shift+클릭 다중 선택 / Esc 패널 닫기"
+- 각 줄 좌측에 작은 IBM Plex Mono 12px 번호 (`01` / `02` / `03` / `04`)
+- 마지막에 [조회 실행] (와인레드, disabled) + 옆에 보더 버튼 [+ 패널 추가]
+
+남은 룰은 Variant A 동일. 다크모드 X.
+```
+
+---
+
+## S8 — MaxCapa Chat (대화형 조회)
+
+> 원본 라벨: `docs/design/originals/08-maxcapa-chat.md`
+> 채팅형 인터페이스 — 입력창 + 응답 카드 + 분석 결과(표·차트).
+
+### 🅐 S8·Variant A (Safe)
+
+```
+[공통 컨텍스트 위 블록 그대로 붙여넣기]
+
+Screen: MaxCapa Chat (대화형 생산지표 조회)
+
+Variant strategy — Safe:
+사이드바 활성 "MaxCapa Chat". 콘텐츠는 페이지 헤더 + 안내 카드 + 채팅 히스토리 + 입력 바.
+
+Page header:
+- eyebrow "PLATFORM · CHAT"
+- H1 "MaxCapa Chat"
+- sub "MaxCapa Chat(대화형 생산지표조회)"
+
+안내 카드 (radius 8px, border 1px, padding 16px, bg #FFFFFF):
+- 14px 600 "지원 예시"
+- 13px Ink Muted 본문 1줄: "기본 조회는 MES UPH(uph_input_runtime_daily_model), 질문에 ITAS를 명시하면 ITAS UPH(itas_uph_result)로 조회합니다."
+- 그 아래 12px Plex Mono 예시 4개 (각 줄 좌측 작은 ▸ 아이콘):
+  · `R53A · APS Test · 2026-04-28 UPH 추이`
+  · `R50 Lens AA 공정 ITAS UPH 30일`
+  · `Gumi Campus 1 Area 어제 MTBA Top 10`
+  · `최근 7일 R53B Flip Chip Bonding 알람 추이`
+- 각 예시 클릭 시 입력창에 자동 입력 (마우스오버 시 옅은 와인레드 underline)
+
+채팅 히스토리 영역 (max-height 60vh, vertical scroll):
+- 사용자 메시지 (우측 정렬, bg #F1F3F5, radius 8px, padding 10px 14px, max-width 60%):
+  "R53A · APS Test · 2026-04-28 UPH 추이 알려줘"
+- AI 응답 메시지 (좌측 정렬, bg #FFFFFF, border 1px, radius 8px, padding 16px, max-width 80%):
+  - 헤더: 11px uppercase Plex Mono Ink Muted "MAXCAPA · MES UPH"
+  - 본문 1줄: "최근 30일 UPH 추이입니다. 평균 247 UPH (전주 대비 +1.8%)."
+  - 작은 차트 카드 (height 200px, monotone 와인레드 line)
+  - 차트 아래 작은 표 5행 (날짜 / UPH / 동작시간 / Δ)
+  - 카드 우하단 작은 액션 [↓ Export] [↗ 대시보드 열기] (text-only 13px Ink Muted)
+
+입력 바 (페이지 하단 고정, 폭 100%, padding 12px 16px, border-top 1px):
+- input field 1줄 (height 44px, radius 8px, border 1px, placeholder "질문을 입력하세요")
+- 우측 [질문 분석 및 실행] (Primary 와인레드, height 44px, padding 0 20px)
+- 입력창 좌측에 라인 아이콘 (search) 18×18
+
+샘플 응답 1쌍 채워서 빈 채팅이 아닌 형태로 그릴 것.
+```
+
+### 🅑 S8·Variant B (Bold)
+
+```
+[공통 컨텍스트 위 블록 그대로 붙여넣기]
+
+Screen: MaxCapa Chat
+
+Variant strategy — Bold:
+Variant A 그대로. 차이만:
+- 콘텐츠 최상단 8px 와인레드 단색 strip
+- AI 응답 카드 좌측 3px 와인레드 vertical bar (사용자 메시지에는 없음)
+- 입력 바 [질문 분석 및 실행] 버튼 좌측에 작은 라인 아이콘 (send / arrow-up)
+- "지원 예시" 카드 좌측 3px 와인레드 vertical bar
+
+남은 룰 Variant A 동일.
+```
+
+### 🅒 S8·Variant C (Wild for engineers)
+
+```
+[공통 컨텍스트 위 블록 그대로 붙여넣기]
+
+Screen: MaxCapa Chat
+
+Variant strategy — Wild (2단 — 좌측 채팅 / 우측 SQL·디버그 패널):
+엔지니어가 "AI 가 어떤 SQL 을 돌렸나"를 같이 볼 수 있는 콘솔형.
+
+레이아웃:
+- 좌측 (60%) 채팅 — Variant A 와 동일
+- 우측 (40%) "쿼리 패널" 카드:
+  · 헤더 11px uppercase Plex Mono "LAST QUERY · MES UPH"
+  · 작은 메타 행: "rows=30 · 142 ms · 2026-04-28 23:51"
+  · 본문 SQL 코드 블록 (bg #F1F3F5, padding 12px, radius 8px, IBM Plex Mono 12px, 시그니처 SELECT … FROM uph_input_runtime_daily_model WHERE … 8-12줄)
+  · 카드 하단 작은 보더 버튼 [↓ Copy SQL] [↻ Re-run]
+
+채팅 히스토리는 max-height 60vh 유지, 우측 패널은 viewport 따라 sticky.
+
+입력 바는 좌측 채팅 컬럼 폭에만 (우측 패널 위에는 안 깔림).
+
+다크모드 X. 정보 밀도만 ↑.
+```
+
+---
+
+## 12 → 24 프롬프트 인벤토리
+
+| 화면 | 원본 라벨 파일 | A | B | C |
+|---|---|---|---|---|
+| S1 Login | `originals/01-login.md` | ✅ | ✅ | ✅ |
+| S2 Home | `originals/02-home.md` | ✅ | ✅ | ✅ |
+| S3 CMP Dashboard | `originals/03-cmp-dashboard.md` | ✅ | ✅ | ✅ |
+| S4 MTBA Detail (data) | `originals/06-mtba-detail.md` | ✅ | ✅ | ✅ |
+| S5 UPH Dashboard | `originals/04-uph-dashboard.md` | ✅ | ✅ | ✅ |
+| S6 MTBA Dashboard | `originals/05-mtba-dashboard.md` | ✅ | ✅ | ✅ |
+| S7 MTBA Detail (empty) | `originals/07-mtba-detail-empty.md` | ✅ | ✅ | ✅ |
+| S8 MaxCapa Chat | `originals/08-maxcapa-chat.md` | ✅ | ✅ | ✅ |
+
+총 **24개 프롬프트**. 8개 화면 모두 커버.
