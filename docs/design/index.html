@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>VITALS — 디자인 시안 인덱스</title>
+<link rel="stylesheet" href="_shared.css">
+<style>
+  body{padding:0}
+  .wrap{max-width:1480px;margin:0 auto;padding:32px 32px 64px}
+  .head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:28px;gap:24px}
+  .head h1{margin:6px 0 4px;font-size:28px;font-weight:700;letter-spacing:-0.01em}
+  .head p{margin:0;font-size:13px;color:var(--ink-muted)}
+  .meta{font-family:var(--font-mono);font-size:12px;color:var(--ink-subtle);text-align:right;line-height:1.7}
+  .legend{display:flex;gap:16px;margin-bottom:24px;font-size:12px;color:var(--ink-muted)}
+  .legend .pill{margin-right:6px}
+  .row{margin-bottom:32px}
+  .row__head{display:flex;align-items:baseline;gap:10px;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+  .row__num{font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--primary);letter-spacing:.04em}
+  .row__title{font-size:16px;font-weight:700;letter-spacing:-0.01em}
+  .row__sub{font-size:12px;color:var(--ink-muted)}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .grid--two{grid-template-columns:repeat(2,1fr);max-width:980px}
+  .grid--one{grid-template-columns:repeat(1,minmax(0,640px))}
+  .card-link{display:block;background:#fff;border:1px solid var(--border);border-radius:8px;overflow:hidden;text-decoration:none;color:inherit;position:relative;transition:border-color .12s,transform .12s}
+  .card-link:hover{border-color:var(--primary);transform:translateY(-1px)}
+  .card-link.is-missing{opacity:.45;pointer-events:none;background:var(--soft)}
+  .card-link.is-missing .frame-wrap{background:repeating-linear-gradient(45deg,#fff,#fff 8px,var(--soft) 8px,var(--soft) 16px)}
+  .frame-wrap{position:relative;height:240px;overflow:hidden;background:var(--page-bg);border-bottom:1px solid var(--border)}
+  .frame-wrap iframe{position:absolute;top:0;left:0;width:1280px;height:800px;border:0;transform:scale(.30);transform-origin:0 0;pointer-events:none}
+  .card-foot{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;font-size:12px}
+  .card-foot__left{display:flex;flex-direction:column;gap:2px}
+  .variant{font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--primary);letter-spacing:.04em}
+  .variant--missing{color:var(--ink-subtle)}
+  .label{font-size:13px;font-weight:600;color:var(--ink-body)}
+  .open-link{font-size:11px;color:var(--ink-muted);font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.04em}
+  .badge{position:absolute;top:8px;right:8px;background:rgba(255,255,255,.96);border:1px solid var(--border);font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--ink-muted);padding:2px 6px;border-radius:4px;text-transform:uppercase;letter-spacing:.04em;z-index:2}
+  .badge--draft{color:var(--status-warn);border-color:var(--status-warn)}
+  .badge--prod{color:var(--status-good);border-color:var(--status-good)}
+  .top-strip{height:8px;background:var(--primary)}
+</style>
+</head>
+<body>
+<div class="top-strip"></div>
+<div class="wrap">
+  <header class="head">
+    <div>
+      <div class="eyebrow">VITALS · DESIGN INDEX</div>
+      <h1>설비 생산성 분석 플랫폼 — 시안 모음</h1>
+      <p>Calm Engineering 톤 · 14/24 변형 · 2026-04-29 기준</p>
+    </div>
+    <div class="meta">
+      branch · claude/review-repo-progress-4kGJW<br>
+      head · efcc53e<br>
+      stack · streamlit + plotly + st-aggrid
+    </div>
+  </header>
+
+  <div class="legend">
+    <span><span class="pill">A</span>Safe</span>
+    <span><span class="pill">B</span>Bold</span>
+    <span><span class="pill">C</span>Wild</span>
+    <span style="margin-left:auto;color:var(--ink-subtle)">클릭하면 새 탭에서 풀사이즈로 열립니다</span>
+  </div>
+
+  <!-- Production drafts -->
+  <section class="row">
+    <div class="row__head">
+      <span class="row__num">P0</span>
+      <span class="row__title">Production drafts</span>
+      <span class="row__sub">실제 빌드 단계 · landing · home</span>
+    </div>
+    <div class="grid grid--two">
+      <a class="card-link" href="landing.html" target="_blank" rel="noopener">
+        <span class="badge badge--prod">v5</span>
+        <div class="frame-wrap"><iframe src="landing.html" loading="lazy"></iframe></div>
+        <div class="card-foot">
+          <div class="card-foot__left">
+            <span class="variant">LANDING</span>
+            <span class="label">랜딩 · 2-step auth + YouTube</span>
+          </div>
+          <span class="open-link">OPEN ↗</span>
+        </div>
+      </a>
+      <a class="card-link" href="home.html" target="_blank" rel="noopener">
+        <span class="badge badge--draft">draft</span>
+        <div class="frame-wrap"><iframe src="home.html" loading="lazy"></iframe></div>
+        <div class="card-foot">
+          <div class="card-foot__left">
+            <span class="variant">HOME</span>
+            <span class="label">분석 도구 게이트웨이 (S2)</span>
+          </div>
+          <span class="open-link">OPEN ↗</span>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- S1 Login -->
+  <section class="row">
+    <div class="row__head">
+      <span class="row__num">S1</span>
+      <span class="row__title">Login</span>
+      <span class="row__sub">사내 ID + 비밀번호 / 회원가입 인증코드</span>
+    </div>
+    <div class="grid">
+      <a class="card-link" href="mockup-S1-A.html" target="_blank" rel="noopener">
+        <div class="frame-wrap"><iframe src="mockup-S1-A.html" loading="lazy"></iframe></div>
+        <div class="card-foot"><div class="card-foot__left"><span class="variant">A · Safe</span><span class="label">기본 1열 카드</span></div><span class="open-link">OPEN ↗</span></div>
+      </a>
+      <a class="card-link" href="mockup-S1-B.html" target="_blank" rel="noopener">
+        <div class="frame-wrap"><iframe src="mockup-S1-B.html" loading="lazy"></iframe></div>
+        <div class="card-foot"><div class="card-foot__left"><span class="variant">B · Bold</span><span class="label">와인 strip + dual card</span></div><span class="open-link">OPEN ↗</span></div>
+      </a>
+      <a class="card-link" href="mockup-S1-C.html" target="_blank" rel="noopener">
+        <div class="frame-wrap"><iframe src="mockup-S1-C.html" loading="lazy"></iframe></div>
+        <div class="card-foot"><div class="card-foot__left"><span class="variant">C · Wild</span><span class="label">실험적</span></div><span class="open-link">OPEN ↗</span></div>
+      </a>
+    </div>
+  </section>
+
+  <!-- S2 Home -->
+  <section class="row">
+    <div class="row__head">
+      <span class="row__num">S2</span>
+      <span class="row__title">Home — 분석 도구 게이트웨이</span>
+      <span class="row__sub">CMP · UPH · MTBA Dashboard · MTBA Detail · MaxCapa Chat</span>
+    </div>
+    <div class="grid">
+      <a class="card-link" href="mockup-S2-A.html" target="_blank" rel="noopener">
+        <div class="frame-wrap"><iframe src="mockup-S2-A.html" loading="lazy"></iframe></div>
+        <div class="card-foot"><div class="card-foot__left"><span class="variant">A · Safe</span><span class="label">5 도구 카드 그리드</span></div><span class="open-link">OPEN ↗</span></div>
+      </a>
+      <a class="card-link" href="mockup-S2-B.html" target="_blank" rel="noopener">
+        <div class="frame-wrap"><iframe src="mockup-S2-B.html" loading="lazy"></iframe></div>
+        <div class="card-foot"><div class="card-foot__left"><span class="variant">B · Bold</span><span class="label">상태 뱃지 강조</span></div><span class="open-link">OPEN ↗</span></div>
+      </a>
+      <a class="card-link" href="mockup-S2-C.html" target="_blank" rel="noopener">
+        <div class="frame-wrap"><iframe src="mockup-S2-C.html" loading="lazy"></iframe></div>
+        <div class="card-foot"><div class="card-foot__left"><span class="variant">C · Wild</span><span class="label">실험적</span></div><span class="open-link">OPEN ↗</span></div>
+      </a>
+    </div>
+  </section>
+
+  <!-- S3 CMP Dashboard -->
+  <section class="row">
+    <div class="row__head">
+      <span class="row__num">S3</span>
+      <span class="row__title">CMP Dashboard — 대표 대시보드</span>
+      <span class="row__sub">영역 × 모델 × 기간 → KPI · 모델별 박스 · 공정 sticky 표</span>
+    </div>
+    <div class="grid">
+      <a class="card-link" href="mockup-S3-A.html" target="_blank" rel="noopener">
+        <div class="frame-wrap"><iframe src="mockup-S3-A.html" loading="lazy"></iframe></div>
+        <div class="card-foot"><div class="card-foot__left"><span class="variant">A · Safe</span><span class="label">기본</span></div><span class="open-link">OPEN ↗</span></div>
+      </a>
+      <a class="card-link" href="mockup-S3-B.html" target="_blank" rel="noopener">
+        <div class="frame-wrap"><iframe src="mockup-S3-B.html" loading="lazy"></iframe></div>
+        <div class="card-foot"><div class="card-foot__left"><span class="variant">B · Bold</span><span class="label">강조 KPI</span></div><span class="open-link">OPEN ↗</span></div>
+      </a>
+      <a class="card-link" href="mockup-S3-C.html" target="_blank" rel="noopener">
+        <div class="frame-wrap"><iframe src="mockup-S3-C.html" loading="lazy"></iframe></div>
+        <div class="card-foot"><div class="card-foot__left"><span class="variant">C · Wild</span><span class="label">실험적</span></div><span class="open-link">OPEN ↗</span></div>
+      </a>
+    </div>
+  </section>
+
+  <!-- S4 UPH Dashboard -->
+  <section class="row">
+    <div class="row__head">
+      <span class="row__num">S4</span>
+      <span class="row__title">UPH Dashboard</span>
+      <span class="row__sub">6 섹션 분석 · I-TAS / MES · Best vs Worst · Trend</span>
+    </div>
+    <div class="grid">
+      <a class="card-link" href="mockup-S4-A.html" target="_blank" rel="noopener">
+        <div class="frame-wrap"><iframe src="mockup-S4-A.html" loading="lazy"></iframe></div>
+        <div class="card-foot"><div class="card-foot__left"><span class="variant">A · Safe</span><span class="label">정렬형</span></div><span class="open-link">OPEN ↗</span></div>
+      </a>
+      <a class="card-link" href="mockup-S4-B.html" target="_blank" rel="noopener">
+        <div class="frame-wrap"><iframe src="mockup-S4-B.html" loading="lazy"></iframe></div>
+        <div class="card-foot"><div class="card-foot__left"><span class="variant">B · Bold</span><span class="label">단계 강조</span></div><span class="open-link">OPEN ↗</span></div>
+      </a>
+      <a class="card-link" href="mockup-S4-C.html" target="_blank" rel="noopener">
+        <div class="frame-wrap"><iframe src="mockup-S4-C.html" loading="lazy"></iframe></div>
+        <div class="card-foot"><div class="card-foot__left"><span class="variant">C · Wild</span><span class="label">실험적</span></div><span class="open-link">OPEN ↗</span></div>
+      </a>
+    </div>
+  </section>
+
+  <!-- S5 MTBA Dashboard -->
+  <section class="row">
+    <div class="row__head">
+      <span class="row__num">S5</span>
+      <span class="row__title">MTBA Dashboard</span>
+      <span class="row__sub">다중 패널 · 6구간 비교 · 메모/이미지 첨부</span>
+    </div>
+    <div class="grid">
+      <a class="card-link" href="mockup-S5-A.html" target="_blank" rel="noopener">
+        <div class="frame-wrap"><iframe src="mockup-S5-A.html" loading="lazy"></iframe></div>
+        <div class="card-foot"><div class="card-foot__left"><span class="variant">A · Safe</span><span class="label">단일 패널 시작</span></div><span class="open-link">OPEN ↗</span></div>
+      </a>
+      <a class="card-link" href="mockup-S5-B.html" target="_blank" rel="noopener">
+        <div class="frame-wrap"><iframe src="mockup-S5-B.html" loading="lazy"></iframe></div>
+        <div class="card-foot"><div class="card-foot__left"><span class="variant">B · Bold</span><span class="label">차트 강조</span></div><span class="open-link">OPEN ↗</span></div>
+      </a>
+      <div class="card-link is-missing">
+        <div class="frame-wrap"></div>
+        <div class="card-foot"><div class="card-foot__left"><span class="variant variant--missing">C · Wild</span><span class="label">미생성</span></div><span class="open-link">—</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S6 MTBA Detail View -->
+  <section class="row">
+    <div class="row__head">
+      <span class="row__num">S6</span>
+      <span class="row__title">MTBA Detail View</span>
+      <span class="row__sub">공정 × 설비 매트릭스 · 알람 팝업 · 디버그 패널 verbatim</span>
+    </div>
+    <div class="grid">
+      <div class="card-link is-missing">
+        <div class="frame-wrap"></div>
+        <div class="card-foot"><div class="card-foot__left"><span class="variant variant--missing">A · Safe</span><span class="label">미생성</span></div><span class="open-link">—</span></div>
+      </div>
+      <a class="card-link" href="mockup-S6-B.html" target="_blank" rel="noopener">
+        <div class="frame-wrap"><iframe src="mockup-S6-B.html" loading="lazy"></iframe></div>
+        <div class="card-foot"><div class="card-foot__left"><span class="variant">B · Bold</span><span class="label">매트릭스 + 디버그</span></div><span class="open-link">OPEN ↗</span></div>
+      </a>
+      <div class="card-link is-missing">
+        <div class="frame-wrap"></div>
+        <div class="card-foot"><div class="card-foot__left"><span class="variant variant--missing">C · Wild</span><span class="label">미생성</span></div><span class="open-link">—</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S7 MaxCapa empty -->
+  <section class="row">
+    <div class="row__head">
+      <span class="row__num">S7</span>
+      <span class="row__title">MaxCapa Chat — 빈 상태</span>
+      <span class="row__sub">대화형 생산지표 조회 · 자연어 질문 · MES/ITAS 분기</span>
+    </div>
+    <div class="grid">
+      <div class="card-link is-missing">
+        <div class="frame-wrap"></div>
+        <div class="card-foot"><div class="card-foot__left"><span class="variant variant--missing">A · Safe</span><span class="label">미생성</span></div><span class="open-link">—</span></div>
+      </div>
+      <a class="card-link" href="mockup-S7-B.html" target="_blank" rel="noopener">
+        <div class="frame-wrap"><iframe src="mockup-S7-B.html" loading="lazy"></iframe></div>
+        <div class="card-foot"><div class="card-foot__left"><span class="variant">B · Bold</span><span class="label">예시 4종 · composer</span></div><span class="open-link">OPEN ↗</span></div>
+      </a>
+      <div class="card-link is-missing">
+        <div class="frame-wrap"></div>
+        <div class="card-foot"><div class="card-foot__left"><span class="variant variant--missing">C · Wild</span><span class="label">미생성</span></div><span class="open-link">—</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S8 MaxCapa active -->
+  <section class="row">
+    <div class="row__head">
+      <span class="row__num">S8</span>
+      <span class="row__title">MaxCapa Chat — 활성</span>
+      <span class="row__sub">질문 → 분석 trace · SQL · KPI · 차트 · 표 · 후속 질문</span>
+    </div>
+    <div class="grid">
+      <div class="card-link is-missing">
+        <div class="frame-wrap"></div>
+        <div class="card-foot"><div class="card-foot__left"><span class="variant variant--missing">A · Safe</span><span class="label">미생성</span></div><span class="open-link">—</span></div>
+      </div>
+      <a class="card-link" href="mockup-S8-B.html" target="_blank" rel="noopener">
+        <div class="frame-wrap"><iframe src="mockup-S8-B.html" loading="lazy"></iframe></div>
+        <div class="card-foot"><div class="card-foot__left"><span class="variant">B · Bold</span><span class="label">thread + 분석 trace</span></div><span class="open-link">OPEN ↗</span></div>
+      </a>
+      <div class="card-link is-missing">
+        <div class="frame-wrap"></div>
+        <div class="card-foot"><div class="card-foot__left"><span class="variant variant--missing">C · Wild</span><span class="label">미생성</span></div><span class="open-link">—</span></div>
+      </div>
+    </div>
+  </section>
+
+  <p class="note" style="margin-top:32px;padding-top:16px;border-top:1px solid var(--border)">
+    제작: 광학 Max Capa TDR · 디자인 토큰: <code style="font-family:var(--font-mono);font-size:11px">DESIGN.md</code> · 인덱스: <code style="font-family:var(--font-mono);font-size:11px">docs/design/index.html</code>
+  </p>
+</div>
+</body>
+</html>
