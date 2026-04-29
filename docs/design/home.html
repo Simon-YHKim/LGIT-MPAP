@@ -1,0 +1,476 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<title>Vitals — 분석 도구</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" />
+<style>
+/* LG EI Text · LG corporate identity body font (woff2 served from ./fonts/) */
+@font-face{font-family:'LG EI Text';font-weight:300;font-style:normal;font-display:swap;src:url('./fonts/lg-ei-text-300.woff2') format('woff2')}
+@font-face{font-family:'LG EI Text';font-weight:400;font-style:normal;font-display:swap;src:url('./fonts/lg-ei-text-400.woff2') format('woff2')}
+@font-face{font-family:'LG EI Text';font-weight:600;font-style:normal;font-display:swap;src:url('./fonts/lg-ei-text-600.woff2') format('woff2')}
+@font-face{font-family:'LG EI Text';font-weight:700;font-style:normal;font-display:swap;src:url('./fonts/lg-ei-text-700.woff2') format('woff2')}
+@font-face{font-family:'LG EI Headline';font-weight:300;font-style:normal;font-display:swap;src:url('./fonts/lg-ei-headline-300.woff2') format('woff2')}
+@font-face{font-family:'LG EI Headline';font-weight:400;font-style:normal;font-display:swap;src:url('./fonts/lg-ei-headline-400.woff2') format('woff2')}
+@font-face{font-family:'LG EI Headline';font-weight:600;font-style:normal;font-display:swap;src:url('./fonts/lg-ei-headline-600.woff2') format('woff2')}
+@font-face{font-family:'LG EI Headline';font-weight:700;font-style:normal;font-display:swap;src:url('./fonts/lg-ei-headline-700.woff2') format('woff2')}
+
+:root{
+  --primary:#A50034;--primary-dark:#7E0027;--primary-tint:#F8E5EC;
+  --page-bg:#F7F8FA;--card-bg:#FFFFFF;--soft:#F1F3F5;
+  --border:#E5E7EB;--border-strong:#CBD0D6;
+  --ink-body:#1F2430;--ink-muted:#6B7280;--ink-subtle:#9CA3AF;
+  --status-good:#1F8B4C;--status-warn:#B57F1B;--status-bad:#B23A48;
+  --status-good-tint:#E6F4EA;--status-warn-tint:#FAF1DD;--status-subtle-tint:#EEF0F3;
+  --font-body:'LG EI Text','LG Smart','Pretendard Variable',Pretendard,'Malgun Gothic',system-ui,sans-serif;
+  --font-display:'LG EI Headline','LG EI Text','Pretendard Variable',Pretendard,sans-serif;
+  --font-mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;background:var(--page-bg);color:var(--ink-body);font-family:var(--font-body);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased;word-break:keep-all}
+button,input,a{font-family:inherit}
+a{color:inherit;text-decoration:none}
+
+/* layout ----------------------------------------------------------- */
+.app{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+
+/* sidebar ---------------------------------------------------------- */
+.sidebar{background:#FFFFFF;border-right:1px solid var(--border);padding:24px 0 16px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column}
+.sidebar__brand{padding:0 20px 16px;border-bottom:1px solid var(--border);margin-bottom:14px;display:flex;flex-direction:column;gap:8px}
+.sidebar__logo{display:block;height:18px;width:auto}
+.sidebar__eyebrow{font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:.14em;color:var(--ink-subtle);text-transform:uppercase}
+.sidebar__eyebrow strong{color:var(--primary-dark);font-weight:700}
+
+.nav{display:flex;flex-direction:column;gap:2px;padding:0 8px}
+.nav__heading{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-subtle);padding:10px 12px 6px;margin-top:6px}
+.nav__item{display:flex;align-items:center;gap:10px;height:34px;padding:0 14px;font-size:13px;font-weight:600;color:var(--ink-muted);border-radius:6px;position:relative;cursor:pointer;transition:background .12s,color .12s}
+.nav__item:hover{background:var(--soft);color:var(--ink-body)}
+.nav__item--active{color:var(--ink-body);background:transparent}
+.nav__item--active::before{content:"";position:absolute;left:-8px;top:7px;bottom:7px;width:3px;background:var(--primary);border-radius:0 3px 3px 0}
+.nav__icon{width:14px;height:14px;flex:none;opacity:.75}
+.nav__item--active .nav__icon{opacity:1;color:var(--primary)}
+
+.sidebar__foot{margin-top:auto;padding:14px 20px 0;border-top:1px solid var(--border);font-family:var(--font-mono);font-size:10px;color:var(--ink-subtle);letter-spacing:.06em;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center}
+
+/* content shell ---------------------------------------------------- */
+.content{display:flex;flex-direction:column;min-height:100vh}
+.topbar{display:flex;justify-content:flex-end;align-items:center;gap:12px;padding:14px 32px;border-bottom:1px solid var(--border);background:#FFFFFF}
+
+/* language switcher (light variant for app shell) ----------------- */
+.lang{position:relative}
+.lang__btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:30px;padding:0 12px;background:#FFFFFF;border:1px solid var(--border);border-radius:8px;color:var(--ink-body);font:inherit;font-family:var(--font-mono);font-size:11px;font-weight:600;letter-spacing:.06em;cursor:pointer;transition:border-color .12s,background .12s;min-width:80px}
+.lang__btn:hover{border-color:var(--border-strong);background:var(--soft)}
+.lang__btn svg{width:14px;height:14px;flex:none;opacity:.7}
+.lang__btn #lang-current{display:inline-block;min-width:18px;text-align:center}
+.lang__caret{font-size:10px;opacity:.6;margin-left:2px}
+.lang__menu{position:absolute;top:calc(100% + 6px);right:0;min-width:180px;background:#FFFFFF;border:1px solid var(--border);border-radius:10px;padding:4px;box-shadow:0 16px 40px rgba(15,17,21,0.10);display:none;z-index:10}
+.lang.is-open .lang__menu{display:block}
+.lang__item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 12px;font-size:13px;font-weight:600;color:var(--ink-body);background:transparent;border:0;border-radius:6px;cursor:pointer;width:100%;text-align:left}
+.lang__item:hover{background:var(--soft)}
+.lang__item--active{background:var(--primary-tint);color:var(--primary-dark)}
+.lang__item-code{font-family:var(--font-mono);font-size:10px;color:var(--ink-subtle);letter-spacing:.06em;text-transform:uppercase}
+
+/* page ------------------------------------------------------------- */
+.page{padding:36px 32px 24px;flex:1;max-width:1640px;width:100%}
+.page-head{margin-bottom:28px;display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap}
+.page-head__main{flex:1;min-width:0}
+.eyebrow{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-subtle);margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.eyebrow strong{color:var(--primary-dark);font-weight:700}
+.page-head h1{margin:0 0 6px;font-family:var(--font-display);font-size:36px;font-weight:700;letter-spacing:-0.025em;line-height:1.05;color:var(--ink-body)}
+.page-head .sub{margin:0;font-size:14px;color:var(--ink-muted);max-width:680px}
+
+/* tool cards grid -------------------------------------------------- */
+.tools-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:32px}
+.tool-card{display:flex;flex-direction:column;gap:14px;padding:20px;background:var(--card-bg);border:1px solid var(--border);border-radius:10px;position:relative;transition:border-color .15s,transform .15s,box-shadow .15s;min-height:160px;cursor:pointer;color:inherit;overflow:hidden}
+.tool-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:0;background:var(--primary);transition:width .15s ease}
+.tool-card:hover{border-color:var(--border-strong);box-shadow:0 8px 22px -4px rgba(15,17,21,0.06)}
+.tool-card:hover::before{width:3px}
+.tool-card:hover .tool-card__arrow{opacity:1;transform:translateX(0)}
+.tool-card[aria-disabled="true"]{cursor:not-allowed;opacity:0.7}
+.tool-card[aria-disabled="true"]:hover{border-color:var(--border);box-shadow:none}
+.tool-card[aria-disabled="true"]:hover::before{width:0}
+
+.tool-card__head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.tool-card__icon-wrap{width:36px;height:36px;border-radius:8px;background:var(--soft);display:flex;align-items:center;justify-content:center;flex:none;color:var(--ink-body)}
+.tool-card__icon-wrap svg{width:18px;height:18px;stroke-width:1.6}
+.tool-card:hover .tool-card__icon-wrap{background:var(--primary-tint);color:var(--primary-dark)}
+
+.tool-card__body{display:flex;flex-direction:column;gap:4px;flex:1;min-width:0}
+.tool-card__title{margin:0;font-size:15px;font-weight:700;letter-spacing:-0.01em;color:var(--ink-body)}
+.tool-card__desc{margin:0;font-size:13px;color:var(--ink-muted);line-height:1.5}
+
+.tool-card__foot{display:flex;justify-content:space-between;align-items:center;margin-top:auto;padding-top:8px;border-top:1px dashed var(--border);font-family:var(--font-mono);font-size:11px;color:var(--ink-subtle);letter-spacing:.04em}
+
+.tool-card__arrow{opacity:0;transform:translateX(-4px);transition:opacity .15s,transform .15s;color:var(--primary);font-family:var(--font-mono);font-size:14px}
+
+/* status badge */
+.badge{display:inline-flex;align-items:center;gap:5px;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;font-family:var(--font-mono);white-space:nowrap;flex:none}
+.badge--good{background:var(--status-good-tint);color:var(--status-good)}
+.badge--warn{background:var(--status-warn-tint);color:var(--status-warn)}
+.badge--subtle{background:var(--status-subtle-tint);color:var(--ink-muted)}
+.badge .badge__dot{width:5px;height:5px;border-radius:50%;background:currentColor}
+
+/* page footer ----------------------------------------------------- */
+.page-foot{margin-top:auto;padding:18px 0 8px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-family:var(--font-mono);font-size:11px;color:var(--ink-subtle);letter-spacing:.04em;flex-wrap:wrap;gap:12px}
+.page-foot a{color:var(--ink-muted);border-bottom:1px solid var(--border)}
+.page-foot a:hover{color:var(--primary-dark);border-color:var(--primary-dark)}
+
+/* responsive ------------------------------------------------------- */
+@media (max-width:1280px){
+  .tools-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:980px){
+  .app{grid-template-columns:1fr}
+  .sidebar{position:relative;height:auto;flex-direction:row;align-items:center;padding:14px 18px;border-right:0;border-bottom:1px solid var(--border)}
+  .sidebar__brand{padding:0;border:0;margin:0}
+  .nav,.sidebar__foot{display:none}
+  .tools-grid{grid-template-columns:1fr}
+  .page{padding:24px 18px}
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- Sidebar ------------------------------------------------------- -->
+  <aside class="sidebar">
+    <div class="sidebar__brand">
+      <img class="sidebar__logo" src="./assets/lg-innotek-logo-en-gray.png" alt="LG Innotek" />
+      <div class="sidebar__eyebrow"><strong>VITALS</strong> · <span data-i18n="brand.team_short">생산혁신센터 · Max Capa 팀</span></div>
+    </div>
+
+    <div class="nav__heading" data-i18n="nav.heading">메뉴</div>
+    <nav class="nav" role="navigation" aria-label="Primary">
+      <a class="nav__item" href="./landing.html" data-page="login">
+        <svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+        login
+      </a>
+      <a class="nav__item nav__item--active" aria-current="page" href="./home.html" data-page="home">
+        <svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12l9-9 9 9"/><path d="M5 10v10h14V10"/></svg>
+        Home
+      </a>
+      <a class="nav__item" href="#" data-page="cmp">
+        <svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        CMP Dashboard
+      </a>
+      <a class="nav__item" href="#" data-page="uph">
+        <svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg>
+        UPH Dashboard
+      </a>
+      <a class="nav__item" href="#" data-page="mtba">
+        <svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        MTBA Dashboard
+      </a>
+      <a class="nav__item" href="#" data-page="mtba-detail">
+        <svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 22 8.5 12 15 2 8.5 12 2"/><polyline points="2 15.5 12 22 22 15.5"/><polyline points="2 12 12 18.5 22 12"/></svg>
+        MTBA Detail View
+      </a>
+      <a class="nav__item" href="#" data-page="chat">
+        <svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        MaxCapa Chat
+      </a>
+    </nav>
+
+    <div class="sidebar__foot">
+      <span>v0.4.2</span>
+      <span data-i18n="sidebar.intranet">사내망</span>
+    </div>
+  </aside>
+
+  <!-- Content ------------------------------------------------------- -->
+  <main class="content">
+
+    <!-- Top bar (lang switcher) -->
+    <header class="topbar">
+      <div class="lang" id="lang">
+        <button type="button" class="lang__btn" id="lang-btn" aria-haspopup="menu" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>
+          <span id="lang-current">KO</span>
+          <span class="lang__caret">▾</span>
+        </button>
+        <div class="lang__menu" role="menu" id="lang-menu">
+          <button class="lang__item lang__item--active" type="button" data-lang="ko"><span>한국어</span><span class="lang__item-code">KO</span></button>
+          <button class="lang__item" type="button" data-lang="en"><span>English</span><span class="lang__item-code">EN</span></button>
+          <button class="lang__item" type="button" data-lang="vi"><span>Tiếng Việt</span><span class="lang__item-code">VI</span></button>
+          <button class="lang__item" type="button" data-lang="pl"><span>Polski</span><span class="lang__item-code">PL</span></button>
+          <button class="lang__item" type="button" data-lang="id"><span>Bahasa Indonesia</span><span class="lang__item-code">ID</span></button>
+          <button class="lang__item" type="button" data-lang="es"><span>Español</span><span class="lang__item-code">ES</span></button>
+          <button class="lang__item" type="button" data-lang="zh"><span>中文</span><span class="lang__item-code">ZH</span></button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Page -->
+    <div class="page">
+
+      <header class="page-head">
+        <div class="page-head__main">
+          <div class="eyebrow"><strong data-i18n="eyebrow.platform">PLATFORM</strong> · <span data-i18n="eyebrow.vitals">VITALS</span></div>
+          <h1 data-i18n="home.title">분석 도구</h1>
+          <p class="sub" data-i18n="home.sub">분석 항목을 선택하세요. 데이터는 사내망 MES / ITAS 에서 매일 자동 적재됩니다.</p>
+        </div>
+      </header>
+
+      <!-- Tool cards grid (5 tools) -->
+      <div class="tools-grid">
+
+        <!-- 1. CMP Dashboard — 정식 -->
+        <a class="tool-card" href="#" data-tool="cmp">
+          <div class="tool-card__head">
+            <div class="tool-card__icon-wrap">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+            </div>
+            <span class="badge badge--good"><span class="badge__dot"></span><span data-i18n="status.live">정식</span></span>
+          </div>
+          <div class="tool-card__body">
+            <h3 class="tool-card__title">CMP Dashboard</h3>
+            <p class="tool-card__desc" data-i18n="tool.cmp_desc">공정별 CMP 달성률 추이 · 영역×모델×기간 필터로 조회</p>
+          </div>
+          <div class="tool-card__foot">
+            <span data-i18n="tool.cmp_meta">정식 5/22E · v4 · 2026-04-28</span>
+            <span class="tool-card__arrow">→</span>
+          </div>
+        </a>
+
+        <!-- 2. UPH Dashboard — 가오픈 -->
+        <a class="tool-card" href="#" data-tool="uph">
+          <div class="tool-card__head">
+            <div class="tool-card__icon-wrap">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg>
+            </div>
+            <span class="badge badge--warn"><span class="badge__dot"></span><span data-i18n="status.preview">가오픈</span></span>
+          </div>
+          <div class="tool-card__body">
+            <h3 class="tool-card__title">UPH Dashboard</h3>
+            <p class="tool-card__desc" data-i18n="tool.uph_desc">UPH · 동작시간 분석 · I-TAS 분기 + 6 섹션 추적</p>
+          </div>
+          <div class="tool-card__foot">
+            <span data-i18n="tool.uph_meta">가오픈 4/29~ · 정식 5/22E</span>
+            <span class="tool-card__arrow">→</span>
+          </div>
+        </a>
+
+        <!-- 3. MTBA Dashboard — 가오픈 -->
+        <a class="tool-card" href="#" data-tool="mtba">
+          <div class="tool-card__head">
+            <div class="tool-card__icon-wrap">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+            </div>
+            <span class="badge badge--warn"><span class="badge__dot"></span><span data-i18n="status.preview">가오픈</span></span>
+          </div>
+          <div class="tool-card__body">
+            <h3 class="tool-card__title">MTBA Dashboard</h3>
+            <p class="tool-card__desc" data-i18n="tool.mtba_desc">공정별 MTBA 통계 · 다중 패널 · 메모/이미지 업로드</p>
+          </div>
+          <div class="tool-card__foot">
+            <span data-i18n="tool.mtba_meta">가오픈 4/29~ · 정식 5/15E</span>
+            <span class="tool-card__arrow">→</span>
+          </div>
+        </a>
+
+        <!-- 4. MTBA Detail View — 가오픈 -->
+        <a class="tool-card" href="#" data-tool="mtba-detail">
+          <div class="tool-card__head">
+            <div class="tool-card__icon-wrap">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 22 8.5 12 15 2 8.5 12 2"/><polyline points="2 15.5 12 22 22 15.5"/><polyline points="2 12 12 18.5 22 12"/></svg>
+            </div>
+            <span class="badge badge--warn"><span class="badge__dot"></span><span data-i18n="status.preview">가오픈</span></span>
+          </div>
+          <div class="tool-card__body">
+            <h3 class="tool-card__title">MTBA Detail View</h3>
+            <p class="tool-card__desc" data-i18n="tool.mtba_detail_desc">패널 기반 드릴다운 · 공정×설비 매트릭스 · 알람 상세 팝업</p>
+          </div>
+          <div class="tool-card__foot">
+            <span data-i18n="tool.mtba_detail_meta">가오픈 4/29~ · 정식 5/15E</span>
+            <span class="tool-card__arrow">→</span>
+          </div>
+        </a>
+
+        <!-- 5. MaxCapa Chat — 오픈예정 -->
+        <a class="tool-card" href="#" data-tool="chat" aria-disabled="true">
+          <div class="tool-card__head">
+            <div class="tool-card__icon-wrap">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            </div>
+            <span class="badge badge--subtle"><span class="badge__dot"></span><span data-i18n="status.upcoming">오픈예정</span></span>
+          </div>
+          <div class="tool-card__body">
+            <h3 class="tool-card__title">MaxCapa Chat</h3>
+            <p class="tool-card__desc" data-i18n="tool.chat_desc">대화형 생산지표 조회 · MES UPH / ITAS UPH 자연어 질의</p>
+          </div>
+          <div class="tool-card__foot">
+            <span data-i18n="tool.chat_meta">오픈 예정</span>
+            <span class="tool-card__arrow">→</span>
+          </div>
+        </a>
+
+      </div>
+
+      <!-- page footer -->
+      <footer class="page-foot">
+        <span data-i18n="foot.creator">제작 · 생산혁신센터 Max Capa 팀</span>
+        <span><a href="#" data-i18n="foot.changelog">변경 로그 전체 보기 →</a></span>
+      </footer>
+
+    </div>
+
+  </main>
+
+</div>
+
+<!-- i18n dictionary --------------------------------------------------- -->
+<script>
+window.__I18N__ = {
+  ko: {
+    "brand.team_short":"생산혁신센터 · Max Capa 팀",
+    "nav.heading":"메뉴",
+    "sidebar.intranet":"사내망",
+    "eyebrow.platform":"PLATFORM","eyebrow.vitals":"VITALS",
+    "home.title":"분석 도구",
+    "home.sub":"분석 항목을 선택하세요. 데이터는 사내망 MES / ITAS 에서 매일 자동 적재됩니다.",
+    "status.live":"정식","status.preview":"가오픈","status.upcoming":"오픈예정",
+    "tool.cmp_desc":"공정별 CMP 달성률 추이 · 영역×모델×기간 필터로 조회",
+    "tool.cmp_meta":"정식 5/22E · v4 · 2026-04-28",
+    "tool.uph_desc":"UPH · 동작시간 분석 · I-TAS 분기 + 6 섹션 추적",
+    "tool.uph_meta":"가오픈 4/29~ · 정식 5/22E",
+    "tool.mtba_desc":"공정별 MTBA 통계 · 다중 패널 · 메모/이미지 업로드",
+    "tool.mtba_meta":"가오픈 4/29~ · 정식 5/15E",
+    "tool.mtba_detail_desc":"패널 기반 드릴다운 · 공정×설비 매트릭스 · 알람 상세 팝업",
+    "tool.mtba_detail_meta":"가오픈 4/29~ · 정식 5/15E",
+    "tool.chat_desc":"대화형 생산지표 조회 · MES UPH / ITAS UPH 자연어 질의",
+    "tool.chat_meta":"오픈 예정",
+    "foot.creator":"제작 · 생산혁신센터 Max Capa 팀",
+    "foot.changelog":"변경 로그 전체 보기 →"
+  },
+  en: {
+    "brand.team_short":"Production Innovation · Max Capa Team",
+    "nav.heading":"MENU",
+    "sidebar.intranet":"Intranet",
+    "eyebrow.platform":"PLATFORM","eyebrow.vitals":"VITALS",
+    "home.title":"Analytics Tools",
+    "home.sub":"Pick an analysis tool. Data is auto-ingested daily from in-house MES / ITAS.",
+    "status.live":"Live","status.preview":"Preview","status.upcoming":"Upcoming",
+    "tool.cmp_desc":"Per-process CMP attainment trend · area × model × period filters",
+    "tool.cmp_meta":"Live 5/22E · v4 · 2026-04-28",
+    "tool.uph_desc":"UPH · run-time analytics · I-TAS branching + 6 sections",
+    "tool.uph_meta":"Preview 4/29~ · Live 5/22E",
+    "tool.mtba_desc":"Per-process MTBA statistics · multi-panel · memo/image upload",
+    "tool.mtba_meta":"Preview 4/29~ · Live 5/15E",
+    "tool.mtba_detail_desc":"Panel-based drill-down · process × equipment matrix · alarm detail popup",
+    "tool.mtba_detail_meta":"Preview 4/29~ · Live 5/15E",
+    "tool.chat_desc":"Conversational production query · natural-language MES UPH / ITAS UPH",
+    "tool.chat_meta":"Upcoming",
+    "foot.creator":"Built by · Production Innovation Center · Max Capa Team",
+    "foot.changelog":"View full changelog →"
+  },
+  vi: {
+    "brand.team_short":"Trung tâm Đổi mới · Đội Max Capa",
+    "nav.heading":"MENU","sidebar.intranet":"Nội bộ",
+    "eyebrow.platform":"PLATFORM","eyebrow.vitals":"VITALS",
+    "home.title":"Công cụ phân tích",
+    "home.sub":"Chọn công cụ phân tích. Dữ liệu nạp tự động hằng ngày từ MES / ITAS nội bộ.",
+    "status.live":"Chính thức","status.preview":"Thử","status.upcoming":"Sắp ra mắt",
+    "foot.creator":"Đội Max Capa · Trung tâm Đổi mới Sản xuất",
+    "foot.changelog":"Xem toàn bộ nhật ký →"
+  },
+  pl: {
+    "brand.team_short":"Centrum Innowacji · Zespół Max Capa",
+    "nav.heading":"MENU","sidebar.intranet":"Intranet",
+    "home.title":"Narzędzia analityczne",
+    "home.sub":"Wybierz narzędzie analityczne.",
+    "status.live":"Live","status.preview":"Podgląd","status.upcoming":"Wkrótce",
+    "foot.creator":"Zespół Max Capa · Centrum Innowacji Produkcji"
+  },
+  id: {
+    "brand.team_short":"Pusat Inovasi · Tim Max Capa",
+    "nav.heading":"MENU","sidebar.intranet":"Internal",
+    "home.title":"Alat Analitik",
+    "home.sub":"Pilih alat analisis.",
+    "status.live":"Resmi","status.preview":"Pratinjau","status.upcoming":"Akan datang",
+    "foot.creator":"Tim Max Capa · Pusat Inovasi Produksi"
+  },
+  es: {
+    "brand.team_short":"Centro de Innovación · Equipo Max Capa",
+    "nav.heading":"MENÚ","sidebar.intranet":"Intranet",
+    "home.title":"Herramientas de análisis",
+    "home.sub":"Seleccione una herramienta de análisis.",
+    "status.live":"Activo","status.preview":"Vista previa","status.upcoming":"Próximamente",
+    "foot.creator":"Equipo Max Capa · Centro de Innovación de Producción"
+  },
+  zh: {
+    "brand.team_short":"生产革新中心 · Max Capa 团队",
+    "nav.heading":"菜单","sidebar.intranet":"内网",
+    "home.title":"分析工具",
+    "home.sub":"请选择分析工具。",
+    "status.live":"正式","status.preview":"预览","status.upcoming":"即将上线",
+    "foot.creator":"Max Capa 团队 · 生产革新中心"
+  }
+};
+</script>
+
+<!-- behavior: lang switcher + tool card click handling --------------- -->
+<script>
+(function(){
+  var dict = window.__I18N__;
+  var current = localStorage.getItem('mpap.lang') || 'ko';
+
+  function applyLang(code){
+    var pack = dict[code] || {};
+    var fallback = dict.ko;
+    document.documentElement.setAttribute('lang', code);
+    document.querySelectorAll('[data-i18n]').forEach(function(el){
+      var key = el.getAttribute('data-i18n');
+      var val = pack[key];
+      if (val == null) val = fallback[key];
+      if (val == null) return;
+      el.textContent = val;
+    });
+    var btnLabel = document.getElementById('lang-current');
+    if (btnLabel) btnLabel.textContent = code.toUpperCase();
+    document.querySelectorAll('.lang__item').forEach(function(it){
+      it.classList.toggle('lang__item--active', it.getAttribute('data-lang') === code);
+    });
+    current = code;
+    localStorage.setItem('mpap.lang', code);
+  }
+
+  /* lang menu */
+  var langWrap = document.getElementById('lang');
+  var langBtn = document.getElementById('lang-btn');
+  langBtn.addEventListener('click', function(e){
+    e.stopPropagation();
+    var open = langWrap.classList.toggle('is-open');
+    langBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  document.addEventListener('click', function(e){
+    if (!langWrap.contains(e.target)) {
+      langWrap.classList.remove('is-open');
+      langBtn.setAttribute('aria-expanded', 'false');
+    }
+  });
+  document.querySelectorAll('.lang__item').forEach(function(it){
+    it.addEventListener('click', function(){
+      applyLang(it.getAttribute('data-lang'));
+      langWrap.classList.remove('is-open');
+      langBtn.setAttribute('aria-expanded', 'false');
+    });
+  });
+
+  /* tool card click — block disabled cards */
+  document.querySelectorAll('.tool-card').forEach(function(card){
+    card.addEventListener('click', function(e){
+      if (card.getAttribute('aria-disabled') === 'true') {
+        e.preventDefault();
+      }
+    });
+  });
+
+  applyLang(current);
+})();
+</script>
+
+</body>
+</html>
