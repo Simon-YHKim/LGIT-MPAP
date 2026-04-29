@@ -6,11 +6,11 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css" />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&display=swap" />
 <style>
-/* LG corporate font (local install on 사내 PC) — graceful fallback to Pretendard */
-@font-face{font-family:'LG Smart';font-weight:300;font-style:normal;font-display:swap;src:local('LG Smart UI Light'),local('LG Smart_HL'),local('LGSmHaThin'),local('LG Smart Light')}
-@font-face{font-family:'LG Smart';font-weight:400;font-style:normal;font-display:swap;src:local('LG Smart UI'),local('LG Smart_H'),local('LGSmHaTR'),local('LG Smart'),local('LG EI Text')}
-@font-face{font-family:'LG Smart';font-weight:600;font-style:normal;font-display:swap;src:local('LG Smart UI SemiBold'),local('LG Smart_HSb'),local('LGSmHaSb'),local('LG Smart Semibold')}
-@font-face{font-family:'LG Smart';font-weight:700;font-style:normal;font-display:swap;src:local('LG Smart UI Bold'),local('LG Smart_HB'),local('LGSmHaB'),local('LG Smart Bold'),local('LG EI Display Bold')}
+/* LG corporate font · self-hosted url() → local() fallback chain → Pretendard */
+@font-face{font-family:'LG Smart';font-weight:300;font-style:normal;font-display:swap;src:url('./fonts/lg-smart-300.woff2') format('woff2'),url('./fonts/lg-smart-300.woff') format('woff'),local('LG Smart UI Light'),local('LG Smart_HL'),local('LGSmHaThin'),local('LG Smart Light')}
+@font-face{font-family:'LG Smart';font-weight:400;font-style:normal;font-display:swap;src:url('./fonts/lg-smart-400.woff2') format('woff2'),url('./fonts/lg-smart-400.woff') format('woff'),local('LG Smart UI'),local('LG Smart_H'),local('LGSmHaTR'),local('LG Smart'),local('LG EI Text')}
+@font-face{font-family:'LG Smart';font-weight:600;font-style:normal;font-display:swap;src:url('./fonts/lg-smart-600.woff2') format('woff2'),url('./fonts/lg-smart-600.woff') format('woff'),local('LG Smart UI SemiBold'),local('LG Smart_HSb'),local('LGSmHaSb'),local('LG Smart Semibold')}
+@font-face{font-family:'LG Smart';font-weight:700;font-style:normal;font-display:swap;src:url('./fonts/lg-smart-700.woff2') format('woff2'),url('./fonts/lg-smart-700.woff') format('woff'),local('LG Smart UI Bold'),local('LG Smart_HB'),local('LGSmHaB'),local('LG Smart Bold'),local('LG EI Display Bold')}
 
   :root{--primary:#A50034;--primary-dark:#7E0027;--primary-tint:#F8E5EC;--page-bg:#F7F8FA;--card-bg:#FFFFFF;--soft:#F1F3F5;--border:#E5E7EB;--border-strong:#CBD0D6;--ink-body:#1F2430;--ink-muted:#6B7280;--ink-subtle:#9CA3AF;--status-good:#1F8B4C;--status-warn:#B57F1B;--status-bad:#B23A48;--easing:cubic-bezier(0.2,0.6,0.3,1);--font-body:'LG Smart','Pretendard Variable',Pretendard,'Malgun Gothic',system-ui,sans-serif;--font-mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace}
   *,*::before,*::after{box-sizing:border-box}

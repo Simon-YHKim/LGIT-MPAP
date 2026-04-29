@@ -7,11 +7,11 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css" />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" />
 <style>
-/* LG corporate font (local install on 사내 PC) — graceful fallback to Pretendard */
-@font-face{font-family:'LG Smart';font-weight:300;font-style:normal;font-display:swap;src:local('LG Smart UI Light'),local('LG Smart_HL'),local('LGSmHaThin'),local('LG Smart Light')}
-@font-face{font-family:'LG Smart';font-weight:400;font-style:normal;font-display:swap;src:local('LG Smart UI'),local('LG Smart_H'),local('LGSmHaTR'),local('LG Smart'),local('LG EI Text')}
-@font-face{font-family:'LG Smart';font-weight:600;font-style:normal;font-display:swap;src:local('LG Smart UI SemiBold'),local('LG Smart_HSb'),local('LGSmHaSb'),local('LG Smart Semibold')}
-@font-face{font-family:'LG Smart';font-weight:700;font-style:normal;font-display:swap;src:local('LG Smart UI Bold'),local('LG Smart_HB'),local('LGSmHaB'),local('LG Smart Bold'),local('LG EI Display Bold')}
+/* LG corporate font · self-hosted url() → local() fallback chain → Pretendard */
+@font-face{font-family:'LG Smart';font-weight:300;font-style:normal;font-display:swap;src:url('./fonts/lg-smart-300.woff2') format('woff2'),url('./fonts/lg-smart-300.woff') format('woff'),local('LG Smart UI Light'),local('LG Smart_HL'),local('LGSmHaThin'),local('LG Smart Light')}
+@font-face{font-family:'LG Smart';font-weight:400;font-style:normal;font-display:swap;src:url('./fonts/lg-smart-400.woff2') format('woff2'),url('./fonts/lg-smart-400.woff') format('woff'),local('LG Smart UI'),local('LG Smart_H'),local('LGSmHaTR'),local('LG Smart'),local('LG EI Text')}
+@font-face{font-family:'LG Smart';font-weight:600;font-style:normal;font-display:swap;src:url('./fonts/lg-smart-600.woff2') format('woff2'),url('./fonts/lg-smart-600.woff') format('woff'),local('LG Smart UI SemiBold'),local('LG Smart_HSb'),local('LGSmHaSb'),local('LG Smart Semibold')}
+@font-face{font-family:'LG Smart';font-weight:700;font-style:normal;font-display:swap;src:url('./fonts/lg-smart-700.woff2') format('woff2'),url('./fonts/lg-smart-700.woff') format('woff'),local('LG Smart UI Bold'),local('LG Smart_HB'),local('LGSmHaB'),local('LG Smart Bold'),local('LG EI Display Bold')}
 
 :root{
   --primary:#A50034;--primary-dark:#7E0027;--primary-tint:#F8E5EC;
@@ -42,7 +42,8 @@ button,input,textarea{font-family:inherit}
 
 /* layout ------------------------------------------------------------ */
 .shell{position:relative;z-index:3;height:100vh;display:grid;grid-template-rows:auto 1fr auto;padding:28px 40px}
-.brand-row{display:flex;justify-content:space-between;align-items:center;gap:24px}
+.brand-row{display:flex;justify-content:flex-start;align-items:center;gap:24px}
+.brand-cluster{display:flex;align-items:center;gap:18px}
 .brand{display:flex;align-items:baseline;gap:10px}
 .brand__logo{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:8px;background:var(--primary);color:#fff;font-weight:800;font-size:14px;letter-spacing:-0.02em}
 .brand__name{font-size:14px;font-weight:700;letter-spacing:-0.01em;color:var(--on-dark)}
@@ -54,11 +55,12 @@ button,input,textarea{font-family:inherit}
 /* language switcher ----------------------------------------------- */
 .top-row{display:flex;align-items:center;gap:18px}
 .lang{position:relative}
-.lang__btn{display:inline-flex;align-items:center;gap:8px;height:30px;padding:0 12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:var(--on-dark);font:inherit;font-size:12px;font-weight:600;letter-spacing:.02em;cursor:pointer;transition:background .15s,border-color .15s}
+.lang__btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:30px;padding:0 10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:var(--on-dark);font:inherit;font-family:var(--font-mono);font-size:11px;font-weight:600;letter-spacing:.06em;cursor:pointer;transition:background .15s,border-color .15s;min-width:72px}
+.lang__btn #lang-current{display:inline-block;min-width:18px;text-align:center}
 .lang__btn:hover{background:rgba(255,255,255,0.10);border-color:rgba(255,255,255,0.20)}
 .lang__btn svg{width:14px;height:14px;flex:none;opacity:.85}
 .lang__caret{font-size:10px;opacity:.7;margin-left:2px}
-.lang__menu{position:absolute;top:calc(100% + 6px);right:0;min-width:180px;background:rgba(15,17,21,0.96);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:4px;box-shadow:0 16px 40px rgba(0,0,0,0.45);display:none;z-index:10;backdrop-filter:blur(8px)}
+.lang__menu{position:absolute;top:calc(100% + 6px);left:0;min-width:180px;background:rgba(15,17,21,0.96);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:4px;box-shadow:0 16px 40px rgba(0,0,0,0.45);display:none;z-index:10;backdrop-filter:blur(8px)}
 .lang.is-open .lang__menu{display:block}
 .lang__item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 12px;font-size:13px;font-weight:600;color:var(--on-dark);background:transparent;border:0;border-radius:6px;cursor:pointer;width:100%;text-align:left}
 .lang__item:hover{background:rgba(255,255,255,0.08)}
@@ -191,17 +193,17 @@ button,input,textarea{font-family:inherit}
 <!-- main shell ------------------------------------------------------- -->
 <div class="shell">
 
-  <!-- top: brand + status pill -->
+  <!-- top: brand + language switcher (both top-left) -->
   <div class="brand-row">
-    <div class="brand">
-      <div class="brand__logo" aria-hidden="true">LG</div>
-      <div class="brand__name" data-i18n="brand.name">LG Innotek<small data-i18n="brand.team">생산혁신센터 · Max Capa 팀</small></div>
-    </div>
-    <div class="top-row">
+    <div class="brand-cluster">
+      <div class="brand">
+        <div class="brand__logo" aria-hidden="true">LG</div>
+        <div class="brand__name" data-i18n="brand.name">LG Innotek<small data-i18n="brand.team">생산혁신센터 · Max Capa 팀</small></div>
+      </div>
       <div class="lang" id="lang">
         <button type="button" class="lang__btn" id="lang-btn" aria-haspopup="menu" aria-expanded="false">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>
-          <span id="lang-current">한국어</span>
+          <span id="lang-current">KO</span>
           <span class="lang__caret">▾</span>
         </button>
         <div class="lang__menu" role="menu" id="lang-menu">
@@ -548,7 +550,7 @@ window.__LANG_LABEL__ = { ko:"한국어", en:"English", vi:"Tiếng Việt", pl:
       else el.textContent = val;
     });
     var btnLabel = document.getElementById('lang-current');
-    if (btnLabel) btnLabel.textContent = window.__LANG_LABEL__[code] || code;
+    if (btnLabel) btnLabel.textContent = code.toUpperCase();
     document.querySelectorAll('.lang__item').forEach(function(it){
       it.classList.toggle('lang__item--active', it.getAttribute('data-lang') === code);
     });
