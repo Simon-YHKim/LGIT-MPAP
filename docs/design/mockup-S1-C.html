@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<title>설빕생산성분석 플랫폼 로그인</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&display=swap" />
+<style>
+  /* =========================================================
+     LG Innotek MPAP — S1 Login · Variant C (Wild)
+     좌: 폼 카드 460px · 우: 시스템 패널 360px (gap 24px)
+     ========================================================= */
+  :root {
+    --primary:#A50034; --primary-dark:#7E0027; --primary-tint:#F8E5EC;
+    --page-bg:#F7F8FA; --card-bg:#FFFFFF; --soft:#F1F3F5;
+    --border:#E5E7EB; --border-strong:#CBD0D6;
+    --ink-body:#1F2430; --ink-muted:#6B7280; --ink-subtle:#9CA3AF;
+    --status-good:#1F8B4C; --status-warn:#B57F1B; --status-bad:#B23A48;
+    --easing:cubic-bezier(0.2, 0.6, 0.3, 1);
+    --radius:8px;
+    --font-body:'Pretendard Variable', Pretendard, 'Malgun Gothic', system-ui, sans-serif;
+    --font-mono:'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  *,*::before,*::after{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--page-bg);color:var(--ink-body);
+    font-family:var(--font-body);font-size:14px;line-height:1.5;font-weight:400;
+    -webkit-font-smoothing:antialiased;word-break:keep-all}
+  body{min-height:100vh;display:grid;place-items:center;padding:48px 24px}
+
+  .layout{display:grid;grid-template-columns:460px 360px;gap:24px;align-items:start}
+
+  /* Card base */
+  .card{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);box-shadow:0 1px 2px rgba(31,36,48,.03)}
+
+  .auth-card{padding:36px 36px 32px}
+
+  .brand{margin-bottom:28px}
+  .brand__wordmark{font-size:14px;font-weight:700;color:var(--ink-body);letter-spacing:-0.01em;line-height:1}
+  .brand__eyebrow{margin-top:6px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-subtle)}
+
+  .auth-head{margin-bottom:20px}
+  .auth-head h1{margin:0 0 6px;font-size:28px;line-height:1.2;font-weight:700;letter-spacing:-0.01em;color:var(--ink-body)}
+  .auth-head p{margin:0;font-size:13px;color:var(--ink-muted)}
+
+  .tabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:22px}
+  .tab{appearance:none;background:transparent;border:0;padding:10px 4px;margin-right:20px;font:inherit;font-size:14px;font-weight:600;color:var(--ink-muted);cursor:pointer;position:relative;transition:color 160ms var(--easing)}
+  .tab:hover{color:var(--ink-body)}
+  .tab[aria-selected="true"]{color:var(--ink-body)}
+  .tab[aria-selected="true"]::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:var(--primary)}
+  .tab:focus-visible{outline:2px solid var(--primary-dark);outline-offset:4px;border-radius:2px}
+
+  .panel{display:none}.panel[data-active="true"]{display:block}
+
+  .field{margin-bottom:14px}
+  .field__label{display:block;font-size:13px;font-weight:600;color:var(--ink-body);margin-bottom:6px}
+  .input-wrap{display:flex;align-items:stretch;background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);transition:border-color 160ms var(--easing),box-shadow 160ms var(--easing)}
+  .input-wrap:hover{border-color:var(--border-strong)}
+  .input-wrap:focus-within{border-color:var(--primary-dark);box-shadow:0 0 0 3px rgba(165,0,52,.12)}
+  .input-wrap input{flex:1;min-width:0;border:0;background:transparent;padding:10px 12px;font:inherit;font-size:14px;color:var(--ink-body);outline:none}
+  .input-wrap input::placeholder{color:var(--ink-subtle)}
+  .input-suffix{display:inline-flex;align-items:center;padding:0 12px;margin:6px 6px 6px 0;background:var(--soft);border-radius:6px;font-family:var(--font-mono);font-size:12px;color:var(--ink-muted);white-space:nowrap}
+  .field__hint{margin:6px 2px 0;font-size:12px;color:var(--ink-muted)}
+
+  .cta{appearance:none;width:100%;height:44px;border:0;border-radius:var(--radius);background:var(--primary);color:#fff;font:inherit;font-size:14px;font-weight:700;letter-spacing:-0.01em;cursor:pointer;margin-top:18px;transition:background-color 160ms var(--easing),transform 160ms var(--easing)}
+  .cta:hover{background:var(--primary-dark)}.cta:active{transform:translateY(1px)}
+  .cta:focus-visible{outline:2px solid var(--primary-dark);outline-offset:2px}
+  .cta--secondary{background:var(--card-bg);color:var(--ink-body);border:1px solid var(--border);height:40px;width:auto;padding:0 16px;margin-top:0}
+  .cta--secondary:hover{background:var(--soft);border-color:var(--border-strong)}
+  .signup-row{display:flex;gap:8px;align-items:stretch}.signup-row .input-wrap{flex:1}.signup-row .cta--secondary{flex:0 0 auto;align-self:stretch}
+  .panel-note{display:flex;gap:8px;align-items:flex-start;padding:10px 12px;margin-bottom:16px;background:var(--soft);border-radius:6px;font-size:12px;color:var(--ink-muted);line-height:1.5}
+  .panel-note svg{flex:0 0 auto;margin-top:1px;color:var(--ink-subtle)}
+
+  .auth-foot{margin-top:24px;padding-top:20px;border-top:1px solid var(--border);font-size:13px;color:var(--ink-muted);text-align:center}
+
+  /* ---------- System / status panel ---------- */
+  .sys-card{padding:16px}
+  .sys-eyebrow{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-subtle);margin-bottom:6px}
+  .sys-title{font-family:var(--font-mono);font-size:13px;font-weight:600;color:var(--ink-body);margin-bottom:18px;letter-spacing:0}
+  .sys-divider{height:1px;background:var(--border);margin:16px 0}
+
+  .sys-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;font-size:13px;color:var(--ink-body)}
+  .sys-row + .sys-row{border-top:1px dashed var(--border)}
+  .sys-row__label{display:inline-flex;align-items:center;gap:8px;color:var(--ink-muted);font-size:12px;letter-spacing:.04em;text-transform:uppercase;font-weight:600}
+  .sys-row__value{font-family:var(--font-mono);font-size:13px;color:var(--ink-body);display:inline-flex;align-items:center;gap:8px}
+  .dot{width:6px;height:6px;border-radius:999px;display:inline-block;flex:0 0 auto}
+  .dot--good{background:var(--status-good);box-shadow:0 0 0 3px rgba(31,139,76,.12)}
+
+  .changelog{margin-top:14px}
+  .changelog__title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-subtle);margin-bottom:8px}
+  .changelog ul{list-style:none;padding:0;margin:0}
+  .changelog li{font-family:var(--font-mono);font-size:12px;color:var(--ink-muted);padding:3px 0;line-height:1.4}
+  .changelog li::before{content:"·";margin-right:6px;color:var(--ink-subtle)}
+</style>
+</head>
+<body>
+
+  <div class="layout">
+
+    <!-- Left: login form card -->
+    <main class="card auth-card" role="main" aria-labelledby="auth-title">
+      <div class="brand">
+        <div class="brand__wordmark">LG Innotek</div>
+        <div class="brand__eyebrow">PRODUCTIVITY ANALYTICS</div>
+      </div>
+
+      <header class="auth-head">
+        <h1 id="auth-title">로그인</h1>
+        <p>사내 계정으로 로그인하세요</p>
+      </header>
+
+      <div class="tabs" role="tablist" aria-label="인증">
+        <button type="button" class="tab" role="tab" id="tab-login" aria-controls="panel-login" aria-selected="true" data-target="login">로그인</button>
+        <button type="button" class="tab" role="tab" id="tab-signup" aria-controls="panel-signup" aria-selected="false" data-target="signup">회원가입</button>
+      </div>
+
+      <section class="panel" data-active="true" id="panel-login" role="tabpanel" aria-labelledby="tab-login">
+        <form novalidate onsubmit="event.preventDefault();">
+          <div class="field">
+            <label class="field__label" for="login-id">아이디</label>
+            <div class="input-wrap">
+              <input id="login-id" type="text" placeholder="ex) maxcapa" autocomplete="username" spellcheck="false" />
+              <span class="input-suffix">@lginnotek.com</span>
+            </div>
+            <p class="field__hint">사내 계정 아이디만 입력하세요. @lginnotek.com 은 자동 적용됩니다.</p>
+          </div>
+          <div class="field">
+            <label class="field__label" for="login-pw">비밀번호</label>
+            <div class="input-wrap">
+              <input id="login-pw" type="password" placeholder="••••••••" autocomplete="current-password" />
+            </div>
+          </div>
+          <button type="submit" class="cta">로그인</button>
+        </form>
+      </section>
+
+      <section class="panel" id="panel-signup" role="tabpanel" aria-labelledby="tab-signup" hidden>
+        <div class="panel-note" role="note">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="9"/><path d="M12 8v4"/><path d="M12 16h.01"/>
+          </svg>
+          <span>회사 이메일 인증 후 사용 가능합니다.</span>
+        </div>
+        <div class="field">
+          <label class="field__label" for="signup-email">회사 이메일</label>
+          <div class="signup-row">
+            <div class="input-wrap">
+              <input id="signup-email" type="email" placeholder="ex) maxcapa@lginnotek.com" autocomplete="email" spellcheck="false" />
+            </div>
+            <button type="button" class="cta cta--secondary">인증코드 발송</button>
+          </div>
+        </div>
+      </section>
+
+      <footer class="auth-foot">문의: 광학 Max Capa TDR</footer>
+    </main>
+
+    <!-- Right: system / console panel -->
+    <aside class="card sys-card" aria-label="시스템 상태">
+
+      <div class="sys-eyebrow">BUILD</div>
+      <div class="sys-title">MPAP v0.4.2</div>
+
+      <div class="sys-row">
+        <span class="sys-row__label">API</span>
+        <span class="sys-row__value"><span class="dot dot--good" aria-hidden="true"></span>OK</span>
+      </div>
+      <div class="sys-row">
+        <span class="sys-row__label">DB</span>
+        <span class="sys-row__value"><span class="dot dot--good" aria-hidden="true"></span>OK</span>
+      </div>
+      <div class="sys-row">
+        <span class="sys-row__label">마지막 데이터 갱신</span>
+        <span class="sys-row__value">2026-04-28 23:50</span>
+      </div>
+
+      <div class="sys-divider" role="separator" aria-hidden="true"></div>
+
+      <div class="changelog">
+        <div class="changelog__title">CHANGELOG</div>
+        <ul>
+          <li>UPH dashboard v4 → 2026-04-22</li>
+          <li>MTBA detail panel filter fix → 2026-04-15</li>
+          <li>CMP table sticky column → 2026-04-08</li>
+          <li>Pretendard 적용 → 2026-04-01</li>
+        </ul>
+      </div>
+    </aside>
+
+  </div>
+
+  <script>
+    (function(){
+      const tabs=document.querySelectorAll('[role="tab"]');
+      const panels={login:document.getElementById('panel-login'),signup:document.getElementById('panel-signup')};
+      function activate(k){tabs.forEach(t=>t.setAttribute('aria-selected',t.dataset.target===k?'true':'false'));
+        Object.entries(panels).forEach(([key,el])=>{const on=key===k;el.dataset.active=on?'true':'false';
+          if(on)el.removeAttribute('hidden');else el.setAttribute('hidden','')})}
+      tabs.forEach(t=>{t.addEventListener('click',()=>activate(t.dataset.target));
+        t.addEventListener('keydown',e=>{if(e.key!=='ArrowLeft'&&e.key!=='ArrowRight')return;e.preventDefault();
+          const o=['login','signup'],i=o.indexOf(t.dataset.target);
+          const n=e.key==='ArrowRight'?o[(i+1)%o.length]:o[(i-1+o.length)%o.length];
+          activate(n);document.getElementById('tab-'+n).focus()})});
+    })();
+  </script>
+</body>
+</html>

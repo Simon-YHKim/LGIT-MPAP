@@ -1,0 +1,415 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<title>설빕생산성분석 플랫폼 로그인</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&display=swap" />
+<style>
+  /* =========================================================
+     LG Innotek MPAP — S1 Login · Variant A (Safe)
+     Calm Engineering · desktop 1440px
+     ========================================================= */
+
+  :root {
+    --primary:        #A50034;
+    --primary-dark:   #7E0027;
+    --primary-tint:   #F8E5EC;
+
+    --page-bg:        #F7F8FA;
+    --card-bg:        #FFFFFF;
+    --soft:           #F1F3F5;
+
+    --border:         #E5E7EB;
+    --border-strong:  #CBD0D6;
+
+    --ink-body:       #1F2430;
+    --ink-muted:      #6B7280;
+    --ink-subtle:     #9CA3AF;
+
+    --status-good:    #1F8B4C;
+    --status-warn:    #B57F1B;
+    --status-bad:     #B23A48;
+
+    --easing:         cubic-bezier(0.2, 0.6, 0.3, 1);
+    --radius:         8px;
+
+    --font-body:      'Pretendard Variable', Pretendard, 'Malgun Gothic', system-ui, sans-serif;
+    --font-mono:      'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--page-bg);
+    color: var(--ink-body);
+    font-family: var(--font-body);
+    font-size: 14px;
+    line-height: 1.5;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    word-break: keep-all;
+  }
+
+  body {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    padding: 48px 24px;
+  }
+
+  /* ---------- Card shell ---------- */
+  .auth-card {
+    width: 420px;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 36px 36px 32px;
+    box-shadow: 0 1px 2px rgba(31, 36, 48, 0.03);
+  }
+
+  /* ---------- Brand block ---------- */
+  .brand {
+    margin-bottom: 28px;
+  }
+  .brand__wordmark {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink-body);
+    letter-spacing: -0.01em;
+    line-height: 1;
+  }
+  .brand__eyebrow {
+    margin-top: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-subtle);
+  }
+
+  /* ---------- Heading ---------- */
+  .auth-head { margin-bottom: 20px; }
+  .auth-head h1 {
+    margin: 0 0 6px;
+    font-size: 28px;
+    line-height: 1.2;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--ink-body);
+  }
+  .auth-head p {
+    margin: 0;
+    font-size: 13px;
+    color: var(--ink-muted);
+  }
+
+  /* ---------- Tabs ---------- */
+  .tabs {
+    display: flex;
+    gap: 4px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 22px;
+  }
+  .tab {
+    appearance: none;
+    background: transparent;
+    border: 0;
+    padding: 10px 4px 10px;
+    margin-right: 20px;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink-muted);
+    cursor: pointer;
+    position: relative;
+    transition: color 160ms var(--easing);
+  }
+  .tab:hover { color: var(--ink-body); }
+  .tab[aria-selected="true"] {
+    color: var(--ink-body);
+  }
+  .tab[aria-selected="true"]::after {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; bottom: -1px;
+    height: 2px;
+    background: var(--primary);
+  }
+  .tab:focus-visible {
+    outline: 2px solid var(--primary-dark);
+    outline-offset: 4px;
+    border-radius: 2px;
+  }
+
+  /* ---------- Panels ---------- */
+  .panel { display: none; }
+  .panel[data-active="true"] { display: block; }
+
+  /* ---------- Field ---------- */
+  .field { margin-bottom: 14px; }
+  .field__label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink-body);
+    margin-bottom: 6px;
+  }
+
+  .input-wrap {
+    display: flex;
+    align-items: stretch;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    transition: border-color 160ms var(--easing), box-shadow 160ms var(--easing);
+  }
+  .input-wrap:hover { border-color: var(--border-strong); }
+  .input-wrap:focus-within {
+    border-color: var(--primary-dark);
+    box-shadow: 0 0 0 3px rgba(165, 0, 52, 0.12);
+  }
+  .input-wrap input {
+    flex: 1;
+    min-width: 0;
+    border: 0;
+    background: transparent;
+    padding: 10px 12px;
+    font: inherit;
+    font-size: 14px;
+    color: var(--ink-body);
+    outline: none;
+  }
+  .input-wrap input::placeholder { color: var(--ink-subtle); }
+
+  .input-suffix {
+    display: inline-flex;
+    align-items: center;
+    padding: 0 12px;
+    margin: 6px 6px 6px 0;
+    background: var(--soft);
+    border-radius: 6px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--ink-muted);
+    white-space: nowrap;
+  }
+
+  .field__hint {
+    margin: 6px 2px 0;
+    font-size: 12px;
+    color: var(--ink-muted);
+  }
+
+  /* ---------- CTA ---------- */
+  .cta {
+    appearance: none;
+    width: 100%;
+    height: 44px;
+    border: 0;
+    border-radius: var(--radius);
+    background: var(--primary);
+    color: #fff;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    cursor: pointer;
+    margin-top: 18px;
+    transition: background-color 160ms var(--easing), transform 160ms var(--easing);
+  }
+  .cta:hover { background: var(--primary-dark); }
+  .cta:active { transform: translateY(1px); }
+  .cta:focus-visible {
+    outline: 2px solid var(--primary-dark);
+    outline-offset: 2px;
+  }
+
+  /* secondary CTA used in 회원가입 placeholder (인증코드 발송) */
+  .cta--secondary {
+    background: var(--card-bg);
+    color: var(--ink-body);
+    border: 1px solid var(--border);
+    height: 40px;
+    width: auto;
+    padding: 0 16px;
+    margin-top: 0;
+  }
+  .cta--secondary:hover {
+    background: var(--soft);
+    border-color: var(--border-strong);
+  }
+
+  /* signup row: email input + send-code button */
+  .signup-row {
+    display: flex;
+    gap: 8px;
+    align-items: stretch;
+  }
+  .signup-row .input-wrap { flex: 1; }
+  .signup-row .cta--secondary { flex: 0 0 auto; align-self: stretch; }
+
+  .panel-note {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    padding: 10px 12px;
+    margin-bottom: 16px;
+    background: var(--soft);
+    border-radius: 6px;
+    font-size: 12px;
+    color: var(--ink-muted);
+    line-height: 1.5;
+  }
+  .panel-note svg {
+    flex: 0 0 auto;
+    margin-top: 1px;
+    color: var(--ink-subtle);
+  }
+
+  /* ---------- Footer ---------- */
+  .auth-foot {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    font-size: 13px;
+    color: var(--ink-muted);
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+  <main class="auth-card" role="main" aria-labelledby="auth-title">
+
+    <!-- Brand -->
+    <div class="brand">
+      <div class="brand__wordmark">LG Innotek</div>
+      <div class="brand__eyebrow">PRODUCTIVITY ANALYTICS</div>
+    </div>
+
+    <!-- Heading -->
+    <header class="auth-head">
+      <h1 id="auth-title">로그인</h1>
+      <p>사내 계정으로 로그인하세요</p>
+    </header>
+
+    <!-- Tabs -->
+    <div class="tabs" role="tablist" aria-label="인증">
+      <button type="button" class="tab" role="tab"
+              id="tab-login" aria-controls="panel-login"
+              aria-selected="true" data-target="login">로그인</button>
+      <button type="button" class="tab" role="tab"
+              id="tab-signup" aria-controls="panel-signup"
+              aria-selected="false" data-target="signup">회원가입</button>
+    </div>
+
+    <!-- Login panel -->
+    <section class="panel" data-active="true"
+             id="panel-login" role="tabpanel" aria-labelledby="tab-login">
+      <form novalidate onsubmit="event.preventDefault();">
+
+        <div class="field">
+          <label class="field__label" for="login-id">아이디</label>
+          <div class="input-wrap">
+            <input id="login-id" type="text"
+                   placeholder="ex) maxcapa"
+                   autocomplete="username"
+                   spellcheck="false" />
+            <span class="input-suffix">@lginnotek.com</span>
+          </div>
+          <p class="field__hint">사내 계정 아이디만 입력하세요. @lginnotek.com 은 자동 적용됩니다.</p>
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="login-pw">비밀번호</label>
+          <div class="input-wrap">
+            <input id="login-pw" type="password"
+                   placeholder="••••••••"
+                   autocomplete="current-password" />
+          </div>
+        </div>
+
+        <button type="submit" class="cta">로그인</button>
+      </form>
+    </section>
+
+    <!-- Signup panel (placeholder) -->
+    <section class="panel"
+             id="panel-signup" role="tabpanel" aria-labelledby="tab-signup" hidden>
+      <div class="panel-note" role="note">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="1.5"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="9" />
+          <path d="M12 8v4" />
+          <path d="M12 16h.01" />
+        </svg>
+        <span>회사 이메일 인증 후 사용 가능합니다.</span>
+      </div>
+
+      <div class="field">
+        <label class="field__label" for="signup-email">회사 이메일</label>
+        <div class="signup-row">
+          <div class="input-wrap">
+            <input id="signup-email" type="email"
+                   placeholder="ex) maxcapa@lginnotek.com"
+                   autocomplete="email"
+                   spellcheck="false" />
+          </div>
+          <button type="button" class="cta cta--secondary">인증코드 발송</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="auth-foot">
+      문의: 광학 Max Capa TDR
+    </footer>
+
+  </main>
+
+  <script>
+    // Minimal tab switching — calm, no animation beyond fade via display swap.
+    (function () {
+      const tabs = document.querySelectorAll('[role="tab"]');
+      const panels = {
+        login: document.getElementById('panel-login'),
+        signup: document.getElementById('panel-signup'),
+      };
+
+      function activate(targetKey) {
+        tabs.forEach(t => {
+          const on = t.dataset.target === targetKey;
+          t.setAttribute('aria-selected', on ? 'true' : 'false');
+        });
+        Object.entries(panels).forEach(([key, el]) => {
+          const on = key === targetKey;
+          el.dataset.active = on ? 'true' : 'false';
+          if (on) el.removeAttribute('hidden');
+          else el.setAttribute('hidden', '');
+        });
+      }
+
+      tabs.forEach(t => {
+        t.addEventListener('click', () => activate(t.dataset.target));
+        t.addEventListener('keydown', (e) => {
+          if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+          e.preventDefault();
+          const order = ['login', 'signup'];
+          const i = order.indexOf(t.dataset.target);
+          const next = e.key === 'ArrowRight'
+            ? order[(i + 1) % order.length]
+            : order[(i - 1 + order.length) % order.length];
+          activate(next);
+          document.getElementById('tab-' + next).focus();
+        });
+      });
+    })();
+  </script>
+
+</body>
+</html>

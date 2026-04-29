@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8" /><title>Streamlit</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" />
+<style>
+:root{--primary:#A50034;--primary-dark:#7E0027;--primary-tint:#F8E5EC;--page-bg:#F7F8FA;--soft:#F1F3F5;--soft-2:#FAFBFC;--border:#E5E7EB;--border-strong:#CBD0D6;--ink-body:#1F2430;--ink-muted:#6B7280;--ink-subtle:#9CA3AF;--ink-faint:#D1D5DB;--font-body:'Pretendard Variable',Pretendard,system-ui,sans-serif;--font-mono:'IBM Plex Mono',ui-monospace,Menlo,monospace}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;background:var(--page-bg);color:var(--ink-body);font-family:var(--font-body);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased;word-break:keep-all}
+button,input,textarea{font-family:inherit}
+.app{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+
+.sidebar{background:#fff;border-right:1px solid var(--border);padding:20px 0;position:sticky;top:0;height:100vh;display:flex;flex-direction:column}
+.sidebar__brand{padding:0 20px 20px;border-bottom:1px solid var(--border);margin-bottom:12px}
+.sidebar__wordmark{font-size:16px;font-weight:700;letter-spacing:-0.01em}
+.sidebar__eyebrow{margin-top:4px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-subtle)}
+.nav{display:flex;flex-direction:column;gap:2px;padding:0 8px}
+.nav__item{display:flex;height:36px;padding:0 16px;align-items:center;font-size:14px;font-weight:600;color:var(--ink-muted);text-decoration:none;border-radius:6px;position:relative}
+.nav__item:hover{background:var(--soft);color:var(--ink-body)}
+.nav__item--active{color:var(--ink-body)}
+.nav__item--active::before{content:"";position:absolute;left:0;top:6px;bottom:6px;width:4px;background:var(--primary);border-radius:0 2px 2px 0}
+.sidebar__foot{margin-top:auto;padding:16px 20px;font-size:12px;color:var(--ink-subtle);font-family:var(--font-mono)}
+
+.content-wrap{display:flex;flex-direction:column;min-height:100vh}
+.top-strip{height:8px;background:var(--primary)}
+
+/* center the empty hero in the chat column */
+.chat-shell{flex:1;display:flex;justify-content:center;padding:48px 32px 32px}
+.chat-col{width:100%;max-width:880px;display:flex;flex-direction:column;gap:24px}
+
+.eyebrow{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-subtle);margin-bottom:8px}
+.page-head h1{margin:0 0 6px;font-size:28px;font-weight:700;letter-spacing:-0.01em}
+.page-head .sub{margin:0;font-size:13px;color:var(--ink-muted);max-width:680px}
+
+.hero{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:32px 16px;min-height:320px}
+.hero__mark{width:64px;height:64px;border-radius:14px;background:var(--ink-body);display:flex;align-items:center;justify-content:center;margin-bottom:20px;position:relative;overflow:hidden}
+.hero__mark::after{content:"";position:absolute;inset:auto 0 0 0;height:8px;background:var(--primary)}
+.hero__mark svg{width:30px;height:30px;color:#fff;position:relative;z-index:1}
+.hero__title{margin:0 0 6px;font-size:24px;font-weight:700;letter-spacing:-0.01em}
+.hero__title em{font-style:normal;color:var(--primary)}
+.hero__sub{margin:0;font-size:13px;color:var(--ink-muted);max-width:520px}
+
+.hint-card{background:#fff;border:1px solid var(--border);border-left:4px solid var(--primary);border-radius:8px;padding:14px 16px}
+.hint-card__head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.hint-card__title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-muted)}
+.hint-card__title strong{color:var(--ink-body);margin-right:6px}
+.hint-card__body{font-size:13px;color:var(--ink-body);line-height:1.6}
+.hint-card__body code{font-family:var(--font-mono);background:var(--soft);padding:1px 6px;border-radius:4px;font-size:12px;color:var(--primary-dark);font-weight:600}
+
+.examples-head{display:flex;align-items:center;gap:10px;margin:8px 0 -4px}
+.examples-num-band{display:inline-flex;align-items:center;gap:8px;padding:4px 12px 4px 4px;background:var(--ink-body);color:#fff;border-radius:6px;font-family:var(--font-mono);font-size:12px;font-weight:700}
+.examples-num-band__num{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;background:var(--primary);border-radius:4px;color:#fff;font-weight:700}
+.examples-title{font-size:16px;font-weight:700;letter-spacing:-0.01em}
+.examples-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.example{background:#fff;border:1px solid var(--border);border-radius:8px;padding:12px 14px;cursor:pointer;display:flex;gap:10px;align-items:flex-start;transition:border-color .12s, box-shadow .12s}
+.example:hover{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-tint)}
+.example__icon{flex:none;width:28px;height:28px;border-radius:6px;background:var(--primary-tint);color:var(--primary);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:12px;font-weight:700}
+.example__copy{flex:1}
+.example__src{font-family:var(--font-mono);font-size:10px;color:var(--ink-subtle);text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px}
+.example__q{font-size:13px;color:var(--ink-body);font-weight:500;line-height:1.45}
+.example__q em{font-style:normal;background:#FFF6CF;padding:0 3px;border-radius:3px;font-weight:600}
+
+/* composer */
+.composer-wrap{position:sticky;bottom:0;padding-top:16px;background:linear-gradient(180deg,rgba(247,248,250,0) 0%,var(--page-bg) 60%)}
+.composer{background:#fff;border:1px solid var(--border-strong);border-radius:12px;box-shadow:0 8px 24px rgba(15,17,21,.06);padding:12px 14px;display:flex;flex-direction:column;gap:8px}
+.composer__top{display:flex;gap:8px;align-items:flex-start}
+.composer__icon{flex:none;width:32px;height:32px;border-radius:8px;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;margin-top:2px}
+.composer__icon svg{width:16px;height:16px}
+.composer__input{flex:1;border:0;outline:none;font:inherit;font-size:14px;line-height:1.55;resize:none;min-height:64px;padding:8px 4px;color:var(--ink-body);background:transparent}
+.composer__input::placeholder{color:var(--ink-subtle)}
+.composer__bot{display:flex;justify-content:space-between;align-items:center;padding-top:8px;border-top:1px dashed var(--border)}
+.composer__chips{display:flex;gap:6px}
+.chip{display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;background:var(--soft);border:1px solid var(--border);border-radius:999px;font-size:11px;font-weight:600;color:var(--ink-muted);font-family:var(--font-mono)}
+.chip--on{background:var(--primary-tint);border-color:var(--primary);color:var(--primary-dark)}
+.chip__dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+.composer__actions{display:flex;gap:8px}
+
+.btn{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border:1px solid var(--border);background:#fff;color:var(--ink-body);font:inherit;font-size:12px;font-weight:600;border-radius:8px;cursor:pointer}
+.btn:hover{border-color:var(--border-strong);background:var(--soft)}
+.btn--primary{background:var(--primary);border-color:var(--primary);color:#fff}
+.btn--primary:hover{background:var(--primary-dark);border-color:var(--primary-dark);color:#fff}
+.btn--primary[disabled]{background:var(--ink-faint);border-color:var(--ink-faint);color:#fff;cursor:not-allowed}
+.btn--ghost{background:transparent;border-color:transparent;color:var(--ink-muted)}
+.btn--ghost:hover{background:var(--soft);color:var(--ink-body)}
+
+.kbd{display:inline-block;font-family:var(--font-mono);font-size:10px;background:var(--soft);border:1px solid var(--border);border-bottom-width:2px;border-radius:4px;padding:1px 5px;color:var(--ink-muted);margin:0 2px}
+</style></head>
+<body>
+<div class="app">
+<aside class="sidebar"><div class="sidebar__brand"><div class="sidebar__wordmark">LG Innotek</div><div class="sidebar__eyebrow">MPAP</div></div>
+<nav class="nav">
+<a class="nav__item" href="#">login</a>
+<a class="nav__item" href="#">Home</a>
+<a class="nav__item" href="#">CMP Dashboard</a>
+<a class="nav__item" href="#">UPH Dashboard</a>
+<a class="nav__item" href="#">MTBA Dashboard</a>
+<a class="nav__item" href="#">MTBA Detail View</a>
+<a class="nav__item nav__item--active" href="#">MaxCapa Chat</a>
+</nav>
+<div class="sidebar__foot">v0.4.2</div></aside>
+
+<main class="content-wrap"><div class="top-strip"></div>
+<div class="chat-shell"><div class="chat-col">
+
+  <header class="page-head">
+    <div class="eyebrow">MAXCAPA · CHAT</div>
+    <h1>MaxCapa Chat(대화형 생산지표조회)</h1>
+    <p class="sub">기본 조회는 MES UPH(uph_input_runtime_daily_model), 질문에 ITAS를 명시하면 ITAS UPH(itas_uph_result)로 조회합니다.</p>
+  </header>
+
+  <div class="hint-card">
+    <div class="hint-card__head"><div class="hint-card__title"><strong>DATA SOURCE</strong>기본 / 분기 규칙</div></div>
+    <div class="hint-card__body">
+      기본 조회 → <code>uph_input_runtime_daily_model</code> (MES UPH) · 질문에 <code>ITAS</code>가 포함되면 → <code>itas_uph_result</code> (ITAS UPH).
+    </div>
+  </div>
+
+  <div class="hero">
+    <div class="hero__mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+    <h2 class="hero__title">생산지표를 <em>자연어</em>로 물어보세요</h2>
+    <p class="hero__sub">아래 예시처럼 모델 / 라인 / 기간 / 지표를 한 문장에 담아 입력하면 됩니다.</p>
+  </div>
+
+  <div class="examples-head">
+    <span class="examples-num-band"><span class="examples-num-band__num">1</span>지원 예시</span>
+    <div class="examples-title">지원 예시:</div>
+  </div>
+  <div class="examples-grid">
+    <button class="example" type="button"><span class="example__icon">Q1</span><div class="example__copy"><div class="example__src">MES UPH · 모델 · 일자</div><div class="example__q">R50 모델의 어제 <em>UPH</em> 평균 알려줘</div></div></button>
+    <button class="example" type="button"><span class="example__icon">Q2</span><div class="example__copy"><div class="example__src">MES UPH · 라인 · 주간 추이</div><div class="example__q">FOL-A 라인 최근 1주일 일별 UPH 추이를 보여줘</div></div></button>
+    <button class="example" type="button"><span class="example__icon">Q3</span><div class="example__copy"><div class="example__src">ITAS UPH · 명시 분기</div><div class="example__q"><em>ITAS</em> UPH 기준 R50 vs R52 4월 비교해줘</div></div></button>
+    <button class="example" type="button"><span class="example__icon">Q4</span><div class="example__copy"><div class="example__src">MES UPH · TOP N</div><div class="example__q">지난달 UPH 상위 5개 모델을 라인별로 정리해줘</div></div></button>
+  </div>
+
+  <div class="composer-wrap"><div class="composer">
+    <div class="composer__top">
+      <div class="composer__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg></div>
+      <textarea class="composer__input" placeholder="질문 입력 — 예) R50 모델 어제 UPH 평균 알려줘 / ITAS UPH 기준 R50 vs R52 4월 비교"></textarea>
+    </div>
+    <div class="composer__bot">
+      <div class="composer__chips">
+        <span class="chip chip--on"><span class="chip__dot"></span>MES UPH</span>
+        <span class="chip">ITAS UPH</span>
+        <span class="chip" style="background:transparent;border-style:dashed">AUTO 분기 ON</span>
+      </div>
+      <div class="composer__actions">
+        <span style="font-size:11px;color:var(--ink-subtle);align-self:center;margin-right:8px"><span class="kbd">⏎</span>전송 · <span class="kbd">⇧⏎</span>줄바꿈</span>
+        <button class="btn btn--ghost">초기화</button>
+        <button class="btn btn--primary" disabled>질문 분석 및 실행 ▸</button>
+      </div>
+    </div>
+  </div></div>
+
+</div></div></main></div>
+</body></html>

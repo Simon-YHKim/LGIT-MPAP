@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<title>CMP 달성률 Dashboard</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&display=swap" />
+<style>
+  :root{--primary:#A50034;--primary-dark:#7E0027;--primary-tint:#F8E5EC;--page-bg:#F7F8FA;--card-bg:#FFFFFF;--soft:#F1F3F5;--border:#E5E7EB;--border-strong:#CBD0D6;--ink-body:#1F2430;--ink-muted:#6B7280;--ink-subtle:#9CA3AF;--status-good:#1F8B4C;--status-warn:#B57F1B;--status-bad:#B23A48;--easing:cubic-bezier(0.2,0.6,0.3,1);--radius:8px;--font-body:'Pretendard Variable',Pretendard,'Malgun Gothic',system-ui,sans-serif;--font-mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace}
+  *,*::before,*::after{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--page-bg);color:var(--ink-body);font-family:var(--font-body);font-size:14px;line-height:1.5;font-weight:400;-webkit-font-smoothing:antialiased;word-break:keep-all}
+  .app{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+  .sidebar{background:#fff;border-right:1px solid var(--border);padding:20px 0;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;overflow:auto}
+  .sidebar__brand{padding:0 20px 20px;border-bottom:1px solid var(--border);margin-bottom:12px}
+  .sidebar__wordmark{font-size:16px;font-weight:700;color:var(--ink-body);letter-spacing:-0.01em;line-height:1}
+  .sidebar__eyebrow{margin-top:4px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-subtle)}
+  .nav{display:flex;flex-direction:column;gap:2px;padding:0 8px}
+  .nav__item{display:flex;align-items:center;gap:10px;height:36px;padding:0 16px;font-size:14px;font-weight:600;color:var(--ink-muted);text-decoration:none;border-radius:6px;position:relative;transition:background 160ms var(--easing),color 160ms var(--easing)}
+  .nav__item:hover{background:var(--soft);color:var(--ink-body)}
+  .nav__item--active{color:var(--ink-body)}
+  .nav__item--active::before{content:"";position:absolute;left:0;top:8px;bottom:8px;width:2px;background:var(--primary);border-radius:0 2px 2px 0}
+  .nav__icon{width:16px;height:16px;flex:0 0 auto}
+  .sidebar__foot{margin-top:auto;padding:16px 20px;font-size:12px;color:var(--ink-subtle);font-family:var(--font-mono)}
+
+  .content{padding:32px 32px 48px;max-width:1640px}
+  .page-head{margin-bottom:20px;display:flex;align-items:flex-end;justify-content:space-between;gap:24px}
+  .page-head__title{flex:1}
+  .eyebrow{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-subtle);margin-bottom:8px}
+  .page-head h1{margin:0 0 6px;font-size:28px;line-height:1.2;font-weight:700;letter-spacing:-0.01em}
+  .page-head p{margin:0;font-size:13px;color:var(--ink-muted)}
+  .toolbar{display:flex;gap:8px}
+  .btn{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 12px;border:1px solid var(--border);background:#fff;color:var(--ink-body);font:inherit;font-size:13px;font-weight:600;border-radius:8px;cursor:pointer;transition:border-color 160ms var(--easing),background 160ms var(--easing)}
+  .btn:hover{border-color:var(--border-strong);background:var(--soft)}
+  .btn svg{width:14px;height:14px}
+  .btn--primary{background:var(--primary);border-color:var(--primary);color:#fff}
+  .btn--primary:hover{background:var(--primary-dark);border-color:var(--primary-dark)}
+
+  /* Filter bar */
+  .filter{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:16px;flex-wrap:wrap}
+  .filter__group{display:flex;align-items:center;gap:8px;min-width:0}
+  .filter__label{font-size:12px;font-weight:700;color:var(--ink-muted);letter-spacing:.04em;text-transform:uppercase;flex:0 0 auto}
+  .chip-row{display:flex;gap:6px;flex-wrap:wrap}
+  .chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border:1px solid var(--border);border-radius:999px;font-size:12px;font-weight:600;color:var(--ink-body);background:#fff;cursor:pointer;transition:border-color 160ms var(--easing),background 160ms var(--easing)}
+  .chip[aria-pressed="true"]{background:var(--primary-tint);border-color:var(--primary);color:var(--primary-dark)}
+  .chip svg{width:11px;height:11px}
+  .date-input{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 10px;border:1px solid var(--border);border-radius:8px;font-family:var(--font-mono);font-size:12px;color:var(--ink-body);background:#fff;cursor:pointer}
+  .date-input svg{width:13px;height:13px;color:var(--ink-muted)}
+  .filter__spacer{flex:1}
+  .filter__actions{display:flex;gap:6px}
+
+  /* KPI row */
+  .kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+  .kpi{background:#fff;border:1px solid var(--border);border-radius:8px;padding:14px 16px;height:88px;display:flex;flex-direction:column;justify-content:space-between}
+  .kpi__label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-subtle)}
+  .kpi__value{font-family:var(--font-mono);font-size:32px;line-height:1;font-weight:600;color:var(--ink-body);letter-spacing:0}
+  .kpi__delta{display:inline-flex;align-items:center;gap:4px;font-family:var(--font-mono);font-size:12px;font-weight:600}
+  .kpi__delta--good{color:var(--status-good)}
+  .kpi__delta--bad{color:var(--status-bad)}
+  .kpi__delta svg{width:12px;height:12px}
+
+  /* Section heading */
+  .sect-head{display:flex;align-items:center;gap:10px;margin:18px 0 12px}
+  .sect-head__bar{width:4px;height:18px;background:var(--primary);border-radius:2px}
+  .sect-head__title{font-size:18px;font-weight:700;letter-spacing:-0.01em;color:var(--ink-body)}
+
+  /* Model boxes section */
+  .models{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:8px}
+  .model-col{background:#fff;border:1px solid var(--border);border-radius:8px;padding:14px}
+  .model-col__head{font-size:13px;font-weight:700;color:var(--ink-body);margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+  .model-col__head .count{font-family:var(--font-mono);font-size:11px;color:var(--ink-subtle);font-weight:400}
+  .proc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+  .proc{height:56px;border-radius:6px;background:var(--soft);display:flex;flex-direction:column;justify-content:space-between;padding:6px 8px;border:1px solid transparent}
+  .proc__name{font-size:11px;color:var(--ink-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2}
+  .proc__val{font-family:var(--font-mono);font-size:14px;font-weight:600;color:var(--ink-body);letter-spacing:0}
+  .proc--good .proc__val{color:var(--status-good)}
+  .proc--bad{background:#FBEBEC}
+  .proc--bad .proc__val{color:var(--status-bad)}
+
+  /* Table */
+  .table-wrap{background:#fff;border:1px solid var(--border);border-radius:8px;overflow:hidden}
+  .table-scroll{max-height:480px;overflow:auto}
+  table{width:100%;border-collapse:separate;border-spacing:0;font-size:13px}
+  thead th{position:sticky;top:0;height:36px;background:var(--soft);font-weight:700;text-align:left;padding:0 12px;border-bottom:1px solid var(--border);z-index:5;color:var(--ink-body);font-size:13px;white-space:nowrap}
+  tbody td{height:32px;padding:0 12px;border-bottom:1px solid var(--border);color:var(--ink-body);white-space:nowrap}
+  tbody tr:last-child td{border-bottom:0}
+  tbody tr:hover td{background:var(--page-bg)}
+  tbody tr.is-active td{background:var(--primary-tint)}
+  tbody tr.is-active td:first-child{box-shadow:inset 2px 0 0 var(--primary)}
+  .num{font-family:var(--font-mono);text-align:right}
+  .delta-good{color:var(--status-good)}
+  .delta-bad{color:var(--status-bad)}
+  th.num{text-align:right}
+  thead th:nth-child(1),tbody td:nth-child(1){position:sticky;left:0;background:var(--soft);z-index:6}
+  tbody td:nth-child(1){background:#fff;font-weight:600}
+  tbody tr:hover td:nth-child(1){background:var(--page-bg)}
+  tbody tr.is-active td:nth-child(1){background:var(--primary-tint)}
+  thead th:nth-child(2),tbody td:nth-child(2){position:sticky;left:90px;background:var(--soft);z-index:6}
+  tbody td:nth-child(2){background:#fff}
+  tbody tr:hover td:nth-child(2){background:var(--page-bg)}
+  tbody tr.is-active td:nth-child(2){background:var(--primary-tint)}
+
+  .empty{padding:40px;text-align:center;font-size:13px;color:var(--ink-muted)}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" aria-label="네비게이션">
+    <div class="sidebar__brand"><div class="sidebar__wordmark">LG Innotek</div><div class="sidebar__eyebrow">MPAP</div></div>
+    <nav class="nav">
+      <a class="nav__item" href="#"><svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M21 14v7H3V3h7"/></svg>login</a>
+      <a class="nav__item" href="#"><svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>Home</a>
+      <a class="nav__item nav__item--active" href="#"><svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>CMP Dashboard</a>
+      <a class="nav__item" href="#"><svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>UPH Dashboard</a>
+      <a class="nav__item" href="#"><svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>MTBA Dashboard</a>
+      <a class="nav__item" href="#"><svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>MTBA Detail View</a>
+      <a class="nav__item" href="#"><svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>MaxCapa Chat</a>
+    </nav>
+    <div class="sidebar__foot">v0.4.2</div>
+  </aside>
+
+  <main class="content" role="main">
+    <header class="page-head">
+      <div class="page-head__title">
+        <div class="eyebrow">PRODUCTIVITY · CMP</div>
+        <h1>CMP 달성률 Dashboard</h1>
+        <p>('26.4월 4W 기준) / 영역·모델·기간 필터로 조회</p>
+      </div>
+      <div class="toolbar">
+        <button class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/></svg>새로고침</button>
+        <button class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>테이블 CSV 다운로드</button>
+      </div>
+    </header>
+
+    <!-- Filter bar -->
+    <div class="filter">
+      <div class="filter__group"><span class="filter__label">영역</span><div class="chip-row">
+        <span class="chip" role="button" aria-pressed="true">Gumi Campus 1 Area<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></span>
+        <span class="chip" role="button" aria-pressed="true">Gumi Campus 3 Area<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></span>
+        <span class="chip" role="button" aria-pressed="true">Gumi Campus 4 Area<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></span>
+      </div></div>
+      <div class="filter__group"><span class="filter__label">모델</span><div class="chip-row">
+        <span class="chip" role="button" aria-pressed="true">R50</span>
+        <span class="chip" role="button" aria-pressed="true">R53A</span>
+        <span class="chip" role="button" aria-pressed="true">R53B</span>
+      </div></div>
+      <div class="filter__group"><span class="filter__label">기간</span>
+        <span class="date-input"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>2026-01-28 ~ 2026-04-28</span>
+      </div>
+      <div class="filter__spacer"></div>
+      <div class="filter__actions">
+        <button class="btn">Reset</button>
+        <button class="btn btn--primary">Apply</button>
+      </div>
+    </div>
+
+    <!-- KPI row -->
+    <div class="kpi-row">
+      <div class="kpi"><div class="kpi__label">전체 달성률</div><div class="kpi__value">94.2%</div><div class="kpi__delta kpi__delta--good"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg>+1.8%</div></div>
+      <div class="kpi"><div class="kpi__label">R50 달성률</div><div class="kpi__value">92.7%</div><div class="kpi__delta kpi__delta--bad"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>-0.4%</div></div>
+      <div class="kpi"><div class="kpi__label">R53A 달성률</div><div class="kpi__value">95.1%</div><div class="kpi__delta kpi__delta--good"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg>+2.1%</div></div>
+      <div class="kpi"><div class="kpi__label">R53B 달성률</div><div class="kpi__value">94.8%</div><div class="kpi__delta kpi__delta--good"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg>+1.5%</div></div>
+    </div>
+
+    <!-- Model boxes -->
+    <div class="sect-head"><div class="sect-head__bar"></div><div class="sect-head__title">모델별 공정 달성률</div></div>
+    <div class="models">
+      <div class="model-col">
+        <div class="model-col__head">R50<span class="count">12 공정</span></div>
+        <div class="proc-grid">
+          <div class="proc proc--good"><div class="proc__name">Lens AA</div><div class="proc__val">96.4%</div></div>
+          <div class="proc"><div class="proc__name">Flip Chip</div><div class="proc__val">93.8%</div></div>
+          <div class="proc proc--bad"><div class="proc__name">IRCF Attach</div><div class="proc__val">88.2%</div></div>
+          <div class="proc proc--good"><div class="proc__name">Module AA</div><div class="proc__val">95.7%</div></div>
+          <div class="proc"><div class="proc__name">FPC Bonding</div><div class="proc__val">92.1%</div></div>
+          <div class="proc"><div class="proc__name">Bracket Att.</div><div class="proc__val">94.0%</div></div>
+          <div class="proc proc--good"><div class="proc__name">Laser Mark</div><div class="proc__val">97.2%</div></div>
+          <div class="proc"><div class="proc__name">VCM Attach</div><div class="proc__val">93.5%</div></div>
+          <div class="proc"><div class="proc__name">Pre Focus</div><div class="proc__val">94.6%</div></div>
+          <div class="proc proc--good"><div class="proc__name">APS Test</div><div class="proc__val">95.3%</div></div>
+          <div class="proc"><div class="proc__name">Sensor UF</div><div class="proc__val">92.9%</div></div>
+          <div class="proc proc--bad"><div class="proc__name">DCR Test</div><div class="proc__val">89.4%</div></div>
+        </div>
+      </div>
+      <div class="model-col">
+        <div class="model-col__head">R53A<span class="count">12 공정</span></div>
+        <div class="proc-grid">
+          <div class="proc proc--good"><div class="proc__name">Lens AA</div><div class="proc__val">97.1%</div></div>
+          <div class="proc proc--good"><div class="proc__name">Flip Chip</div><div class="proc__val">95.8%</div></div>
+          <div class="proc"><div class="proc__name">IRCF Attach</div><div class="proc__val">93.2%</div></div>
+          <div class="proc proc--good"><div class="proc__name">Module AA</div><div class="proc__val">96.4%</div></div>
+          <div class="proc proc--good"><div class="proc__name">FPC Bonding</div><div class="proc__val">95.1%</div></div>
+          <div class="proc"><div class="proc__name">Bracket Att.</div><div class="proc__val">94.7%</div></div>
+          <div class="proc proc--good"><div class="proc__name">Laser Mark</div><div class="proc__val">97.5%</div></div>
+          <div class="proc"><div class="proc__name">VCM Attach</div><div class="proc__val">94.3%</div></div>
+          <div class="proc proc--good"><div class="proc__name">Pre Focus</div><div class="proc__val">95.6%</div></div>
+          <div class="proc proc--good"><div class="proc__name">APS Test</div><div class="proc__val">96.0%</div></div>
+          <div class="proc"><div class="proc__name">Sensor UF</div><div class="proc__val">93.8%</div></div>
+          <div class="proc"><div class="proc__name">DCR Test</div><div class="proc__val">92.4%</div></div>
+        </div>
+      </div>
+      <div class="model-col">
+        <div class="model-col__head">R53B<span class="count">12 공정</span></div>
+        <div class="proc-grid">
+          <div class="proc proc--good"><div class="proc__name">Lens AA</div><div class="proc__val">96.8%</div></div>
+          <div class="proc proc--good"><div class="proc__name">Flip Chip</div><div class="proc__val">95.2%</div></div>
+          <div class="proc"><div class="proc__name">IRCF Attach</div><div class="proc__val">92.5%</div></div>
+          <div class="proc proc--good"><div class="proc__name">Module AA</div><div class="proc__val">96.1%</div></div>
+          <div class="proc"><div class="proc__name">FPC Bonding</div><div class="proc__val">94.4%</div></div>
+          <div class="proc proc--good"><div class="proc__name">Bracket Att.</div><div class="proc__val">95.0%</div></div>
+          <div class="proc proc--good"><div class="proc__name">Laser Mark</div><div class="proc__val">97.3%</div></div>
+          <div class="proc"><div class="proc__name">VCM Attach</div><div class="proc__val">94.0%</div></div>
+          <div class="proc"><div class="proc__name">Pre Focus</div><div class="proc__val">94.8%</div></div>
+          <div class="proc proc--good"><div class="proc__name">APS Test</div><div class="proc__val">95.4%</div></div>
+          <div class="proc proc--bad"><div class="proc__name">Sensor UF</div><div class="proc__val">89.7%</div></div>
+          <div class="proc"><div class="proc__name">DCR Test</div><div class="proc__val">93.1%</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Summary table -->
+    <div class="sect-head"><div class="sect-head__bar"></div><div class="sect-head__title">공정 요약 표</div></div>
+    <div class="table-wrap">
+      <div class="table-scroll">
+        <table>
+          <thead><tr>
+            <th>모델</th><th>공장</th><th>공정명</th><th>기간</th>
+            <th class="num">CMP</th><th class="num">UPH</th><th class="num">Eff.</th><th class="num">Δ</th>
+          </tr></thead>
+          <tbody>
+            <tr class="is-active"><td>R50</td><td>Gumi Campus 1</td><td>Lens AA</td><td>2026-04-22 ~ 28</td><td class="num">96.4%</td><td class="num">1247</td><td class="num">94.2%</td><td class="num delta-good">+1.1</td></tr>
+            <tr><td>R50</td><td>Gumi Campus 1</td><td>Flip Chip Bonding</td><td>2026-04-22 ~ 28</td><td class="num">93.8%</td><td class="num">982</td><td class="num">91.7%</td><td class="num delta-good">+0.6</td></tr>
+            <tr><td>R50</td><td>Gumi Campus 3</td><td>IRCF Attach</td><td>2026-04-22 ~ 28</td><td class="num">88.2%</td><td class="num">756</td><td class="num">85.4%</td><td class="num delta-bad">-1.4</td></tr>
+            <tr><td>R50</td><td>Gumi Campus 4</td><td>Module AA</td><td>2026-04-22 ~ 28</td><td class="num">95.7%</td><td class="num">1102</td><td class="num">93.8%</td><td class="num delta-good">+0.9</td></tr>
+            <tr><td>R53A</td><td>Gumi Campus 1</td><td>Lens AA</td><td>2026-04-22 ~ 28</td><td class="num">97.1%</td><td class="num">1284</td><td class="num">95.0%</td><td class="num delta-good">+1.4</td></tr>
+            <tr><td>R53A</td><td>Gumi Campus 3</td><td>Flip Chip Bonding</td><td>2026-04-22 ~ 28</td><td class="num">95.8%</td><td class="num">1041</td><td class="num">93.6%</td><td class="num delta-good">+1.2</td></tr>
+            <tr><td>R53A</td><td>Gumi Campus 4</td><td>FPC Bonding</td><td>2026-04-22 ~ 28</td><td class="num">95.1%</td><td class="num">896</td><td class="num">93.2%</td><td class="num delta-good">+0.7</td></tr>
+            <tr><td>R53B</td><td>Gumi Campus 1</td><td>Lens AA</td><td>2026-04-22 ~ 28</td><td class="num">96.8%</td><td class="num">1268</td><td class="num">94.7%</td><td class="num delta-good">+1.0</td></tr>
+            <tr><td>R53B</td><td>Gumi Campus 3</td><td>Sensor underfill</td><td>2026-04-22 ~ 28</td><td class="num">89.7%</td><td class="num">654</td><td class="num">87.2%</td><td class="num delta-bad">-0.8</td></tr>
+            <tr><td>R53B</td><td>Gumi Campus 4</td><td>Bracket Attach</td><td>2026-04-22 ~ 28</td><td class="num">95.0%</td><td class="num">912</td><td class="num">93.4%</td><td class="num delta-good">+0.5</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8" /><title>MTBA Dashboard</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&display=swap" />
+<style>
+:root{--primary:#A50034;--primary-dark:#7E0027;--primary-tint:#F8E5EC;--page-bg:#F7F8FA;--soft:#F1F3F5;--border:#E5E7EB;--border-strong:#CBD0D6;--ink-body:#1F2430;--ink-muted:#6B7280;--ink-subtle:#9CA3AF;--status-good:#1F8B4C;--status-warn:#B57F1B;--status-bad:#B23A48;--font-body:'Pretendard Variable',Pretendard,system-ui,sans-serif;--font-mono:'IBM Plex Mono',ui-monospace,Menlo,monospace}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;background:var(--page-bg);color:var(--ink-body);font-family:var(--font-body);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased;word-break:keep-all}
+.app{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+.sidebar{background:#fff;border-right:1px solid var(--border);padding:20px 0;position:sticky;top:0;height:100vh;display:flex;flex-direction:column}
+.sidebar__brand{padding:0 20px 20px;border-bottom:1px solid var(--border);margin-bottom:12px}
+.sidebar__wordmark{font-size:16px;font-weight:700;letter-spacing:-0.01em}
+.sidebar__eyebrow{margin-top:4px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-subtle)}
+.nav{display:flex;flex-direction:column;gap:2px;padding:0 8px}
+.nav__item{display:flex;height:36px;padding:0 16px;align-items:center;font-size:14px;font-weight:600;color:var(--ink-muted);text-decoration:none;border-radius:6px;position:relative}
+.nav__item:hover{background:var(--soft);color:var(--ink-body)}
+.nav__item--active{color:var(--ink-body)}
+.nav__item--active::before{content:"";position:absolute;left:0;top:6px;bottom:6px;width:4px;background:var(--primary);border-radius:0 2px 2px 0}
+.sidebar__foot{margin-top:auto;padding:16px 20px;font-size:12px;color:var(--ink-subtle);font-family:var(--font-mono)}
+.content-wrap{display:flex;flex-direction:column;min-height:100vh}
+.top-strip{height:8px;background:var(--primary)}
+.content{padding:32px 32px 48px;max-width:1640px}
+.eyebrow{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-subtle);margin-bottom:8px}
+.page-head{margin-bottom:20px}
+.page-head h1{margin:0 0 6px;font-size:28px;font-weight:700;letter-spacing:-0.01em}
+.page-head p{margin:0;font-size:13px;color:var(--ink-muted)}
+.btn{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border:1px solid var(--border);background:#fff;color:var(--ink-body);font:inherit;font-size:12px;font-weight:600;border-radius:8px;cursor:pointer}
+.btn:hover{border-color:var(--border-strong);background:var(--soft)}
+.btn--primary{background:var(--primary);border-color:var(--primary);color:#fff}
+.field{display:flex;flex-direction:column;gap:4px;min-width:160px}
+.field__label{font-size:11px;font-weight:700;color:var(--ink-muted);letter-spacing:.04em;text-transform:uppercase}
+.select{height:36px;border:1px solid var(--border);border-radius:8px;background:#fff;padding:0 12px;font:inherit;font-size:13px;font-weight:500;display:inline-flex;align-items:center;justify-content:space-between;gap:6px}
+.filter{display:flex;align-items:flex-end;gap:14px;background:#fff;border:1px solid var(--border);border-left:4px solid var(--primary);border-radius:8px;padding:14px 16px;margin-bottom:8px;flex-wrap:wrap}
+.note-list{list-style:none;margin:0 0 16px;padding:10px 14px;background:var(--soft);border-radius:8px;display:flex;flex-direction:column;gap:3px;border-left:3px solid var(--ink-subtle)}
+.note-list li{font-size:12px;color:var(--ink-muted);position:relative;padding-left:14px}
+.note-list li::before{content:"※";position:absolute;left:0;color:var(--ink-subtle)}
+.sect{margin-bottom:24px}
+.sect-head{display:flex;align-items:center;gap:10px;margin-bottom:10px;justify-content:space-between}
+.sect-head__left{display:flex;align-items:center;gap:10px}
+.sect-num-band{display:inline-flex;align-items:center;gap:8px;padding:4px 12px 4px 4px;background:var(--ink-body);color:#fff;border-radius:6px;font-family:var(--font-mono);font-size:12px;font-weight:700}
+.sect-num-band__num{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;background:var(--primary);border-radius:4px;color:#fff;font-weight:700}
+.sect-head__title{font-size:18px;font-weight:700;letter-spacing:-0.01em}
+.sect-head__sub{font-size:12px;color:var(--ink-muted)}
+.chart-card{background:#fff;border:1px solid var(--border);border-radius:8px;padding:16px}
+.chart-toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.legend{display:flex;gap:14px;font-size:11px;font-family:var(--font-mono);color:var(--ink-muted)}
+.legend-dot{display:inline-block;width:10px;height:10px;margin-right:4px;vertical-align:middle;border-radius:2px}
+.bar-chart{display:grid;grid-template-columns:repeat(8,1fr);gap:18px;height:240px;padding:0 8px;align-items:end}
+.bar-stack{display:flex;flex-direction:column;align-items:center;height:100%}
+.bar-grp{display:flex;gap:2px;align-items:end;height:100%;width:100%}
+.bar{flex:1;border-radius:2px 2px 0 0;position:relative;min-height:6px}
+.bar__lbl{position:absolute;top:-14px;left:50%;transform:translateX(-50%);font-family:var(--font-mono);font-size:9px;color:var(--ink-muted);white-space:nowrap}
+.bar-x{font-size:11px;color:var(--ink-body);text-align:center;font-weight:600;margin-top:8px;height:32px;line-height:1.2}
+.bar-axis{display:grid;grid-template-columns:repeat(8,1fr);gap:18px;padding:0 8px;margin-top:8px}
+.table-wrap{background:#fff;border:1px solid var(--border);border-radius:8px;overflow:hidden}
+table{width:100%;border-collapse:separate;border-spacing:0;font-size:13px}
+thead th{height:36px;background:var(--soft);font-weight:700;text-align:left;padding:0 12px;border-bottom:1px solid var(--border);font-size:12px;white-space:nowrap;box-shadow:inset 1px 0 0 var(--primary)}
+thead th:not(:first-child){box-shadow:none}
+tbody td{height:32px;padding:0 12px;border-bottom:1px solid var(--border)}
+tbody tr:last-child td{border-bottom:0}
+tbody tr.is-active td{background:var(--primary-tint)}
+tbody tr.is-active td:first-child{box-shadow:inset 2px 0 0 var(--primary)}
+.num{font-family:var(--font-mono);text-align:right}
+th.num{text-align:right}
+.delta-good{color:var(--status-good)}.delta-bad{color:var(--status-bad)}
+.cb{width:14px;height:14px;border:1px solid var(--border);border-radius:3px;display:inline-block;background:#fff;position:relative;vertical-align:middle}
+.cb--checked{background:var(--primary);border-color:var(--primary)}
+.cb--checked::after{content:"";position:absolute;left:3px;top:0;width:4px;height:8px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg)}
+.alarm-cell{display:inline-flex;align-items:center;gap:6px;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;font-family:var(--font-mono)}
+.alarm-cell--high{background:#FBEBEC;color:var(--status-bad)}
+.alarm-cell--mid{background:#FAF1E1;color:var(--status-warn)}
+.alarm-cell--low{background:#E6F4EA;color:var(--status-good)}
+.upload-card{background:#fff;border:1px solid var(--border);border-radius:8px;padding:16px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.dropzone{border:2px dashed var(--border);border-radius:8px;padding:24px;text-align:center;background:var(--soft);display:flex;flex-direction:column;align-items:center;gap:8px}
+.dropzone svg{width:32px;height:32px;color:var(--ink-subtle)}
+.textarea{width:100%;min-height:120px;border:1px solid var(--border);border-radius:8px;padding:10px 12px;font:inherit;font-size:13px;background:#fff;resize:vertical}
+.actions-row{display:flex;justify-content:flex-end;gap:8px;margin-top:12px}
+.panel-actions{display:flex;justify-content:space-between;align-items:center;background:#fff;border:1px dashed var(--border);border-radius:8px;padding:10px 14px;margin-top:12px;font-size:12px;color:var(--ink-muted)}
+</style></head>
+<body>
+<div class="app">
+<aside class="sidebar"><div class="sidebar__brand"><div class="sidebar__wordmark">LG Innotek</div><div class="sidebar__eyebrow">MPAP</div></div>
+<nav class="nav"><a class="nav__item" href="#">login</a><a class="nav__item" href="#">Home</a><a class="nav__item" href="#">CMP Dashboard</a><a class="nav__item" href="#">UPH Dashboard</a><a class="nav__item nav__item--active" href="#">MTBA Dashboard</a><a class="nav__item" href="#">MTBA Detail View</a><a class="nav__item" href="#">MaxCapa Chat</a></nav>
+<div class="sidebar__foot">v0.4.2</div></aside>
+<main class="content-wrap"><div class="top-strip"></div><div class="content">
+<header class="page-head"><div class="eyebrow">RELIABILITY · MTBA</div><h1>MTBA 분석 Reporting #1</h1><p>선택한 기간 기준으로 기간별 MTBA / 공정 통계 / 클릭 Drill-down 기반 MTBA 현황 / Alarm 차이 분석</p></header>
+<div class="filter">
+  <div class="field"><span class="field__label">팀 선택 #1</span><button class="select">전체<span>▾</span></button></div>
+  <div class="field"><span class="field__label">모델 선택 #1</span><button class="select">R50<span>▾</span></button></div>
+  <div class="field"><span class="field__label">기간 선택 #1</span><button class="select">2026-04-27 ~ 2026-04-28<span>▾</span></button></div>
+  <button class="btn btn--primary" style="margin-left:auto">조회</button>
+</div>
+<ul class="note-list">
+  <li>팀 = 전체 : 모든 공정을 대상으로 조회합니다.</li>
+  <li>그래프 구간: 선택한 기간 / 1주전 / 2주전 / 지난달 전체 / 2달전 전체 / 지난해 전체</li>
+  <li>MTBA가 0이거나 없는 설비는 자동 제외 후, 유효 설비만 평균하여 MTBA를 계산합니다.</li>
+  <li>그래프 가시성을 위해 막대 높이는 최대 120까지만 표시되며, 라벨은 실제 MTBA 값을 표시합니다.</li>
+  <li>그래프는 다중 선택 가능, 요약표 체크박스와 연동됩니다. 최대 5개 공정까지 섹션 2에 표시됩니다.</li>
+</ul>
+<section class="sect">
+<div class="sect-head"><div class="sect-head__left"><span class="sect-num-band"><span class="sect-num-band__num">1</span>비교</span><div class="sect-head__title">R50 공정별 MTBA 기간 비교</div><div class="sect-head__sub">keyboard_arrow_right</div></div>
+<div style="display:flex;gap:6px"><button class="btn">그래프 데이터 보기</button><button class="btn">선택 초기화</button></div></div>
+<div class="chart-card">
+  <div class="chart-toolbar"><div class="legend">
+    <span><span class="legend-dot" style="background:#A50034"></span>선택 기간</span>
+    <span><span class="legend-dot" style="background:#D88FA2"></span>1주전</span>
+    <span><span class="legend-dot" style="background:#CBD0D6"></span>2주전</span>
+    <span><span class="legend-dot" style="background:#9CA3AF"></span>지난달</span>
+    <span><span class="legend-dot" style="background:#6B7280"></span>2달전</span>
+    <span><span class="legend-dot" style="background:#1F2430"></span>지난해</span>
+  </div><div style="font-size:11px;color:var(--ink-muted);font-family:var(--font-mono)">y: MTBA · max 120 cap</div></div>
+  <div class="bar-chart" id="barChart"></div>
+  <div class="bar-axis" id="barAxis"></div>
+  <div style="margin-top:8px;font-size:11px;color:var(--ink-muted)">※ Shift+클릭 / Box / Lasso로 여러 공정을 선택할 수 있습니다.</div>
+</div>
+</section>
+<section class="sect">
+<div class="sect-head"><div class="sect-head__left"><span class="sect-num-band"><span class="sect-num-band__num">2</span>요약</span><div class="sect-head__title">2026-04-27 ~ 2026-04-28 공정별 요약</div></div>
+<label style="display:inline-flex;align-items:center;gap:6px;font-size:12px"><span class="cb cb--checked"></span>공정명 축약</label></div>
+<div class="table-wrap"><table>
+  <thead><tr><th style="width:32px"></th><th>공정명</th><th class="num">선택 기간</th><th class="num">1주전</th><th class="num">2주전</th><th class="num">지난달</th><th class="num">2달전</th><th class="num">지난해</th><th class="num">설비수</th></tr></thead>
+  <tbody>
+    <tr class="is-active"><td><span class="cb cb--checked"></span></td><td>Lens AA</td><td class="num">142</td><td class="num">138</td><td class="num">135</td><td class="num">128</td><td class="num">124</td><td class="num">118</td><td class="num">8</td></tr>
+    <tr class="is-active"><td><span class="cb cb--checked"></span></td><td>Flip Chip Bonding</td><td class="num">98</td><td class="num">102</td><td class="num">95</td><td class="num">88</td><td class="num">82</td><td class="num">76</td><td class="num">6</td></tr>
+    <tr class="is-active"><td><span class="cb cb--checked"></span></td><td>IRCF Attach</td><td class="num">62</td><td class="num">68</td><td class="num">71</td><td class="num">74</td><td class="num">78</td><td class="num">82</td><td class="num">4</td></tr>
+    <tr><td><span class="cb"></span></td><td>Module AA</td><td class="num">124</td><td class="num">122</td><td class="num">119</td><td class="num">115</td><td class="num">112</td><td class="num">108</td><td class="num">5</td></tr>
+    <tr><td><span class="cb"></span></td><td>APS Test</td><td class="num">156</td><td class="num">152</td><td class="num">148</td><td class="num">142</td><td class="num">138</td><td class="num">132</td><td class="num">8</td></tr>
+  </tbody>
+</table></div>
+</section>
+<section class="sect">
+<div class="sect-head"><div class="sect-head__left"><span class="sect-num-band"><span class="sect-num-band__num">3</span>현황</span><div class="sect-head__title">MTBA 현황(2026-04-27 ~ 2026-04-28)</div><div class="sect-head__sub">알람구분 셀을 더블클릭하면 메모/이미지 팝업이 열립니다.</div></div></div>
+<div class="table-wrap"><table>
+  <thead><tr><th>호기</th><th>모델명</th><th>설비세그먼트명</th><th>공정</th><th class="num">MTBA</th><th class="num">생산수량</th><th>알람구분</th><th>최근 알람</th></tr></thead>
+  <tbody>
+    <tr><td>#1003</td><td>R50</td><td>SEG-A1</td><td>Lens AA</td><td class="num">152</td><td class="num">12,480</td><td><span class="alarm-cell alarm-cell--low">정상</span></td><td>—</td></tr>
+    <tr><td>#1116</td><td>R50</td><td>SEG-B3</td><td>IRCF Attach</td><td class="num delta-bad">38</td><td class="num">7,240</td><td><span class="alarm-cell alarm-cell--high">반복알람</span></td><td>04-28 14:22 · ALM-2031</td></tr>
+    <tr><td>#1108</td><td>R50</td><td>SEG-B2</td><td>Flip Chip</td><td class="num">94</td><td class="num">9,820</td><td><span class="alarm-cell alarm-cell--mid">주의</span></td><td>04-28 09:14 · ALM-1042</td></tr>
+    <tr><td>#1024</td><td>R50</td><td>SEG-A2</td><td>Module AA</td><td class="num">128</td><td class="num">11,210</td><td><span class="alarm-cell alarm-cell--low">정상</span></td><td>—</td></tr>
+  </tbody>
+</table></div>
+</section>
+<section class="sect">
+<div class="sect-head"><div class="sect-head__left"><span class="sect-num-band"><span class="sect-num-band__num">4</span>메모</span><div class="sect-head__title">메모 / 이미지 업로드</div></div></div>
+<div class="upload-card">
+  <div><span class="field__label">메모 입력 #1</span><textarea class="textarea" placeholder="공정 / 설비 관련 메모를 입력하세요…"></textarea></div>
+  <div><span class="field__label">이미지 업로드 #1</span>
+    <div class="dropzone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+    <div style="font-size:13px;font-weight:600">Drag and drop file here</div><div style="font-size:11px;color:var(--ink-muted)">Limit 200MB per file • PNG, JPG, JPEG, BMP</div>
+    <button class="btn">Browse files</button></div>
+  </div>
+</div>
+<div class="actions-row"><button class="btn btn--primary">메모/이미지 저장 #1</button></div>
+<div class="panel-actions"><span>패널 1</span><div style="display:flex;gap:6px"><button class="btn">이 패널 아래에 추가 #1</button><button class="btn">이 패널 제거 #1</button></div></div>
+</section>
+</div></main></div>
+<script>
+const procs=["Lens AA","Flip Chip","IRCF Attach","Module AA","Pre Focus","APS Test","VCM attach","Sensor UF"];
+const data=[[142,138,135,128,124,118],[98,102,95,88,82,76],[62,68,71,74,78,82],[124,122,119,115,112,108],[88,90,87,84,81,78],[156,152,148,142,138,132],[74,72,69,66,62,58],[52,54,56,58,61,64]];
+const colors=["#A50034","#D88FA2","#CBD0D6","#9CA3AF","#6B7280","#1F2430"];
+let html='',axisHtml='';
+procs.forEach((p,i)=>{let bars='';data[i].forEach((v,j)=>{const h=Math.min(v,120)/120*100;bars+=`<div class="bar" style="background:${colors[j]};height:${h}%"><span class="bar__lbl">${j===0?v:''}</span></div>`;});html+=`<div class="bar-stack"><div class="bar-grp">${bars}</div></div>`;axisHtml+=`<div class="bar-x">${p}</div>`;});
+document.getElementById('barChart').innerHTML=html;document.getElementById('barAxis').innerHTML=axisHtml;
+</script>
+</body></html>

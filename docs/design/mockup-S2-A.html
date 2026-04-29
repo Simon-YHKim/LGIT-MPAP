@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<title>설비생산성 분석 플랫폼</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&display=swap" />
+<style>
+  :root{
+    --primary:#A50034;--primary-dark:#7E0027;--primary-tint:#F8E5EC;
+    --page-bg:#F7F8FA;--card-bg:#FFFFFF;--soft:#F1F3F5;
+    --border:#E5E7EB;--border-strong:#CBD0D6;
+    --ink-body:#1F2430;--ink-muted:#6B7280;--ink-subtle:#9CA3AF;
+    --status-good:#1F8B4C;--status-warn:#B57F1B;--status-bad:#B23A48;
+    --easing:cubic-bezier(0.2,0.6,0.3,1);--radius:8px;
+    --font-body:'Pretendard Variable',Pretendard,'Malgun Gothic',system-ui,sans-serif;
+    --font-mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  }
+  *,*::before,*::after{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--page-bg);color:var(--ink-body);font-family:var(--font-body);font-size:14px;line-height:1.5;font-weight:400;-webkit-font-smoothing:antialiased;word-break:keep-all}
+
+  /* App shell */
+  .app{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+
+  /* Sidebar */
+  .sidebar{background:#fff;border-right:1px solid var(--border);padding:20px 0;position:sticky;top:0;height:100vh;display:flex;flex-direction:column}
+  .sidebar__brand{padding:0 20px 20px;border-bottom:1px solid var(--border);margin-bottom:12px}
+  .sidebar__wordmark{font-size:16px;font-weight:700;color:var(--ink-body);letter-spacing:-0.01em;line-height:1}
+  .sidebar__eyebrow{margin-top:4px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-subtle)}
+  .nav{display:flex;flex-direction:column;gap:2px;padding:0 8px}
+  .nav__item{display:flex;align-items:center;gap:10px;height:36px;padding:0 16px;font-size:14px;font-weight:600;color:var(--ink-muted);text-decoration:none;border-radius:6px;position:relative;transition:background 160ms var(--easing),color 160ms var(--easing)}
+  .nav__item:hover{background:var(--soft);color:var(--ink-body)}
+  .nav__item--active{color:var(--ink-body)}
+  .nav__item--active::before{content:"";position:absolute;left:0;top:8px;bottom:8px;width:2px;background:var(--primary);border-radius:0 2px 2px 0}
+  .nav__icon{width:16px;height:16px;flex:0 0 auto;color:currentColor}
+  .sidebar__foot{margin-top:auto;padding:16px 20px;font-size:12px;color:var(--ink-subtle);font-family:var(--font-mono)}
+
+  /* Content */
+  .content{padding:32px 40px;max-width:1640px}
+  .page-head{margin-bottom:28px}
+  .eyebrow{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-subtle);margin-bottom:8px}
+  .page-head h1{margin:0 0 8px;font-size:28px;line-height:1.2;font-weight:700;letter-spacing:-0.01em;color:var(--ink-body)}
+  .page-head p{margin:0;font-size:13px;color:var(--ink-muted)}
+
+  /* Card grid */
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .tool-card{position:relative;background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:16px;transition:border-color 160ms var(--easing),box-shadow 160ms var(--easing);text-decoration:none;color:var(--ink-body);display:block;cursor:pointer}
+  .tool-card:hover{border-color:var(--border-strong);box-shadow:0 1px 3px rgba(31,36,48,.04)}
+  .tool-card__head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px}
+  .tool-icon{width:36px;height:36px;border-radius:6px;background:var(--soft);display:grid;place-items:center;color:var(--ink-body);flex:0 0 auto}
+  .tool-icon svg{width:18px;height:18px}
+  .tool-card__title{margin:0 0 4px;font-size:14px;font-weight:700;color:var(--ink-body);letter-spacing:-0.01em;line-height:1.4}
+  .tool-card__desc{margin:0;font-size:13px;color:var(--ink-muted)}
+
+  /* Status badge */
+  .badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;line-height:1.4}
+  .badge--good{color:var(--status-good);background:rgba(31,139,76,.08)}
+  .badge--warn{color:var(--status-warn);background:rgba(181,127,27,.08)}
+  .badge--subtle{color:var(--ink-subtle);background:var(--soft)}
+
+  .footer{margin-top:32px;padding-top:24px;border-top:1px solid var(--border);font-size:13px;color:var(--ink-muted)}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <aside class="sidebar" aria-label="네비게이션">
+    <div class="sidebar__brand">
+      <div class="sidebar__wordmark">LG Innotek</div>
+      <div class="sidebar__eyebrow">MPAP</div>
+    </div>
+    <nav class="nav">
+      <a class="nav__item" href="#"><svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M21 14v7H3V3h7"/></svg>login</a>
+      <a class="nav__item nav__item--active" href="#"><svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>Home</a>
+      <a class="nav__item" href="#"><svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>CMP Dashboard</a>
+      <a class="nav__item" href="#"><svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>UPH Dashboard</a>
+      <a class="nav__item" href="#"><svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>MTBA Dashboard</a>
+      <a class="nav__item" href="#"><svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>MTBA Detail View</a>
+      <a class="nav__item" href="#"><svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>MaxCapa Chat</a>
+    </nav>
+    <div class="sidebar__foot">v0.4.2</div>
+  </aside>
+
+  <main class="content" role="main">
+    <header class="page-head">
+      <div class="eyebrow">PLATFORM</div>
+      <h1>설비생산성 분석 플랫폼</h1>
+      <p>분석 항목을 선택하세요.</p>
+    </header>
+
+    <div class="grid">
+
+      <a class="tool-card" href="#">
+        <div class="tool-card__head">
+          <div class="tool-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div>
+          <span class="badge badge--good">정식</span>
+        </div>
+        <h2 class="tool-card__title">CMP Dashboard (정식 5/22E)</h2>
+        <p class="tool-card__desc">공정별 CMP 달성률 추이</p>
+      </a>
+
+      <a class="tool-card" href="#">
+        <div class="tool-card__head">
+          <div class="tool-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></div>
+          <span class="badge badge--warn">가오픈</span>
+        </div>
+        <h2 class="tool-card__title">UPH Dashboard (가 오픈 4/29~, 정식 5/22E)</h2>
+        <p class="tool-card__desc">UPH / 동작시간 분석</p>
+      </a>
+
+      <a class="tool-card" href="#">
+        <div class="tool-card__head">
+          <div class="tool-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+          <span class="badge badge--warn">가오픈</span>
+        </div>
+        <h2 class="tool-card__title">MTBA Dashboard (가 오픈 4/29~, 정식 5/15E)</h2>
+        <p class="tool-card__desc">공정별 MTBA 통계</p>
+      </a>
+
+      <a class="tool-card" href="#">
+        <div class="tool-card__head">
+          <div class="tool-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></div>
+          <span class="badge badge--warn">가오픈</span>
+        </div>
+        <h2 class="tool-card__title">MTBA Detail View (가 오픈 4/29~, 정식 5/15E)</h2>
+        <p class="tool-card__desc">패널 기반 드릴다운 분석</p>
+      </a>
+
+      <a class="tool-card" href="#">
+        <div class="tool-card__head">
+          <div class="tool-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+          <span class="badge badge--subtle">오픈예정</span>
+        </div>
+        <h2 class="tool-card__title">MaxCapa Chat (대화형 생산지표 조회, 오픈 예정)</h2>
+        <p class="tool-card__desc">대화형 생산지표 조회</p>
+      </a>
+
+    </div>
+
+    <footer class="footer">제작: 광학 Max Capa TDR</footer>
+  </main>
+
+</div>
+</body>
+</html>

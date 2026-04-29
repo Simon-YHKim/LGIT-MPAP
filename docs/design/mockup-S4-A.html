@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<title>UPH / 동작시간 분석 Dashboard</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&display=swap" />
+<style>
+  :root{--primary:#A50034;--primary-dark:#7E0027;--primary-tint:#F8E5EC;--page-bg:#F7F8FA;--card-bg:#FFFFFF;--soft:#F1F3F5;--border:#E5E7EB;--border-strong:#CBD0D6;--ink-body:#1F2430;--ink-muted:#6B7280;--ink-subtle:#9CA3AF;--status-good:#1F8B4C;--status-warn:#B57F1B;--status-bad:#B23A48;--easing:cubic-bezier(0.2,0.6,0.3,1);--font-body:'Pretendard Variable',Pretendard,'Malgun Gothic',system-ui,sans-serif;--font-mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace}
+  *,*::before,*::after{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--page-bg);color:var(--ink-body);font-family:var(--font-body);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased;word-break:keep-all}
+  .app{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+  .sidebar{background:#fff;border-right:1px solid var(--border);padding:20px 0;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;overflow:auto}
+  .sidebar__brand{padding:0 20px 20px;border-bottom:1px solid var(--border);margin-bottom:12px}
+  .sidebar__wordmark{font-size:16px;font-weight:700;letter-spacing:-0.01em}
+  .sidebar__eyebrow{margin-top:4px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-subtle)}
+  .nav{display:flex;flex-direction:column;gap:2px;padding:0 8px}
+  .nav__item{display:flex;align-items:center;gap:10px;height:36px;padding:0 16px;font-size:14px;font-weight:600;color:var(--ink-muted);text-decoration:none;border-radius:6px;position:relative}
+  .nav__item:hover{background:var(--soft);color:var(--ink-body)}
+  .nav__item--active{color:var(--ink-body)}
+  .nav__item--active::before{content:"";position:absolute;left:0;top:8px;bottom:8px;width:2px;background:var(--primary);border-radius:0 2px 2px 0}
+  .nav__icon{width:16px;height:16px}
+  .sidebar__foot{margin-top:auto;padding:16px 20px;font-size:12px;color:var(--ink-subtle);font-family:var(--font-mono)}
+
+  .content{padding:32px 32px 48px;max-width:1640px}
+  .page-head{margin-bottom:20px}
+  .eyebrow{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-subtle);margin-bottom:8px}
+  .page-head h1{margin:0 0 6px;font-size:28px;line-height:1.2;font-weight:700;letter-spacing:-0.01em}
+  .page-head p{margin:0;font-size:13px;color:var(--ink-muted)}
+
+  .filter{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:8px;flex-wrap:wrap}
+  .field{display:flex;flex-direction:column;gap:4px;min-width:180px}
+  .field__label{font-size:11px;font-weight:700;color:var(--ink-muted);letter-spacing:.04em;text-transform:uppercase}
+  .select{height:36px;border:1px solid var(--border);border-radius:8px;background:#fff;padding:0 12px;font:inherit;font-size:13px;font-weight:500;color:var(--ink-body);display:inline-flex;align-items:center;gap:6px;justify-content:space-between}
+  .select svg{width:13px;height:13px;color:var(--ink-muted)}
+  .seg{display:inline-flex;border:1px solid var(--border);border-radius:8px;overflow:hidden}
+  .seg__btn{height:36px;padding:0 14px;background:#fff;border:0;border-right:1px solid var(--border);font:inherit;font-size:13px;font-weight:600;font-family:var(--font-mono);color:var(--ink-muted);cursor:pointer}
+  .seg__btn:last-child{border-right:0}
+  .seg__btn[aria-pressed="true"]{background:var(--primary-tint);color:var(--primary-dark)}
+  .toggle{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--ink-body);cursor:pointer}
+  .toggle__track{width:32px;height:18px;background:var(--primary);border-radius:999px;position:relative}
+  .toggle__thumb{position:absolute;top:2px;right:2px;width:14px;height:14px;background:#fff;border-radius:50%}
+  .filter__spacer{flex:1}
+
+  .selection-line{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-bottom:20px;font-size:13px;color:var(--ink-body)}
+  .selection-line strong{font-weight:700}
+  .selection-line .pill{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;background:var(--primary-tint);color:var(--primary-dark);border-radius:999px;font-size:12px;font-weight:600;font-family:var(--font-mono)}
+
+  .sect{margin-bottom:24px}
+  .sect-head{display:flex;align-items:center;gap:10px;margin-bottom:10px;justify-content:space-between}
+  .sect-head__left{display:flex;align-items:center;gap:10px}
+  .sect-num{font-family:var(--font-mono);font-size:11px;font-weight:600;color:var(--ink-subtle);width:22px;height:22px;border:1px solid var(--border);border-radius:4px;display:inline-flex;align-items:center;justify-content:center}
+  .sect-head__title{font-size:18px;font-weight:700;letter-spacing:-0.01em}
+  .sect-head__sub{font-size:12px;color:var(--ink-muted)}
+  .btn{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border:1px solid var(--border);background:#fff;color:var(--ink-body);font:inherit;font-size:12px;font-weight:600;border-radius:8px;cursor:pointer}
+  .btn:hover{border-color:var(--border-strong);background:var(--soft)}
+
+  .summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  .kpi{background:#fff;border:1px solid var(--border);border-radius:8px;padding:14px 16px;height:96px;display:flex;flex-direction:column;justify-content:space-between}
+  .kpi__label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-subtle)}
+  .kpi__value{font-family:var(--font-mono);font-size:30px;line-height:1;font-weight:600}
+  .kpi__sub{font-size:12px;color:var(--ink-muted);font-family:var(--font-mono)}
+  .kpi__delta{display:inline-flex;align-items:center;gap:4px;font-family:var(--font-mono);font-size:12px;font-weight:600}
+  .kpi__delta--good{color:var(--status-good)}
+  .kpi__delta--bad{color:var(--status-bad)}
+
+  .ai-note{margin-top:10px;background:#fff;border:1px solid var(--border);border-radius:8px;padding:12px 14px;display:flex;gap:10px;font-size:13px;color:var(--ink-body)}
+  .ai-note__icon{width:24px;height:24px;border-radius:50%;background:var(--primary-tint);color:var(--primary-dark);display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;flex:0 0 auto;font-family:var(--font-mono)}
+  .ai-note__head{font-size:11px;font-weight:700;color:var(--ink-subtle);text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px}
+
+  .bw{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .bw-card{background:#fff;border:1px solid var(--border);border-radius:8px;padding:14px 16px}
+  .bw-card__head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+  .bw-tag{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:2px 8px;border-radius:4px;font-family:var(--font-mono)}
+  .bw-tag--best{background:#E6F4EA;color:var(--status-good)}
+  .bw-tag--worst{background:#FBEBEC;color:var(--status-bad)}
+  .bw-id{font-family:var(--font-mono);font-size:13px;color:var(--ink-muted)}
+  .bw-card__metric{font-family:var(--font-mono);font-size:24px;font-weight:600;line-height:1;margin-bottom:8px}
+  .bw-card__sub{font-size:12px;color:var(--ink-muted)}
+  .auto-row{margin-top:10px;background:#fff;border:1px dashed var(--border);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--ink-muted);display:flex;align-items:center;gap:10px}
+  .auto-row strong{color:var(--ink-body);font-family:var(--font-mono)}
+
+  .chart{background:#fff;border:1px solid var(--border);border-radius:8px;padding:14px 16px;height:280px;position:relative}
+  .chart__head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
+  .chart__title{font-size:13px;font-weight:700}
+  .chart__legend{display:flex;gap:12px;font-size:11px;font-family:var(--font-mono);color:var(--ink-muted)}
+  .legend-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px;vertical-align:middle}
+  .chart svg{width:100%;height:215px}
+
+  .table-wrap{background:#fff;border:1px solid var(--border);border-radius:8px;overflow:hidden}
+  table{width:100%;border-collapse:separate;border-spacing:0;font-size:13px}
+  thead th{height:36px;background:var(--soft);font-weight:700;text-align:left;padding:0 12px;border-bottom:1px solid var(--border);font-size:12px;color:var(--ink-body);white-space:nowrap}
+  tbody td{height:32px;padding:0 12px;border-bottom:1px solid var(--border)}
+  tbody tr:last-child td{border-bottom:0}
+  .num{font-family:var(--font-mono);text-align:right}
+  th.num{text-align:right}
+  .delta-good{color:var(--status-good)}.delta-bad{color:var(--status-bad)}
+
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" aria-label="네비게이션">
+    <div class="sidebar__brand"><div class="sidebar__wordmark">LG Innotek</div><div class="sidebar__eyebrow">MPAP</div></div>
+    <nav class="nav">
+      <a class="nav__item" href="#">login</a>
+      <a class="nav__item" href="#">Home</a>
+      <a class="nav__item" href="#">CMP Dashboard</a>
+      <a class="nav__item nav__item--active" href="#">UPH Dashboard</a>
+      <a class="nav__item" href="#">MTBA Dashboard</a>
+      <a class="nav__item" href="#">MTBA Detail View</a>
+      <a class="nav__item" href="#">MaxCapa Chat</a>
+    </nav>
+    <div class="sidebar__foot">v0.4.2</div>
+  </aside>
+
+  <main class="content" role="main">
+    <header class="page-head">
+      <div class="eyebrow">PRODUCTIVITY · UPH</div>
+      <h1>UPH / 동작시간 분석 Dashboard</h1>
+      <p>PostgreSQL SQL 집계형 v4 · 일자·공정·모델 단위 동작시간 분석</p>
+    </header>
+
+    <div class="filter">
+      <div class="field"><span class="field__label">공장 선택</span>
+        <button class="select">Gumi Campus 1 Area<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button></div>
+      <div class="field"><span class="field__label">공정 선택</span>
+        <button class="select">APS Test<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button></div>
+      <div class="field"><span class="field__label">모델 선택</span>
+        <button class="select">R53A<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button></div>
+      <div class="field"><span class="field__label">날짜 선택</span>
+        <button class="select">2026-04-28<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/></svg></button></div>
+      <div class="field"><span class="field__label">Trend 분석 기간(일)</span>
+        <div class="seg" role="group"><button class="seg__btn" aria-pressed="true">30</button><button class="seg__btn">90</button></div>
+      </div>
+      <div class="filter__spacer"></div>
+      <label class="toggle"><span>I-TAS 가능만 보기</span><span class="toggle__track"><span class="toggle__thumb"></span></span></label>
+    </div>
+
+    <div class="selection-line">
+      <span><strong>분석 결과</strong> 2026-04-28</span>
+      <span class="pill">Gumi Campus 1 Area</span>
+      <span class="pill">APS Test</span>
+      <span class="pill">R53A</span>
+    </div>
+
+    <!-- 1. UPH 요약 -->
+    <section class="sect">
+      <div class="sect-head">
+        <div class="sect-head__left"><span class="sect-num">1</span><div class="sect-head__title">UPH 요약 (I-TAS)</div><div class="sect-head__sub">선택 일자 기준 / 데이터 출처: I-TAS</div></div>
+        <button class="btn">MES 데이터로 보기</button>
+      </div>
+      <div class="summary-grid">
+        <div class="kpi"><div class="kpi__label">UPH (I-TAS)</div><div class="kpi__value">1,284</div><div class="kpi__delta kpi__delta--good">▲ +42 vs Trend 평균</div></div>
+        <div class="kpi"><div class="kpi__label">평균 동작시간</div><div class="kpi__value">2.81<span style="font-size:14px;color:var(--ink-muted);font-weight:400">s</span></div><div class="kpi__delta kpi__delta--good">▼ -0.07s</div></div>
+        <div class="kpi"><div class="kpi__label">편차율</div><div class="kpi__value">3.4%</div><div class="kpi__sub">σ 0.096s · n=124</div></div>
+        <div class="kpi"><div class="kpi__label">설비 가동수</div><div class="kpi__value">14<span style="font-size:14px;color:var(--ink-muted);font-weight:400">/16</span></div><div class="kpi__sub">2 idle · #1107 · #1118</div></div>
+      </div>
+      <div class="ai-note">
+        <span class="ai-note__icon">AI</span>
+        <div>
+          <div class="ai-note__head">AI 분석 의견</div>
+          <div>금일 UPH는 직전 30일 평균 대비 +3.4% 상승. 평균 동작시간이 0.07s 단축되었으며, #1107/#1118 idle 영향으로 가동수가 2대 부족. 편차율은 정상 범위(±5%) 이내이나, 하단 [4. 주요 편차동작]에서 #1116 단일기 편차 확인 권장.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Best Worst -->
+    <section class="sect">
+      <div class="sect-head"><div class="sect-head__left"><span class="sect-num">2</span><div class="sect-head__title">Best Worst 동작차이</div></div></div>
+      <div class="bw">
+        <div class="bw-card">
+          <div class="bw-card__head"><span class="bw-tag bw-tag--best">Best</span><span class="bw-id">설비 #1003</span></div>
+          <div class="bw-card__metric">2.68<span style="font-size:14px;color:var(--ink-muted);font-weight:400">s</span></div>
+          <div class="bw-card__sub">전체 평균 대비 -0.13s · 동작 분산 ±0.04s</div>
+        </div>
+        <div class="bw-card">
+          <div class="bw-card__head"><span class="bw-tag bw-tag--worst">Worst</span><span class="bw-id">설비 #1116</span></div>
+          <div class="bw-card__metric">2.97<span style="font-size:14px;color:var(--ink-muted);font-weight:400">s</span></div>
+          <div class="bw-card__sub">전체 평균 대비 +0.16s · 동작 분산 ±0.18s</div>
+        </div>
+      </div>
+      <div class="auto-row">자동선정 <strong>Best: #1003</strong> / <strong>Worst: #1116</strong> · 직전 7일 동작시간 중앙값 기준</div>
+    </section>
+
+    <!-- 3. Trend chart -->
+    <section class="sect">
+      <div class="sect-head"><div class="sect-head__left"><span class="sect-num">3</span><div class="sect-head__title">UPH / 편차율 Trend</div><div class="sect-head__sub">최근 30일</div></div></div>
+      <div class="chart">
+        <div class="chart__head">
+          <div class="chart__title">일자별 UPH (좌축) · 편차율 (우축)</div>
+          <div class="chart__legend">
+            <span><span class="legend-dot" style="background:#A50034"></span>UPH</span>
+            <span><span class="legend-dot" style="background:#9CA3AF"></span>편차율</span>
+            <span><span class="legend-dot" style="background:#1F8B4C;border-radius:0;width:10px;height:2px"></span>목표 1,250</span>
+          </div>
+        </div>
+        <svg viewBox="0 0 1500 215" preserveAspectRatio="none">
+          <line x1="0" y1="80" x2="1500" y2="80" stroke="#1F8B4C" stroke-width="1" stroke-dasharray="4 4"/>
+          <g id="bars-g"></g>
+          <polyline id="line-σ" fill="none" stroke="#9CA3AF" stroke-width="1.5"/>
+          <polyline id="line-uph" fill="none" stroke="#A50034" stroke-width="1.5"/>
+        </svg>
+      </div>
+    </section>
+
+    <!-- 4. 주요 편차동작 -->
+    <section class="sect">
+      <div class="sect-head"><div class="sect-head__left"><span class="sect-num">4</span><div class="sect-head__title">주요 편차동작</div><div class="sect-head__sub">σ ≥ 0.10s</div></div></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>설비</th><th>동작 단계</th><th class="num">평균(s)</th><th class="num">σ(s)</th><th class="num">편차율</th><th class="num">발생 빈도</th></tr></thead>
+          <tbody>
+            <tr><td>#1116</td><td>Probe Down → Touch</td><td class="num">2.97</td><td class="num">0.18</td><td class="num delta-bad">6.1%</td><td class="num">124</td></tr>
+            <tr><td>#1108</td><td>Index → Probe Down</td><td class="num">2.91</td><td class="num">0.14</td><td class="num delta-bad">4.8%</td><td class="num">124</td></tr>
+            <tr><td>#1112</td><td>Test → Index</td><td class="num">2.86</td><td class="num">0.12</td><td class="num">4.2%</td><td class="num">124</td></tr>
+            <tr><td>#1101</td><td>Probe Down → Touch</td><td class="num">2.83</td><td class="num">0.11</td><td class="num">3.9%</td><td class="num">124</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 5 + 6 두 컬럼 -->
+    <div class="two-col">
+      <section class="sect">
+        <div class="sect-head"><div class="sect-head__left"><span class="sect-num">5</span><div class="sect-head__title">동작시간이 증가 추세인 동작</div></div></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>설비</th><th>동작</th><th class="num">기울기/일</th><th class="num">현재(s)</th></tr></thead>
+            <tbody>
+              <tr><td>#1116</td><td>Probe Down</td><td class="num delta-bad">+0.012</td><td class="num">2.97</td></tr>
+              <tr><td>#1108</td><td>Index</td><td class="num delta-bad">+0.008</td><td class="num">2.91</td></tr>
+              <tr><td>#1104</td><td>Test</td><td class="num delta-bad">+0.005</td><td class="num">2.84</td></tr>
+              <tr><td>#1119</td><td>Touch</td><td class="num delta-bad">+0.004</td><td class="num">2.79</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <section class="sect">
+        <div class="sect-head"><div class="sect-head__left"><span class="sect-num">6</span><div class="sect-head__title">동작시간이 하락 추세인 동작</div></div></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>설비</th><th>동작</th><th class="num">기울기/일</th><th class="num">현재(s)</th></tr></thead>
+            <tbody>
+              <tr><td>#1003</td><td>Probe Down</td><td class="num delta-good">-0.009</td><td class="num">2.68</td></tr>
+              <tr><td>#1011</td><td>Index</td><td class="num delta-good">-0.007</td><td class="num">2.71</td></tr>
+              <tr><td>#1024</td><td>Test</td><td class="num delta-good">-0.005</td><td class="num">2.74</td></tr>
+              <tr><td>#1009</td><td>Touch</td><td class="num delta-good">-0.003</td><td class="num">2.76</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<script>
+  // Generate trend bars + line
+  const days=30;
+  const W=1500,H=215;
+  const stepX=W/(days-1);
+  let bars="",linePts=[],sigPts=[];
+  for(let i=0;i<days;i++){
+    const r=Math.sin(i*1.7)*0.3+Math.cos(i*0.5)*0.2;
+    const uph=1180+r*60+(i>20?20:0);
+    const sigma=3.0+Math.sin(i*0.8)*1.2+(i>22?0.5:0);
+    const x=i*stepX;
+    const y=H-((uph-1100)/(1320-1100))*(H-30)-15;
+    const yS=H-(sigma/8)*(H-30)-15;
+    linePts.push(x.toFixed(1)+","+y.toFixed(1));
+    sigPts.push(x.toFixed(1)+","+yS.toFixed(1));
+    const bh=((uph-1100)/(1320-1100))*(H-30);
+    bars+=`<rect x="${x-stepX*0.3}" y="${H-bh-15}" width="${stepX*0.6}" height="${bh}" fill="#F1F3F5"/>`;
+  }
+  document.getElementById('bars-g').innerHTML=bars;
+  document.getElementById('line-uph').setAttribute('points',linePts.join(" "));
+  document.getElementById('line-σ').setAttribute('points',sigPts.join(" "));
+</script>
+</body>
+</html>

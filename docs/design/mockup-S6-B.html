@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8" /><title>MTBA Detail View</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" />
+<style>
+:root{--primary:#A50034;--primary-dark:#7E0027;--primary-tint:#F8E5EC;--page-bg:#F7F8FA;--soft:#F1F3F5;--soft-2:#FAFBFC;--border:#E5E7EB;--border-strong:#CBD0D6;--ink-body:#1F2430;--ink-muted:#6B7280;--ink-subtle:#9CA3AF;--ink-faint:#D1D5DB;--status-good:#1F8B4C;--status-warn:#B57F1B;--status-bad:#B23A48;--font-body:'Pretendard Variable',Pretendard,system-ui,sans-serif;--font-mono:'IBM Plex Mono',ui-monospace,Menlo,monospace}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;background:var(--page-bg);color:var(--ink-body);font-family:var(--font-body);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased;word-break:keep-all}
+button{font-family:inherit}
+.app{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+.sidebar{background:#fff;border-right:1px solid var(--border);padding:20px 0;position:sticky;top:0;height:100vh;display:flex;flex-direction:column}
+.sidebar__brand{padding:0 20px 20px;border-bottom:1px solid var(--border);margin-bottom:12px}
+.sidebar__wordmark{font-size:16px;font-weight:700;letter-spacing:-0.01em}
+.sidebar__eyebrow{margin-top:4px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-subtle)}
+.nav{display:flex;flex-direction:column;gap:2px;padding:0 8px}
+.nav__item{display:flex;height:36px;padding:0 16px;align-items:center;font-size:14px;font-weight:600;color:var(--ink-muted);text-decoration:none;border-radius:6px;position:relative}
+.nav__item:hover{background:var(--soft);color:var(--ink-body)}
+.nav__item--active{color:var(--ink-body)}
+.nav__item--active::before{content:"";position:absolute;left:0;top:6px;bottom:6px;width:4px;background:var(--primary);border-radius:0 2px 2px 0}
+.sidebar__foot{margin-top:auto;padding:16px 20px;font-size:12px;color:var(--ink-subtle);font-family:var(--font-mono)}
+
+.content-wrap{display:flex;flex-direction:column;min-height:100vh}
+.top-strip{height:8px;background:var(--primary)}
+.content{padding:32px 32px 48px;max-width:1640px}
+
+.eyebrow{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-subtle);margin-bottom:8px}
+.page-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:20px;gap:24px}
+.page-head h1{margin:0 0 6px;font-size:28px;font-weight:700;letter-spacing:-0.01em}
+.page-head p{margin:0;font-size:13px;color:var(--ink-muted)}
+.page-actions{display:flex;gap:8px;align-items:center}
+
+.btn{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border:1px solid var(--border);background:#fff;color:var(--ink-body);font:inherit;font-size:12px;font-weight:600;border-radius:8px;cursor:pointer}
+.btn:hover{border-color:var(--border-strong);background:var(--soft)}
+.btn--primary{background:var(--primary);border-color:var(--primary);color:#fff}
+.btn--primary:hover{background:var(--primary-dark);border-color:var(--primary-dark);color:#fff}
+.btn--ghost{background:transparent;border-color:transparent;color:var(--ink-muted)}
+.btn--ghost:hover{background:var(--soft);color:var(--ink-body)}
+
+.field{display:flex;flex-direction:column;gap:4px;min-width:160px}
+.field__label{font-size:11px;font-weight:700;color:var(--ink-muted);letter-spacing:.04em;text-transform:uppercase}
+.select{height:36px;border:1px solid var(--border);border-radius:8px;background:#fff;padding:0 12px;font:inherit;font-size:13px;font-weight:500;display:inline-flex;align-items:center;justify-content:space-between;gap:6px;color:var(--ink-body);cursor:pointer}
+.select:hover{border-color:var(--border-strong)}
+
+.toolbar{display:flex;align-items:flex-end;gap:14px;background:#fff;border:1px solid var(--border);border-left:4px solid var(--primary);border-radius:8px;padding:14px 16px;margin-bottom:8px;flex-wrap:wrap}
+.toolbar__hint{margin-left:auto;font-size:12px;color:var(--ink-muted);align-self:center}
+
+.note-list{list-style:none;margin:0 0 16px;padding:10px 14px;background:var(--soft);border-radius:8px;display:flex;flex-direction:column;gap:3px;border-left:3px solid var(--ink-subtle)}
+.note-list li{font-size:12px;color:var(--ink-muted);position:relative;padding-left:14px}
+.note-list li::before{content:"※";position:absolute;left:0;color:var(--ink-subtle)}
+
+.sect{margin-bottom:24px}
+.sect-head{display:flex;align-items:center;gap:10px;margin-bottom:10px;justify-content:space-between}
+.sect-head__left{display:flex;align-items:center;gap:10px}
+.sect-num-band{display:inline-flex;align-items:center;gap:8px;padding:4px 12px 4px 4px;background:var(--ink-body);color:#fff;border-radius:6px;font-family:var(--font-mono);font-size:12px;font-weight:700}
+.sect-num-band__num{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;background:var(--primary);border-radius:4px;color:#fff;font-weight:700}
+.sect-head__title{font-size:18px;font-weight:700;letter-spacing:-0.01em}
+.sect-head__sub{font-size:12px;color:var(--ink-muted)}
+
+/* ag-grid like detail table */
+.grid-card{background:#fff;border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.grid-meta{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:1px solid var(--border);background:var(--soft-2)}
+.grid-meta__left{display:flex;gap:16px;align-items:center;font-size:12px;color:var(--ink-muted)}
+.grid-meta__left strong{color:var(--ink-body);font-weight:700}
+.grid-scroll{overflow-x:auto;max-width:100%}
+table.detail{border-collapse:separate;border-spacing:0;font-size:12px;table-layout:fixed}
+table.detail thead th{height:64px;background:var(--soft);font-weight:700;text-align:left;padding:6px 10px;border-bottom:1px solid var(--border);border-right:1px solid var(--border);font-size:11px;white-space:nowrap;vertical-align:bottom;position:sticky;top:0;z-index:1}
+table.detail thead th.col-base{background:#fff;box-shadow:inset 0 -1px 0 var(--border)}
+table.detail thead th.col-grp-p{background:#FCEEF1;color:var(--primary-dark)}
+table.detail thead th.col-grp-pk{background:#FFF6EE;color:#9C5B0E}
+table.detail thead th .sub{display:block;font-size:10px;font-weight:500;color:var(--ink-subtle);margin-top:2px;font-family:var(--font-mono)}
+table.detail tbody td{height:32px;padding:0 10px;border-bottom:1px solid var(--border);border-right:1px solid var(--border);white-space:nowrap;vertical-align:middle}
+table.detail tbody td.num{font-family:var(--font-mono);text-align:right}
+table.detail tbody td.cell-p{cursor:pointer}
+table.detail tbody td.cell-p:hover{background:var(--primary-tint);outline:1px solid var(--primary);outline-offset:-1px}
+table.detail tbody td.cell-pk{font-family:var(--font-mono);text-align:right;color:var(--ink-muted);font-size:11px;background:#FFFAF4}
+table.detail tbody tr:nth-child(even) td{background:var(--soft-2)}
+table.detail tbody tr:nth-child(even) td.cell-pk{background:#FFF6EC}
+table.detail tbody tr.is-focused td{background:var(--primary-tint)!important}
+table.detail tbody tr.is-focused td.cell-pk{background:#FFE9D6!important}
+table.detail tbody tr.is-focused td:first-child{box-shadow:inset 3px 0 0 var(--primary)}
+.cell-bad{color:var(--status-bad);font-weight:700}
+.cell-warn{color:var(--status-warn);font-weight:600}
+.cell-good{color:var(--status-good)}
+
+/* col widths */
+.col-w-base{width:90px}
+.col-w-model{width:72px}
+.col-w-seg{width:120px}
+.col-w-mtba{width:72px}
+.col-w-qty{width:84px}
+.col-w-p{width:88px}
+.col-w-pk{width:60px}
+
+/* popup */
+.scrim{position:fixed;inset:0;background:rgba(15,17,21,.45);display:flex;align-items:center;justify-content:center;padding:32px;z-index:50}
+.popup{background:#fff;border:1px solid var(--border);border-radius:12px;width:560px;max-width:100%;box-shadow:0 30px 60px rgba(15,17,21,.25);overflow:hidden;border-top:4px solid var(--primary)}
+.popup__head{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid var(--border)}
+.popup__title{font-size:16px;font-weight:700;letter-spacing:-0.01em;display:flex;align-items:center;gap:8px}
+.popup__pill{font-family:var(--font-mono);font-size:11px;background:var(--primary-tint);color:var(--primary-dark);padding:2px 8px;border-radius:4px;font-weight:600}
+.popup__close{width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;border:0;background:transparent;color:var(--ink-muted);cursor:pointer;border-radius:6px;font-size:18px}
+.popup__close:hover{background:var(--soft);color:var(--ink-body)}
+.popup__body{padding:18px}
+.kv{display:grid;grid-template-columns:120px 1fr;row-gap:8px;column-gap:14px;font-size:13px}
+.kv dt{color:var(--ink-muted);font-weight:600;font-size:12px}
+.kv dd{margin:0;color:var(--ink-body);font-family:var(--font-mono)}
+.kv dd.high{color:var(--status-bad);font-weight:700}
+.popup__sect{margin-top:16px;padding-top:14px;border-top:1px dashed var(--border)}
+.popup__sect h4{margin:0 0 8px;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-muted);font-weight:700}
+.alm-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;font-size:12px;font-family:var(--font-mono)}
+.alm-list li{display:grid;grid-template-columns:84px 110px 1fr;gap:12px;padding:6px 10px;background:var(--soft-2);border-radius:6px;border-left:3px solid var(--ink-subtle)}
+.alm-list li.high{border-left-color:var(--status-bad)}
+.alm-list li.mid{border-left-color:var(--status-warn)}
+.alm-list .t{color:var(--ink-muted)}
+.alm-list .id{color:var(--ink-body);font-weight:600}
+.popup__foot{padding:12px 18px;display:flex;justify-content:flex-end;gap:8px;background:var(--soft-2);border-top:1px solid var(--border)}
+
+/* debug panel */
+.debug{background:#0F1115;color:#E5E7EB;border-radius:8px;font-family:var(--font-mono);font-size:12px;overflow:hidden;border:1px solid #1F2430}
+.debug__head{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#1F2430;border-bottom:1px solid #2A2F3A}
+.debug__title{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#9CA3AF;font-weight:600}
+.debug__title strong{color:#fff;margin-left:6px}
+.debug__chev{color:#9CA3AF}
+.debug__body{padding:14px 16px;display:grid;grid-template-columns:200px 1fr;row-gap:6px;column-gap:16px}
+.debug__body dt{color:#9CA3AF}
+.debug__body dd{margin:0;color:#E5E7EB;word-break:break-all}
+.debug__body dd .s{color:#A8E1FF}
+.debug__body dd .n{color:#F8B5C0}
+.debug__body dd .k{color:#FBE7B5}
+.debug__body dd .nul{color:#6B7280;font-style:italic}
+.debug__body dt.sect{grid-column:1 / -1;color:#fff;text-transform:uppercase;letter-spacing:.08em;font-size:10px;margin-top:6px;padding-top:6px;border-top:1px solid #2A2F3A;font-weight:700}
+
+.panel-actions{display:flex;justify-content:space-between;align-items:center;background:#fff;border:1px dashed var(--border);border-radius:8px;padding:10px 14px;margin-top:12px;font-size:12px;color:var(--ink-muted)}
+</style></head>
+<body>
+<div class="app">
+<aside class="sidebar"><div class="sidebar__brand"><div class="sidebar__wordmark">LG Innotek</div><div class="sidebar__eyebrow">MPAP</div></div>
+<nav class="nav">
+<a class="nav__item" href="#">login</a>
+<a class="nav__item" href="#">Home</a>
+<a class="nav__item" href="#">CMP Dashboard</a>
+<a class="nav__item" href="#">UPH Dashboard</a>
+<a class="nav__item" href="#">MTBA Dashboard</a>
+<a class="nav__item nav__item--active" href="#">MTBA Detail View</a>
+<a class="nav__item" href="#">MaxCapa Chat</a>
+</nav>
+<div class="sidebar__foot">v0.4.2</div></aside>
+
+<main class="content-wrap"><div class="top-strip"></div><div class="content">
+
+<header class="page-head">
+  <div>
+    <div class="eyebrow">RELIABILITY · MTBA · DETAIL</div>
+    <h1>MTBA Detail View</h1>
+    <p>실행 복구 안정판 · Comment 이력 포함 — 공정 셀 클릭 시 해당 공정/알람 상세 팝업이 열립니다.</p>
+  </div>
+  <div class="page-actions">
+    <button class="btn">페이지 상태 초기화</button>
+    <button class="btn btn--primary">패널 1개 추가</button>
+  </div>
+</header>
+
+<div class="toolbar">
+  <div class="field"><span class="field__label">모델 선택 #1</span><button class="select">R50<span>▾</span></button></div>
+  <div class="field"><span class="field__label">FOL In-line #1</span><button class="select">FOL-A<span>▾</span></button></div>
+  <button class="btn btn--primary" style="height:36px">조회 패널 #1</button>
+  <span class="toolbar__hint">grid_kind = <code style="font-family:var(--font-mono);background:var(--soft);padding:1px 6px;border-radius:4px">"fol"</code> · panel_id = 1</span>
+</div>
+
+<ul class="note-list">
+  <li>공정 셀 클릭 시 해당 공정/알람 상세 팝업이 열립니다.</li>
+  <li>p_* = 공정명 / pk_* = 해당 공정의 PK(설비 식별자) — 두 컬럼은 한 그룹으로 표시됩니다.</li>
+  <li>MTBA가 0/공란인 행은 회색으로 표시됩니다. 알람 누적 행은 좌측 보더로 강조됩니다.</li>
+</ul>
+
+<section class="sect">
+<div class="sect-head">
+  <div class="sect-head__left">
+    <span class="sect-num-band"><span class="sect-num-band__num">1</span>그리드</span>
+    <div class="sect-head__title">MTBA Detail Grid (FOL In-line #1)</div>
+    <div class="sect-head__sub">keyboard_arrow_right · 클릭한 셀이 focusedCell, 행이 selected_row_summary로 기록됩니다.</div>
+  </div>
+</div>
+
+<div class="grid-card">
+  <div class="grid-meta">
+    <div class="grid-meta__left">
+      <span><strong>4</strong> rows</span>
+      <span><strong>27</strong> cols</span>
+      <span>focusedCell: <strong style="font-family:var(--font-mono)">{rowIndex:1, colId:"p_IRCF Attach"}</strong></span>
+    </div>
+    <div style="display:flex;gap:6px"><button class="btn">CSV</button><button class="btn">컬럼 표시</button></div>
+  </div>
+  <div class="grid-scroll">
+  <table class="detail">
+    <thead>
+      <tr>
+        <th class="col-base col-w-base">호기</th>
+        <th class="col-base col-w-model">모델명</th>
+        <th class="col-base col-w-seg">설비세그먼트명</th>
+        <th class="col-base col-w-mtba" style="text-align:right">MTBA</th>
+        <th class="col-base col-w-qty" style="text-align:right">생산수량</th>
+        <th class="col-grp-p col-w-p">Dust Trap<span class="sub">p_Dust Trap</span></th>
+        <th class="col-grp-pk col-w-pk">PK<span class="sub">pk_</span></th>
+        <th class="col-grp-p col-w-p">Flip Chip<span class="sub">p_Flip Chip Bonding</span></th>
+        <th class="col-grp-pk col-w-pk">PK<span class="sub">pk_</span></th>
+        <th class="col-grp-p col-w-p">HFE Clean<span class="sub">p_HFE Clean</span></th>
+        <th class="col-grp-pk col-w-pk">PK<span class="sub">pk_</span></th>
+        <th class="col-grp-p col-w-p">HTCC Clean<span class="sub">p_HTCC Cleaning</span></th>
+        <th class="col-grp-pk col-w-pk">PK<span class="sub">pk_</span></th>
+        <th class="col-grp-p col-w-p">IRCF Attach<span class="sub">p_IRCF Attach</span></th>
+        <th class="col-grp-pk col-w-pk">PK<span class="sub">pk_</span></th>
+        <th class="col-grp-p col-w-p">IRCF Oven<span class="sub">p_IRCF Oven</span></th>
+        <th class="col-grp-pk col-w-pk">PK<span class="sub">pk_</span></th>
+        <th class="col-grp-p col-w-p">Image Test<span class="sub">p_Image Test</span></th>
+        <th class="col-grp-pk col-w-pk">PK<span class="sub">pk_</span></th>
+        <th class="col-grp-p col-w-p">Plasma<span class="sub">p_Plasma Cleaning</span></th>
+        <th class="col-grp-pk col-w-pk">PK<span class="sub">pk_</span></th>
+        <th class="col-grp-p col-w-p">Pre Focus<span class="sub">p_Pre Focus</span></th>
+        <th class="col-grp-pk col-w-pk">PK<span class="sub">pk_</span></th>
+        <th class="col-grp-p col-w-p">PF Oven<span class="sub">p_Pre Focus Oven</span></th>
+        <th class="col-grp-pk col-w-pk">PK<span class="sub">pk_</span></th>
+        <th class="col-grp-p col-w-p">Sensor UF<span class="sub">p_Sensor underfill</span></th>
+        <th class="col-grp-pk col-w-pk">PK<span class="sub">pk_</span></th>
+        <th class="col-grp-p col-w-p">Single AA<span class="sub">p_Single AA</span></th>
+        <th class="col-grp-pk col-w-pk">PK<span class="sub">pk_</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>#1003</td><td>R50</td><td>SEG-A1</td><td class="num">152</td><td class="num">12,480</td>
+        <td class="cell-p"><span class="cell-good">128</span></td><td class="cell-pk">DT-01</td>
+        <td class="cell-p">94</td><td class="cell-pk">FC-02</td>
+        <td class="cell-p">142</td><td class="cell-pk">HF-01</td>
+        <td class="cell-p">118</td><td class="cell-pk">HC-03</td>
+        <td class="cell-p">62</td><td class="cell-pk">IR-04</td>
+        <td class="cell-p">88</td><td class="cell-pk">IO-01</td>
+        <td class="cell-p">156</td><td class="cell-pk">IT-02</td>
+        <td class="cell-p">134</td><td class="cell-pk">PL-01</td>
+        <td class="cell-p">118</td><td class="cell-pk">PF-01</td>
+        <td class="cell-p">96</td><td class="cell-pk">PO-02</td>
+        <td class="cell-p">82</td><td class="cell-pk">SU-01</td>
+        <td class="cell-p">142</td><td class="cell-pk">SA-01</td>
+      </tr>
+      <tr class="is-focused">
+        <td>#1116</td><td>R50</td><td>SEG-B3</td><td class="num"><span class="cell-bad">38</span></td><td class="num">7,240</td>
+        <td class="cell-p">112</td><td class="cell-pk">DT-02</td>
+        <td class="cell-p"><span class="cell-warn">68</span></td><td class="cell-pk">FC-04</td>
+        <td class="cell-p">128</td><td class="cell-pk">HF-02</td>
+        <td class="cell-p">98</td><td class="cell-pk">HC-04</td>
+        <td class="cell-p"><span class="cell-bad">34</span></td><td class="cell-pk">IR-07</td>
+        <td class="cell-p">72</td><td class="cell-pk">IO-03</td>
+        <td class="cell-p">142</td><td class="cell-pk">IT-04</td>
+        <td class="cell-p">118</td><td class="cell-pk">PL-02</td>
+        <td class="cell-p">102</td><td class="cell-pk">PF-03</td>
+        <td class="cell-p">84</td><td class="cell-pk">PO-03</td>
+        <td class="cell-p"><span class="cell-warn">62</span></td><td class="cell-pk">SU-04</td>
+        <td class="cell-p">128</td><td class="cell-pk">SA-03</td>
+      </tr>
+      <tr>
+        <td>#1108</td><td>R50</td><td>SEG-B2</td><td class="num">94</td><td class="num">9,820</td>
+        <td class="cell-p">124</td><td class="cell-pk">DT-03</td>
+        <td class="cell-p">102</td><td class="cell-pk">FC-03</td>
+        <td class="cell-p">132</td><td class="cell-pk">HF-03</td>
+        <td class="cell-p">108</td><td class="cell-pk">HC-02</td>
+        <td class="cell-p">78</td><td class="cell-pk">IR-05</td>
+        <td class="cell-p">94</td><td class="cell-pk">IO-02</td>
+        <td class="cell-p">148</td><td class="cell-pk">IT-03</td>
+        <td class="cell-p">126</td><td class="cell-pk">PL-03</td>
+        <td class="cell-p">112</td><td class="cell-pk">PF-02</td>
+        <td class="cell-p">92</td><td class="cell-pk">PO-01</td>
+        <td class="cell-p">76</td><td class="cell-pk">SU-02</td>
+        <td class="cell-p">134</td><td class="cell-pk">SA-02</td>
+      </tr>
+      <tr>
+        <td>#1024</td><td>R50</td><td>SEG-A2</td><td class="num">128</td><td class="num">11,210</td>
+        <td class="cell-p">118</td><td class="cell-pk">DT-04</td>
+        <td class="cell-p">108</td><td class="cell-pk">FC-01</td>
+        <td class="cell-p">136</td><td class="cell-pk">HF-04</td>
+        <td class="cell-p">124</td><td class="cell-pk">HC-01</td>
+        <td class="cell-p">88</td><td class="cell-pk">IR-02</td>
+        <td class="cell-p">102</td><td class="cell-pk">IO-04</td>
+        <td class="cell-p">152</td><td class="cell-pk">IT-01</td>
+        <td class="cell-p">132</td><td class="cell-pk">PL-04</td>
+        <td class="cell-p">122</td><td class="cell-pk">PF-04</td>
+        <td class="cell-p">104</td><td class="cell-pk">PO-04</td>
+        <td class="cell-p">88</td><td class="cell-pk">SU-03</td>
+        <td class="cell-p">138</td><td class="cell-pk">SA-04</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+</section>
+
+<section class="sect">
+<div class="sect-head">
+  <div class="sect-head__left">
+    <span class="sect-num-band"><span class="sect-num-band__num">2</span>디버그</span>
+    <div class="sect-head__title">디버그 정보 (패널 1)</div>
+    <div class="sect-head__sub">streamlit_version 1.55.0 · st_aggrid_version unknown</div>
+  </div>
+  <button class="btn btn--ghost">접기 ▾</button>
+</div>
+<div class="debug">
+  <div class="debug__head"><div class="debug__title">PANEL_DEBUG <strong>panel_id=1 · grid_kind="fol"</strong></div><span class="debug__chev">{ }</span></div>
+  <dl class="debug__body">
+    <dt>panel_id</dt><dd><span class="n">1</span></dd>
+    <dt>grid_kind</dt><dd><span class="s">"fol"</span></dd>
+    <dt>streamlit_version</dt><dd><span class="s">"1.55.0"</span></dd>
+    <dt>st_aggrid_version</dt><dd><span class="s">"unknown"</span></dd>
+
+    <dt class="sect">response_keys / event_data</dt>
+    <dt>eventData</dt><dd>{ <span class="k">"type"</span>: <span class="s">"cellClicked"</span>, <span class="k">"rowIndex"</span>: <span class="n">1</span>, <span class="k">"colId"</span>: <span class="s">"p_IRCF Attach"</span> }</dd>
+    <dt>focusedCell / focused_cell</dt><dd>{ <span class="k">"rowIndex"</span>: <span class="n">1</span>, <span class="k">"colId"</span>: <span class="s">"p_IRCF Attach"</span>, <span class="k">"rowPinned"</span>: <span class="nul">null</span> }</dd>
+    <dt>gridState / grid_state</dt><dd>{ <span class="k">"sort"</span>: [{<span class="k">"colId"</span>:<span class="s">"MTBA"</span>,<span class="k">"sort"</span>:<span class="s">"asc"</span>}], <span class="k">"filter"</span>: { } }</dd>
+    <dt>selected_rows</dt><dd>[ <span class="n">1</span> ]</dd>
+
+    <dt class="sect">popup / marker</dt>
+    <dt>popup_key</dt><dd><span class="s">"popup_fol_1_r1_p_IRCF Attach"</span></dd>
+    <dt>click_marker</dt><dd><span class="s">"r1::p_IRCF Attach::1714291342"</span></dd>
+    <dt>last_popup_marker_before</dt><dd><span class="s">"r3::p_Flip Chip Bonding::1714290981"</span></dd>
+    <dt>session_open_popup</dt><dd><span class="s">"popup_fol_1_r1_p_IRCF Attach"</span></dd>
+    <dt>session_selected_row</dt><dd><span class="n">1</span></dd>
+
+    <dt class="sect">selected_row_summary</dt>
+    <dt>알람명</dt><dd><span class="s">"IRCF Attach Pickup Fail"</span></dd>
+    <dt>호기</dt><dd><span class="s">"#1116"</span></dd>
+    <dt>모델명</dt><dd><span class="s">"R50"</span></dd>
+    <dt>설비세그먼트명</dt><dd><span class="s">"SEG-B3"</span></dd>
+
+    <dt class="sect">marker_rows / work_df</dt>
+    <dt>marker_rows</dt><dd>[ <span class="n">1</span>, <span class="n">3</span> ]</dd>
+    <dt>work_df_shape</dt><dd>(<span class="n">4</span>, <span class="n">29</span>)</dd>
+    <dt>work_df_columns_head</dt><dd>[ <span class="s">"모델명"</span>, <span class="s">"설비세그먼트명"</span>, <span class="s">"MTBA"</span>, <span class="s">"생산수량"</span>, <span class="s">"p_Dust Trap"</span>, <span class="s">"pk_Dust Trap"</span>, <span class="s">"p_Flip Chip Bonding"</span>, <span class="s">"pk_Flip Chip Bonding"</span> … ]</dd>
+  </dl>
+</div>
+<div class="panel-actions"><span>패널 1</span><div style="display:flex;gap:6px"><button class="btn">이 패널 아래에 추가 #1</button><button class="btn">이 패널 제거 #1</button></div></div>
+</section>
+
+</div></main></div>
+
+<!-- popup overlay (focused cell 상세) -->
+<div class="scrim" id="scrim">
+  <div class="popup" role="dialog" aria-modal="true" aria-labelledby="popupTitle">
+    <div class="popup__head">
+      <div class="popup__title" id="popupTitle">공정/알람 상세<span class="popup__pill">p_IRCF Attach</span></div>
+      <button class="popup__close" id="popupClose" aria-label="close">×</button>
+    </div>
+    <div class="popup__body">
+      <dl class="kv">
+        <dt>알람명</dt><dd>IRCF Attach Pickup Fail</dd>
+        <dt>호기</dt><dd>#1116</dd>
+        <dt>모델명</dt><dd>R50</dd>
+        <dt>설비세그먼트명</dt><dd>SEG-B3</dd>
+        <dt>MTBA</dt><dd class="high">34</dd>
+        <dt>생산수량</dt><dd>7,240</dd>
+      </dl>
+      <div class="popup__sect">
+        <h4>최근 알람 이력 (3건)</h4>
+        <ul class="alm-list">
+          <li class="high"><span class="t">04-28 14:22</span><span class="id">ALM-2031</span><span>Pickup Vacuum Loss · 3회 반복</span></li>
+          <li class="high"><span class="t">04-28 11:05</span><span class="id">ALM-2031</span><span>Pickup Vacuum Loss · 재현</span></li>
+          <li class="mid"><span class="t">04-27 22:48</span><span class="id">ALM-1042</span><span>Nozzle Position Drift</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="popup__foot">
+      <button class="btn">메모 추가</button>
+      <button class="btn btn--primary">상세 보고서 열기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const scrim=document.getElementById('scrim');const close=document.getElementById('popupClose');
+close.addEventListener('click',()=>scrim.style.display='none');
+scrim.addEventListener('click',e=>{if(e.target===scrim)scrim.style.display='none';});
+document.querySelectorAll('td.cell-p').forEach(td=>td.addEventListener('click',()=>{scrim.style.display='flex';}));
+</script>
+</body></html>
