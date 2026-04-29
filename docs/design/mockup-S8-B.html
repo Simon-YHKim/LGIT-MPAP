@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8" /><title>Streamlit</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" />
+<style>
+:root{--primary:#A50034;--primary-dark:#7E0027;--primary-tint:#F8E5EC;--page-bg:#F7F8FA;--soft:#F1F3F5;--soft-2:#FAFBFC;--border:#E5E7EB;--border-strong:#CBD0D6;--ink-body:#1F2430;--ink-muted:#6B7280;--ink-subtle:#9CA3AF;--ink-faint:#D1D5DB;--status-good:#1F8B4C;--status-warn:#B57F1B;--status-bad:#B23A48;--font-body:'Pretendard Variable',Pretendard,system-ui,sans-serif;--font-mono:'IBM Plex Mono',ui-monospace,Menlo,monospace}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;background:var(--page-bg);color:var(--ink-body);font-family:var(--font-body);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased;word-break:keep-all}
+button,input,textarea{font-family:inherit}
+.app{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+
+.sidebar{background:#fff;border-right:1px solid var(--border);padding:20px 0;position:sticky;top:0;height:100vh;display:flex;flex-direction:column}
+.sidebar__brand{padding:0 20px 20px;border-bottom:1px solid var(--border);margin-bottom:12px}
+.sidebar__wordmark{font-size:16px;font-weight:700;letter-spacing:-0.01em}
+.sidebar__eyebrow{margin-top:4px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-subtle)}
+.nav{display:flex;flex-direction:column;gap:2px;padding:0 8px}
+.nav__item{display:flex;height:36px;padding:0 16px;align-items:center;font-size:14px;font-weight:600;color:var(--ink-muted);text-decoration:none;border-radius:6px;position:relative}
+.nav__item:hover{background:var(--soft);color:var(--ink-body)}
+.nav__item--active{color:var(--ink-body)}
+.nav__item--active::before{content:"";position:absolute;left:0;top:6px;bottom:6px;width:4px;background:var(--primary);border-radius:0 2px 2px 0}
+.sidebar__foot{margin-top:auto;padding:16px 20px;font-size:12px;color:var(--ink-subtle);font-family:var(--font-mono)}
+
+.content-wrap{display:flex;flex-direction:column;min-height:100vh}
+.top-strip{height:8px;background:var(--primary)}
+
+.chat-shell{flex:1;display:flex;justify-content:center;padding:32px 32px 24px}
+.chat-col{width:100%;max-width:920px;display:flex;flex-direction:column;gap:18px}
+
+.eyebrow{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-subtle);margin-bottom:8px}
+.page-head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px}
+.page-head h1{margin:0 0 6px;font-size:24px;font-weight:700;letter-spacing:-0.01em}
+.page-head .sub{margin:0;font-size:12px;color:var(--ink-muted);max-width:680px}
+.page-head__actions{display:flex;gap:6px}
+
+.btn{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border:1px solid var(--border);background:#fff;color:var(--ink-body);font:inherit;font-size:12px;font-weight:600;border-radius:8px;cursor:pointer}
+.btn:hover{border-color:var(--border-strong);background:var(--soft)}
+.btn--primary{background:var(--primary);border-color:var(--primary);color:#fff}
+.btn--primary:hover{background:var(--primary-dark);border-color:var(--primary-dark);color:#fff}
+.btn--ghost{background:transparent;border-color:transparent;color:var(--ink-muted)}
+.btn--ghost:hover{background:var(--soft);color:var(--ink-body)}
+
+/* hint */
+.hint-card{background:#fff;border:1px solid var(--border);border-left:4px solid var(--primary);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--ink-body)}
+.hint-card code{font-family:var(--font-mono);background:var(--soft);padding:1px 6px;border-radius:4px;font-size:11px;color:var(--primary-dark);font-weight:600}
+
+/* messages */
+.thread{display:flex;flex-direction:column;gap:18px}
+.msg{display:grid;grid-template-columns:32px 1fr;gap:12px;align-items:flex-start}
+.avatar{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:11px;font-weight:700;flex:none}
+.avatar--user{background:var(--ink-body);color:#fff}
+.avatar--ai{background:var(--primary);color:#fff;position:relative;overflow:hidden}
+.avatar--ai svg{width:16px;height:16px}
+
+.msg__body{display:flex;flex-direction:column;gap:8px;min-width:0}
+.msg__meta{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--ink-subtle);font-family:var(--font-mono)}
+.msg__meta strong{color:var(--ink-body);font-weight:700;font-family:var(--font-body);font-size:12px}
+.msg__bubble{background:#fff;border:1px solid var(--border);border-radius:8px;padding:12px 14px;font-size:14px;line-height:1.6}
+.msg--user .msg__bubble{background:var(--ink-body);color:#fff;border-color:var(--ink-body)}
+.msg--user .msg__bubble code{background:rgba(255,255,255,.14);color:#FFD2DC}
+
+/* analysis trace */
+.trace{display:flex;flex-direction:column;border:1px solid var(--border);border-radius:8px;background:var(--soft-2);overflow:hidden}
+.trace__head{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:#fff;border-bottom:1px solid var(--border)}
+.trace__title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-muted)}
+.trace__title strong{color:var(--ink-body);margin-right:6px}
+.trace__steps{display:flex;flex-direction:column}
+.trace__step{display:grid;grid-template-columns:24px 110px 1fr auto;gap:12px;padding:8px 14px;font-size:12px;align-items:center;border-bottom:1px dashed var(--border)}
+.trace__step:last-child{border-bottom:0}
+.trace__num{font-family:var(--font-mono);color:var(--ink-subtle);font-size:11px}
+.trace__label{font-weight:700;color:var(--ink-body);font-size:11px;text-transform:uppercase;letter-spacing:.04em}
+.trace__detail{color:var(--ink-muted);font-family:var(--font-mono);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.trace__status{font-family:var(--font-mono);font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px;background:#E6F4EA;color:var(--status-good)}
+.trace__status--run{background:var(--primary-tint);color:var(--primary-dark)}
+
+/* sql block */
+.code-card{background:#0F1115;color:#E5E7EB;border-radius:8px;font-family:var(--font-mono);font-size:12px;overflow:hidden;border:1px solid #1F2430}
+.code-card__head{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:#1F2430;border-bottom:1px solid #2A2F3A;font-size:11px;letter-spacing:.06em;color:#9CA3AF;text-transform:uppercase;font-weight:700}
+.code-card__head .badge{background:var(--primary);color:#fff;padding:1px 6px;border-radius:4px;font-size:10px}
+.code-card__body{padding:12px 14px;line-height:1.6;white-space:pre;overflow-x:auto}
+.code-kw{color:#F8B5C0}.code-fn{color:#FBE7B5}.code-str{color:#A8E1FF}.code-num{color:#C8E6A0}.code-cmt{color:#6B7280;font-style:italic}
+
+/* result */
+.result-card{background:#fff;border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.result-card__head{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:1px solid var(--border);background:var(--soft-2)}
+.result-card__title{font-size:13px;font-weight:700}
+.result-card__sub{font-size:11px;color:var(--ink-muted);font-family:var(--font-mono)}
+.result-card__actions{display:flex;gap:6px}
+
+/* kpi strip */
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--border)}
+.kpi{padding:14px 16px;border-right:1px solid var(--border);position:relative}
+.kpi:last-child{border-right:0}
+.kpi__label{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-muted);font-weight:700;margin-bottom:4px}
+.kpi__value{font-family:var(--font-mono);font-size:22px;font-weight:600;letter-spacing:-0.01em;color:var(--ink-body)}
+.kpi__delta{font-family:var(--font-mono);font-size:11px;font-weight:600;margin-top:4px}
+.kpi--accent::before{content:"";position:absolute;left:0;top:14px;bottom:14px;width:3px;background:var(--primary);border-radius:0 2px 2px 0}
+.delta-good{color:var(--status-good)}.delta-bad{color:var(--status-bad)}
+
+/* chart */
+.chart{padding:16px;border-top:1px solid var(--border)}
+.chart__head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.chart__legend{display:flex;gap:14px;font-size:11px;font-family:var(--font-mono);color:var(--ink-muted)}
+.legend-dot{display:inline-block;width:10px;height:10px;margin-right:4px;vertical-align:middle;border-radius:2px}
+.line-chart{position:relative;height:200px}
+.line-chart svg{width:100%;height:100%;display:block}
+.x-axis{display:grid;grid-template-columns:repeat(7,1fr);gap:0;padding-top:6px;font-size:11px;font-family:var(--font-mono);color:var(--ink-muted);text-align:center}
+
+/* result table */
+.result-table{width:100%;border-collapse:separate;border-spacing:0;font-size:12px;border-top:1px solid var(--border)}
+.result-table thead th{background:var(--soft);padding:8px 12px;font-size:11px;font-weight:700;text-align:left;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-muted);border-bottom:1px solid var(--border)}
+.result-table th.num,.result-table td.num{text-align:right;font-family:var(--font-mono)}
+.result-table tbody td{padding:6px 12px;border-bottom:1px solid var(--border);vertical-align:middle}
+.result-table tbody tr:last-child td{border-bottom:0}
+
+/* answer narrative */
+.answer{background:#fff;border:1px solid var(--border);border-left:4px solid var(--primary);border-radius:8px;padding:14px 16px;font-size:13px;line-height:1.65}
+.answer h4{margin:0 0 8px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--primary-dark)}
+.answer ul{margin:6px 0 0;padding-left:18px}
+.answer li{margin-bottom:3px}
+.answer mark{background:#FFF6CF;color:var(--ink-body);padding:0 3px;border-radius:3px;font-weight:600}
+
+.followups{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.followup{display:inline-flex;align-items:center;gap:4px;height:26px;padding:0 10px;background:#fff;border:1px solid var(--border);border-radius:999px;font-size:12px;cursor:pointer;color:var(--ink-body)}
+.followup:hover{border-color:var(--primary);color:var(--primary-dark);background:var(--primary-tint)}
+.followup::before{content:"↳";font-family:var(--font-mono);color:var(--ink-subtle);font-size:11px}
+
+/* composer */
+.composer-wrap{position:sticky;bottom:0;padding-top:14px;background:linear-gradient(180deg,rgba(247,248,250,0) 0%,var(--page-bg) 60%)}
+.composer{background:#fff;border:1px solid var(--border-strong);border-radius:12px;box-shadow:0 8px 24px rgba(15,17,21,.06);padding:10px 12px;display:flex;flex-direction:column;gap:6px}
+.composer__top{display:flex;gap:10px;align-items:flex-start}
+.composer__icon{flex:none;width:32px;height:32px;border-radius:8px;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;margin-top:2px}
+.composer__icon svg{width:16px;height:16px}
+.composer__input{flex:1;border:0;outline:none;font:inherit;font-size:14px;line-height:1.55;resize:none;min-height:44px;padding:8px 4px;color:var(--ink-body);background:transparent}
+.composer__input::placeholder{color:var(--ink-subtle)}
+.composer__bot{display:flex;justify-content:space-between;align-items:center;padding-top:6px;border-top:1px dashed var(--border)}
+.composer__chips{display:flex;gap:6px}
+.chip{display:inline-flex;align-items:center;gap:4px;height:22px;padding:0 8px;background:var(--soft);border:1px solid var(--border);border-radius:999px;font-size:11px;font-weight:600;color:var(--ink-muted);font-family:var(--font-mono)}
+.chip--on{background:var(--primary-tint);border-color:var(--primary);color:var(--primary-dark)}
+.chip__dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+.composer__actions{display:flex;gap:6px}
+</style></head>
+<body>
+<div class="app">
+<aside class="sidebar"><div class="sidebar__brand"><div class="sidebar__wordmark">LG Innotek</div><div class="sidebar__eyebrow">MPAP</div></div>
+<nav class="nav">
+<a class="nav__item" href="#">login</a>
+<a class="nav__item" href="#">Home</a>
+<a class="nav__item" href="#">CMP Dashboard</a>
+<a class="nav__item" href="#">UPH Dashboard</a>
+<a class="nav__item" href="#">MTBA Dashboard</a>
+<a class="nav__item" href="#">MTBA Detail View</a>
+<a class="nav__item nav__item--active" href="#">MaxCapa Chat</a>
+</nav>
+<div class="sidebar__foot">v0.4.2</div></aside>
+
+<main class="content-wrap"><div class="top-strip"></div>
+<div class="chat-shell"><div class="chat-col">
+
+<header class="page-head">
+  <div>
+    <div class="eyebrow">MAXCAPA · CHAT · SESSION</div>
+    <h1>MaxCapa Chat(대화형 생산지표조회)</h1>
+    <p class="sub">기본 조회는 MES UPH(uph_input_runtime_daily_model), 질문에 ITAS를 명시하면 ITAS UPH(itas_uph_result)로 조회합니다.</p>
+  </div>
+  <div class="page-head__actions">
+    <button class="btn btn--ghost">대화 초기화</button>
+    <button class="btn">CSV 내보내기</button>
+  </div>
+</header>
+
+<div class="hint-card">
+  현재 세션 데이터소스 → <code>itas_uph_result</code> · 질문에 <code>ITAS</code> 키워드 감지로 자동 분기됨.
+</div>
+
+<div class="thread">
+
+  <!-- USER MSG -->
+  <div class="msg msg--user">
+    <div class="avatar avatar--user">YOU</div>
+    <div class="msg__body">
+      <div class="msg__meta"><strong>나</strong><span>· 2026-04-28 16:42:08</span></div>
+      <div class="msg__bubble">FOL-A 라인의 R50 모델, 최근 1주일 일별 <code>ITAS</code> UPH 추이와 평균 보여줘. 전주 대비 변화도 같이.</div>
+    </div>
+  </div>
+
+  <!-- AI MSG -->
+  <div class="msg msg--ai">
+    <div class="avatar avatar--ai"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+    <div class="msg__body">
+      <div class="msg__meta"><strong>MaxCapa</strong><span>· 1.4s · ITAS 모드</span></div>
+
+      <!-- analysis trace -->
+      <div class="trace">
+        <div class="trace__head"><div class="trace__title"><strong>질문 분석 및 실행</strong>4단계 완료</div><span style="font-family:var(--font-mono);font-size:11px;color:var(--ink-muted)">trace_id 7f3c…91a</span></div>
+        <div class="trace__steps">
+          <div class="trace__step"><span class="trace__num">01</span><span class="trace__label">parse intent</span><span class="trace__detail">model=R50 · line=FOL-A · range=last_7d · metric=UPH · source=ITAS</span><span class="trace__status">OK</span></div>
+          <div class="trace__step"><span class="trace__num">02</span><span class="trace__label">route source</span><span class="trace__detail">"ITAS" 감지 → itas_uph_result</span><span class="trace__status">OK</span></div>
+          <div class="trace__step"><span class="trace__num">03</span><span class="trace__label">build sql</span><span class="trace__detail">SELECT ymd, AVG(uph) … GROUP BY ymd</span><span class="trace__status">OK</span></div>
+          <div class="trace__step"><span class="trace__num">04</span><span class="trace__label">execute</span><span class="trace__detail">7 rows · 18ms · cached=false</span><span class="trace__status">OK</span></div>
+        </div>
+      </div>
+
+      <!-- sql -->
+      <div class="code-card">
+        <div class="code-card__head"><span><span class="badge">SQL</span> &nbsp;itas_uph_result</span><span>execute · 18 ms</span></div>
+<div class="code-card__body"><span class="code-cmt">-- ITAS UPH · FOL-A · R50 · last 7 days</span>
+<span class="code-kw">SELECT</span> ymd, <span class="code-fn">AVG</span>(uph) <span class="code-kw">AS</span> avg_uph, <span class="code-fn">SUM</span>(qty) <span class="code-kw">AS</span> qty
+<span class="code-kw">FROM</span>   itas_uph_result
+<span class="code-kw">WHERE</span>  line  = <span class="code-str">'FOL-A'</span>
+  <span class="code-kw">AND</span>  model = <span class="code-str">'R50'</span>
+  <span class="code-kw">AND</span>  ymd  >= <span class="code-fn">CURRENT_DATE</span> - <span class="code-num">7</span>
+<span class="code-kw">GROUP BY</span> ymd
+<span class="code-kw">ORDER BY</span> ymd;</div>
+      </div>
+
+      <!-- result -->
+      <div class="result-card">
+        <div class="result-card__head">
+          <div><div class="result-card__title">결과 · FOL-A · R50 · ITAS UPH (7d)</div><div class="result-card__sub">rows=7 · ymd / avg_uph / qty</div></div>
+          <div class="result-card__actions"><button class="btn">CSV</button><button class="btn">차트로 보기</button><button class="btn">표로 보기</button></div>
+        </div>
+
+        <!-- kpi strip -->
+        <div class="kpis">
+          <div class="kpi kpi--accent"><div class="kpi__label">평균 UPH (7d)</div><div class="kpi__value">412.8</div><div class="kpi__delta delta-good">▲ 3.4% vs 전주</div></div>
+          <div class="kpi"><div class="kpi__label">최고일</div><div class="kpi__value">438.1</div><div class="kpi__delta">04-26 (토)</div></div>
+          <div class="kpi"><div class="kpi__label">최저일</div><div class="kpi__value">381.5</div><div class="kpi__delta delta-bad">04-23 (수)</div></div>
+          <div class="kpi"><div class="kpi__label">총 생산수량</div><div class="kpi__value">68,420</div><div class="kpi__delta">qty sum</div></div>
+        </div>
+
+        <!-- chart -->
+        <div class="chart">
+          <div class="chart__head"><div style="font-size:12px;font-weight:700">일별 평균 UPH</div><div class="chart__legend"><span><span class="legend-dot" style="background:#A50034"></span>이번 주</span><span><span class="legend-dot" style="background:#CBD0D6"></span>전주</span></div></div>
+          <div class="line-chart"><svg viewBox="0 0 700 200" preserveAspectRatio="none">
+            <!-- grid -->
+            <g stroke="#E5E7EB" stroke-width="1"><line x1="0" y1="40" x2="700" y2="40"/><line x1="0" y1="90" x2="700" y2="90"/><line x1="0" y1="140" x2="700" y2="140"/><line x1="0" y1="190" x2="700" y2="190"/></g>
+            <text x="4" y="44" font-family="IBM Plex Mono" font-size="9" fill="#9CA3AF">450</text>
+            <text x="4" y="94" font-family="IBM Plex Mono" font-size="9" fill="#9CA3AF">400</text>
+            <text x="4" y="144" font-family="IBM Plex Mono" font-size="9" fill="#9CA3AF">350</text>
+            <!-- prev week (gray) -->
+            <polyline fill="none" stroke="#CBD0D6" stroke-width="2" stroke-dasharray="4 4" points="50,110 150,118 250,128 350,124 450,116 550,108 650,118"/>
+            <!-- this week (wine) area -->
+            <path d="M50,108 L150,98 L250,118 L350,82 L450,72 L550,88 L650,96 L650,190 L50,190 Z" fill="#A50034" fill-opacity="0.08"/>
+            <polyline fill="none" stroke="#A50034" stroke-width="2.5" points="50,108 150,98 250,118 350,82 450,72 550,88 650,96"/>
+            <!-- dots + labels -->
+            <g fill="#A50034"><circle cx="50" cy="108" r="3.5"/><circle cx="150" cy="98" r="3.5"/><circle cx="250" cy="118" r="3.5"/><circle cx="350" cy="82" r="4.5" stroke="#fff" stroke-width="2"/><circle cx="450" cy="72" r="4.5" stroke="#fff" stroke-width="2"/><circle cx="550" cy="88" r="3.5"/><circle cx="650" cy="96" r="3.5"/></g>
+            <text x="450" y="62" font-family="IBM Plex Mono" font-size="10" fill="#A50034" font-weight="600" text-anchor="middle">438.1</text>
+            <text x="250" y="135" font-family="IBM Plex Mono" font-size="10" fill="#9CA3AF" text-anchor="middle">381.5</text>
+          </svg></div>
+          <div class="x-axis"><div>04-22</div><div>04-23</div><div>04-24</div><div>04-25</div><div>04-26</div><div>04-27</div><div>04-28</div></div>
+        </div>
+
+        <!-- result table -->
+        <table class="result-table">
+          <thead><tr><th>ymd</th><th>요일</th><th class="num">avg_uph</th><th class="num">qty</th><th class="num">전일 대비</th></tr></thead>
+          <tbody>
+            <tr><td>2026-04-22</td><td>화</td><td class="num">405.2</td><td class="num">9,180</td><td class="num">—</td></tr>
+            <tr><td>2026-04-23</td><td>수</td><td class="num">381.5</td><td class="num">8,640</td><td class="num delta-bad">-5.8%</td></tr>
+            <tr><td>2026-04-24</td><td>목</td><td class="num">398.7</td><td class="num">9,020</td><td class="num delta-good">+4.5%</td></tr>
+            <tr><td>2026-04-25</td><td>금</td><td class="num">421.4</td><td class="num">10,140</td><td class="num delta-good">+5.7%</td></tr>
+            <tr><td>2026-04-26</td><td>토</td><td class="num">438.1</td><td class="num">10,920</td><td class="num delta-good">+4.0%</td></tr>
+            <tr><td>2026-04-27</td><td>일</td><td class="num">418.9</td><td class="num">10,260</td><td class="num delta-bad">-4.4%</td></tr>
+            <tr><td>2026-04-28</td><td>월</td><td class="num">425.5</td><td class="num">10,260</td><td class="num delta-good">+1.6%</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- narrative answer -->
+      <div class="answer">
+        <h4>요약</h4>
+        <ul>
+          <li><mark>FOL-A · R50</mark> 의 최근 7일 평균 ITAS UPH는 <mark>412.8</mark> 로 전주 평균(399.3) 대비 <mark>+3.4%</mark> 상승했습니다.</li>
+          <li>주간 최저는 <mark>04-23 (수) 381.5</mark>, 최고는 <mark>04-26 (토) 438.1</mark> 로 주말 가동률 영향이 큽니다.</li>
+          <li>04-23 수요일 dip 은 IRCF Attach 라인의 반복 알람과 시점이 일치합니다 — MTBA Detail에서 확인 권장.</li>
+        </ul>
+      </div>
+
+      <div class="followups">
+        <button class="followup">04-23 dip 의 알람 원인 보여줘</button>
+        <button class="followup">동일 조건 MES UPH 와 비교</button>
+        <button class="followup">FOL-A 전체 모델로 확장</button>
+        <button class="followup">CSV 내보내기</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- composer (active state) -->
+<div class="composer-wrap"><div class="composer">
+  <div class="composer__top">
+    <div class="composer__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22 11 13 2 9 22 2z"/></svg></div>
+    <textarea class="composer__input" placeholder="질문 입력 — 예) 04-23 dip 원인을 라인 / 알람 단위로 분해해줘">04-23 dip 원인을 라인 / 알람 단위로 분해해줘</textarea>
+  </div>
+  <div class="composer__bot">
+    <div class="composer__chips">
+      <span class="chip">MES UPH</span>
+      <span class="chip chip--on"><span class="chip__dot"></span>ITAS UPH</span>
+      <span class="chip" style="background:transparent;border-style:dashed">AUTO 분기 ON</span>
+      <span class="chip" style="background:#FBEBEC;border-color:#F0BFC6;color:#7E0027">세션 1턴</span>
+    </div>
+    <div class="composer__actions">
+      <button class="btn btn--ghost">초기화</button>
+      <button class="btn btn--primary">질문 분석 및 실행 ▸</button>
+    </div>
+  </div>
+</div></div>
+
+</div></div></main></div>
+</body></html>
