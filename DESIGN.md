@@ -61,9 +61,14 @@
 
 | Role | Font | Weights | Usage |
 |---|---|---|---|
-| **Body / UI / Label** | `Pretendard Variable` | 400, 600, 700 | 한국어 1순위. CDN: `https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css` |
+| **Body / UI / Label (1순위)** | `LG Smart` (LG 코퍼레이트) | 300, 400, 600, 700 | 사내 PC 에 설치된 LG 폰트를 `local()` 로 우선 매칭 (`LG Smart UI` / `LG Smart_H` / `LGSmHaTR` / `LG EI Text` 등 다양한 설치 변형 지원) |
+| **Body / UI / Label (Fallback)** | `Pretendard Variable` | 400, 600, 700 | LG 폰트 미설치 환경 대체. CDN: `https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css` |
 | **Numbers / KPI / Table cells** | `IBM Plex Mono` | 400, 600 | KPI 숫자, 표 숫자 셀 |
-| **Fallback** | `'Malgun Gothic', system-ui, sans-serif` | — | 사내망 CDN 차단 시 |
+| **System Fallback** | `'Malgun Gothic', system-ui, sans-serif` | — | 모든 외부 CDN 차단 시 |
+
+**Font stack** (CSS): `'LG Smart', 'Pretendard Variable', Pretendard, 'Malgun Gothic', system-ui, sans-serif`
+
+**원리**: 사내 PC 에서는 LG 코퍼레이트 폰트로 자연스레 렌더, 외부 환경(갤탭/모바일/외부망)에서는 Pretendard 로 graceful fallback.
 
 ### Type scale (desktop)
 
