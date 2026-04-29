@@ -1,0 +1,76 @@
+---
+name: {{kebab-case-gerund-name}}
+description: {{third-person-verb-phrase}}. Use when the user wants to {{verb phrase}}, or says "{{phrase_1}}", "{{phrase_2}}", "{{phrase_3}}". Produces {{concrete-output}}. Use whenever {{primary-condition}}.
+version: 0.1.0
+compatibility:
+  - python>=3.9
+---
+
+# {{Title Case Name}}
+
+## Overview
+
+One paragraph, starting with a verb: what this skill does, what it
+produces, and when Claude should invoke it. Trust that Claude knows
+standard tools and formats — don't define them.
+
+## Workflow
+
+1. First imperative step (start with a verb: Read, Run, Parse,
+   Validate, ...).
+2. Second imperative step.
+3. **Gate:** describe what must be true before advancing.
+4. Third imperative step.
+5. Final step — what Claude reports to the user.
+
+For long workflows, use a copyable checklist so the user can track
+progress:
+
+    - [ ] Step 1: ...
+    - [ ] Step 2: ...
+    - [ ] Step 3: ...
+
+## Principles
+
+- **Fail loud, succeed quiet.** If something is wrong, stop and
+  report. Don't paper over errors.
+- **Grade the outcome, not the path.** Check the final state, not
+  the sequence of tool calls used to get there.
+
+## References
+
+Each reference file is reachable in one hop from this SKILL.md
+(never nest references).
+
+- `references/{{topic_1}}.md` — read when you need {{context_1}}
+- `references/{{topic_2}}.md` — read when you need {{context_2}}
+
+## Scripts
+
+| Script | Purpose |
+|--------|---------|
+| `scripts/{{script_1}}.py` | {{one-line purpose}} |
+
+Run: `python scripts/{{script_1}}.py <args>`
+
+---
+
+<!--
+Template checklist — delete before shipping:
+
+- [ ] name is gerund form if possible (e.g. `processing-pdfs`)
+- [ ] name is kebab-case, ≤ 64 chars, no `anthropic`/`claude`
+- [ ] description is third person (no "I can", no "you can")
+- [ ] description leads with "Use when..."
+- [ ] description contains 3+ verbatim user trigger phrases
+- [ ] description names the output format
+- [ ] description includes concrete hooks (file ext, tool, library)
+- [ ] description is ≤ 1024 chars
+- [ ] body is < 500 lines (ideally < 300)
+- [ ] all reference files exist at `references/*.md`
+- [ ] no references link to other references (one level deep)
+- [ ] forward slashes in paths (no `scripts\foo.py`)
+- [ ] no TODO / FIXME / <placeholder> markers
+- [ ] `python scripts/validate_skill.py <this-skill>` exits 0
+- [ ] `evals/cases.json` has ≥ 3 cases covering real prompts
+-->

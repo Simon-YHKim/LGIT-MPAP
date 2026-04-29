@@ -1,0 +1,28 @@
+{
+  "skill": "simon-tdd",
+  "version": "1.0.0",
+  "cases": [
+    {
+      "id": "add-feature",
+      "prompt": "유저 프로필에 bio 필드 추가하는 기능 구현해줘",
+      "assertions": [
+        {
+          "id": "writes-failing-test-first",
+          "text": "The agent writes a failing test first (RED) before any implementation."
+        },
+        {
+          "id": "verifies-test-fails",
+          "text": "The agent runs the test and confirms it fails before moving on."
+        },
+        {
+          "id": "minimal-green",
+          "text": "The agent writes minimal code to pass (GREEN), then refactors (REFACTOR)."
+        },
+        {
+          "id": "atomic-commits",
+          "text": "The agent makes atomic commits per cycle (feat: or test:)."
+        }
+      ]
+    }
+  ]
+}

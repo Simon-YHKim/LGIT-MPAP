@@ -1,0 +1,45 @@
+{
+  "skill": "context-guardian",
+  "version": "1.0.0",
+  "cases": [
+    {
+      "id": "prevention-install",
+      "prompt": "context-guardian 규칙을 이 프로젝트에 설치해줘",
+      "assertions": [
+        { "id": "adds-claude-md-block", "text": "The agent runs scripts/install-rules.sh which appends a Context Guardian Rules block to CLAUDE.md if the marker is absent." },
+        { "id": "creates-claudeignore", "text": "The agent creates .claudeignore with node_modules, .next, dist, .git, and lock files if none exists." },
+        { "id": "idempotent-on-rerun", "text": "Running install-rules.sh twice does not duplicate the rules block." },
+        { "id": "suggests-gitignore-entries", "text": "The agent mentions adding SESSION_RECOVERY.md and context_limit_log.json to .gitignore." }
+      ]
+    },
+    {
+      "id": "recovery-generate",
+      "prompt": "컨텍스트 위험해. 복구 파일 만들어줘.",
+      "assertions": [
+        { "id": "runs-create-recovery", "text": "The agent runs scripts/create-recovery.sh which creates SESSION_RECOVERY.md at repo root." },
+        { "id": "scans-for-secrets", "text": "The script scans the output for secret patterns (sk-, sk_live_, pk_live_, AKIA, ghp_, xox[bps]-) and aborts if detected." },
+        { "id": "env-vars-names-only", "text": "SESSION_RECOVERY.md lists environment variable names only, never values." },
+        { "id": "includes-next-prompt", "text": "SESSION_RECOVERY.md ends with a copy-ready prompt for the next session." },
+        { "id": "does-not-duplicate-checkpoint", "text": "The agent explains this is different from /checkpoint: context-guardian focuses on prevention + recovery, /checkpoint is unconditional state save." }
+      ]
+    },
+    {
+      "id": "session-start-resume",
+      "prompt": "새 세션 시작. 이전 상태 복원해줘.",
+      "assertions": [
+        { "id": "reads-recovery-md", "text": "If SESSION_RECOVERY.md exists at repo root, the agent reads it before any other action." },
+        { "id": "loads-context-log", "text": "The agent runs scripts/update-context-log.sh --load to print the current effective limit." },
+        { "id": "proposes-first-task", "text": "The agent proposes the first remaining task from the recovery file." }
+      ]
+    },
+    {
+      "id": "monitoring-check",
+      "prompt": "지금 컨텍스트 얼마나 썼는지 체크해줘. 대략 140000 토큰 쓴 것 같아.",
+      "assertions": [
+        { "id": "runs-check", "text": "The agent runs scripts/update-context-log.sh --check 140000." },
+        { "id": "reports-percentage", "text": "The agent reports what percentage of effective_limit that represents." },
+        { "id": "warns-if-above-80", "text": "If the percentage is ≥ 80%, the agent recommends generating SESSION_RECOVERY.md." }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,145 @@
+{
+  "skill": "skill-gen-agent",
+  "version": "0.2.0",
+  "cases": [
+    {
+      "id": "create-csv-to-md",
+      "prompt": "Create a skill that converts CSV files to Markdown tables. Users will say things like 'csv to md' or 'convert this csv'. Output should be a new .md file alongside the input.",
+      "assertions": [
+        {
+          "id": "skill-dir-created",
+          "text": "A new directory is created with a SKILL.md file at its root."
+        },
+        {
+          "id": "frontmatter-valid",
+          "text": "SKILL.md frontmatter contains name, description, and version, and the name is kebab-case."
+        },
+        {
+          "id": "description-third-person",
+          "text": "The description is written in third person (no 'I can', no 'you can use this')."
+        },
+        {
+          "id": "description-uses-when",
+          "text": "The description leads with 'Use when...' and includes the verbatim trigger phrases 'csv to md' and 'convert this csv'."
+        },
+        {
+          "id": "description-mentions-csv-extension",
+          "text": "The description mentions the .csv file extension as a trigger hook."
+        },
+        {
+          "id": "description-states-output",
+          "text": "The description states the output (a new .md file / Markdown table)."
+        },
+        {
+          "id": "workflow-section-exists",
+          "text": "SKILL.md contains a '## Workflow' section with numbered imperative steps."
+        },
+        {
+          "id": "validator-passes",
+          "text": "Running `python scripts/validate_skill.py <new-skill-path>` exits 0 with no errors."
+        }
+      ]
+    },
+    {
+      "id": "refactor-bloated-skill",
+      "prompt": "Refactor this existing skill. Its SKILL.md is 620 lines long and the description is 'I can help you analyze spreadsheets'.",
+      "fixtures": [
+        "A mock skill directory with an oversized SKILL.md and a first-person description."
+      ],
+      "assertions": [
+        {
+          "id": "flags-body-length",
+          "text": "The refactor report flags the SKILL.md body as over the 500-line ceiling."
+        },
+        {
+          "id": "flags-first-person",
+          "text": "The refactor report or validator flags the first-person description."
+        },
+        {
+          "id": "proposes-plan",
+          "text": "The agent presents a refactor plan as a checklist before applying changes."
+        },
+        {
+          "id": "suggests-moving-to-references",
+          "text": "The plan suggests moving long sections into references/*.md files."
+        },
+        {
+          "id": "rewrites-description-third-person",
+          "text": "The new description is written in third person and leads with 'Use when...'."
+        }
+      ]
+    },
+    {
+      "id": "validate-only",
+      "prompt": "Just validate this skill for me.",
+      "fixtures": [
+        "A skill directory with a minor warning (e.g. no TOC on a 120-line reference file)."
+      ],
+      "assertions": [
+        {
+          "id": "runs-validator",
+          "text": "The agent runs `python scripts/validate_skill.py <path>` and does not attempt to refactor or create."
+        },
+        {
+          "id": "reports-warnings",
+          "text": "The agent reports the warnings to the user with file and line context."
+        },
+        {
+          "id": "no-unrequested-changes",
+          "text": "The agent does not modify any files without explicit approval."
+        }
+      ]
+    },
+    {
+      "id": "korean-create-request",
+      "prompt": "PDF 파일에서 텍스트 추출하는 스킬 만들어줘. 트리거는 'pdf 텍스트 추출', 'pdf 파싱'. 결과물은 .txt 파일.",
+      "assertions": [
+        {
+          "id": "interacts-in-korean",
+          "text": "The agent asks clarifying questions and reports progress in Korean."
+        },
+        {
+          "id": "skill-md-in-english",
+          "text": "The produced SKILL.md body and frontmatter are written in English."
+        },
+        {
+          "id": "description-has-both-languages",
+          "text": "The description contains both English trigger phrases and the Korean phrases 'pdf 텍스트 추출' and 'pdf 파싱' verbatim."
+        },
+        {
+          "id": "description-mentions-pdf-extension",
+          "text": "The description mentions .pdf as a trigger hook."
+        },
+        {
+          "id": "validator-passes",
+          "text": "The validator exits 0 for the produced skill."
+        }
+      ]
+    },
+    {
+      "id": "version-bump",
+      "prompt": "Bump the patch version of my skill at ./my-skill with the message 'fix description typo'.",
+      "fixtures": [
+        "A skill directory at ./my-skill with version 0.1.0 in its SKILL.md."
+      ],
+      "assertions": [
+        {
+          "id": "uses-version-log",
+          "text": "The agent runs `python scripts/version_log.py ./my-skill bump --patch --message 'fix description typo'`."
+        },
+        {
+          "id": "new-version-stamped",
+          "text": "After the run, SKILL.md version is 0.1.1."
+        },
+        {
+          "id": "changelog-updated",
+          "text": "CHANGELOG.md contains a new entry for 0.1.1 with the supplied message and today's date."
+        },
+        {
+          "id": "no-other-changes",
+          "text": "No other files in the skill are modified."
+        }
+      ]
+    }
+  ]
+}

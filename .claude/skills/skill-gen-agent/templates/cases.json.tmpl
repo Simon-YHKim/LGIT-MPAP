@@ -1,0 +1,30 @@
+{
+  "skill": "{{name}}",
+  "version": "0.1.0",
+  "cases": [
+    {
+      "id": "happy-path",
+      "prompt": "A realistic prompt that should trigger this skill.",
+      "assertions": [
+        {
+          "id": "produces-output",
+          "text": "The skill produced the expected output file/artifact."
+        },
+        {
+          "id": "follows-format",
+          "text": "The output matches the documented format."
+        }
+      ]
+    },
+    {
+      "id": "edge-case",
+      "prompt": "A prompt that exercises an edge case.",
+      "assertions": [
+        {
+          "id": "handles-edge",
+          "text": "The skill handled the edge case without crashing."
+        }
+      ]
+    }
+  ]
+}
