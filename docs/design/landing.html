@@ -65,8 +65,26 @@ button,input,textarea{font-family:inherit}
 /* left column ------------------------------------------------------- */
 .left{display:flex;flex-direction:column;gap:28px}
 
-/* login card -------------------------------------------------------- */
-.login{background:#fff;color:var(--ink-body);border-radius:12px;padding:24px 26px;border-left:4px solid var(--primary);box-shadow:0 24px 60px rgba(0,0,0,0.32),0 2px 0 rgba(255,255,255,0.04) inset}
+/* login card --------------------------------------------------------
+   Softened white: off-white tint (slight cool gray) + backdrop blur so
+   it absorbs ambient color from the video bg rather than glaring.
+   No glass effect — just a calmer surface. */
+.login{
+  background:rgba(248,250,252,0.93);
+  backdrop-filter:blur(10px) saturate(115%);
+  -webkit-backdrop-filter:blur(10px) saturate(115%);
+  color:var(--ink-body);
+  border-radius:12px;
+  padding:24px 26px;
+  border:1px solid rgba(255,255,255,0.55);
+  border-left:4px solid var(--primary);
+  box-shadow:
+    0 30px 80px -20px rgba(0,0,0,0.55),
+    0 8px 24px -6px rgba(0,0,0,0.30),
+    0 0 0 1px rgba(255,255,255,0.04) inset;
+}
+.login__title{color:#101218}
+.login .field__input-wrap{background:#fff}
 .login__eyebrow{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-subtle);margin-bottom:6px}
 .login__title{margin:0 0 4px;font-size:22px;font-weight:700;letter-spacing:-0.01em}
 .login__sub{margin:0 0 16px;font-size:13px;color:var(--ink-muted)}
@@ -124,6 +142,11 @@ button,input,textarea{font-family:inherit}
 .patch__body{font-size:12px;color:var(--on-dark);line-height:1.5}
 .patch__body em{font-style:normal;font-family:var(--font-mono);font-size:10px;color:var(--primary-tint);background:rgba(165,0,52,0.32);border:1px solid rgba(165,0,52,0.4);padding:0 5px;border-radius:3px;text-transform:uppercase;letter-spacing:.06em;margin-right:6px;font-weight:700;display:inline-block;line-height:16px}
 
+.ops-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 12px;border:1px solid rgba(255,255,255,0.06);border-radius:8px;background:rgba(255,255,255,0.025);font-family:var(--font-mono);font-size:10px;color:var(--on-dark-muted);letter-spacing:.06em;text-transform:uppercase}
+.ops-row__group{display:inline-flex;align-items:center;gap:6px;color:var(--on-dark)}
+.ops-row .dot{width:6px;height:6px;border-radius:50%;background:var(--status-good);box-shadow:0 0 0 3px rgba(31,139,76,0.18)}
+.ops-row__sep{opacity:.4}
+
 .foot-row{display:flex;justify-content:space-between;align-items:center;font-family:var(--font-mono);font-size:10px;color:var(--on-dark-subtle);letter-spacing:.06em;text-transform:uppercase}
 .foot-row a{color:var(--on-dark-muted);text-decoration:none;border-bottom:1px solid rgba(255,255,255,0.18)}
 .foot-row a:hover{color:var(--on-dark);border-color:var(--on-dark)}
@@ -169,11 +192,6 @@ button,input,textarea{font-family:inherit}
       <div class="brand__name" data-i18n="brand.name">LG Innotek<small data-i18n="brand.team">생산혁신센터 · Max Capa 팀</small></div>
     </div>
     <div class="top-row">
-      <div class="top-meta">
-        <span><span class="dot"></span>&nbsp;<span data-i18n="status.all">ALL SYSTEMS OPERATIONAL</span></span>
-        <span style="opacity:.6">·</span>
-        <span>2026-04-29 · MPAP v0.4.2</span>
-      </div>
       <div class="lang" id="lang">
         <button type="button" class="lang__btn" id="lang-btn" aria-haspopup="menu" aria-expanded="false">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>
@@ -253,7 +271,7 @@ button,input,textarea{font-family:inherit}
       <!-- identity: platform name + subtext -->
       <div class="identity">
         <h1 class="identity__name" data-i18n="identity.name">설비 생산성 <span>분석 플랫폼</span></h1>
-        <p class="identity__sub" data-i18n="identity.sub">모든 라인의 박동, 한 화면.</p>
+        <p class="identity__sub" data-i18n="identity.sub">공정의 호흡을 데이터로 듣다.</p>
         <p class="identity__bu" data-i18n="identity.bu">광학솔루션 사업부 · CMP · UPH · MTBA · MaxCapa Chat</p>
       </div>
 
@@ -330,6 +348,18 @@ button,input,textarea{font-family:inherit}
         </div>
       </div>
 
+      <!-- ops status — relocated from top bar -->
+      <div class="ops-row">
+        <span class="ops-row__group">
+          <span class="dot" aria-hidden="true"></span>
+          <span data-i18n="status.all">ALL SYSTEMS OPERATIONAL</span>
+        </span>
+        <span class="ops-row__sep" aria-hidden="true">·</span>
+        <span>2026-04-29</span>
+        <span class="ops-row__sep" aria-hidden="true">·</span>
+        <span>MPAP v0.4.2</span>
+      </div>
+
       <div class="foot-row">
         <span data-i18n="foot.intranet">생산혁신센터 Max Capa 팀 · 사내망 전용</span>
         <a href="#" data-i18n="foot.changelog">변경 로그 전체 보기 →</a>
@@ -359,7 +389,7 @@ window.__I18N__ = {
     "btn.signin": "로그인", "btn.signup_submit": "회원가입 신청", "btn.send_code": "인증코드 발송",
     "foot.contact": "문의 · 생산혁신센터 Max Capa 팀",
     "identity.name": '설비 생산성 <span>분석 플랫폼</span>',
-    "identity.sub": "모든 라인의 박동, 한 화면.",
+    "identity.sub": "공정의 호흡을 데이터로 듣다.",
     "identity.bu": "광학솔루션 사업부 · CMP · UPH · MTBA · MaxCapa Chat",
     "panel.system": "SYSTEM STATUS", "panel.system_hint": "last sync 23:50",
     "panel.patch": "PATCH NOTES · 최근 업데이트",
@@ -379,7 +409,7 @@ window.__I18N__ = {
     "btn.signin": "Sign in", "btn.signup_submit": "Request signup", "btn.send_code": "Send code",
     "foot.contact": "Contact · Production Innovation Center · Max Capa Team",
     "identity.name": 'Equipment Productivity <span>Analytics</span>',
-    "identity.sub": "Every line's pulse, one screen.",
+    "identity.sub": "Listen to the breath of every line, in data.",
     "identity.bu": "Optical Solution Business · CMP · UPH · MTBA · MaxCapa Chat",
     "panel.system": "SYSTEM STATUS", "panel.system_hint": "last sync 23:50",
     "panel.patch": "PATCH NOTES · Recent updates",
@@ -399,7 +429,7 @@ window.__I18N__ = {
     "btn.signin": "Đăng nhập", "btn.signup_submit": "Yêu cầu đăng ký", "btn.send_code": "Gửi mã",
     "foot.contact": "Liên hệ · Trung tâm Đổi mới Sản xuất · Đội Max Capa",
     "identity.name": 'Phân tích Năng suất <span>Thiết bị</span>',
-    "identity.sub": "Nhịp đập của mọi dây chuyền, trên một màn hình.",
+    "identity.sub": "Lắng nghe nhịp thở của dây chuyền qua dữ liệu.",
     "identity.bu": "Giải pháp Quang học · CMP · UPH · MTBA · MaxCapa Chat",
     "panel.system": "TRẠNG THÁI HỆ THỐNG", "panel.system_hint": "đồng bộ cuối 23:50",
     "panel.patch": "GHI CHÚ BẢN VÁ · Cập nhật gần đây",
@@ -419,7 +449,7 @@ window.__I18N__ = {
     "btn.signin": "Zaloguj", "btn.signup_submit": "Wyślij wniosek", "btn.send_code": "Wyślij kod",
     "foot.contact": "Kontakt · Centrum Innowacji Produkcji · Zespół Max Capa",
     "identity.name": 'Analityka Produktywności <span>Urządzeń</span>',
-    "identity.sub": "Puls każdej linii, na jednym ekranie.",
+    "identity.sub": "Słuchaj oddechu linii — w danych.",
     "identity.bu": "Optical Solution · CMP · UPH · MTBA · MaxCapa Chat",
     "panel.system": "STATUS SYSTEMU", "panel.system_hint": "ostatnia synchr. 23:50",
     "panel.patch": "NOTATKI WYDANIA · Ostatnie aktualizacje",
@@ -439,7 +469,7 @@ window.__I18N__ = {
     "btn.signin": "Masuk", "btn.signup_submit": "Kirim permintaan", "btn.send_code": "Kirim kode",
     "foot.contact": "Kontak · Pusat Inovasi Produksi · Tim Max Capa",
     "identity.name": 'Analitik Produktivitas <span>Peralatan</span>',
-    "identity.sub": "Denyut setiap line, dalam satu layar.",
+    "identity.sub": "Dengarkan napas line, lewat data.",
     "identity.bu": "Optical Solution · CMP · UPH · MTBA · MaxCapa Chat",
     "panel.system": "STATUS SISTEM", "panel.system_hint": "sinkron terakhir 23:50",
     "panel.patch": "CATATAN PATCH · Pembaruan terbaru",
@@ -459,7 +489,7 @@ window.__I18N__ = {
     "btn.signin": "Iniciar sesión", "btn.signup_submit": "Solicitar registro", "btn.send_code": "Enviar código",
     "foot.contact": "Contacto · Centro de Innovación de Producción · Equipo Max Capa",
     "identity.name": 'Análisis de Productividad <span>de Equipos</span>',
-    "identity.sub": "El pulso de cada línea, en una pantalla.",
+    "identity.sub": "Escucha el respiro de la línea — en datos.",
     "identity.bu": "Optical Solution · CMP · UPH · MTBA · MaxCapa Chat",
     "panel.system": "ESTADO DEL SISTEMA", "panel.system_hint": "última sincr. 23:50",
     "panel.patch": "NOTAS DE PARCHE · Actualizaciones recientes",
@@ -479,7 +509,7 @@ window.__I18N__ = {
     "btn.signin": "登录", "btn.signup_submit": "提交注册", "btn.send_code": "发送验证码",
     "foot.contact": "联系 · 生产革新中心 · Max Capa 团队",
     "identity.name": '设备生产力 <span>分析平台</span>',
-    "identity.sub": "每条产线的脉搏,一屏尽览。",
+    "identity.sub": "用数据聆听产线的呼吸。",
     "identity.bu": "光学解决方案事业部 · CMP · UPH · MTBA · MaxCapa Chat",
     "panel.system": "系统状态", "panel.system_hint": "上次同步 23:50",
     "panel.patch": "更新说明 · 最近更新",
