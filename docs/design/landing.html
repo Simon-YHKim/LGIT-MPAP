@@ -79,11 +79,10 @@ button,input,textarea{font-family:inherit}
 /* left column ------------------------------------------------------- */
 .left{display:flex;flex-direction:column;gap:28px}
 
-/* login card --------------------------------------------------------
-   Softened white: off-white tint (slight cool gray) + backdrop blur so
-   it absorbs ambient color from the video bg rather than glaring.
-   No glass effect — just a calmer surface. */
-.login{
+/* login / auth card ------------------------------------------------
+   Softened white: off-white tint + backdrop blur. */
+.login,
+.auth-card{
   background:rgba(248,250,252,0.93);
   backdrop-filter:blur(10px) saturate(115%);
   -webkit-backdrop-filter:blur(10px) saturate(115%);
@@ -98,7 +97,45 @@ button,input,textarea{font-family:inherit}
     0 0 0 1px rgba(255,255,255,0.04) inset;
 }
 .login__title{color:#101218}
-.login .field__input-wrap{background:#fff}
+.login .field__input-wrap,
+.auth-card .field__input-wrap{background:#fff}
+
+/* auth panes (login / signup) ------------------------------------- */
+.auth-pane{display:block}
+.auth-pane[hidden]{display:none}
+.auth-pane[data-pane="signup"]{display:none}
+.auth-pane[data-pane="signup"]:not([hidden]){display:block}
+
+/* signup step routing inside the signup pane */
+.auth-pane[data-pane="signup"] form[data-signup-step="2"][hidden]{display:none}
+
+/* error slot */
+.auth__error{
+  display:none;
+  margin:8px 0 0;
+  padding:8px 10px;
+  border:1px solid rgba(178,58,72,0.3);
+  background:rgba(178,58,72,0.08);
+  color:var(--status-bad);
+  font-size:12px;
+  line-height:1.4;
+  border-radius:6px;
+}
+.auth__error:not([hidden]){display:block}
+
+/* signup sent line */
+.signup__sent{margin:0 0 12px;font-size:13px;color:var(--ink-muted);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.signup__sent .link-btn{font-size:12px}
+.signup__timer{font-family:var(--font-mono);color:var(--primary-dark);font-weight:700}
+
+/* link-style button */
+.link-btn{background:transparent;border:0;padding:0;color:var(--ink-muted);font:inherit;font-size:12px;cursor:pointer;text-decoration:underline;text-decoration-color:rgba(31,36,48,0.25);text-underline-offset:2px}
+.link-btn:hover{color:var(--primary-dark);text-decoration-color:var(--primary)}
+
+/* actions row variant (signup step 2: verify + resend side by side) */
+.actions--row{display:flex;flex-direction:row !important;gap:8px}
+.actions--row .btn{flex:1}
+.actions--row .btn--ghost{flex:0 0 auto}
 .login__eyebrow{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-subtle);margin-bottom:6px}
 .login__title{margin:0 0 4px;font-size:22px;font-weight:700;letter-spacing:-0.01em}
 .login__sub{margin:0 0 16px;font-size:13px;color:var(--ink-muted)}
@@ -232,56 +269,187 @@ button,input,textarea{font-family:inherit}
     <!-- LEFT: login + identity ------------------------------------- -->
     <div class="left">
 
-      <form class="login" autocomplete="on" onsubmit="return false">
+      <!--
+      ====================================================================
+      AUTH FLOW SPEC — production integration cheat-sheet (read me, AI/dev)
+      ====================================================================
+
+      Domain rule: company emails are ${id}@lginnotek.com.
+      Login takes only the ID portion (no domain). Signup takes the full
+      company email and requires verification by 6-digit code sent to it.
+
+      ── Login flow ─────────────────────────────────────────────────────
+        UI:    user types ID into #user-id, password into #user-pw,
+               submits #form-login.
+        JS:    on submit, syncs #user-email-hidden = `${id}@lginnotek.com`.
+        Wire:  POST  data-action="auth/login" with form fields:
+                 username : (id without domain)
+                 email    : (full email, hidden)
+                 password : (password)
+               Backend should respond:
+                 200 → set session cookie + redirect to /Home
+                 401 → show #login-error with translated message
+                 422 → field-level error in [data-error-for="..."]
+
+      ── Signup flow (2-step) ───────────────────────────────────────────
+        Step 1 (data-signup-step="1"):
+          UI:    user types company email into #signup-email, submits
+                 #form-signup-step1.
+          Wire:  POST  data-action="auth/send-code" with { email }.
+                 Backend should respond:
+                   200 → JS reveals data-signup-step="2", starts countdown
+                   400 → "@lginnotek.com 도메인만 가능" error
+                   409 → "이미 가입된 이메일" error
+                   429 → "잠시 후 다시 시도" error (rate-limit)
+        Step 2 (data-signup-step="2"):
+          UI:    user types 6-digit code into #signup-code, submits
+                 #form-signup-step2.
+          Wire:  POST  data-action="auth/verify" with { email, code }.
+                 Backend should respond:
+                   200 → set session cookie + redirect to /Home
+                   401 → "인증코드가 일치하지 않습니다"
+                   410 → "만료된 코드 — 재발송하세요"
+          Resend: #btn-resend-code re-hits data-action="auth/send-code"
+                  with same email (rate-limited by backend).
+
+      ── Field IDs / names map (for backend / AI integration) ──────────
+        | id                  | name      | step       |
+        |---------------------|-----------|------------|
+        | #user-id            | username  | login      |
+        | #user-email-hidden  | email     | login (JS) |
+        | #user-pw            | password  | login      |
+        | #signup-email       | email     | signup-1   |
+        | #signup-code        | code      | signup-2   |
+        | #signup-email-hidden| email     | signup-2 (carry) |
+
+      ── Plug-in checklist ─────────────────────────────────────────────
+        1. Replace data-action attributes with real endpoint URLs.
+        2. Wire .auth__error[data-error-slot] to backend error message.
+        3. Set window.AUTH_REDIRECT_URL if /Home path differs.
+        4. Optional: implement #btn-resend-code cooldown via backend hint.
+      ====================================================================
+      -->
+
+      <section class="auth-card" id="auth-card">
         <div class="login__eyebrow" data-i18n="login.eyebrow">PRODUCTIVITY ANALYTICS · SIGN IN</div>
         <h2 class="login__title" data-i18n="login.title">로그인</h2>
-        <p class="login__sub" data-i18n="login.sub">사내 계정 아이디만 입력하세요.</p>
+        <p class="login__sub" id="auth-pane-sub" data-i18n="login.sub">사내 계정 아이디만 입력하세요.</p>
 
         <div class="tabs" role="tablist">
-          <button class="tab tab--active" type="button" role="tab" aria-selected="true" data-i18n="tab.signin">로그인</button>
-          <button class="tab" type="button" role="tab" aria-selected="false" data-i18n="tab.signup">회원가입</button>
+          <button class="tab tab--active" type="button" role="tab" id="tab-signin" aria-selected="true" aria-controls="auth-pane-signin" data-i18n="tab.signin">로그인</button>
+          <button class="tab" type="button" role="tab" id="tab-signup" aria-selected="false" aria-controls="auth-pane-signup" data-i18n="tab.signup">회원가입</button>
         </div>
 
-        <!-- login fields -->
-        <div class="field">
-          <label class="field__label" for="user-id" data-i18n="field.id">아이디</label>
-          <div class="field__input-wrap">
-            <input id="user-id" type="text" placeholder="ex) maxcapa" autocomplete="username" />
-            <span class="field__suffix">@lginnotek.com</span>
+        <!-- ============================================================
+             PANE: LOGIN
+             ============================================================ -->
+        <form
+          id="form-login"
+          class="auth-pane"
+          data-pane="signin"
+          data-action="auth/login"
+          method="POST"
+          autocomplete="on"
+          novalidate
+        >
+          <div class="field">
+            <label class="field__label" for="user-id" data-i18n="field.id">아이디</label>
+            <div class="field__input-wrap">
+              <input id="user-id" name="username" type="text" placeholder="ex) maxcapa" autocomplete="username" required spellcheck="false" autocapitalize="none" />
+              <span class="field__suffix" aria-hidden="true">@lginnotek.com</span>
+            </div>
+            <span class="field__hint" data-i18n="field.id_hint">@lginnotek.com 은 자동 적용됩니다.</span>
           </div>
-          <span class="field__hint" data-i18n="field.id_hint">@lginnotek.com 은 자동 적용됩니다.</span>
-        </div>
 
-        <div class="field">
-          <label class="field__label" for="user-pw" data-i18n="field.pw">비밀번호</label>
-          <div class="field__input-wrap">
-            <input id="user-pw" type="password" autocomplete="current-password" />
+          <div class="field">
+            <label class="field__label" for="user-pw" data-i18n="field.pw">비밀번호</label>
+            <div class="field__input-wrap">
+              <input id="user-pw" name="password" type="password" autocomplete="current-password" required />
+            </div>
           </div>
-        </div>
 
-        <!-- signup placeholder (kept verbatim for non-removal contract) -->
-        <div class="signup">
+          <input type="hidden" id="user-email-hidden" name="email" value="" />
+
+          <div class="auth__error" id="login-error" data-error-slot role="alert" hidden></div>
+
+          <div class="actions">
+            <button type="submit" class="btn btn--primary" id="btn-login" data-i18n="btn.signin">로그인</button>
+          </div>
+        </form>
+
+        <!-- ============================================================
+             PANE: SIGNUP — 2-step (email → verification code)
+             ============================================================ -->
+        <div class="auth-pane" data-pane="signup" hidden>
+
           <p class="login__sub" data-i18n="signup.notice">회사 이메일 인증 후 사용 가능합니다.</p>
-          <div class="signup-row">
+
+          <!-- Step 1: enter email + request code -->
+          <form
+            id="form-signup-step1"
+            data-signup-step="1"
+            data-action="auth/send-code"
+            method="POST"
+            autocomplete="on"
+            novalidate
+          >
             <div class="field">
               <label class="field__label" for="signup-email" data-i18n="field.email">회사 이메일</label>
               <div class="field__input-wrap">
-                <input id="signup-email" type="email" placeholder="ex) maxcapa@lginnotek.com" />
+                <input id="signup-email" name="email" type="email" placeholder="ex) maxcapa@lginnotek.com" required autocomplete="email" spellcheck="false" autocapitalize="none" pattern=".+@lginnotek\.com" />
               </div>
+              <span class="field__hint" data-i18n="signup.domain_hint">@lginnotek.com 도메인만 사용 가능합니다.</span>
             </div>
-            <button type="button" class="btn" data-i18n="btn.send_code">인증코드 발송</button>
-          </div>
-        </div>
 
-        <div class="actions">
-          <button type="submit" class="btn btn--primary" data-i18n="btn.signin">로그인</button>
+            <div class="auth__error" id="signup-error" data-error-slot role="alert" hidden></div>
+
+            <div class="actions">
+              <button type="submit" class="btn btn--primary" id="btn-send-code" data-i18n="btn.send_code">인증코드 발송</button>
+            </div>
+          </form>
+
+          <!-- Step 2: enter 6-digit code -->
+          <form
+            id="form-signup-step2"
+            data-signup-step="2"
+            data-action="auth/verify"
+            method="POST"
+            autocomplete="off"
+            novalidate
+            hidden
+          >
+            <p class="signup__sent">
+              <span data-i18n="signup.code_sent">인증코드를 발송했습니다.</span>
+              <button type="button" class="link-btn" id="btn-edit-email" data-i18n="signup.edit_email">← 이메일 수정</button>
+            </p>
+
+            <div class="field">
+              <label class="field__label" for="signup-code" data-i18n="field.code">인증코드 (6자리)</label>
+              <div class="field__input-wrap">
+                <input id="signup-code" name="code" type="text" inputmode="numeric" pattern="\d{6}" maxlength="6" placeholder="000000" required autocomplete="one-time-code" />
+              </div>
+              <span class="field__hint">
+                <span data-i18n="signup.timer_label">유효시간</span>
+                <span class="signup__timer" id="signup-timer" aria-live="polite">5:00</span>
+              </span>
+            </div>
+
+            <input type="hidden" id="signup-email-hidden" name="email" value="" />
+
+            <div class="auth__error" id="verify-error" data-error-slot role="alert" hidden></div>
+
+            <div class="actions actions--row">
+              <button type="submit" class="btn btn--primary" id="btn-verify" data-i18n="btn.signup_submit">회원가입 완료</button>
+              <button type="button" class="btn btn--ghost" id="btn-resend-code" data-i18n="btn.resend_code">인증코드 재발송</button>
+            </div>
+          </form>
         </div>
 
         <div class="foot">
           <span data-i18n="foot.contact">문의 · 생산혁신센터 Max Capa 팀</span>
           <span>v0.4.2</span>
         </div>
-      </form>
+      </section>
 
       <!-- identity: platform name + subtext -->
       <div class="identity">
@@ -401,7 +569,23 @@ window.__I18N__ = {
     "field.id": "아이디", "field.id_hint": "@lginnotek.com 은 자동 적용됩니다.",
     "field.pw": "비밀번호", "field.email": "회사 이메일",
     "signup.notice": "회사 이메일 인증 후 사용 가능합니다.",
-    "btn.signin": "로그인", "btn.signup_submit": "회원가입 신청", "btn.send_code": "인증코드 발송",
+    "btn.signin": "로그인", "btn.signup_submit": "회원가입 완료", "btn.send_code": "인증코드 발송", "btn.resend_code": "인증코드 재발송",
+    "field.code": "인증코드 (6자리)",
+    "signup.domain_hint": "@lginnotek.com 도메인만 사용 가능합니다.",
+    "signup.code_sent": "인증코드를 발송했습니다.", "signup.edit_email": "← 이메일 수정",
+    "signup.timer_label": "유효시간", "signup.expired": "만료됨", "signup.resent": "인증코드를 재발송했습니다.",
+    "error.fill_all": "아이디와 비밀번호를 입력하세요.",
+    "error.bad_credentials": "아이디 또는 비밀번호가 올바르지 않습니다.",
+    "error.bad_domain": "@lginnotek.com 도메인만 사용 가능합니다.",
+    "error.already_signed": "이미 가입된 이메일입니다.",
+    "error.bad_code": "인증코드가 일치하지 않습니다.",
+    "error.code_expired": "만료된 인증코드입니다. 재발송하세요.",
+    "error.code_length": "인증코드는 6자리입니다.",
+    "error.rate_limit": "잠시 후 다시 시도하세요.",
+    "error.validation": "입력값을 다시 확인하세요.",
+    "error.network": "서버에 연결할 수 없습니다.",
+    "preview.mock_login": "미리보기 모드 — 백엔드 미연결. 실제 서비스에서는 로그인됩니다.",
+    "preview.mock_signup": "미리보기 모드 — 백엔드 미연결. 실제 서비스에서는 가입 후 로그인됩니다.",
     "foot.contact": "문의 · 생산혁신센터 Max Capa 팀",
     "identity.name": "Vitals",
     "identity.sub": "공정의 호흡을 데이터로 듣다.",
@@ -421,7 +605,23 @@ window.__I18N__ = {
     "field.id": "ID", "field.id_hint": "@lginnotek.com is appended automatically.",
     "field.pw": "Password", "field.email": "Company email",
     "signup.notice": "Available after company email verification.",
-    "btn.signin": "Sign in", "btn.signup_submit": "Request signup", "btn.send_code": "Send code",
+    "btn.signin": "Sign in", "btn.signup_submit": "Complete signup", "btn.send_code": "Send code", "btn.resend_code": "Resend code",
+    "field.code": "Verification code (6 digits)",
+    "signup.domain_hint": "Only @lginnotek.com domain is allowed.",
+    "signup.code_sent": "Verification code sent.", "signup.edit_email": "← Edit email",
+    "signup.timer_label": "Expires in", "signup.expired": "Expired", "signup.resent": "Verification code resent.",
+    "error.fill_all": "Enter both ID and password.",
+    "error.bad_credentials": "ID or password is incorrect.",
+    "error.bad_domain": "Only @lginnotek.com domain is allowed.",
+    "error.already_signed": "This email is already registered.",
+    "error.bad_code": "Verification code does not match.",
+    "error.code_expired": "Code expired. Please resend.",
+    "error.code_length": "Verification code must be 6 digits.",
+    "error.rate_limit": "Please try again shortly.",
+    "error.validation": "Please re-check your input.",
+    "error.network": "Cannot reach the server.",
+    "preview.mock_login": "Preview mode — backend not connected. Wire data-action to enable real login.",
+    "preview.mock_signup": "Preview mode — backend not connected. Real service redirects after signup.",
     "foot.contact": "Contact · Production Innovation Center · Max Capa Team",
     "identity.name": "Vitals",
     "identity.sub": "Listen to the breath of every line, in data.",
@@ -591,14 +791,13 @@ window.__LANG_LABEL__ = { ko:"한국어", en:"English", vi:"Tiếng Việt", pl:
 
   /* ---- tabs (login / signup) ---- */
   var tabs = document.querySelectorAll('.tab');
-  var signup = document.querySelector('.signup');
+  var paneSignin = document.querySelector('.auth-pane[data-pane="signin"]');
+  var paneSignup = document.querySelector('.auth-pane[data-pane="signup"]');
+  var paneSub = document.getElementById('auth-pane-sub');
   var mode = 0; // 0 login, 1 signup
   function refreshPrimaryCTA(){
-    var primary = document.querySelector('.actions .btn--primary');
-    if (!primary) return;
-    var pack = dict[current] || dict.ko;
-    primary.textContent = (mode === 0) ? (pack['btn.signin'] || '로그인')
-                                       : (pack['btn.signup_submit'] || '회원가입 신청');
+    // No-op now — each pane has its own primary button with its own data-i18n key.
+    // Kept so applyLang() can call without erroring.
   }
   function activate(idx){
     mode = idx;
@@ -606,40 +805,320 @@ window.__LANG_LABEL__ = { ko:"한국어", en:"English", vi:"Tiếng Việt", pl:
       t.classList.toggle('tab--active', i===idx);
       t.setAttribute('aria-selected', i===idx ? 'true':'false');
     });
-    if(idx===0){
-      signup.style.display = 'none';
-      document.querySelectorAll('.login > .field').forEach(function(f){ f.style.display=''; });
-    }else{
-      document.querySelectorAll('.login > .field').forEach(function(f){ f.style.display='none'; });
-      signup.style.display = '';
+    if (paneSignin && paneSignup) {
+      if (idx === 0) {
+        paneSignin.hidden = false;
+        paneSignup.hidden = true;
+        if (paneSub) paneSub.setAttribute('data-i18n', 'login.sub');
+      } else {
+        paneSignin.hidden = true;
+        paneSignup.hidden = false;
+        if (paneSub) paneSub.setAttribute('data-i18n', 'signup.notice');
+        // Reset signup to step 1 whenever opening signup tab fresh
+        var s1 = document.getElementById('form-signup-step1');
+        var s2 = document.getElementById('form-signup-step2');
+        if (s1) s1.hidden = false;
+        if (s2) s2.hidden = true;
+      }
+      // Re-apply i18n for the swapped sub element
+      var pack = dict[current] || dict.ko;
+      if (paneSub) {
+        var key = paneSub.getAttribute('data-i18n');
+        var v = pack[key] || dict.ko[key];
+        if (v) paneSub.textContent = v;
+      }
     }
-    refreshPrimaryCTA();
   }
   tabs.forEach(function(t,i){ t.addEventListener('click', function(){ activate(i); }); });
+
+  /* ---- AUTH: production-ready handlers --------------------------- */
+  // Auto-prepend domain on login: keep #user-id without domain in UI,
+  // sync hidden #user-email with the full address.
+  var userId = document.getElementById('user-id');
+  var userEmailHidden = document.getElementById('user-email-hidden');
+  function syncLoginEmail(){
+    if (!userId || !userEmailHidden) return;
+    var raw = (userId.value || '').trim().replace(/@.*$/, '').toLowerCase();
+    userEmailHidden.value = raw ? (raw + '@lginnotek.com') : '';
+  }
+  if (userId) {
+    userId.addEventListener('input', syncLoginEmail);
+    userId.addEventListener('blur', syncLoginEmail);
+  }
+
+  // Generic error rendering
+  function showError(slotId, msg){
+    var el = document.getElementById(slotId);
+    if (!el) return;
+    el.textContent = msg;
+    el.hidden = false;
+  }
+  function clearError(slotId){
+    var el = document.getElementById(slotId);
+    if (!el) return;
+    el.hidden = true;
+    el.textContent = '';
+  }
+
+  // Translate error keys via i18n where possible (fallback to literal)
+  function t(key, fallback){
+    var pack = dict[current] || dict.ko;
+    return pack[key] || dict.ko[key] || fallback || key;
+  }
+
+  // POST helper — uses fetch when data-action is a real URL (production),
+  // and a mock-success for placeholder values during preview.
+  function postForm(action, payload){
+    if (!action || /^(auth\/|#)/.test(action)) {
+      // Placeholder action — simulate success after a short delay.
+      return new Promise(function(resolve){
+        setTimeout(function(){ resolve({ ok:true, status:200, mock:true }); }, 350);
+      });
+    }
+    return fetch(action, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(payload)
+    }).then(function(r){
+      return r.json().catch(function(){ return {}; }).then(function(body){
+        return { ok: r.ok, status: r.status, body: body };
+      });
+    }).catch(function(){
+      return { ok:false, status:0, body:{} };
+    });
+  }
+
+  // ── Login submit ────────────────────────────────────────────────
+  var formLogin = document.getElementById('form-login');
+  if (formLogin) {
+    formLogin.addEventListener('submit', function(ev){
+      ev.preventDefault();
+      clearError('login-error');
+      syncLoginEmail();
+      var payload = {
+        username: userId ? userId.value.trim() : '',
+        email: userEmailHidden ? userEmailHidden.value : '',
+        password: (document.getElementById('user-pw') || {}).value || ''
+      };
+      if (!payload.username || !payload.password) {
+        showError('login-error', t('error.fill_all', '아이디와 비밀번호를 입력하세요.'));
+        return;
+      }
+      var btn = document.getElementById('btn-login');
+      btn && (btn.disabled = true);
+      postForm(formLogin.dataset.action, payload).then(function(res){
+        btn && (btn.disabled = false);
+        if (res.ok) {
+          if (res.mock) {
+            showError('login-error', t('preview.mock_login', '미리보기 모드 — 백엔드 미연결. data-action에 실제 엔드포인트를 지정하세요.'));
+            // unhide as info (still uses error slot, fine for preview)
+            return;
+          }
+          var url = window.AUTH_REDIRECT_URL || '/Home';
+          window.location.assign(url);
+          return;
+        }
+        if (res.status === 401) showError('login-error', t('error.bad_credentials', '아이디 또는 비밀번호가 올바르지 않습니다.'));
+        else if (res.status === 422) showError('login-error', t('error.validation', '입력값을 다시 확인하세요.'));
+        else showError('login-error', t('error.network', '서버에 연결할 수 없습니다. 잠시 후 다시 시도하세요.'));
+      });
+    });
+  }
+
+  // ── Signup step 1 submit (request code) ─────────────────────────
+  var formSignup1 = document.getElementById('form-signup-step1');
+  var signupEmailEl = document.getElementById('signup-email');
+  var signupEmailHidden = document.getElementById('signup-email-hidden');
+
+  function ensureCompanyDomain(value){
+    var v = (value || '').trim().toLowerCase();
+    if (!v) return '';
+    if (v.indexOf('@') === -1) v += '@lginnotek.com';
+    return v;
+  }
+
+  function startCountdown(seconds){
+    var el = document.getElementById('signup-timer');
+    if (!el) return;
+    var remain = seconds;
+    if (window.__signupTimerId) clearInterval(window.__signupTimerId);
+    function tick(){
+      var m = Math.floor(remain / 60);
+      var s = remain % 60;
+      el.textContent = m + ':' + (s < 10 ? '0' + s : s);
+      if (remain <= 0) {
+        clearInterval(window.__signupTimerId);
+        el.textContent = t('signup.expired', '만료됨');
+      }
+      remain -= 1;
+    }
+    tick();
+    window.__signupTimerId = setInterval(tick, 1000);
+  }
+
+  if (formSignup1) {
+    formSignup1.addEventListener('submit', function(ev){
+      ev.preventDefault();
+      clearError('signup-error');
+      var email = ensureCompanyDomain(signupEmailEl ? signupEmailEl.value : '');
+      if (!/^[^@\s]+@lginnotek\.com$/.test(email)) {
+        showError('signup-error', t('error.bad_domain', '@lginnotek.com 도메인만 사용 가능합니다.'));
+        return;
+      }
+      if (signupEmailEl) signupEmailEl.value = email;
+      if (signupEmailHidden) signupEmailHidden.value = email;
+      var btn = document.getElementById('btn-send-code');
+      btn && (btn.disabled = true);
+      postForm(formSignup1.dataset.action, { email: email }).then(function(res){
+        btn && (btn.disabled = false);
+        if (res.ok) {
+          // reveal step 2
+          formSignup1.hidden = true;
+          var s2 = document.getElementById('form-signup-step2');
+          if (s2) {
+            s2.hidden = false;
+            var codeInput = document.getElementById('signup-code');
+            if (codeInput) codeInput.focus();
+            startCountdown(5 * 60);
+          }
+          return;
+        }
+        if (res.status === 409) showError('signup-error', t('error.already_signed', '이미 가입된 이메일입니다.'));
+        else if (res.status === 400) showError('signup-error', t('error.bad_domain', '@lginnotek.com 도메인만 사용 가능합니다.'));
+        else if (res.status === 429) showError('signup-error', t('error.rate_limit', '잠시 후 다시 시도하세요.'));
+        else showError('signup-error', t('error.network', '서버에 연결할 수 없습니다.'));
+      });
+    });
+  }
+
+  // Edit-email button: back to step 1
+  var btnEditEmail = document.getElementById('btn-edit-email');
+  if (btnEditEmail) {
+    btnEditEmail.addEventListener('click', function(){
+      clearError('verify-error');
+      var s1 = document.getElementById('form-signup-step1');
+      var s2 = document.getElementById('form-signup-step2');
+      if (s1) s1.hidden = false;
+      if (s2) s2.hidden = true;
+      if (window.__signupTimerId) clearInterval(window.__signupTimerId);
+    });
+  }
+
+  // Resend code: hit step1 endpoint again with same email
+  var btnResend = document.getElementById('btn-resend-code');
+  if (btnResend) {
+    btnResend.addEventListener('click', function(){
+      clearError('verify-error');
+      var email = signupEmailHidden ? signupEmailHidden.value : (signupEmailEl ? signupEmailEl.value : '');
+      if (!email) return;
+      btnResend.disabled = true;
+      postForm(formSignup1 ? formSignup1.dataset.action : 'auth/send-code', { email: email }).then(function(res){
+        setTimeout(function(){ btnResend.disabled = false; }, 1500);
+        if (res.ok) {
+          startCountdown(5 * 60);
+          showError('verify-error', t('signup.resent', '인증코드를 재발송했습니다.'));
+          // visual: not really an error — but use slot for now
+        } else {
+          showError('verify-error', t('error.rate_limit', '잠시 후 다시 시도하세요.'));
+        }
+      });
+    });
+  }
+
+  // ── Signup step 2 submit (verify code → create account) ────────
+  var formSignup2 = document.getElementById('form-signup-step2');
+  if (formSignup2) {
+    formSignup2.addEventListener('submit', function(ev){
+      ev.preventDefault();
+      clearError('verify-error');
+      var code = (document.getElementById('signup-code') || {}).value || '';
+      code = code.replace(/\D/g, '');
+      if (code.length !== 6) {
+        showError('verify-error', t('error.code_length', '인증코드는 6자리입니다.'));
+        return;
+      }
+      var email = signupEmailHidden ? signupEmailHidden.value : '';
+      var btn = document.getElementById('btn-verify');
+      btn && (btn.disabled = true);
+      postForm(formSignup2.dataset.action, { email: email, code: code }).then(function(res){
+        btn && (btn.disabled = false);
+        if (res.ok) {
+          if (res.mock) {
+            showError('verify-error', t('preview.mock_signup', '미리보기 모드 — 백엔드 미연결. 실제 서비스에서는 로그인 상태로 전환됩니다.'));
+            return;
+          }
+          var url = window.AUTH_REDIRECT_URL || '/Home';
+          window.location.assign(url);
+          return;
+        }
+        if (res.status === 401) showError('verify-error', t('error.bad_code', '인증코드가 일치하지 않습니다.'));
+        else if (res.status === 410) showError('verify-error', t('error.code_expired', '만료된 인증코드입니다. 재발송하세요.'));
+        else showError('verify-error', t('error.network', '서버에 연결할 수 없습니다.'));
+      });
+    });
+  }
+
+  // ── Code input UX: digits only, auto-trim ──────────────────────
+  var codeInput = document.getElementById('signup-code');
+  if (codeInput) {
+    codeInput.addEventListener('input', function(){
+      var v = codeInput.value.replace(/\D/g, '').slice(0, 6);
+      if (v !== codeInput.value) codeInput.value = v;
+    });
+  }
 
   /* ---- initial language apply ---- */
   applyLang(current);
 })();
 </script>
 
-<!-- youtube IFrame API · loop fallback (loop=1 not always reliable) ----- -->
+<!-- youtube IFrame API · auto-resume on tab return / pause / loop end --->
 <script src="https://www.youtube.com/iframe_api"></script>
 <script>
 var ytPlayer;
+var ytReady = false;
+
+function safePlay(){
+  if (!ytReady || !ytPlayer || typeof ytPlayer.playVideo !== 'function') return;
+  try { ytPlayer.mute(); ytPlayer.playVideo(); } catch(_){}
+}
+
 function onYouTubeIframeAPIReady(){
   ytPlayer = new YT.Player('bg-iframe', {
     events: {
-      'onStateChange': function(e){
-        if (e.data === YT.PlayerState.ENDED) {
-          try { ytPlayer.seekTo(0); ytPlayer.playVideo(); } catch(_){}
-        }
-      },
       'onReady': function(){
-        try { ytPlayer.mute(); ytPlayer.playVideo(); } catch(_){}
+        ytReady = true;
+        safePlay();
+      },
+      'onStateChange': function(e){
+        // Loop: when video ends, seek to 0 and replay
+        if (e.data === YT.PlayerState.ENDED) {
+          try { ytPlayer.seekTo(0, true); ytPlayer.playVideo(); } catch(_){}
+        }
+        // Auto-resume: if browser/iOS pauses (tab switch, lock screen),
+        // resume immediately. The bg video is decorative — never user-paused.
+        if (e.data === YT.PlayerState.PAUSED) {
+          try { ytPlayer.playVideo(); } catch(_){}
+        }
       }
     }
   });
 }
+
+// Resume on tab return / app foreground (Page Visibility API)
+document.addEventListener('visibilitychange', function(){
+  if (!document.hidden) safePlay();
+});
+// Also catch window focus / pageshow (BFCache restore)
+window.addEventListener('focus', safePlay);
+window.addEventListener('pageshow', safePlay);
+
+// As a final safety net, every 3s while page is visible, ensure playing.
+// Cheap and silent — playVideo() is idempotent when already playing.
+setInterval(function(){
+  if (!document.hidden) safePlay();
+}, 3000);
 </script>
 
 </body>
