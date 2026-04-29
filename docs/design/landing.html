@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<title>설비 생산성 분석 플랫폼 — Landing</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" />
+<style>
+:root{
+  --primary:#A50034;--primary-dark:#7E0027;--primary-tint:#F8E5EC;
+  --ink-body:#1F2430;--ink-muted:#6B7280;--ink-subtle:#9CA3AF;
+  --border:#E5E7EB;--border-strong:#CBD0D6;--soft:#F1F3F5;
+  --status-good:#1F8B4C;--status-warn:#B57F1B;--status-bad:#B23A48;
+  --on-dark:#FFFFFF;--on-dark-muted:rgba(255,255,255,0.72);--on-dark-subtle:rgba(255,255,255,0.5);
+  --panel-dark:rgba(15,17,21,0.62);--panel-border-dark:rgba(255,255,255,0.08);
+  --font-body:'Pretendard Variable',Pretendard,system-ui,sans-serif;
+  --font-mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;height:100%;background:#0A0C10;color:var(--on-dark);font-family:var(--font-body);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased;word-break:keep-all;overflow:hidden}
+button,input,textarea{font-family:inherit}
+
+/* video bg ---------------------------------------------------------- */
+.bg-video{position:fixed;inset:0;width:100vw;height:100vh;overflow:hidden;z-index:0;pointer-events:none}
+.bg-video iframe{position:absolute;top:50%;left:50%;width:100vw;height:56.25vw;min-height:100vh;min-width:177.78vh;transform:translate(-50%,-50%);border:0;pointer-events:none}
+
+/* radial overlay — left dark, right lighter ------------------------- */
+.bg-overlay{position:fixed;inset:0;z-index:1;pointer-events:none;
+  background:
+    radial-gradient(ellipse 90% 80% at 78% 50%, rgba(10,12,16,0.30) 0%, rgba(10,12,16,0.78) 60%, rgba(10,12,16,0.92) 100%),
+    linear-gradient(90deg, rgba(10,12,16,0.55) 0%, rgba(10,12,16,0.18) 60%, rgba(10,12,16,0.10) 100%);
+}
+.bg-vignette{position:fixed;inset:0;z-index:2;pointer-events:none;
+  background:radial-gradient(ellipse 120% 90% at 50% 50%, transparent 55%, rgba(0,0,0,0.45) 100%)}
+
+/* layout ------------------------------------------------------------ */
+.shell{position:relative;z-index:3;height:100vh;display:grid;grid-template-rows:auto 1fr auto;padding:28px 40px}
+.brand-row{display:flex;justify-content:space-between;align-items:center;gap:24px}
+.brand{display:flex;align-items:baseline;gap:10px}
+.brand__logo{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:8px;background:var(--primary);color:#fff;font-weight:800;font-size:14px;letter-spacing:-0.02em}
+.brand__name{font-size:14px;font-weight:700;letter-spacing:-0.01em;color:var(--on-dark)}
+.brand__name small{display:block;font-family:var(--font-mono);font-size:10px;font-weight:500;letter-spacing:.12em;color:var(--on-dark-subtle);text-transform:uppercase;margin-top:2px}
+
+.top-meta{display:flex;align-items:center;gap:14px;font-family:var(--font-mono);font-size:11px;color:var(--on-dark-muted);letter-spacing:.04em}
+.top-meta .dot{width:6px;height:6px;border-radius:50%;background:var(--status-good);box-shadow:0 0 0 3px rgba(31,139,76,0.18)}
+
+.main{display:grid;grid-template-columns:minmax(440px,460px) 1fr minmax(320px,360px);gap:48px;align-items:center;min-height:0}
+
+/* left column ------------------------------------------------------- */
+.left{display:flex;flex-direction:column;gap:28px}
+
+/* login card -------------------------------------------------------- */
+.login{background:#fff;color:var(--ink-body);border-radius:12px;padding:24px 26px;border-left:4px solid var(--primary);box-shadow:0 24px 60px rgba(0,0,0,0.32),0 2px 0 rgba(255,255,255,0.04) inset}
+.login__eyebrow{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-subtle);margin-bottom:6px}
+.login__title{margin:0 0 4px;font-size:22px;font-weight:700;letter-spacing:-0.01em}
+.login__sub{margin:0 0 16px;font-size:13px;color:var(--ink-muted)}
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:14px}
+.tab{flex:1;padding:8px 4px;font-size:13px;font-weight:600;color:var(--ink-muted);background:transparent;border:0;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}
+.tab--active{color:var(--ink-body);border-bottom-color:var(--primary)}
+.tab:not(.tab--active):hover{color:var(--ink-body)}
+.field{display:flex;flex-direction:column;gap:5px;margin-bottom:10px}
+.field__label{font-size:12px;font-weight:700;color:var(--ink-body)}
+.field__hint{font-size:11px;color:var(--ink-subtle);font-family:var(--font-mono)}
+.field__input-wrap{display:flex;align-items:stretch;border:1px solid var(--border);border-radius:8px;background:#fff;overflow:hidden;transition:border-color .15s,box-shadow .15s}
+.field__input-wrap:focus-within{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-tint)}
+.field__input-wrap input{flex:1;border:0;outline:none;padding:10px 12px;font-size:14px;color:var(--ink-body);background:transparent}
+.field__suffix{display:inline-flex;align-items:center;padding:0 10px;background:var(--soft);font-family:var(--font-mono);font-size:12px;color:var(--ink-muted);border-left:1px solid var(--border)}
+.actions{margin-top:14px;display:flex;flex-direction:column;gap:8px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:42px;padding:0 16px;border:1px solid var(--border);background:#fff;color:var(--ink-body);font:inherit;font-size:14px;font-weight:700;border-radius:8px;cursor:pointer;transition:all .15s}
+.btn--primary{background:var(--primary);border-color:var(--primary);color:#fff}
+.btn--primary:hover{background:var(--primary-dark);border-color:var(--primary-dark)}
+.btn--ghost{background:transparent;border-color:transparent;color:var(--ink-muted);height:32px;font-weight:600;font-size:12px}
+.btn--ghost:hover{color:var(--primary-dark);background:var(--primary-tint)}
+.foot{display:flex;justify-content:space-between;align-items:center;margin-top:14px;padding-top:12px;border-top:1px solid var(--border);font-size:11px;color:var(--ink-subtle);font-family:var(--font-mono)}
+
+/* signup-only fields (visually present, marked secondary) */
+.signup{display:none}
+.signup-row{display:flex;gap:8px;align-items:flex-end}
+.signup-row .field{flex:1;margin-bottom:0}
+
+/* platform name + sub ---------------------------------------------- */
+.identity{padding-left:4px}
+.identity__name{margin:0;font-size:34px;font-weight:800;letter-spacing:-0.025em;line-height:1.1;color:var(--on-dark)}
+.identity__name span{color:var(--primary);font-weight:800}
+.identity__sub{margin:8px 0 0;font-size:14px;color:var(--on-dark-muted);line-height:1.55;max-width:520px}
+.identity__meta{display:flex;align-items:center;gap:12px;margin-top:12px;font-family:var(--font-mono);font-size:11px;color:var(--on-dark-subtle);letter-spacing:.05em;text-transform:uppercase}
+.identity__meta strong{color:var(--on-dark);font-weight:700}
+
+/* right column — system status + patch notes ----------------------- */
+.right{display:flex;flex-direction:column;gap:14px;min-width:0}
+.panel{background:var(--panel-dark);border:1px solid var(--panel-border-dark);border-radius:10px;padding:14px 16px;color:var(--on-dark)}
+.panel__head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.panel__title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--on-dark-muted)}
+.panel__hint{font-family:var(--font-mono);font-size:10px;color:var(--on-dark-subtle);letter-spacing:.04em}
+
+.status-list{display:flex;flex-direction:column;gap:0}
+.status-row{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:8px 0;border-bottom:1px dashed rgba(255,255,255,0.07);font-size:13px}
+.status-row:last-child{border-bottom:0}
+.status-row__dot{width:7px;height:7px;border-radius:50%;background:var(--status-good);box-shadow:0 0 0 3px rgba(31,139,76,0.18)}
+.status-row__dot--warn{background:var(--status-warn);box-shadow:0 0 0 3px rgba(181,127,27,0.18)}
+.status-row__dot--bad{background:var(--status-bad);box-shadow:0 0 0 3px rgba(178,58,72,0.20)}
+.status-row__label{font-weight:600;color:var(--on-dark)}
+.status-row__detail{font-family:var(--font-mono);font-size:11px;color:var(--on-dark-subtle)}
+
+.patch-list{display:flex;flex-direction:column;gap:8px}
+.patch{display:grid;grid-template-columns:54px 1fr;gap:12px;align-items:start;padding:6px 0;border-bottom:1px dashed rgba(255,255,255,0.07)}
+.patch:last-child{border-bottom:0}
+.patch__date{font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--on-dark-muted);letter-spacing:.04em;padding-top:2px}
+.patch__body{font-size:12px;color:var(--on-dark);line-height:1.5}
+.patch__body em{font-style:normal;font-family:var(--font-mono);font-size:10px;color:var(--primary-tint);background:rgba(165,0,52,0.32);border:1px solid rgba(165,0,52,0.4);padding:0 5px;border-radius:3px;text-transform:uppercase;letter-spacing:.06em;margin-right:6px;font-weight:700;display:inline-block;line-height:16px}
+
+.foot-row{display:flex;justify-content:space-between;align-items:center;font-family:var(--font-mono);font-size:10px;color:var(--on-dark-subtle);letter-spacing:.06em;text-transform:uppercase}
+.foot-row a{color:var(--on-dark-muted);text-decoration:none;border-bottom:1px solid rgba(255,255,255,0.18)}
+.foot-row a:hover{color:var(--on-dark);border-color:var(--on-dark)}
+
+@media (max-width:1280px){
+  .main{grid-template-columns:minmax(420px,460px) minmax(300px,340px);gap:32px}
+  .main > .left + .right{grid-column:2}
+  .main::before{content:none}
+}
+@media (max-width:980px){
+  .shell{padding:18px 22px}
+  .main{grid-template-columns:1fr;gap:20px}
+  .right{order:2}
+  .identity__name{font-size:26px}
+  .login{padding:18px 18px}
+}
+</style>
+</head>
+<body>
+
+<!-- video background ------------------------------------------------- -->
+<div class="bg-video" aria-hidden="true">
+  <iframe
+    src="https://www.youtube.com/embed/lCOjL68zt0U?autoplay=1&mute=1&loop=1&playlist=lCOjL68zt0U&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&playsinline=1&disablekb=1"
+    title="background video"
+    frameborder="0"
+    allow="autoplay; encrypted-media"
+    allowfullscreen></iframe>
+</div>
+
+<!-- gradient overlays ----------------------------------------------- -->
+<div class="bg-overlay" aria-hidden="true"></div>
+<div class="bg-vignette" aria-hidden="true"></div>
+
+<!-- main shell ------------------------------------------------------- -->
+<div class="shell">
+
+  <!-- top: brand + status pill -->
+  <div class="brand-row">
+    <div class="brand">
+      <div class="brand__logo" aria-hidden="true">LG</div>
+      <div class="brand__name">LG Innotek<small>광학 사업부 · MAX CAPA TDR</small></div>
+    </div>
+    <div class="top-meta">
+      <span><span class="dot"></span>&nbsp;ALL SYSTEMS OPERATIONAL</span>
+      <span style="opacity:.6">·</span>
+      <span>2026-04-29 · MPAP v0.4.2</span>
+    </div>
+  </div>
+
+  <!-- middle: 3 columns -->
+  <div class="main">
+
+    <!-- LEFT: login + identity ------------------------------------- -->
+    <div class="left">
+
+      <form class="login" autocomplete="on" onsubmit="return false">
+        <div class="login__eyebrow">PRODUCTIVITY ANALYTICS · SIGN IN</div>
+        <h2 class="login__title">로그인</h2>
+        <p class="login__sub">사내 계정 아이디만 입력하세요.</p>
+
+        <div class="tabs" role="tablist">
+          <button class="tab tab--active" type="button" role="tab" aria-selected="true">로그인</button>
+          <button class="tab" type="button" role="tab" aria-selected="false">회원가입</button>
+        </div>
+
+        <!-- login fields -->
+        <div class="field">
+          <label class="field__label" for="user-id">아이디</label>
+          <div class="field__input-wrap">
+            <input id="user-id" type="text" placeholder="ex) maxcapa" autocomplete="username" />
+            <span class="field__suffix">@lginnotek.com</span>
+          </div>
+          <span class="field__hint">@lginnotek.com 은 자동 적용됩니다.</span>
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="user-pw">비밀번호</label>
+          <div class="field__input-wrap">
+            <input id="user-pw" type="password" autocomplete="current-password" />
+          </div>
+        </div>
+
+        <!-- signup placeholder (kept verbatim for non-removal contract) -->
+        <div class="signup">
+          <p class="login__sub">회사 이메일 인증 후 사용 가능합니다.</p>
+          <div class="signup-row">
+            <div class="field">
+              <label class="field__label" for="signup-email">회사 이메일</label>
+              <div class="field__input-wrap">
+                <input id="signup-email" type="email" placeholder="ex) maxcapa@lginnotek.com" />
+              </div>
+            </div>
+            <button type="button" class="btn">인증코드 발송</button>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button type="submit" class="btn btn--primary">로그인</button>
+        </div>
+
+        <div class="foot">
+          <span>문의 · 광학 Max Capa TDR</span>
+          <span>v0.4.2</span>
+        </div>
+      </form>
+
+      <!-- identity: platform name + subtext -->
+      <div class="identity">
+        <h1 class="identity__name">설비 생산성 <span>분석 플랫폼</span></h1>
+        <p class="identity__sub">광학 사업부 CMP · UPH · MTBA 세 축의 생산성 데이터를 한곳에서 조회하고 분석하는 사내 엔지니어링 플랫폼.</p>
+        <div class="identity__meta">
+          <span><strong>CMP</strong> 달성률</span>
+          <span style="opacity:.4">·</span>
+          <span><strong>UPH</strong> 동작시간</span>
+          <span style="opacity:.4">·</span>
+          <span><strong>MTBA</strong> 알람간격</span>
+          <span style="opacity:.4">·</span>
+          <span>+ <strong>MaxCapa Chat</strong></span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- middle spacer (keeps left & right anchored to viewport edges) -->
+    <div></div>
+
+    <!-- RIGHT: system status + patch notes ------------------------- -->
+    <div class="right">
+
+      <!-- system status panel -->
+      <div class="panel">
+        <div class="panel__head">
+          <div class="panel__title">SYSTEM STATUS</div>
+          <div class="panel__hint">last sync 23:50</div>
+        </div>
+        <div class="status-list">
+          <div class="status-row">
+            <span class="status-row__dot" aria-label="ok"></span>
+            <span class="status-row__label">API Gateway</span>
+            <span class="status-row__detail">142 ms · OK</span>
+          </div>
+          <div class="status-row">
+            <span class="status-row__dot" aria-label="ok"></span>
+            <span class="status-row__label">PostgreSQL · MES</span>
+            <span class="status-row__detail">38 ms · OK</span>
+          </div>
+          <div class="status-row">
+            <span class="status-row__dot" aria-label="ok"></span>
+            <span class="status-row__label">PostgreSQL · ITAS</span>
+            <span class="status-row__detail">52 ms · OK</span>
+          </div>
+          <div class="status-row">
+            <span class="status-row__dot status-row__dot--warn" aria-label="warn"></span>
+            <span class="status-row__label">Streamlit Worker</span>
+            <span class="status-row__detail">2/3 · degraded</span>
+          </div>
+          <div class="status-row">
+            <span class="status-row__dot" aria-label="ok"></span>
+            <span class="status-row__label">데이터 적재</span>
+            <span class="status-row__detail">04-28 23:50 · OK</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- patch notes panel -->
+      <div class="panel">
+        <div class="panel__head">
+          <div class="panel__title">PATCH NOTES · 최근 업데이트</div>
+          <div class="panel__hint">v0.4.2 → v0.3.8</div>
+        </div>
+        <div class="patch-list">
+          <div class="patch">
+            <div class="patch__date">04-28</div>
+            <div class="patch__body"><em>NEW</em>MaxCapa Chat 활성 — 자연어 → MES UPH/ITAS UPH 자동 분기 실행</div>
+          </div>
+          <div class="patch">
+            <div class="patch__date">04-25</div>
+            <div class="patch__body"><em>FIX</em>CMP Dashboard "'26.4월 4W" 시점 반영, 모델별 박스 재정렬</div>
+          </div>
+          <div class="patch">
+            <div class="patch__date">04-22</div>
+            <div class="patch__body"><em>UPD</em>UPH 분석 v4 — 동작시간 증가/하락 추세 섹션 분리</div>
+          </div>
+          <div class="patch">
+            <div class="patch__date">04-19</div>
+            <div class="patch__body"><em>UPD</em>MTBA Dashboard 다중 패널 — 패널 추가/제거 + 메모/이미지 업로드</div>
+          </div>
+          <div class="patch">
+            <div class="patch__date">04-15</div>
+            <div class="patch__body"><em>NEW</em>MTBA Detail View — 공정×설비 매트릭스 + 알람 상세 팝업</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="foot-row">
+        <span>광학 Max Capa TDR · 사내망 전용</span>
+        <a href="#">변경 로그 전체 보기 →</a>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- bottom is empty by design (full bleed visual) -->
+  <div></div>
+</div>
+
+<!-- tab switching (lightweight, no framework) ---------------------- -->
+<script>
+(function(){
+  var tabs = document.querySelectorAll('.tab');
+  var loginFields = document.querySelectorAll('.login .field, .login .actions');
+  var signup = document.querySelector('.signup');
+  function activate(idx){
+    tabs.forEach(function(t,i){
+      t.classList.toggle('tab--active', i===idx);
+      t.setAttribute('aria-selected', i===idx ? 'true':'false');
+    });
+    if(idx===0){
+      // login mode
+      signup.style.display = 'none';
+      document.querySelectorAll('.login .field').forEach(function(f){ f.style.display=''; });
+      document.querySelector('.actions .btn--primary').textContent = '로그인';
+    }else{
+      // signup mode — hide login fields, show signup verbatim
+      document.querySelectorAll('.login > .field').forEach(function(f){ f.style.display='none'; });
+      signup.style.display = '';
+      document.querySelector('.actions .btn--primary').textContent = '회원가입 신청';
+    }
+  }
+  tabs.forEach(function(t,i){ t.addEventListener('click', function(){ activate(i); }); });
+})();
+</script>
+
+</body>
+</html>
