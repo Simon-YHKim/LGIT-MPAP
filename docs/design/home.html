@@ -7,7 +7,6 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css" />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" />
 <style>
-/* LG EI Text · LG corporate identity body font (woff2 served from ./fonts/) */
 @font-face{font-family:'LG EI Text';font-weight:300;font-style:normal;font-display:swap;src:url('./fonts/lg-ei-text-300.woff2') format('woff2')}
 @font-face{font-family:'LG EI Text';font-weight:400;font-style:normal;font-display:swap;src:url('./fonts/lg-ei-text-400.woff2') format('woff2')}
 @font-face{font-family:'LG EI Text';font-weight:600;font-style:normal;font-display:swap;src:url('./fonts/lg-ei-text-600.woff2') format('woff2')}
@@ -27,297 +26,382 @@
   --font-body:'LG EI Text','LG Smart','Pretendard Variable',Pretendard,'Malgun Gothic',system-ui,sans-serif;
   --font-display:'LG EI Headline','LG EI Text','Pretendard Variable',Pretendard,sans-serif;
   --font-mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+  --ease:cubic-bezier(0.2,0.6,0.3,1);
 }
 *,*::before,*::after{box-sizing:border-box}
 html,body{margin:0;background:var(--page-bg);color:var(--ink-body);font-family:var(--font-body);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased;word-break:keep-all}
-button,input,a{font-family:inherit}
+button,input,textarea,a{font-family:inherit}
 a{color:inherit;text-decoration:none}
 
-/* layout ----------------------------------------------------------- */
-.app{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+/* shell ============================================================== */
+.app{display:flex;flex-direction:column;min-height:100vh}
+.shell{display:flex;flex:1;min-height:0}
+.main{flex:1;min-width:0;display:flex;flex-direction:column}
 
-/* sidebar ---------------------------------------------------------- */
-.sidebar{background:#FFFFFF;border-right:1px solid var(--border);padding:24px 0 16px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column}
-.sidebar__brand{padding:0 20px 16px;border-bottom:1px solid var(--border);margin-bottom:14px;display:flex;flex-direction:column;gap:8px}
-.sidebar__logo{display:block;height:18px;width:auto}
-.sidebar__eyebrow{font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:.14em;color:var(--ink-subtle);text-transform:uppercase}
-.sidebar__eyebrow strong{color:var(--primary-dark);font-weight:700}
+/* topbar row 1 (logo + lang) ========================================= */
+.topbar1{display:flex;align-items:center;justify-content:space-between;gap:16px;height:56px;padding:0 32px;background:#FFFFFF;border-bottom:1px solid var(--border)}
+.brand{display:flex;align-items:center;gap:14px;min-width:0}
+.brand__logo{display:block;height:26px;width:auto}
+.brand__divider{width:1px;height:22px;background:var(--border)}
+.brand__meta{display:flex;flex-direction:column;gap:1px;min-width:0}
+.brand__wordmark{font-family:var(--font-display);font-size:15px;font-weight:700;letter-spacing:-0.01em;color:var(--ink-body);line-height:1.1}
+.brand__team{font-size:11px;color:var(--ink-muted);line-height:1.3}
 
-.nav{display:flex;flex-direction:column;gap:2px;padding:0 8px}
-.nav__heading{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-subtle);padding:10px 12px 6px;margin-top:6px}
-.nav__item{display:flex;align-items:center;gap:10px;height:34px;padding:0 14px;font-size:13px;font-weight:600;color:var(--ink-muted);border-radius:6px;position:relative;cursor:pointer;transition:background .12s,color .12s}
-.nav__item:hover{background:var(--soft);color:var(--ink-body)}
-.nav__item--active{color:var(--ink-body);background:transparent}
-.nav__item--active::before{content:"";position:absolute;left:-8px;top:7px;bottom:7px;width:3px;background:var(--primary);border-radius:0 3px 3px 0}
-.nav__icon{width:14px;height:14px;flex:none;opacity:.75}
-.nav__item--active .nav__icon{opacity:1;color:var(--primary)}
+/* topbar row 2 (nav) ================================================= */
+.topbar2{display:flex;align-items:stretch;gap:0;height:48px;padding:0 24px;background:#FFFFFF;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:5}
+.topnav{display:flex;align-items:stretch;gap:2px;flex:1;min-width:0;overflow-x:auto}
+.topnav__item{display:inline-flex;align-items:center;gap:8px;padding:0 14px;font-size:13px;font-weight:600;color:var(--ink-muted);border-bottom:2px solid transparent;white-space:nowrap;transition:color .12s var(--ease),border-color .12s var(--ease),background .12s var(--ease)}
+.topnav__item:hover{color:var(--ink-body);background:var(--soft)}
+.topnav__item--active{color:var(--ink-body);border-bottom-color:var(--primary)}
+.topnav__item svg{width:14px;height:14px;flex:none;opacity:.75}
+.topnav__item--active svg{opacity:1;color:var(--primary)}
 
-.sidebar__foot{margin-top:auto;padding:14px 20px 0;border-top:1px solid var(--border);font-family:var(--font-mono);font-size:10px;color:var(--ink-subtle);letter-spacing:.06em;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center}
-
-/* content shell ---------------------------------------------------- */
-.content{display:flex;flex-direction:column;min-height:100vh}
-.topbar{display:flex;justify-content:flex-end;align-items:center;gap:12px;padding:14px 32px;border-bottom:1px solid var(--border);background:#FFFFFF}
-
-/* language switcher (light variant for app shell) ----------------- */
-.lang{position:relative}
+/* lang switcher ===================================================== */
+.lang{position:relative;flex:none}
 .lang__btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:30px;padding:0 12px;background:#FFFFFF;border:1px solid var(--border);border-radius:8px;color:var(--ink-body);font:inherit;font-family:var(--font-mono);font-size:11px;font-weight:600;letter-spacing:.06em;cursor:pointer;transition:border-color .12s,background .12s;min-width:80px}
 .lang__btn:hover{border-color:var(--border-strong);background:var(--soft)}
 .lang__btn svg{width:14px;height:14px;flex:none;opacity:.7}
 .lang__btn #lang-current{display:inline-block;min-width:18px;text-align:center}
 .lang__caret{font-size:10px;opacity:.6;margin-left:2px}
-.lang__menu{position:absolute;top:calc(100% + 6px);right:0;min-width:180px;background:#FFFFFF;border:1px solid var(--border);border-radius:10px;padding:4px;box-shadow:0 16px 40px rgba(15,17,21,0.10);display:none;z-index:10}
+.lang__menu{position:absolute;top:calc(100% + 6px);right:0;min-width:200px;background:#FFFFFF;border:1px solid var(--border);border-radius:10px;padding:4px;box-shadow:0 16px 40px rgba(15,17,21,0.10);display:none;z-index:30}
 .lang.is-open .lang__menu{display:block}
 .lang__item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 12px;font-size:13px;font-weight:600;color:var(--ink-body);background:transparent;border:0;border-radius:6px;cursor:pointer;width:100%;text-align:left}
 .lang__item:hover{background:var(--soft)}
 .lang__item--active{background:var(--primary-tint);color:var(--primary-dark)}
 .lang__item-code{font-family:var(--font-mono);font-size:10px;color:var(--ink-subtle);letter-spacing:.06em;text-transform:uppercase}
 
-/* page ------------------------------------------------------------- */
-.page{padding:36px 32px 24px;flex:1;max-width:1640px;width:100%}
-.page-head{margin-bottom:28px;display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap}
-.page-head__main{flex:1;min-width:0}
+/* page ============================================================== */
+.page{padding:32px 32px 24px;flex:1;width:100%;display:flex;flex-direction:column}
+.page-head{margin-bottom:24px}
 .eyebrow{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-subtle);margin-bottom:8px;display:flex;align-items:center;gap:8px}
 .eyebrow strong{color:var(--primary-dark);font-weight:700}
-.page-head h1{margin:0 0 6px;font-family:var(--font-display);font-size:36px;font-weight:700;letter-spacing:-0.025em;line-height:1.05;color:var(--ink-body)}
-.page-head .sub{margin:0;font-size:14px;color:var(--ink-muted);max-width:680px}
+.page-head h1{margin:0 0 6px;font-family:var(--font-display);font-size:32px;font-weight:700;letter-spacing:-0.025em;line-height:1.1;color:var(--ink-body)}
+.page-head p.sub{margin:0;font-size:14px;color:var(--ink-muted);max-width:680px}
 
-/* tool cards grid -------------------------------------------------- */
-.tools-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:32px}
-.tool-card{display:flex;flex-direction:column;gap:14px;padding:20px;background:var(--card-bg);border:1px solid var(--border);border-radius:10px;position:relative;transition:border-color .15s,transform .15s,box-shadow .15s;min-height:160px;cursor:pointer;color:inherit;overflow:hidden}
-.tool-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:0;background:var(--primary);transition:width .15s ease}
+/* category ========================================================== */
+.category{margin-bottom:28px}
+.category__head{display:flex;align-items:baseline;gap:10px;padding-bottom:8px;margin-bottom:14px;border-bottom:1px solid var(--border)}
+.category__title{font-size:16px;font-weight:700;letter-spacing:-0.01em;color:var(--ink-body)}
+.category__title-en{font-family:var(--font-mono);font-size:11px;font-weight:600;color:var(--ink-subtle);letter-spacing:.08em;text-transform:uppercase}
+.category__cards{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.category__cards--single{grid-template-columns:1fr;max-width:640px}
+
+/* tool card ========================================================= */
+.tool-card{display:flex;flex-direction:column;gap:12px;padding:18px;background:var(--card-bg);border:1px solid var(--border);border-radius:10px;position:relative;transition:border-color .15s var(--ease),box-shadow .15s var(--ease);min-height:148px;cursor:pointer;color:inherit;overflow:hidden}
+.tool-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:0;background:var(--primary);transition:width .15s var(--ease)}
 .tool-card:hover{border-color:var(--border-strong);box-shadow:0 8px 22px -4px rgba(15,17,21,0.06)}
 .tool-card:hover::before{width:3px}
 .tool-card:hover .tool-card__arrow{opacity:1;transform:translateX(0)}
-.tool-card[aria-disabled="true"]{cursor:not-allowed;opacity:0.7}
-.tool-card[aria-disabled="true"]:hover{border-color:var(--border);box-shadow:none}
-.tool-card[aria-disabled="true"]:hover::before{width:0}
-
 .tool-card__head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
-.tool-card__icon-wrap{width:36px;height:36px;border-radius:8px;background:var(--soft);display:flex;align-items:center;justify-content:center;flex:none;color:var(--ink-body)}
-.tool-card__icon-wrap svg{width:18px;height:18px;stroke-width:1.6}
+.tool-card__icon-wrap{width:34px;height:34px;border-radius:8px;background:var(--soft);display:flex;align-items:center;justify-content:center;flex:none;color:var(--ink-body)}
+.tool-card__icon-wrap svg{width:17px;height:17px;stroke-width:1.6}
 .tool-card:hover .tool-card__icon-wrap{background:var(--primary-tint);color:var(--primary-dark)}
-
 .tool-card__body{display:flex;flex-direction:column;gap:4px;flex:1;min-width:0}
 .tool-card__title{margin:0;font-size:15px;font-weight:700;letter-spacing:-0.01em;color:var(--ink-body)}
 .tool-card__desc{margin:0;font-size:13px;color:var(--ink-muted);line-height:1.5}
-
 .tool-card__foot{display:flex;justify-content:space-between;align-items:center;margin-top:auto;padding-top:8px;border-top:1px dashed var(--border);font-family:var(--font-mono);font-size:11px;color:var(--ink-subtle);letter-spacing:.04em}
-
-.tool-card__arrow{opacity:0;transform:translateX(-4px);transition:opacity .15s,transform .15s;color:var(--primary);font-family:var(--font-mono);font-size:14px}
-
-/* status badge */
+.tool-card__arrow{opacity:0;transform:translateX(-4px);transition:opacity .15s var(--ease),transform .15s var(--ease);color:var(--primary);font-family:var(--font-mono);font-size:14px}
 .badge{display:inline-flex;align-items:center;gap:5px;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;font-family:var(--font-mono);white-space:nowrap;flex:none}
 .badge--good{background:var(--status-good-tint);color:var(--status-good)}
 .badge--warn{background:var(--status-warn-tint);color:var(--status-warn)}
 .badge--subtle{background:var(--status-subtle-tint);color:var(--ink-muted)}
 .badge .badge__dot{width:5px;height:5px;border-radius:50%;background:currentColor}
 
-/* page footer ----------------------------------------------------- */
+/* page foot ========================================================= */
 .page-foot{margin-top:auto;padding:18px 0 8px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-family:var(--font-mono);font-size:11px;color:var(--ink-subtle);letter-spacing:.04em;flex-wrap:wrap;gap:12px}
 .page-foot a{color:var(--ink-muted);border-bottom:1px solid var(--border)}
 .page-foot a:hover{color:var(--primary-dark);border-color:var(--primary-dark)}
 
-/* responsive ------------------------------------------------------- */
+/* chat panel (right) ================================================ */
+.chat-panel{position:relative;flex:none;width:360px;min-width:280px;max-width:720px;background:#FFFFFF;border-left:1px solid var(--border);display:flex;flex-direction:column;min-height:0}
+.chat-panel.is-collapsed{width:48px !important;min-width:48px}
+.chat-panel.is-collapsed .chat-handle,.chat-panel.is-collapsed .chat-body,.chat-panel.is-collapsed .chat-title,.chat-panel.is-collapsed .chat-live{display:none}
+.chat-panel.is-collapsed .chat-head{justify-content:center;padding:0;height:48px;border-bottom:0}
+.chat-panel.is-collapsed .chat-toggle{transform:rotate(180deg)}
+.chat-handle{position:absolute;left:-2px;top:0;bottom:0;width:4px;cursor:col-resize;background:transparent;z-index:6}
+.chat-handle:hover,.chat-handle.is-active{background:var(--primary-tint)}
+.chat-head{display:flex;align-items:center;gap:8px;height:48px;padding:0 14px;border-bottom:1px solid var(--border);flex:none}
+.chat-toggle{width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;background:transparent;border:1px solid var(--border);border-radius:6px;cursor:pointer;color:var(--ink-muted);transition:transform .15s var(--ease),background .12s var(--ease),color .12s var(--ease)}
+.chat-toggle:hover{background:var(--soft);color:var(--ink-body)}
+.chat-toggle svg{width:14px;height:14px}
+.chat-title{flex:1;font-size:13px;font-weight:700;letter-spacing:-0.01em;color:var(--ink-body)}
+.chat-live{display:inline-flex;align-items:center;gap:5px;font-family:var(--font-mono);font-size:10px;font-weight:700;letter-spacing:.06em;color:var(--primary-dark);text-transform:uppercase}
+.chat-live::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--primary);box-shadow:0 0 0 3px var(--primary-tint)}
+.chat-body{flex:1;display:flex;flex-direction:column;min-height:0}
+.chat-scroll{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:12px;min-height:0}
+
+.chat-hint{position:relative;padding:10px 12px 10px 16px;background:#FFFFFF;border:1px solid var(--border);border-radius:8px}
+.chat-hint::before{content:"";position:absolute;left:0;top:8px;bottom:8px;width:4px;background:var(--primary);border-radius:0 2px 2px 0}
+.chat-hint__title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--primary-dark);margin-bottom:4px}
+.chat-hint__body{font-size:12px;color:var(--ink-muted);line-height:1.55}
+.chat-hint__body code{font-family:var(--font-mono);font-size:11px;background:var(--soft);padding:1px 5px;border-radius:3px;color:var(--ink-body)}
+
+.chat-examples{background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:10px}
+.chat-examples__title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-subtle);margin-bottom:8px;padding:0 4px}
+.chat-examples__list{display:flex;flex-direction:column;gap:4px}
+.chat-example{display:block;width:100%;text-align:left;padding:8px 10px;background:transparent;border:1px solid transparent;border-radius:6px;font:inherit;font-size:12px;color:var(--ink-body);cursor:pointer;line-height:1.4;transition:background .12s var(--ease),border-color .12s var(--ease)}
+.chat-example:hover{background:var(--soft);border-color:var(--border)}
+.chat-example__src{display:inline-block;font-family:var(--font-mono);font-size:9px;font-weight:700;color:var(--ink-subtle);letter-spacing:.06em;margin-right:6px;vertical-align:1px}
+
+.chat-empty{padding:24px 12px;text-align:center;color:var(--ink-subtle)}
+.chat-empty__title{font-size:13px;font-weight:600;color:var(--ink-muted);margin-bottom:4px}
+.chat-empty__body{font-size:11px;line-height:1.5}
+
+.chat-composer{flex:none;padding:10px 12px 12px;border-top:1px solid var(--border);background:#FFFFFF;display:flex;flex-direction:column;gap:8px}
+.chat-composer__row{display:flex;align-items:center;gap:8px;justify-content:space-between}
+.chat-composer__src{display:inline-flex;align-items:center;gap:4px;font-family:var(--font-mono);font-size:10px;font-weight:600;color:var(--ink-muted);letter-spacing:.06em;text-transform:uppercase}
+.chat-composer__src .dot{width:6px;height:6px;border-radius:50%;background:var(--status-good)}
+.chat-composer textarea{width:100%;min-height:64px;max-height:140px;padding:10px;border:1px solid var(--border);border-radius:8px;background:#FFFFFF;font:inherit;font-size:13px;line-height:1.5;color:var(--ink-body);resize:vertical;transition:border-color .12s var(--ease),box-shadow .12s var(--ease)}
+.chat-composer textarea:focus{outline:0;border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-tint)}
+.chat-send{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:34px;padding:0 14px;background:var(--primary);color:#FFFFFF;border:0;border-radius:7px;font:inherit;font-size:12px;font-weight:600;letter-spacing:-0.005em;cursor:pointer;transition:background .12s var(--ease)}
+.chat-send:hover{background:var(--primary-dark)}
+.chat-send svg{width:13px;height:13px}
+
+/* responsive ======================================================== */
 @media (max-width:1280px){
-  .tools-grid{grid-template-columns:repeat(2,1fr)}
+  .category__cards{grid-template-columns:1fr}
 }
 @media (max-width:980px){
-  .app{grid-template-columns:1fr}
-  .sidebar{position:relative;height:auto;flex-direction:row;align-items:center;padding:14px 18px;border-right:0;border-bottom:1px solid var(--border)}
-  .sidebar__brand{padding:0;border:0;margin:0}
-  .nav,.sidebar__foot{display:none}
-  .tools-grid{grid-template-columns:1fr}
-  .page{padding:24px 18px}
+  .topbar2{padding:0 12px}
+  .page{padding:20px 18px}
+  .chat-panel{display:none}
 }
 </style>
 </head>
 <body>
-
 <div class="app">
 
-  <!-- Sidebar ------------------------------------------------------- -->
-  <aside class="sidebar">
-    <div class="sidebar__brand">
-      <img class="sidebar__logo" src="./assets/lg-innotek-logo-en-gray.png" alt="LG Innotek" />
-      <div class="sidebar__eyebrow"><strong>VITALS</strong> · <span data-i18n="brand.team_short">생산혁신센터 · Max Capa 팀</span></div>
-    </div>
-
-    <div class="nav__heading" data-i18n="nav.heading">메뉴</div>
-    <nav class="nav" role="navigation" aria-label="Primary">
-      <a class="nav__item" href="./landing.html" data-page="login">
-        <svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
-        login
-      </a>
-      <a class="nav__item nav__item--active" aria-current="page" href="./home.html" data-page="home">
-        <svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12l9-9 9 9"/><path d="M5 10v10h14V10"/></svg>
-        Home
-      </a>
-      <a class="nav__item" href="#" data-page="cmp">
-        <svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-        CMP Dashboard
-      </a>
-      <a class="nav__item" href="#" data-page="uph">
-        <svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg>
-        UPH Dashboard
-      </a>
-      <a class="nav__item" href="#" data-page="mtba">
-        <svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-        MTBA Dashboard
-      </a>
-      <a class="nav__item" href="#" data-page="mtba-detail">
-        <svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 22 8.5 12 15 2 8.5 12 2"/><polyline points="2 15.5 12 22 22 15.5"/><polyline points="2 12 12 18.5 22 12"/></svg>
-        MTBA Detail View
-      </a>
-      <a class="nav__item" href="#" data-page="chat">
-        <svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-        MaxCapa Chat
-      </a>
-    </nav>
-
-    <div class="sidebar__foot">
-      <span>v0.4.2</span>
-      <span data-i18n="sidebar.intranet">사내망</span>
-    </div>
-  </aside>
-
-  <!-- Content ------------------------------------------------------- -->
-  <main class="content">
-
-    <!-- Top bar (lang switcher) -->
-    <header class="topbar">
-      <div class="lang" id="lang">
-        <button type="button" class="lang__btn" id="lang-btn" aria-haspopup="menu" aria-expanded="false">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>
-          <span id="lang-current">KO</span>
-          <span class="lang__caret">▾</span>
-        </button>
-        <div class="lang__menu" role="menu" id="lang-menu">
-          <button class="lang__item lang__item--active" type="button" data-lang="ko"><span>한국어</span><span class="lang__item-code">KO</span></button>
-          <button class="lang__item" type="button" data-lang="en"><span>English</span><span class="lang__item-code">EN</span></button>
-          <button class="lang__item" type="button" data-lang="vi"><span>Tiếng Việt</span><span class="lang__item-code">VI</span></button>
-          <button class="lang__item" type="button" data-lang="pl"><span>Polski</span><span class="lang__item-code">PL</span></button>
-          <button class="lang__item" type="button" data-lang="id"><span>Bahasa Indonesia</span><span class="lang__item-code">ID</span></button>
-          <button class="lang__item" type="button" data-lang="es"><span>Español</span><span class="lang__item-code">ES</span></button>
-          <button class="lang__item" type="button" data-lang="zh"><span>中文</span><span class="lang__item-code">ZH</span></button>
-        </div>
+  <!-- Topbar Row 1: brand + lang =================================== -->
+  <header class="topbar1">
+    <div class="brand">
+      <img class="brand__logo" src="./assets/lg-innotek-logo-en-gray.png" alt="LG Innotek" />
+      <div class="brand__divider" aria-hidden="true"></div>
+      <div class="brand__meta">
+        <span class="brand__wordmark">VITALS</span>
+        <span class="brand__team" data-i18n="brand.team_full">생산혁신센터 · Max Capa 팀</span>
       </div>
-    </header>
+    </div>
+    <div class="lang" id="lang">
+      <button type="button" class="lang__btn" id="lang-btn" aria-haspopup="menu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>
+        <span id="lang-current">KO</span>
+        <span class="lang__caret">▾</span>
+      </button>
+      <div class="lang__menu" role="menu" id="lang-menu">
+        <button class="lang__item lang__item--active" type="button" data-lang="ko"><span>한국어</span><span class="lang__item-code">KO</span></button>
+        <button class="lang__item" type="button" data-lang="en"><span>English</span><span class="lang__item-code">EN</span></button>
+        <button class="lang__item" type="button" data-lang="vi"><span>Tiếng Việt</span><span class="lang__item-code">VI</span></button>
+        <button class="lang__item" type="button" data-lang="pl"><span>Polski</span><span class="lang__item-code">PL</span></button>
+        <button class="lang__item" type="button" data-lang="id"><span>Bahasa Indonesia</span><span class="lang__item-code">ID</span></button>
+        <button class="lang__item" type="button" data-lang="es"><span>Español</span><span class="lang__item-code">ES</span></button>
+        <button class="lang__item" type="button" data-lang="zh"><span>中文</span><span class="lang__item-code">ZH</span></button>
+      </div>
+    </div>
+  </header>
 
-    <!-- Page -->
-    <div class="page">
+  <!-- Topbar Row 2: 7-item primary nav ============================= -->
+  <nav class="topbar2" role="navigation" aria-label="Primary">
+    <div class="topnav">
+      <a class="topnav__item" href="./landing.html" data-page="login">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+        <span>login</span>
+      </a>
+      <a class="topnav__item topnav__item--active" aria-current="page" href="./home.html" data-page="home">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12l9-9 9 9"/><path d="M5 10v10h14V10"/></svg>
+        <span>Home</span>
+      </a>
+      <a class="topnav__item" href="#" data-page="cmp">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        <span>CMP Dashboard</span>
+      </a>
+      <a class="topnav__item" href="#" data-page="uph">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg>
+        <span>UPH Dashboard</span>
+      </a>
+      <a class="topnav__item" href="#" data-page="mtba">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        <span>MTBA Dashboard</span>
+      </a>
+      <a class="topnav__item" href="#" data-page="mtba-detail">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 22 8.5 12 15 2 8.5 12 2"/><polyline points="2 15.5 12 22 22 15.5"/><polyline points="2 12 12 18.5 22 12"/></svg>
+        <span>MTBA Detail View</span>
+      </a>
+      <a class="topnav__item" href="#" data-page="chat">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <span>MaxCapa Chat</span>
+      </a>
+    </div>
+  </nav>
 
-      <header class="page-head">
-        <div class="page-head__main">
+  <!-- Body shell: main + chat panel =============================== -->
+  <div class="shell">
+
+    <main class="main">
+      <div class="page">
+
+        <header class="page-head">
           <div class="eyebrow"><strong data-i18n="eyebrow.platform">PLATFORM</strong> · <span data-i18n="eyebrow.vitals">VITALS</span></div>
           <h1 data-i18n="home.title">분석 도구</h1>
           <p class="sub" data-i18n="home.sub">분석 항목을 선택하세요. 데이터는 사내망 MES / ITAS 에서 매일 자동 적재됩니다.</p>
-        </div>
-      </header>
+        </header>
 
-      <!-- Tool cards grid (5 tools) -->
-      <div class="tools-grid">
+        <!-- Category 1 — 생산 / Production -->
+        <section class="category">
+          <header class="category__head">
+            <h2 class="category__title" data-i18n="cat.prod">생산</h2>
+            <span class="category__title-en" data-i18n="cat.prod_en">Production</span>
+          </header>
+          <div class="category__cards category__cards--single">
+            <a class="tool-card" href="#" data-tool="cmp">
+              <div class="tool-card__head">
+                <div class="tool-card__icon-wrap">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                </div>
+                <span class="badge badge--good"><span class="badge__dot"></span><span data-i18n="status.live">정식</span></span>
+              </div>
+              <div class="tool-card__body">
+                <h3 class="tool-card__title">CMP Dashboard</h3>
+                <p class="tool-card__desc" data-i18n="tool.cmp_desc">공정별 CMP 달성률 추이 · 영역×모델×기간 필터로 조회</p>
+              </div>
+              <div class="tool-card__foot">
+                <span data-i18n="tool.cmp_meta">정식 5/22E · v4 · 2026-04-28</span>
+                <span class="tool-card__arrow">→</span>
+              </div>
+            </a>
+          </div>
+        </section>
 
-        <!-- 1. CMP Dashboard — 정식 -->
-        <a class="tool-card" href="#" data-tool="cmp">
-          <div class="tool-card__head">
-            <div class="tool-card__icon-wrap">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-            </div>
-            <span class="badge badge--good"><span class="badge__dot"></span><span data-i18n="status.live">정식</span></span>
+        <!-- Category 2 — 설비 성능 / Equipment Performance -->
+        <section class="category">
+          <header class="category__head">
+            <h2 class="category__title" data-i18n="cat.perf">설비 성능</h2>
+            <span class="category__title-en" data-i18n="cat.perf_en">Equipment Performance</span>
+          </header>
+          <div class="category__cards category__cards--single">
+            <a class="tool-card" href="#" data-tool="uph">
+              <div class="tool-card__head">
+                <div class="tool-card__icon-wrap">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg>
+                </div>
+                <span class="badge badge--warn"><span class="badge__dot"></span><span data-i18n="status.preview">가오픈</span></span>
+              </div>
+              <div class="tool-card__body">
+                <h3 class="tool-card__title">UPH Dashboard</h3>
+                <p class="tool-card__desc" data-i18n="tool.uph_desc">UPH · 동작시간 분석 · I-TAS 분기 + 6 섹션 추적</p>
+              </div>
+              <div class="tool-card__foot">
+                <span data-i18n="tool.uph_meta">가오픈 4/29~ · 정식 5/22E</span>
+                <span class="tool-card__arrow">→</span>
+              </div>
+            </a>
           </div>
-          <div class="tool-card__body">
-            <h3 class="tool-card__title">CMP Dashboard</h3>
-            <p class="tool-card__desc" data-i18n="tool.cmp_desc">공정별 CMP 달성률 추이 · 영역×모델×기간 필터로 조회</p>
-          </div>
-          <div class="tool-card__foot">
-            <span data-i18n="tool.cmp_meta">정식 5/22E · v4 · 2026-04-28</span>
-            <span class="tool-card__arrow">→</span>
-          </div>
-        </a>
+        </section>
 
-        <!-- 2. UPH Dashboard — 가오픈 -->
-        <a class="tool-card" href="#" data-tool="uph">
-          <div class="tool-card__head">
-            <div class="tool-card__icon-wrap">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg>
-            </div>
-            <span class="badge badge--warn"><span class="badge__dot"></span><span data-i18n="status.preview">가오픈</span></span>
+        <!-- Category 3 — 설비 효율 / Equipment Efficiency -->
+        <section class="category">
+          <header class="category__head">
+            <h2 class="category__title" data-i18n="cat.eff">설비 효율</h2>
+            <span class="category__title-en" data-i18n="cat.eff_en">Equipment Efficiency</span>
+          </header>
+          <div class="category__cards">
+            <a class="tool-card" href="#" data-tool="mtba">
+              <div class="tool-card__head">
+                <div class="tool-card__icon-wrap">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                </div>
+                <span class="badge badge--warn"><span class="badge__dot"></span><span data-i18n="status.preview">가오픈</span></span>
+              </div>
+              <div class="tool-card__body">
+                <h3 class="tool-card__title">MTBA Dashboard</h3>
+                <p class="tool-card__desc" data-i18n="tool.mtba_desc">공정별 MTBA 통계 · 다중 패널 · 메모/이미지 업로드</p>
+              </div>
+              <div class="tool-card__foot">
+                <span data-i18n="tool.mtba_meta">가오픈 4/29~ · 정식 5/15E</span>
+                <span class="tool-card__arrow">→</span>
+              </div>
+            </a>
+            <a class="tool-card" href="#" data-tool="mtba-detail">
+              <div class="tool-card__head">
+                <div class="tool-card__icon-wrap">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 22 8.5 12 15 2 8.5 12 2"/><polyline points="2 15.5 12 22 22 15.5"/><polyline points="2 12 12 18.5 22 12"/></svg>
+                </div>
+                <span class="badge badge--warn"><span class="badge__dot"></span><span data-i18n="status.preview">가오픈</span></span>
+              </div>
+              <div class="tool-card__body">
+                <h3 class="tool-card__title">MTBA Detail View</h3>
+                <p class="tool-card__desc" data-i18n="tool.mtba_detail_desc">패널 기반 드릴다운 · 공정×설비 매트릭스 · 알람 상세 팝업</p>
+              </div>
+              <div class="tool-card__foot">
+                <span data-i18n="tool.mtba_detail_meta">가오픈 4/29~ · 정식 5/15E</span>
+                <span class="tool-card__arrow">→</span>
+              </div>
+            </a>
           </div>
-          <div class="tool-card__body">
-            <h3 class="tool-card__title">UPH Dashboard</h3>
-            <p class="tool-card__desc" data-i18n="tool.uph_desc">UPH · 동작시간 분석 · I-TAS 분기 + 6 섹션 추적</p>
-          </div>
-          <div class="tool-card__foot">
-            <span data-i18n="tool.uph_meta">가오픈 4/29~ · 정식 5/22E</span>
-            <span class="tool-card__arrow">→</span>
-          </div>
-        </a>
+        </section>
 
-        <!-- 3. MTBA Dashboard — 가오픈 -->
-        <a class="tool-card" href="#" data-tool="mtba">
-          <div class="tool-card__head">
-            <div class="tool-card__icon-wrap">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-            </div>
-            <span class="badge badge--warn"><span class="badge__dot"></span><span data-i18n="status.preview">가오픈</span></span>
-          </div>
-          <div class="tool-card__body">
-            <h3 class="tool-card__title">MTBA Dashboard</h3>
-            <p class="tool-card__desc" data-i18n="tool.mtba_desc">공정별 MTBA 통계 · 다중 패널 · 메모/이미지 업로드</p>
-          </div>
-          <div class="tool-card__foot">
-            <span data-i18n="tool.mtba_meta">가오픈 4/29~ · 정식 5/15E</span>
-            <span class="tool-card__arrow">→</span>
-          </div>
-        </a>
-
-        <!-- 4. MTBA Detail View — 가오픈 -->
-        <a class="tool-card" href="#" data-tool="mtba-detail">
-          <div class="tool-card__head">
-            <div class="tool-card__icon-wrap">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 22 8.5 12 15 2 8.5 12 2"/><polyline points="2 15.5 12 22 22 15.5"/><polyline points="2 12 12 18.5 22 12"/></svg>
-            </div>
-            <span class="badge badge--warn"><span class="badge__dot"></span><span data-i18n="status.preview">가오픈</span></span>
-          </div>
-          <div class="tool-card__body">
-            <h3 class="tool-card__title">MTBA Detail View</h3>
-            <p class="tool-card__desc" data-i18n="tool.mtba_detail_desc">패널 기반 드릴다운 · 공정×설비 매트릭스 · 알람 상세 팝업</p>
-          </div>
-          <div class="tool-card__foot">
-            <span data-i18n="tool.mtba_detail_meta">가오픈 4/29~ · 정식 5/15E</span>
-            <span class="tool-card__arrow">→</span>
-          </div>
-        </a>
-
-        <!-- 5. MaxCapa Chat — 오픈예정 -->
-        <a class="tool-card" href="#" data-tool="chat" aria-disabled="true">
-          <div class="tool-card__head">
-            <div class="tool-card__icon-wrap">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-            </div>
-            <span class="badge badge--subtle"><span class="badge__dot"></span><span data-i18n="status.upcoming">오픈예정</span></span>
-          </div>
-          <div class="tool-card__body">
-            <h3 class="tool-card__title">MaxCapa Chat</h3>
-            <p class="tool-card__desc" data-i18n="tool.chat_desc">대화형 생산지표 조회 · MES UPH / ITAS UPH 자연어 질의</p>
-          </div>
-          <div class="tool-card__foot">
-            <span data-i18n="tool.chat_meta">오픈 예정</span>
-            <span class="tool-card__arrow">→</span>
-          </div>
-        </a>
+        <footer class="page-foot">
+          <span data-i18n="foot.creator">제작 · 생산혁신센터 Max Capa 팀</span>
+          <span><a href="#" data-i18n="foot.changelog">변경 로그 전체 보기 →</a></span>
+        </footer>
 
       </div>
+    </main>
 
-      <!-- page footer -->
-      <footer class="page-foot">
-        <span data-i18n="foot.creator">제작 · 생산혁신센터 Max Capa 팀</span>
-        <span><a href="#" data-i18n="foot.changelog">변경 로그 전체 보기 →</a></span>
-      </footer>
+    <!-- Right resizable chat panel ================================ -->
+    <aside class="chat-panel" id="chat-panel" aria-label="MaxCapa Chat">
+      <div class="chat-handle" id="chat-handle" aria-hidden="true"></div>
+      <header class="chat-head">
+        <button type="button" class="chat-toggle" id="chat-toggle" aria-label="Collapse panel" data-i18n-aria="chat.collapse">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+        <span class="chat-title" data-i18n="chat.title">MaxCapa Chat</span>
+        <span class="chat-live" data-i18n="chat.live">LIVE</span>
+      </header>
 
-    </div>
+      <div class="chat-body">
+        <div class="chat-scroll">
 
-  </main>
+          <div class="chat-hint">
+            <div class="chat-hint__title" data-i18n="chat.hint_title">데이터소스 자동 분기</div>
+            <div class="chat-hint__body">
+              <span data-i18n="chat.hint_body">기본 조회는 MES UPH</span> <code>uph_input_runtime_daily_model</code>.
+              <span data-i18n="chat.hint_body2">"ITAS" 키워드 포함 시 ITAS UPH</span> <code>itas_uph_result</code>.
+            </div>
+          </div>
+
+          <div class="chat-examples">
+            <div class="chat-examples__title" data-i18n="chat.examples_title">예시 질문</div>
+            <div class="chat-examples__list">
+              <button type="button" class="chat-example"><span class="chat-example__src">MES</span><span data-i18n="chat.ex1">R53A 모델 어제 UPH 평균은?</span></button>
+              <button type="button" class="chat-example"><span class="chat-example__src">ITAS</span><span data-i18n="chat.ex2">ITAS 기준 R50 지난주 UPH 추이</span></button>
+              <button type="button" class="chat-example"><span class="chat-example__src">MES</span><span data-i18n="chat.ex3">A2 라인에서 가장 느린 호기 5개</span></button>
+              <button type="button" class="chat-example"><span class="chat-example__src">MES</span><span data-i18n="chat.ex4">CMP 미달 공정만 3월 4주차</span></button>
+            </div>
+          </div>
+
+          <div class="chat-empty">
+            <div class="chat-empty__title" data-i18n="chat.empty_title">대화 비어 있음</div>
+            <div class="chat-empty__body" data-i18n="chat.empty_body">위 예시를 클릭하거나<br>아래에 자연어로 질문하세요.</div>
+          </div>
+
+        </div>
+
+        <div class="chat-composer">
+          <div class="chat-composer__row">
+            <span class="chat-composer__src"><span class="dot"></span><span data-i18n="chat.src_label">데이터소스</span> · MES UPH</span>
+          </div>
+          <textarea id="chat-input" rows="3" placeholder="공정 / 모델 / 기간을 포함해 자연어로 질문하세요." data-i18n-ph="chat.placeholder"></textarea>
+          <div class="chat-composer__row" style="justify-content:flex-end">
+            <button type="button" class="chat-send" id="chat-send">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg>
+              <span data-i18n="chat.send">질문 분석 및 실행</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+  </div>
 
 </div>
 
@@ -325,12 +409,13 @@ a{color:inherit;text-decoration:none}
 <script>
 window.__I18N__ = {
   ko: {
-    "brand.team_short":"생산혁신센터 · Max Capa 팀",
-    "nav.heading":"메뉴",
-    "sidebar.intranet":"사내망",
+    "brand.team_full":"생산혁신센터 · Max Capa 팀",
     "eyebrow.platform":"PLATFORM","eyebrow.vitals":"VITALS",
     "home.title":"분석 도구",
     "home.sub":"분석 항목을 선택하세요. 데이터는 사내망 MES / ITAS 에서 매일 자동 적재됩니다.",
+    "cat.prod":"생산","cat.prod_en":"Production",
+    "cat.perf":"설비 성능","cat.perf_en":"Equipment Performance",
+    "cat.eff":"설비 효율","cat.eff_en":"Equipment Efficiency",
     "status.live":"정식","status.preview":"가오픈","status.upcoming":"오픈예정",
     "tool.cmp_desc":"공정별 CMP 달성률 추이 · 영역×모델×기간 필터로 조회",
     "tool.cmp_meta":"정식 5/22E · v4 · 2026-04-28",
@@ -340,93 +425,142 @@ window.__I18N__ = {
     "tool.mtba_meta":"가오픈 4/29~ · 정식 5/15E",
     "tool.mtba_detail_desc":"패널 기반 드릴다운 · 공정×설비 매트릭스 · 알람 상세 팝업",
     "tool.mtba_detail_meta":"가오픈 4/29~ · 정식 5/15E",
-    "tool.chat_desc":"대화형 생산지표 조회 · MES UPH / ITAS UPH 자연어 질의",
-    "tool.chat_meta":"오픈 예정",
     "foot.creator":"제작 · 생산혁신센터 Max Capa 팀",
-    "foot.changelog":"변경 로그 전체 보기 →"
+    "foot.changelog":"변경 로그 전체 보기 →",
+    "chat.title":"MaxCapa Chat","chat.live":"LIVE",
+    "chat.hint_title":"데이터소스 자동 분기",
+    "chat.hint_body":"기본 조회는 MES UPH",
+    "chat.hint_body2":"\"ITAS\" 키워드 포함 시 ITAS UPH",
+    "chat.examples_title":"예시 질문",
+    "chat.ex1":"R53A 모델 어제 UPH 평균은?",
+    "chat.ex2":"ITAS 기준 R50 지난주 UPH 추이",
+    "chat.ex3":"A2 라인에서 가장 느린 호기 5개",
+    "chat.ex4":"CMP 미달 공정만 3월 4주차",
+    "chat.empty_title":"대화 비어 있음",
+    "chat.empty_body":"위 예시를 클릭하거나<br>아래에 자연어로 질문하세요.",
+    "chat.src_label":"데이터소스",
+    "chat.placeholder":"공정 / 모델 / 기간을 포함해 자연어로 질문하세요.",
+    "chat.send":"질문 분석 및 실행",
+    "chat.collapse":"패널 접기","chat.expand":"패널 펼치기"
   },
   en: {
-    "brand.team_short":"Production Innovation · Max Capa Team",
-    "nav.heading":"MENU",
-    "sidebar.intranet":"Intranet",
+    "brand.team_full":"Production Innovation Center · Max Capa Team",
     "eyebrow.platform":"PLATFORM","eyebrow.vitals":"VITALS",
     "home.title":"Analytics Tools",
     "home.sub":"Pick an analysis tool. Data is auto-ingested daily from in-house MES / ITAS.",
+    "cat.prod":"Production","cat.prod_en":"Production",
+    "cat.perf":"Equipment Performance","cat.perf_en":"Equipment Performance",
+    "cat.eff":"Equipment Efficiency","cat.eff_en":"Equipment Efficiency",
     "status.live":"Live","status.preview":"Preview","status.upcoming":"Upcoming",
     "tool.cmp_desc":"Per-process CMP attainment trend · area × model × period filters",
     "tool.cmp_meta":"Live 5/22E · v4 · 2026-04-28",
     "tool.uph_desc":"UPH · run-time analytics · I-TAS branching + 6 sections",
     "tool.uph_meta":"Preview 4/29~ · Live 5/22E",
-    "tool.mtba_desc":"Per-process MTBA statistics · multi-panel · memo/image upload",
+    "tool.mtba_desc":"Per-process MTBA stats · multi-panel · memo/image upload",
     "tool.mtba_meta":"Preview 4/29~ · Live 5/15E",
     "tool.mtba_detail_desc":"Panel-based drill-down · process × equipment matrix · alarm detail popup",
     "tool.mtba_detail_meta":"Preview 4/29~ · Live 5/15E",
-    "tool.chat_desc":"Conversational production query · natural-language MES UPH / ITAS UPH",
-    "tool.chat_meta":"Upcoming",
     "foot.creator":"Built by · Production Innovation Center · Max Capa Team",
-    "foot.changelog":"View full changelog →"
+    "foot.changelog":"View full changelog →",
+    "chat.title":"MaxCapa Chat","chat.live":"LIVE",
+    "chat.hint_title":"Auto-routed data source",
+    "chat.hint_body":"Default query is MES UPH",
+    "chat.hint_body2":"With \"ITAS\" keyword it routes to ITAS UPH",
+    "chat.examples_title":"Examples",
+    "chat.ex1":"What was R53A average UPH yesterday?",
+    "chat.ex2":"R50 UPH trend last week, ITAS basis",
+    "chat.ex3":"Top 5 slowest machines on A2 line",
+    "chat.ex4":"CMP shortfall processes only, Mar week 4",
+    "chat.empty_title":"Empty thread",
+    "chat.empty_body":"Tap an example above<br>or ask in natural language below.",
+    "chat.src_label":"Source",
+    "chat.placeholder":"Ask in natural language. Include process / model / period.",
+    "chat.send":"Analyze & Run",
+    "chat.collapse":"Collapse panel","chat.expand":"Expand panel"
   },
   vi: {
-    "brand.team_short":"Trung tâm Đổi mới · Đội Max Capa",
-    "nav.heading":"MENU","sidebar.intranet":"Nội bộ",
-    "eyebrow.platform":"PLATFORM","eyebrow.vitals":"VITALS",
+    "brand.team_full":"Trung tâm Đổi mới Sản xuất · Đội Max Capa",
     "home.title":"Công cụ phân tích",
     "home.sub":"Chọn công cụ phân tích. Dữ liệu nạp tự động hằng ngày từ MES / ITAS nội bộ.",
+    "cat.prod":"Sản xuất","cat.perf":"Hiệu năng thiết bị","cat.eff":"Hiệu suất thiết bị",
     "status.live":"Chính thức","status.preview":"Thử","status.upcoming":"Sắp ra mắt",
     "foot.creator":"Đội Max Capa · Trung tâm Đổi mới Sản xuất",
-    "foot.changelog":"Xem toàn bộ nhật ký →"
+    "chat.title":"MaxCapa Chat","chat.send":"Phân tích & Chạy",
+    "chat.placeholder":"Hỏi bằng ngôn ngữ tự nhiên (công đoạn / mẫu / kỳ).",
+    "chat.collapse":"Thu gọn","chat.expand":"Mở rộng"
   },
   pl: {
-    "brand.team_short":"Centrum Innowacji · Zespół Max Capa",
-    "nav.heading":"MENU","sidebar.intranet":"Intranet",
+    "brand.team_full":"Centrum Innowacji Produkcji · Zespół Max Capa",
     "home.title":"Narzędzia analityczne",
     "home.sub":"Wybierz narzędzie analityczne.",
+    "cat.prod":"Produkcja","cat.perf":"Wydajność urządzeń","cat.eff":"Sprawność urządzeń",
     "status.live":"Live","status.preview":"Podgląd","status.upcoming":"Wkrótce",
-    "foot.creator":"Zespół Max Capa · Centrum Innowacji Produkcji"
+    "foot.creator":"Zespół Max Capa · Centrum Innowacji Produkcji",
+    "chat.title":"MaxCapa Chat","chat.send":"Analizuj i uruchom",
+    "chat.placeholder":"Zapytaj w naturalnym języku.",
+    "chat.collapse":"Zwiń","chat.expand":"Rozwiń"
   },
   id: {
-    "brand.team_short":"Pusat Inovasi · Tim Max Capa",
-    "nav.heading":"MENU","sidebar.intranet":"Internal",
+    "brand.team_full":"Pusat Inovasi Produksi · Tim Max Capa",
     "home.title":"Alat Analitik",
     "home.sub":"Pilih alat analisis.",
+    "cat.prod":"Produksi","cat.perf":"Kinerja Peralatan","cat.eff":"Efisiensi Peralatan",
     "status.live":"Resmi","status.preview":"Pratinjau","status.upcoming":"Akan datang",
-    "foot.creator":"Tim Max Capa · Pusat Inovasi Produksi"
+    "foot.creator":"Tim Max Capa · Pusat Inovasi Produksi",
+    "chat.title":"MaxCapa Chat","chat.send":"Analisis & Jalankan",
+    "chat.placeholder":"Tanya dengan bahasa alami.",
+    "chat.collapse":"Ciutkan","chat.expand":"Bentangkan"
   },
   es: {
-    "brand.team_short":"Centro de Innovación · Equipo Max Capa",
-    "nav.heading":"MENÚ","sidebar.intranet":"Intranet",
+    "brand.team_full":"Centro de Innovación de Producción · Equipo Max Capa",
     "home.title":"Herramientas de análisis",
     "home.sub":"Seleccione una herramienta de análisis.",
+    "cat.prod":"Producción","cat.perf":"Rendimiento de equipos","cat.eff":"Eficiencia de equipos",
     "status.live":"Activo","status.preview":"Vista previa","status.upcoming":"Próximamente",
-    "foot.creator":"Equipo Max Capa · Centro de Innovación de Producción"
+    "foot.creator":"Equipo Max Capa · Centro de Innovación de Producción",
+    "chat.title":"MaxCapa Chat","chat.send":"Analizar y ejecutar",
+    "chat.placeholder":"Pregunte en lenguaje natural.",
+    "chat.collapse":"Contraer","chat.expand":"Expandir"
   },
   zh: {
-    "brand.team_short":"生产革新中心 · Max Capa 团队",
-    "nav.heading":"菜单","sidebar.intranet":"内网",
+    "brand.team_full":"生产革新中心 · Max Capa 团队",
     "home.title":"分析工具",
     "home.sub":"请选择分析工具。",
+    "cat.prod":"生产","cat.perf":"设备性能","cat.eff":"设备效率",
     "status.live":"正式","status.preview":"预览","status.upcoming":"即将上线",
-    "foot.creator":"Max Capa 团队 · 生产革新中心"
+    "foot.creator":"Max Capa 团队 · 生产革新中心",
+    "chat.title":"MaxCapa Chat","chat.send":"分析并执行",
+    "chat.placeholder":"请用自然语言提问。",
+    "chat.collapse":"收起","chat.expand":"展开"
   }
 };
 </script>
 
-<!-- behavior: lang switcher + tool card click handling --------------- -->
+<!-- behavior: lang + chat panel resize/collapse + cards -------------- -->
 <script>
 (function(){
   var dict = window.__I18N__;
   var current = localStorage.getItem('mpap.lang') || 'ko';
+  var fallback = dict.ko;
 
   function applyLang(code){
     var pack = dict[code] || {};
-    var fallback = dict.ko;
     document.documentElement.setAttribute('lang', code);
     document.querySelectorAll('[data-i18n]').forEach(function(el){
       var key = el.getAttribute('data-i18n');
-      var val = pack[key];
-      if (val == null) val = fallback[key];
+      var val = pack[key]; if (val == null) val = fallback[key];
       if (val == null) return;
-      el.textContent = val;
+      if (val.indexOf('<br>') !== -1) el.innerHTML = val; else el.textContent = val;
+    });
+    document.querySelectorAll('[data-i18n-ph]').forEach(function(el){
+      var key = el.getAttribute('data-i18n-ph');
+      var val = pack[key]; if (val == null) val = fallback[key];
+      if (val != null) el.setAttribute('placeholder', val);
+    });
+    document.querySelectorAll('[data-i18n-aria]').forEach(function(el){
+      var key = el.getAttribute('data-i18n-aria');
+      var val = pack[key]; if (val == null) val = fallback[key];
+      if (val != null) el.setAttribute('aria-label', val);
     });
     var btnLabel = document.getElementById('lang-current');
     if (btnLabel) btnLabel.textContent = code.toUpperCase();
@@ -459,12 +593,70 @@ window.__I18N__ = {
     });
   });
 
-  /* tool card click — block disabled cards */
+  /* chat panel: resize + collapse */
+  var panel = document.getElementById('chat-panel');
+  var handle = document.getElementById('chat-handle');
+  var toggle = document.getElementById('chat-toggle');
+  var WMIN = 280, WMAX = 720, WDEFAULT = 360;
+  var savedW = parseInt(localStorage.getItem('home.chat.width') || String(WDEFAULT), 10);
+  if (isNaN(savedW)) savedW = WDEFAULT;
+  var collapsed = localStorage.getItem('home.chat.collapsed') === '1';
+  function clampW(w){ return Math.min(WMAX, Math.max(WMIN, w)); }
+  function applyPanel(){
+    if (collapsed) {
+      panel.classList.add('is-collapsed');
+      panel.style.width = '';
+    } else {
+      panel.classList.remove('is-collapsed');
+      panel.style.width = clampW(savedW) + 'px';
+    }
+  }
+  applyPanel();
+
+  var dragging = false, startX = 0, startW = 0;
+  handle.addEventListener('mousedown', function(e){
+    if (collapsed) return;
+    dragging = true;
+    startX = e.clientX;
+    startW = panel.offsetWidth;
+    handle.classList.add('is-active');
+    document.body.style.cursor = 'col-resize';
+    document.body.style.userSelect = 'none';
+    e.preventDefault();
+  });
+  document.addEventListener('mousemove', function(e){
+    if (!dragging) return;
+    var dx = startX - e.clientX;
+    savedW = clampW(startW + dx);
+    panel.style.width = savedW + 'px';
+  });
+  document.addEventListener('mouseup', function(){
+    if (!dragging) return;
+    dragging = false;
+    handle.classList.remove('is-active');
+    document.body.style.cursor = '';
+    document.body.style.userSelect = '';
+    localStorage.setItem('home.chat.width', String(savedW));
+  });
+  toggle.addEventListener('click', function(){
+    collapsed = !collapsed;
+    localStorage.setItem('home.chat.collapsed', collapsed ? '1' : '0');
+    applyPanel();
+  });
+
+  /* example chips: copy text into composer */
+  var input = document.getElementById('chat-input');
+  document.querySelectorAll('.chat-example').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var span = btn.querySelector('[data-i18n]');
+      if (input && span) { input.value = span.textContent; input.focus(); }
+    });
+  });
+
+  /* card click: block disabled */
   document.querySelectorAll('.tool-card').forEach(function(card){
     card.addEventListener('click', function(e){
-      if (card.getAttribute('aria-disabled') === 'true') {
-        e.preventDefault();
-      }
+      if (card.getAttribute('aria-disabled') === 'true') e.preventDefault();
     });
   });
 
