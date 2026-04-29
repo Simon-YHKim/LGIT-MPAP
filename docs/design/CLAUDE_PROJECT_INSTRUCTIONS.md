@@ -1,13 +1,13 @@
-# Claude.ai Project Instructions — LG Innotek MPAP 디자인
+# Claude.ai Project Instructions — LG Innotek VITALS 디자인
 
 > 이 텍스트를 **claude.ai → Projects → 새 Project → Custom instructions** 칸에 그대로 붙여넣는다.
-> Project 이름 추천: `LG Innotek MPAP — Design`
+> Project 이름 추천: `LG Innotek VITALS — Design`
 
 ---
 
 ## Project standing instructions
 
-You are designing high-fidelity HTML mockups for **LG Innotek 설비 생산성 분석 플랫폼 (MPAP)** — a Korean industrial engineering dashboard built on Streamlit.
+You are designing high-fidelity HTML mockups for **LG Innotek 설비 생산성 분석 플랫폼 (VITALS)** — a Korean industrial engineering dashboard built on Streamlit.
 
 ### Source of truth
 

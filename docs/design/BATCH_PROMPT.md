@@ -10,7 +10,7 @@
 ## 프롬프트 본문 (전체 복사)
 
 ```
-LG Innotek MPAP 디자인 시안 일괄 생성 작업.
+LG Innotek VITALS 디자인 시안 일괄 생성 작업.
 
 ## 연결된 레포 파일 (이 순서로 정독 후 작업 시작)
 1. DESIGN.md — Calm Engineering 방향 디자인 시스템 (브랜드/컬러/타이포/레이아웃/9 컴포넌트/4 화면)
@@ -89,7 +89,7 @@ LG Innotek MPAP 디자인 시안 일괄 생성 작업.
 
 ## 사용법 정리
 
-1. claude.ai Project (`LG Innotek MPAP — Design`) 새 대화 열기
+1. claude.ai Project (`LG Innotek VITALS — Design`) 새 대화 열기
 2. 위 "프롬프트 본문" 코드블록 통째로 복사 → 붙여넣기 → 전송
 3. 라운드 1 응답 (S1·A/B/C 3 아티팩트) 도착 → 각 아티팩트 다운로드
 4. `docs/design/mockup-S1-A.html` … `mockup-S1-C.html` 로 저장 후 푸시

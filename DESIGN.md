@@ -10,7 +10,7 @@
 
 | 항목 | 값 |
 |---|---|
-| 이름 | 설비 생산성 분석 플랫폼 (Equipment Productivity Analytics Platform, 약칭 **MPAP**) |
+| 이름 | 설비 생산성 분석 플랫폼 (Equipment Productivity Analytics Platform, 약칭 **VITALS**) |
 | 한 줄 피치 | LG Innotek 광학 사업부의 설비 생산성을 CMP · UPH · MTBA 세 축으로 통합 분석·조회하는 사내 엔지니어링 대시보드 |
 | 소속 | 광학 Max Capa TDR |
 | 스택 | Streamlit (Python) · PostgreSQL · Plotly · st-aggrid |

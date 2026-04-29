@@ -1,4 +1,4 @@
-# `docs/design/` — LG Innotek MPAP 디자인 자료
+# `docs/design/` — LG Innotek VITALS 디자인 자료
 
 > **이 폴더의 책임자**: claude/setup-simonk-stack-Sry57 브랜치
 > **단계**: Calm Engineering 방향 1차 시안 14개 도착 → 사용자 피드백 → 2차 revision 대기

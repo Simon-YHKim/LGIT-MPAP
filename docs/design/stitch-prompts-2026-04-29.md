@@ -16,7 +16,7 @@
 ## 공통 컨텍스트 (모든 프롬프트 머리)
 
 ```
-Product: LG Innotek 설비 생산성 분석 플랫폼 (MPAP)
+Product: LG Innotek 설비 생산성 분석 플랫폼 (VITALS)
 Pitch: 광학 사업부 설비 생산성을 CMP·UPH·MTBA 세 축으로 통합 분석하는 사내 엔지니어링 대시보드.
 Audience: LG Innotek 광학 사업부 사내 엔지니어 (한국어, 데스크톱 1280-1880px, 매일 사용).
 Tone: engineering, legible, dense, calm, tool-like — 도구 같은 인상.
@@ -115,7 +115,7 @@ Variant A 카드 옆에 시스템 상태 영역을 추가해 "엔지니어에게
 Key elements:
 - 좌측 (폭 460px) 로그인 카드 (Variant A와 동일 구조)
 - 우측 (폭 360px) 시스템 패널 — radius 8px, border 1px, padding 16px, 다음 4 항목 표시:
-  - "MPAP v0.4.2" (Plex Mono 13px, label "BUILD" uppercase 11px)
+  - "VITALS v0.4.2" (Plex Mono 13px, label "BUILD" uppercase 11px)
   - "API · OK" with 6px 그린 dot (#1F8B4C)
   - "DB · OK" with 6px 그린 dot
   - "마지막 데이터 갱신 · 2026-04-28 23:50" (Plex Mono 12px)
@@ -142,7 +142,7 @@ Linear의 "프로젝트 카드 그리드" 톤. 좌측 240px 사이드바 + 콘�
 
 App shell:
 - 좌측 사이드바 240px, bg #FFFFFF, right border 1px #E5E7EB
-  - 상단 LG Innotek 워드마크 (16px 700, 28px 높이 자리), 그 아래 11px uppercase "MPAP"
+  - 상단 LG Innotek 워드마크 (16px 700, 28px 높이 자리), 그 아래 11px uppercase "VITALS"
   - 메뉴: Home / CMP Dashboard / UPH Dashboard / MTBA Dashboard / MTBA Detail / MaxCapa Chat / Logout (각 36px 높이, 14px 600, 좌측 16px padding)
   - 활성 항목 (Home): 좌측 2px 와인레드 마커 + 텍스트 색 #1F2430 (와인색 배경 X)
   - 비활성 항목: Ink Muted, hover 시 Soft bg
