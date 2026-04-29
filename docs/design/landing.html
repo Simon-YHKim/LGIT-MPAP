@@ -109,7 +109,7 @@ button,input,textarea{font-family:inherit}
   /* fixed-size composition — no resize on tab/step switch */
   display:flex;
   flex-direction:column;
-  height:540px;
+  height:480px;
   width:100%;
   max-width:460px;
   overflow:hidden;
@@ -189,9 +189,33 @@ button,input,textarea{font-family:inherit}
 
 /* platform name + sub ---------------------------------------------- */
 .identity{padding-left:4px}
-.identity__name{margin:0;font-size:34px;font-weight:800;letter-spacing:-0.025em;line-height:1.1;color:var(--on-dark)}
-.identity__name span{color:var(--primary);font-weight:800}
-.identity__sub{margin:14px 0 0;font-size:18px;font-weight:600;color:var(--on-dark);line-height:1.4;max-width:520px;letter-spacing:-0.01em}
+/* identity name — VITALS as the visual anchor of the page.
+   Display font (LG EI Headline), oversize, with wine accent dot. */
+.identity{padding-left:0}
+.identity__name{
+  margin:0;
+  font-family:'LG EI Headline','LG EI Text','Pretendard Variable',Pretendard,sans-serif;
+  font-size:64px;
+  font-weight:700;
+  letter-spacing:-0.04em;
+  line-height:0.95;
+  color:var(--on-dark);
+  display:inline-block;
+  position:relative;
+  padding-right:0.18em; /* room for wine accent dot */
+}
+/* Wine red period as brand accent — survives i18n re-renders since it's
+   a CSS pseudo-element, not in the DOM text. */
+.identity__name::after{
+  content:".";
+  color:var(--primary);
+  font-weight:700;
+  margin-left:0.02em;
+}
+.identity__name span{color:var(--primary);font-weight:700}
+/* Optional emphasis underline on hover for interactivity hint */
+.identity:hover .identity__name{text-shadow:0 0 32px rgba(165,0,52,0.25)}
+.identity__sub{margin:18px 0 0;font-size:18px;font-weight:500;color:var(--on-dark);line-height:1.4;max-width:520px;letter-spacing:-0.01em;opacity:0.92}
 .identity__bu{margin:14px 0 0;font-family:var(--font-mono);font-size:11px;color:var(--on-dark-subtle);letter-spacing:.08em;text-transform:uppercase}
 
 /* right column — system status + patch notes ----------------------- */
@@ -235,7 +259,8 @@ button,input,textarea{font-family:inherit}
   .shell{padding:18px 22px}
   .main{grid-template-columns:1fr;gap:20px}
   .right{order:2}
-  .identity__name{font-size:26px}
+  .identity__name{font-size:48px}
+  .identity__sub{font-size:16px}
   .login{padding:18px 18px}
 }
 </style>
