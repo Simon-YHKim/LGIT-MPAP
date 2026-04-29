@@ -45,6 +45,21 @@ button,input,textarea{font-family:inherit}
 .top-meta{display:flex;align-items:center;gap:14px;font-family:var(--font-mono);font-size:11px;color:var(--on-dark-muted);letter-spacing:.04em}
 .top-meta .dot{width:6px;height:6px;border-radius:50%;background:var(--status-good);box-shadow:0 0 0 3px rgba(31,139,76,0.18)}
 
+/* language switcher ----------------------------------------------- */
+.top-row{display:flex;align-items:center;gap:18px}
+.lang{position:relative}
+.lang__btn{display:inline-flex;align-items:center;gap:8px;height:30px;padding:0 12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:var(--on-dark);font:inherit;font-size:12px;font-weight:600;letter-spacing:.02em;cursor:pointer;transition:background .15s,border-color .15s}
+.lang__btn:hover{background:rgba(255,255,255,0.10);border-color:rgba(255,255,255,0.20)}
+.lang__btn svg{width:14px;height:14px;flex:none;opacity:.85}
+.lang__caret{font-size:10px;opacity:.7;margin-left:2px}
+.lang__menu{position:absolute;top:calc(100% + 6px);right:0;min-width:180px;background:rgba(15,17,21,0.96);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:4px;box-shadow:0 16px 40px rgba(0,0,0,0.45);display:none;z-index:10;backdrop-filter:blur(8px)}
+.lang.is-open .lang__menu{display:block}
+.lang__item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 12px;font-size:13px;font-weight:600;color:var(--on-dark);background:transparent;border:0;border-radius:6px;cursor:pointer;width:100%;text-align:left}
+.lang__item:hover{background:rgba(255,255,255,0.08)}
+.lang__item--active{background:rgba(165,0,52,0.18);color:#fff}
+.lang__item-code{font-family:var(--font-mono);font-size:10px;color:var(--on-dark-subtle);letter-spacing:.06em;text-transform:uppercase}
+.lang__item--active .lang__item-code{color:rgba(255,255,255,0.7)}
+
 .main{display:grid;grid-template-columns:minmax(440px,460px) 1fr minmax(320px,360px);gap:48px;align-items:center;min-height:0}
 
 /* left column ------------------------------------------------------- */
@@ -83,9 +98,8 @@ button,input,textarea{font-family:inherit}
 .identity{padding-left:4px}
 .identity__name{margin:0;font-size:34px;font-weight:800;letter-spacing:-0.025em;line-height:1.1;color:var(--on-dark)}
 .identity__name span{color:var(--primary);font-weight:800}
-.identity__sub{margin:8px 0 0;font-size:14px;color:var(--on-dark-muted);line-height:1.55;max-width:520px}
-.identity__meta{display:flex;align-items:center;gap:12px;margin-top:12px;font-family:var(--font-mono);font-size:11px;color:var(--on-dark-subtle);letter-spacing:.05em;text-transform:uppercase}
-.identity__meta strong{color:var(--on-dark);font-weight:700}
+.identity__sub{margin:14px 0 0;font-size:18px;font-weight:600;color:var(--on-dark);line-height:1.4;max-width:520px;letter-spacing:-0.01em}
+.identity__bu{margin:14px 0 0;font-family:var(--font-mono);font-size:11px;color:var(--on-dark-subtle);letter-spacing:.08em;text-transform:uppercase}
 
 /* right column — system status + patch notes ----------------------- */
 .right{display:flex;flex-direction:column;gap:14px;min-width:0}
@@ -133,7 +147,8 @@ button,input,textarea{font-family:inherit}
 <!-- video background ------------------------------------------------- -->
 <div class="bg-video" aria-hidden="true">
   <iframe
-    src="https://www.youtube.com/embed/lCOjL68zt0U?autoplay=1&mute=1&loop=1&playlist=lCOjL68zt0U&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&playsinline=1&disablekb=1"
+    id="bg-iframe"
+    src="https://www.youtube.com/embed/lCOjL68zt0U?autoplay=1&mute=1&loop=1&playlist=lCOjL68zt0U&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&playsinline=1&disablekb=1&enablejsapi=1&origin=https://raw.githack.com"
     title="background video"
     frameborder="0"
     allow="autoplay; encrypted-media"
@@ -151,12 +166,30 @@ button,input,textarea{font-family:inherit}
   <div class="brand-row">
     <div class="brand">
       <div class="brand__logo" aria-hidden="true">LG</div>
-      <div class="brand__name">LG Innotek<small>광학 사업부 · MAX CAPA TDR</small></div>
+      <div class="brand__name" data-i18n="brand.name">LG Innotek<small data-i18n="brand.team">생산혁신센터 · Max Capa 팀</small></div>
     </div>
-    <div class="top-meta">
-      <span><span class="dot"></span>&nbsp;ALL SYSTEMS OPERATIONAL</span>
-      <span style="opacity:.6">·</span>
-      <span>2026-04-29 · MPAP v0.4.2</span>
+    <div class="top-row">
+      <div class="top-meta">
+        <span><span class="dot"></span>&nbsp;<span data-i18n="status.all">ALL SYSTEMS OPERATIONAL</span></span>
+        <span style="opacity:.6">·</span>
+        <span>2026-04-29 · MPAP v0.4.2</span>
+      </div>
+      <div class="lang" id="lang">
+        <button type="button" class="lang__btn" id="lang-btn" aria-haspopup="menu" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>
+          <span id="lang-current">한국어</span>
+          <span class="lang__caret">▾</span>
+        </button>
+        <div class="lang__menu" role="menu" id="lang-menu">
+          <button class="lang__item lang__item--active" type="button" data-lang="ko"><span>한국어</span><span class="lang__item-code">KO</span></button>
+          <button class="lang__item" type="button" data-lang="en"><span>English</span><span class="lang__item-code">EN</span></button>
+          <button class="lang__item" type="button" data-lang="vi"><span>Tiếng Việt</span><span class="lang__item-code">VI</span></button>
+          <button class="lang__item" type="button" data-lang="pl"><span>Polski</span><span class="lang__item-code">PL</span></button>
+          <button class="lang__item" type="button" data-lang="id"><span>Bahasa Indonesia</span><span class="lang__item-code">ID</span></button>
+          <button class="lang__item" type="button" data-lang="es"><span>Español</span><span class="lang__item-code">ES</span></button>
+          <button class="lang__item" type="button" data-lang="zh"><span>中文</span><span class="lang__item-code">ZH</span></button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -167,27 +200,27 @@ button,input,textarea{font-family:inherit}
     <div class="left">
 
       <form class="login" autocomplete="on" onsubmit="return false">
-        <div class="login__eyebrow">PRODUCTIVITY ANALYTICS · SIGN IN</div>
-        <h2 class="login__title">로그인</h2>
-        <p class="login__sub">사내 계정 아이디만 입력하세요.</p>
+        <div class="login__eyebrow" data-i18n="login.eyebrow">PRODUCTIVITY ANALYTICS · SIGN IN</div>
+        <h2 class="login__title" data-i18n="login.title">로그인</h2>
+        <p class="login__sub" data-i18n="login.sub">사내 계정 아이디만 입력하세요.</p>
 
         <div class="tabs" role="tablist">
-          <button class="tab tab--active" type="button" role="tab" aria-selected="true">로그인</button>
-          <button class="tab" type="button" role="tab" aria-selected="false">회원가입</button>
+          <button class="tab tab--active" type="button" role="tab" aria-selected="true" data-i18n="tab.signin">로그인</button>
+          <button class="tab" type="button" role="tab" aria-selected="false" data-i18n="tab.signup">회원가입</button>
         </div>
 
         <!-- login fields -->
         <div class="field">
-          <label class="field__label" for="user-id">아이디</label>
+          <label class="field__label" for="user-id" data-i18n="field.id">아이디</label>
           <div class="field__input-wrap">
             <input id="user-id" type="text" placeholder="ex) maxcapa" autocomplete="username" />
             <span class="field__suffix">@lginnotek.com</span>
           </div>
-          <span class="field__hint">@lginnotek.com 은 자동 적용됩니다.</span>
+          <span class="field__hint" data-i18n="field.id_hint">@lginnotek.com 은 자동 적용됩니다.</span>
         </div>
 
         <div class="field">
-          <label class="field__label" for="user-pw">비밀번호</label>
+          <label class="field__label" for="user-pw" data-i18n="field.pw">비밀번호</label>
           <div class="field__input-wrap">
             <input id="user-pw" type="password" autocomplete="current-password" />
           </div>
@@ -195,41 +228,33 @@ button,input,textarea{font-family:inherit}
 
         <!-- signup placeholder (kept verbatim for non-removal contract) -->
         <div class="signup">
-          <p class="login__sub">회사 이메일 인증 후 사용 가능합니다.</p>
+          <p class="login__sub" data-i18n="signup.notice">회사 이메일 인증 후 사용 가능합니다.</p>
           <div class="signup-row">
             <div class="field">
-              <label class="field__label" for="signup-email">회사 이메일</label>
+              <label class="field__label" for="signup-email" data-i18n="field.email">회사 이메일</label>
               <div class="field__input-wrap">
                 <input id="signup-email" type="email" placeholder="ex) maxcapa@lginnotek.com" />
               </div>
             </div>
-            <button type="button" class="btn">인증코드 발송</button>
+            <button type="button" class="btn" data-i18n="btn.send_code">인증코드 발송</button>
           </div>
         </div>
 
         <div class="actions">
-          <button type="submit" class="btn btn--primary">로그인</button>
+          <button type="submit" class="btn btn--primary" data-i18n="btn.signin">로그인</button>
         </div>
 
         <div class="foot">
-          <span>문의 · 광학 Max Capa TDR</span>
+          <span data-i18n="foot.contact">문의 · 생산혁신센터 Max Capa 팀</span>
           <span>v0.4.2</span>
         </div>
       </form>
 
       <!-- identity: platform name + subtext -->
       <div class="identity">
-        <h1 class="identity__name">설비 생산성 <span>분석 플랫폼</span></h1>
-        <p class="identity__sub">광학 사업부 CMP · UPH · MTBA 세 축의 생산성 데이터를 한곳에서 조회하고 분석하는 사내 엔지니어링 플랫폼.</p>
-        <div class="identity__meta">
-          <span><strong>CMP</strong> 달성률</span>
-          <span style="opacity:.4">·</span>
-          <span><strong>UPH</strong> 동작시간</span>
-          <span style="opacity:.4">·</span>
-          <span><strong>MTBA</strong> 알람간격</span>
-          <span style="opacity:.4">·</span>
-          <span>+ <strong>MaxCapa Chat</strong></span>
-        </div>
+        <h1 class="identity__name" data-i18n="identity.name">설비 생산성 <span>분석 플랫폼</span></h1>
+        <p class="identity__sub" data-i18n="identity.sub">모든 라인의 박동, 한 화면.</p>
+        <p class="identity__bu" data-i18n="identity.bu">광학솔루션 사업부 · CMP · UPH · MTBA · MaxCapa Chat</p>
       </div>
 
     </div>
@@ -243,8 +268,8 @@ button,input,textarea{font-family:inherit}
       <!-- system status panel -->
       <div class="panel">
         <div class="panel__head">
-          <div class="panel__title">SYSTEM STATUS</div>
-          <div class="panel__hint">last sync 23:50</div>
+          <div class="panel__title" data-i18n="panel.system">SYSTEM STATUS</div>
+          <div class="panel__hint" data-i18n="panel.system_hint">last sync 23:50</div>
         </div>
         <div class="status-list">
           <div class="status-row">
@@ -278,7 +303,7 @@ button,input,textarea{font-family:inherit}
       <!-- patch notes panel -->
       <div class="panel">
         <div class="panel__head">
-          <div class="panel__title">PATCH NOTES · 최근 업데이트</div>
+          <div class="panel__title" data-i18n="panel.patch">PATCH NOTES · 최근 업데이트</div>
           <div class="panel__hint">v0.4.2 → v0.3.8</div>
         </div>
         <div class="patch-list">
@@ -306,8 +331,8 @@ button,input,textarea{font-family:inherit}
       </div>
 
       <div class="foot-row">
-        <span>광학 Max Capa TDR · 사내망 전용</span>
-        <a href="#">변경 로그 전체 보기 →</a>
+        <span data-i18n="foot.intranet">생산혁신센터 Max Capa 팀 · 사내망 전용</span>
+        <a href="#" data-i18n="foot.changelog">변경 로그 전체 보기 →</a>
       </div>
 
     </div>
@@ -318,31 +343,258 @@ button,input,textarea{font-family:inherit}
   <div></div>
 </div>
 
-<!-- tab switching (lightweight, no framework) ---------------------- -->
+<!-- i18n dictionary --------------------------------------------------- -->
+<script>
+window.__I18N__ = {
+  /* Korean (default) */
+  ko: {
+    "brand.name": "LG Innotek", "brand.team": "생산혁신센터 · Max Capa 팀",
+    "status.all": "ALL SYSTEMS OPERATIONAL",
+    "login.eyebrow": "PRODUCTIVITY ANALYTICS · SIGN IN",
+    "login.title": "로그인", "login.sub": "사내 계정 아이디만 입력하세요.",
+    "tab.signin": "로그인", "tab.signup": "회원가입",
+    "field.id": "아이디", "field.id_hint": "@lginnotek.com 은 자동 적용됩니다.",
+    "field.pw": "비밀번호", "field.email": "회사 이메일",
+    "signup.notice": "회사 이메일 인증 후 사용 가능합니다.",
+    "btn.signin": "로그인", "btn.signup_submit": "회원가입 신청", "btn.send_code": "인증코드 발송",
+    "foot.contact": "문의 · 생산혁신센터 Max Capa 팀",
+    "identity.name": '설비 생산성 <span>분석 플랫폼</span>',
+    "identity.sub": "모든 라인의 박동, 한 화면.",
+    "identity.bu": "광학솔루션 사업부 · CMP · UPH · MTBA · MaxCapa Chat",
+    "panel.system": "SYSTEM STATUS", "panel.system_hint": "last sync 23:50",
+    "panel.patch": "PATCH NOTES · 최근 업데이트",
+    "foot.intranet": "생산혁신센터 Max Capa 팀 · 사내망 전용",
+    "foot.changelog": "변경 로그 전체 보기 →"
+  },
+  /* English */
+  en: {
+    "brand.name": "LG Innotek", "brand.team": "Production Innovation Center · Max Capa Team",
+    "status.all": "ALL SYSTEMS OPERATIONAL",
+    "login.eyebrow": "PRODUCTIVITY ANALYTICS · SIGN IN",
+    "login.title": "Sign in", "login.sub": "Enter your company account ID.",
+    "tab.signin": "Sign in", "tab.signup": "Sign up",
+    "field.id": "ID", "field.id_hint": "@lginnotek.com is appended automatically.",
+    "field.pw": "Password", "field.email": "Company email",
+    "signup.notice": "Available after company email verification.",
+    "btn.signin": "Sign in", "btn.signup_submit": "Request signup", "btn.send_code": "Send code",
+    "foot.contact": "Contact · Production Innovation Center · Max Capa Team",
+    "identity.name": 'Equipment Productivity <span>Analytics</span>',
+    "identity.sub": "Every line's pulse, one screen.",
+    "identity.bu": "Optical Solution Business · CMP · UPH · MTBA · MaxCapa Chat",
+    "panel.system": "SYSTEM STATUS", "panel.system_hint": "last sync 23:50",
+    "panel.patch": "PATCH NOTES · Recent updates",
+    "foot.intranet": "Production Innovation Center · Max Capa Team · Intranet only",
+    "foot.changelog": "View full changelog →"
+  },
+  /* Vietnamese */
+  vi: {
+    "brand.name": "LG Innotek", "brand.team": "Trung tâm Đổi mới Sản xuất · Đội Max Capa",
+    "status.all": "TẤT CẢ HỆ THỐNG HOẠT ĐỘNG",
+    "login.eyebrow": "PHÂN TÍCH NĂNG SUẤT · ĐĂNG NHẬP",
+    "login.title": "Đăng nhập", "login.sub": "Nhập ID tài khoản nội bộ.",
+    "tab.signin": "Đăng nhập", "tab.signup": "Đăng ký",
+    "field.id": "ID", "field.id_hint": "@lginnotek.com được thêm tự động.",
+    "field.pw": "Mật khẩu", "field.email": "Email công ty",
+    "signup.notice": "Có thể sử dụng sau khi xác minh email công ty.",
+    "btn.signin": "Đăng nhập", "btn.signup_submit": "Yêu cầu đăng ký", "btn.send_code": "Gửi mã",
+    "foot.contact": "Liên hệ · Trung tâm Đổi mới Sản xuất · Đội Max Capa",
+    "identity.name": 'Phân tích Năng suất <span>Thiết bị</span>',
+    "identity.sub": "Nhịp đập của mọi dây chuyền, trên một màn hình.",
+    "identity.bu": "Giải pháp Quang học · CMP · UPH · MTBA · MaxCapa Chat",
+    "panel.system": "TRẠNG THÁI HỆ THỐNG", "panel.system_hint": "đồng bộ cuối 23:50",
+    "panel.patch": "GHI CHÚ BẢN VÁ · Cập nhật gần đây",
+    "foot.intranet": "Trung tâm Đổi mới Sản xuất · Đội Max Capa · Chỉ mạng nội bộ",
+    "foot.changelog": "Xem toàn bộ nhật ký thay đổi →"
+  },
+  /* Polish (priority strings) */
+  pl: {
+    "brand.team": "Centrum Innowacji Produkcji · Zespół Max Capa",
+    "status.all": "WSZYSTKIE SYSTEMY DZIAŁAJĄ",
+    "login.eyebrow": "ANALITYKA PRODUKTYWNOŚCI · LOGOWANIE",
+    "login.title": "Logowanie", "login.sub": "Wpisz ID konta firmowego.",
+    "tab.signin": "Logowanie", "tab.signup": "Rejestracja",
+    "field.id": "ID", "field.id_hint": "@lginnotek.com dodawany automatycznie.",
+    "field.pw": "Hasło", "field.email": "E-mail firmowy",
+    "signup.notice": "Dostępne po weryfikacji e-maila firmowego.",
+    "btn.signin": "Zaloguj", "btn.signup_submit": "Wyślij wniosek", "btn.send_code": "Wyślij kod",
+    "foot.contact": "Kontakt · Centrum Innowacji Produkcji · Zespół Max Capa",
+    "identity.name": 'Analityka Produktywności <span>Urządzeń</span>',
+    "identity.sub": "Puls każdej linii, na jednym ekranie.",
+    "identity.bu": "Optical Solution · CMP · UPH · MTBA · MaxCapa Chat",
+    "panel.system": "STATUS SYSTEMU", "panel.system_hint": "ostatnia synchr. 23:50",
+    "panel.patch": "NOTATKI WYDANIA · Ostatnie aktualizacje",
+    "foot.intranet": "Zespół Max Capa · tylko intranet",
+    "foot.changelog": "Pełny dziennik zmian →"
+  },
+  /* Indonesian (priority strings) */
+  id: {
+    "brand.team": "Pusat Inovasi Produksi · Tim Max Capa",
+    "status.all": "SEMUA SISTEM BEROPERASI",
+    "login.eyebrow": "ANALITIK PRODUKTIVITAS · MASUK",
+    "login.title": "Masuk", "login.sub": "Masukkan ID akun internal.",
+    "tab.signin": "Masuk", "tab.signup": "Daftar",
+    "field.id": "ID", "field.id_hint": "@lginnotek.com ditambahkan otomatis.",
+    "field.pw": "Kata sandi", "field.email": "Email perusahaan",
+    "signup.notice": "Tersedia setelah verifikasi email perusahaan.",
+    "btn.signin": "Masuk", "btn.signup_submit": "Kirim permintaan", "btn.send_code": "Kirim kode",
+    "foot.contact": "Kontak · Pusat Inovasi Produksi · Tim Max Capa",
+    "identity.name": 'Analitik Produktivitas <span>Peralatan</span>',
+    "identity.sub": "Denyut setiap line, dalam satu layar.",
+    "identity.bu": "Optical Solution · CMP · UPH · MTBA · MaxCapa Chat",
+    "panel.system": "STATUS SISTEM", "panel.system_hint": "sinkron terakhir 23:50",
+    "panel.patch": "CATATAN PATCH · Pembaruan terbaru",
+    "foot.intranet": "Tim Max Capa · hanya intranet",
+    "foot.changelog": "Lihat semua perubahan →"
+  },
+  /* Spanish — Mexico (priority strings) */
+  es: {
+    "brand.team": "Centro de Innovación de Producción · Equipo Max Capa",
+    "status.all": "TODOS LOS SISTEMAS OPERATIVOS",
+    "login.eyebrow": "ANÁLISIS DE PRODUCTIVIDAD · INICIAR SESIÓN",
+    "login.title": "Iniciar sesión", "login.sub": "Ingrese su ID de cuenta interna.",
+    "tab.signin": "Iniciar sesión", "tab.signup": "Registrarse",
+    "field.id": "ID", "field.id_hint": "@lginnotek.com se agrega automáticamente.",
+    "field.pw": "Contraseña", "field.email": "Correo de la empresa",
+    "signup.notice": "Disponible tras verificar el correo de la empresa.",
+    "btn.signin": "Iniciar sesión", "btn.signup_submit": "Solicitar registro", "btn.send_code": "Enviar código",
+    "foot.contact": "Contacto · Centro de Innovación de Producción · Equipo Max Capa",
+    "identity.name": 'Análisis de Productividad <span>de Equipos</span>',
+    "identity.sub": "El pulso de cada línea, en una pantalla.",
+    "identity.bu": "Optical Solution · CMP · UPH · MTBA · MaxCapa Chat",
+    "panel.system": "ESTADO DEL SISTEMA", "panel.system_hint": "última sincr. 23:50",
+    "panel.patch": "NOTAS DE PARCHE · Actualizaciones recientes",
+    "foot.intranet": "Equipo Max Capa · solo intranet",
+    "foot.changelog": "Ver registro completo →"
+  },
+  /* Chinese (Simplified, priority strings) */
+  zh: {
+    "brand.team": "生产革新中心 · Max Capa 团队",
+    "status.all": "所有系统正常运行",
+    "login.eyebrow": "生产力分析 · 登录",
+    "login.title": "登录", "login.sub": "请输入公司账号 ID。",
+    "tab.signin": "登录", "tab.signup": "注册",
+    "field.id": "账号", "field.id_hint": "@lginnotek.com 将自动添加。",
+    "field.pw": "密码", "field.email": "公司邮箱",
+    "signup.notice": "公司邮箱认证后可使用。",
+    "btn.signin": "登录", "btn.signup_submit": "提交注册", "btn.send_code": "发送验证码",
+    "foot.contact": "联系 · 生产革新中心 · Max Capa 团队",
+    "identity.name": '设备生产力 <span>分析平台</span>',
+    "identity.sub": "每条产线的脉搏,一屏尽览。",
+    "identity.bu": "光学解决方案事业部 · CMP · UPH · MTBA · MaxCapa Chat",
+    "panel.system": "系统状态", "panel.system_hint": "上次同步 23:50",
+    "panel.patch": "更新说明 · 最近更新",
+    "foot.intranet": "Max Capa 团队 · 仅限内网",
+    "foot.changelog": "查看完整变更日志 →"
+  }
+};
+
+window.__LANG_LABEL__ = { ko:"한국어", en:"English", vi:"Tiếng Việt", pl:"Polski", id:"Bahasa Indonesia", es:"Español", zh:"中文" };
+</script>
+
+<!-- behavior: lang switcher + tabs + yt loop fallback ----------------- -->
 <script>
 (function(){
+  /* ---- i18n apply ---- */
+  var dict = window.__I18N__;
+  var current = localStorage.getItem('mpap.lang') || 'ko';
+
+  function applyLang(code){
+    var pack = dict[code] || {};
+    var fallback = dict.ko;
+    document.documentElement.setAttribute('lang', code);
+    document.querySelectorAll('[data-i18n]').forEach(function(el){
+      var key = el.getAttribute('data-i18n');
+      var val = pack[key];
+      if (val == null) val = fallback[key];
+      if (val == null) return;
+      // identity.name uses inline <span>; allow HTML for those entries
+      if (key === 'identity.name') el.innerHTML = val;
+      else el.textContent = val;
+    });
+    var btnLabel = document.getElementById('lang-current');
+    if (btnLabel) btnLabel.textContent = window.__LANG_LABEL__[code] || code;
+    document.querySelectorAll('.lang__item').forEach(function(it){
+      it.classList.toggle('lang__item--active', it.getAttribute('data-lang') === code);
+    });
+    current = code;
+    localStorage.setItem('mpap.lang', code);
+    // refresh primary CTA label which is mode-aware
+    refreshPrimaryCTA();
+  }
+
+  /* ---- language menu open/close ---- */
+  var langWrap = document.getElementById('lang');
+  var langBtn = document.getElementById('lang-btn');
+  langBtn.addEventListener('click', function(e){
+    e.stopPropagation();
+    var open = langWrap.classList.toggle('is-open');
+    langBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  document.addEventListener('click', function(e){
+    if (!langWrap.contains(e.target)) {
+      langWrap.classList.remove('is-open');
+      langBtn.setAttribute('aria-expanded', 'false');
+    }
+  });
+  document.querySelectorAll('.lang__item').forEach(function(it){
+    it.addEventListener('click', function(){
+      applyLang(it.getAttribute('data-lang'));
+      langWrap.classList.remove('is-open');
+      langBtn.setAttribute('aria-expanded', 'false');
+    });
+  });
+
+  /* ---- tabs (login / signup) ---- */
   var tabs = document.querySelectorAll('.tab');
-  var loginFields = document.querySelectorAll('.login .field, .login .actions');
   var signup = document.querySelector('.signup');
+  var mode = 0; // 0 login, 1 signup
+  function refreshPrimaryCTA(){
+    var primary = document.querySelector('.actions .btn--primary');
+    if (!primary) return;
+    var pack = dict[current] || dict.ko;
+    primary.textContent = (mode === 0) ? (pack['btn.signin'] || '로그인')
+                                       : (pack['btn.signup_submit'] || '회원가입 신청');
+  }
   function activate(idx){
+    mode = idx;
     tabs.forEach(function(t,i){
       t.classList.toggle('tab--active', i===idx);
       t.setAttribute('aria-selected', i===idx ? 'true':'false');
     });
     if(idx===0){
-      // login mode
       signup.style.display = 'none';
-      document.querySelectorAll('.login .field').forEach(function(f){ f.style.display=''; });
-      document.querySelector('.actions .btn--primary').textContent = '로그인';
+      document.querySelectorAll('.login > .field').forEach(function(f){ f.style.display=''; });
     }else{
-      // signup mode — hide login fields, show signup verbatim
       document.querySelectorAll('.login > .field').forEach(function(f){ f.style.display='none'; });
       signup.style.display = '';
-      document.querySelector('.actions .btn--primary').textContent = '회원가입 신청';
     }
+    refreshPrimaryCTA();
   }
   tabs.forEach(function(t,i){ t.addEventListener('click', function(){ activate(i); }); });
+
+  /* ---- initial language apply ---- */
+  applyLang(current);
 })();
+</script>
+
+<!-- youtube IFrame API · loop fallback (loop=1 not always reliable) ----- -->
+<script src="https://www.youtube.com/iframe_api"></script>
+<script>
+var ytPlayer;
+function onYouTubeIframeAPIReady(){
+  ytPlayer = new YT.Player('bg-iframe', {
+    events: {
+      'onStateChange': function(e){
+        if (e.data === YT.PlayerState.ENDED) {
+          try { ytPlayer.seekTo(0); ytPlayer.playVideo(); } catch(_){}
+        }
+      },
+      'onReady': function(){
+        try { ytPlayer.mute(); ytPlayer.playVideo(); } catch(_){}
+      }
+    }
+  });
+}
 </script>
 
 </body>
