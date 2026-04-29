@@ -33,17 +33,27 @@ html,body{margin:0;height:100%;background:#0A0C10;color:var(--on-dark);font-fami
 button,input,textarea{font-family:inherit}
 
 /* video bg ---------------------------------------------------------- */
-.bg-video{position:fixed;inset:0;width:100vw;height:100vh;overflow:hidden;z-index:0;pointer-events:none}
-.bg-video iframe{position:absolute;top:50%;left:50%;width:100vw;height:56.25vw;min-height:100vh;min-width:177.78vh;transform:translate(-50%,-50%);border:0;pointer-events:none}
+.bg-video{position:fixed;inset:0;width:100vw;height:100vh;overflow:hidden;z-index:0;pointer-events:none;background:#0A0C10}
+.bg-video iframe,
+.bg-video video{position:absolute;top:50%;left:50%;width:100vw;height:56.25vw;min-height:100vh;min-width:177.78vh;transform:translate(-50%,-50%);border:0;pointer-events:none;object-fit:cover}
+/* Iframe is the fallback — hidden when local <video> loads successfully */
+.bg-video.has-local-video iframe{display:none}
 
-/* radial overlay — left dark, right lighter ------------------------- */
+/* radial overlay — left dark, right lighter; CENTER strongly darkened
+   to mask YouTube poster's play-button while initial autoplay loads.  */
 .bg-overlay{position:fixed;inset:0;z-index:1;pointer-events:none;
   background:
-    radial-gradient(ellipse 90% 80% at 78% 50%, rgba(10,12,16,0.30) 0%, rgba(10,12,16,0.78) 60%, rgba(10,12,16,0.92) 100%),
-    linear-gradient(90deg, rgba(10,12,16,0.55) 0%, rgba(10,12,16,0.18) 60%, rgba(10,12,16,0.10) 100%);
+    radial-gradient(circle 240px at 50% 50%, rgba(10,12,16,0.95) 0%, rgba(10,12,16,0.55) 60%, transparent 100%),
+    radial-gradient(ellipse 90% 80% at 78% 50%, rgba(10,12,16,0.42) 0%, rgba(10,12,16,0.82) 60%, rgba(10,12,16,0.94) 100%),
+    linear-gradient(90deg, rgba(10,12,16,0.62) 0%, rgba(10,12,16,0.22) 60%, rgba(10,12,16,0.10) 100%);
 }
 .bg-vignette{position:fixed;inset:0;z-index:2;pointer-events:none;
   background:radial-gradient(ellipse 120% 90% at 50% 50%, transparent 55%, rgba(0,0,0,0.45) 100%)}
+
+/* startup curtain — covers iframe poster/play-button overlay during the
+   first ~2.5s while autoplay buffers. Fades out on its own. */
+.bg-curtain{position:fixed;inset:0;z-index:2;pointer-events:none;background:#0A0C10;opacity:1;transition:opacity .6s ease}
+.bg-curtain.is-down{opacity:0}
 
 /* layout ------------------------------------------------------------ */
 .shell{position:relative;z-index:3;height:100vh;display:grid;grid-template-rows:auto 1fr auto;padding:28px 40px}
@@ -80,7 +90,10 @@ button,input,textarea{font-family:inherit}
 .left{display:flex;flex-direction:column;gap:28px}
 
 /* login / auth card ------------------------------------------------
-   Softened white: off-white tint + backdrop blur. */
+   Softened white: off-white tint + backdrop blur.
+   FIXED HEIGHT: card never resizes between tabs/steps. The tallest
+   pane (signup step 2) sets min-height; shorter panes use margin-auto
+   on .actions to push the CTA to the bottom for a stable composition. */
 .login,
 .auth-card{
   background:rgba(248,250,252,0.93);
@@ -88,26 +101,38 @@ button,input,textarea{font-family:inherit}
   -webkit-backdrop-filter:blur(10px) saturate(115%);
   color:var(--ink-body);
   border-radius:12px;
-  padding:24px 26px;
+  padding:30px 32px 28px;
   border:1px solid rgba(255,255,255,0.55);
   border-left:4px solid var(--primary);
   box-shadow:
     0 30px 80px -20px rgba(0,0,0,0.55),
     0 8px 24px -6px rgba(0,0,0,0.30),
     0 0 0 1px rgba(255,255,255,0.04) inset;
+  /* fixed-size composition */
+  display:flex;
+  flex-direction:column;
+  min-height:560px;
+  width:100%;
+  max-width:460px;
 }
 .login__title{color:#101218}
 .login .field__input-wrap,
 .auth-card .field__input-wrap{background:#fff}
 
-/* auth panes (login / signup) ------------------------------------- */
-.auth-pane{display:block}
+/* auth panes (login / signup) — fill remaining card height ------- */
+.auth-pane{display:flex;flex-direction:column;flex:1 1 auto;min-height:0}
 .auth-pane[hidden]{display:none}
 .auth-pane[data-pane="signup"]{display:none}
-.auth-pane[data-pane="signup"]:not([hidden]){display:block}
+.auth-pane[data-pane="signup"]:not([hidden]){display:flex}
 
 /* signup step routing inside the signup pane */
 .auth-pane[data-pane="signup"] form[data-signup-step="2"][hidden]{display:none}
+.auth-pane[data-pane="signup"] form[data-signup-step]{display:flex;flex-direction:column;flex:1 1 auto;min-height:0}
+.auth-pane[data-pane="signup"] form[data-signup-step][hidden]{display:none}
+
+/* spacing helpers — bring breathing room within fixed card */
+.auth-pane .field{margin-bottom:14px}
+.auth-pane .actions{margin-top:auto}  /* push CTA to bottom of card */
 
 /* error slot */
 .auth__error{
@@ -218,8 +243,22 @@ button,input,textarea{font-family:inherit}
 </head>
 <body>
 
-<!-- video background ------------------------------------------------- -->
-<div class="bg-video" aria-hidden="true">
+<!-- video background -------------------------------------------------
+     Two layers: prefer self-hosted <video> (no autoplay restrictions),
+     fall back to YouTube iframe if assets/landing-bg.mp4 is missing.
+     The iframe is hidden when JS detects the local video loaded. -->
+<div class="bg-video" id="bg-video" aria-hidden="true">
+  <video
+    id="bg-video-local"
+    autoplay
+    muted
+    loop
+    playsinline
+    preload="auto"
+    poster="./assets/landing-bg-poster.jpg"
+  >
+    <source src="./assets/landing-bg.mp4" type="video/mp4" />
+  </video>
   <iframe
     id="bg-iframe"
     src="https://www.youtube.com/embed/lCOjL68zt0U?autoplay=1&mute=1&loop=1&playlist=lCOjL68zt0U&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&playsinline=1&disablekb=1&enablejsapi=1&origin=https://raw.githack.com"
@@ -232,6 +271,8 @@ button,input,textarea{font-family:inherit}
 <!-- gradient overlays ----------------------------------------------- -->
 <div class="bg-overlay" aria-hidden="true"></div>
 <div class="bg-vignette" aria-hidden="true"></div>
+<!-- startup curtain (covers YT poster/play-button until autoplay starts) -->
+<div class="bg-curtain" id="bg-curtain" aria-hidden="true"></div>
 
 <!-- main shell ------------------------------------------------------- -->
 <div class="shell">
@@ -1073,31 +1114,115 @@ window.__LANG_LABEL__ = { ko:"한국어", en:"English", vi:"Tiếng Việt", pl:
 })();
 </script>
 
-<!-- youtube IFrame API · auto-resume on tab return / pause / loop end --->
+<!-- background video resilience -------------------------------------
+     Two play paths:
+       (a) If ./assets/landing-bg.mp4 loads, use HTML5 <video> (no
+           autoplay restrictions when muted+playsinline). YouTube iframe
+           is hidden.
+       (b) Otherwise, fall back to YouTube iframe API.
+
+     Both paths share the same resume logic: visibilitychange, focus,
+     pageshow, AND ANY USER GESTURE (touchstart/click/scroll/keydown).
+     The user-gesture path bypasses mobile autoplay policies.
+
+     A startup "curtain" (solid black) covers the YT play-button overlay
+     for the first 2.5s while autoplay buffers. Lifts automatically. -->
 <script src="https://www.youtube.com/iframe_api"></script>
 <script>
-var ytPlayer;
-var ytReady = false;
+(function(){
+  var bgWrap = document.getElementById('bg-video');
+  var localVid = document.getElementById('bg-video-local');
+  var curtain = document.getElementById('bg-curtain');
+  var hasLocal = false;
 
-function safePlay(){
-  if (!ytReady || !ytPlayer || typeof ytPlayer.playVideo !== 'function') return;
-  try { ytPlayer.mute(); ytPlayer.playVideo(); } catch(_){}
-}
+  // Curtain lift — always. Even if iframe isn't fully ready, we'd rather
+  // show the dark overlay we control than YT's poster.
+  function liftCurtain(){
+    if (curtain) curtain.classList.add('is-down');
+  }
+  setTimeout(liftCurtain, 2500);
+
+  // ── Path A: try local <video> first ──────────────────────────────
+  function attemptLocalPlay(){
+    if (!localVid) return;
+    var p = localVid.play();
+    if (p && typeof p.then === 'function') {
+      p.catch(function(){ /* autoplay blocked — try on user gesture */ });
+    }
+  }
+  if (localVid) {
+    localVid.addEventListener('loadeddata', function(){
+      hasLocal = true;
+      bgWrap.classList.add('has-local-video');
+      attemptLocalPlay();
+      liftCurtain();
+    });
+    localVid.addEventListener('error', function(){ hasLocal = false; });
+    // Probe attempt in case loadeddata never fires (404)
+    localVid.addEventListener('canplay', function(){
+      hasLocal = true;
+      bgWrap.classList.add('has-local-video');
+      attemptLocalPlay();
+      liftCurtain();
+    });
+    // If src 404s the <source>, the video element fires error on the
+    // <source> child, but <video> itself stays in NETWORK_NO_SOURCE.
+    setTimeout(function(){
+      if (!hasLocal && localVid.networkState === 3 /* NO_SOURCE */) {
+        // Local video missing — leave iframe visible.
+        localVid.style.display = 'none';
+      }
+    }, 1200);
+  }
+
+  // ── Path B: YouTube IFrame API ───────────────────────────────────
+  var ytPlayer, ytReady = false;
+  function safePlay(){
+    if (hasLocal && localVid) {
+      // Local video path
+      if (localVid.paused) attemptLocalPlay();
+      return;
+    }
+    if (!ytReady || !ytPlayer || typeof ytPlayer.playVideo !== 'function') return;
+    try { ytPlayer.mute(); ytPlayer.playVideo(); } catch(_){}
+  }
+
+  // Expose globally so onYouTubeIframeAPIReady can read it
+  window.__safePlay = safePlay;
+  window.__ytReadyState = function(p){ ytPlayer = p; ytReady = true; };
+
+  // Resume triggers — many of them, all idempotent
+  document.addEventListener('visibilitychange', function(){
+    if (!document.hidden) safePlay();
+  });
+  window.addEventListener('focus', safePlay);
+  window.addEventListener('pageshow', safePlay);
+
+  // USER-GESTURE listeners — bypass mobile autoplay restrictions.
+  // Any interaction at all triggers play-resume. Passive listeners,
+  // never block scrolling.
+  ['touchstart','touchend','pointerdown','click','keydown','scroll']
+    .forEach(function(ev){
+      document.addEventListener(ev, safePlay, { passive: true });
+    });
+
+  // Safety-net poll: every 3s while page visible, ensure playing
+  setInterval(function(){
+    if (!document.hidden) safePlay();
+  }, 3000);
+})();
 
 function onYouTubeIframeAPIReady(){
-  ytPlayer = new YT.Player('bg-iframe', {
+  var ytPlayer = new YT.Player('bg-iframe', {
     events: {
       'onReady': function(){
-        ytReady = true;
-        safePlay();
+        if (window.__ytReadyState) window.__ytReadyState(ytPlayer);
+        try { ytPlayer.mute(); ytPlayer.playVideo(); } catch(_){}
       },
       'onStateChange': function(e){
-        // Loop: when video ends, seek to 0 and replay
         if (e.data === YT.PlayerState.ENDED) {
           try { ytPlayer.seekTo(0, true); ytPlayer.playVideo(); } catch(_){}
         }
-        // Auto-resume: if browser/iOS pauses (tab switch, lock screen),
-        // resume immediately. The bg video is decorative — never user-paused.
         if (e.data === YT.PlayerState.PAUSED) {
           try { ytPlayer.playVideo(); } catch(_){}
         }
@@ -1105,20 +1230,6 @@ function onYouTubeIframeAPIReady(){
     }
   });
 }
-
-// Resume on tab return / app foreground (Page Visibility API)
-document.addEventListener('visibilitychange', function(){
-  if (!document.hidden) safePlay();
-});
-// Also catch window focus / pageshow (BFCache restore)
-window.addEventListener('focus', safePlay);
-window.addEventListener('pageshow', safePlay);
-
-// As a final safety net, every 3s while page is visible, ensure playing.
-// Cheap and silent — playVideo() is idempotent when already playing.
-setInterval(function(){
-  if (!document.hidden) safePlay();
-}, 3000);
 </script>
 
 </body>
