@@ -90,10 +90,8 @@ button,input,textarea{font-family:inherit}
 .left{display:flex;flex-direction:column;gap:28px}
 
 /* login / auth card ------------------------------------------------
-   Softened white: off-white tint + backdrop blur.
-   FIXED HEIGHT: card never resizes between tabs/steps. The tallest
-   pane (signup step 2) sets min-height; shorter panes use margin-auto
-   on .actions to push the CTA to the bottom for a stable composition. */
+   FIXED HEIGHT — card never resizes between tabs/steps. Content fits
+   in the height; primary CTA anchored to bottom via margin-top:auto. */
 .login,
 .auth-card{
   background:rgba(248,250,252,0.93);
@@ -108,12 +106,13 @@ button,input,textarea{font-family:inherit}
     0 30px 80px -20px rgba(0,0,0,0.55),
     0 8px 24px -6px rgba(0,0,0,0.30),
     0 0 0 1px rgba(255,255,255,0.04) inset;
-  /* fixed-size composition */
+  /* fixed-size composition — no resize on tab/step switch */
   display:flex;
   flex-direction:column;
-  min-height:560px;
+  height:540px;
   width:100%;
   max-width:460px;
+  overflow:hidden;
 }
 .login__title{color:#101218}
 .login .field__input-wrap,
@@ -420,10 +419,10 @@ button,input,textarea{font-family:inherit}
 
         <!-- ============================================================
              PANE: SIGNUP — 2-step (email → verification code)
+             Note: signup notice text shown via #auth-pane-sub (top of card),
+             which is swapped by the activate() function on tab change.
              ============================================================ -->
         <div class="auth-pane" data-pane="signup" hidden>
-
-          <p class="login__sub" data-i18n="signup.notice">회사 이메일 인증 후 사용 가능합니다.</p>
 
           <!-- Step 1: enter email + request code -->
           <form
