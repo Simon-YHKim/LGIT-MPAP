@@ -8,62 +8,98 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" />
 <link rel="stylesheet" href="./_app-shell.css" />
 <style>
-/* uph-specific — 단계 강조 (numbered steps) ===================== */
-.filter-bar{display:flex;align-items:flex-end;gap:10px;background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:14px;flex-wrap:wrap}
-.field{display:flex;flex-direction:column;gap:4px;min-width:130px}
-.field__label{font-size:10px;font-weight:700;color:var(--ink-muted);letter-spacing:.06em;text-transform:uppercase}
-.select{height:32px;border:1px solid var(--border);border-radius:7px;background:#fff;padding:0 10px;font:inherit;font-size:12px;color:var(--ink-body);display:inline-flex;align-items:center;gap:6px;justify-content:space-between}
+/* uph-specific — WILD asymmetric layout + BOLD wine accents ======= */
+.context-bar{position:sticky;top:0;z-index:5;background:#fff;border:1px solid var(--border);border-left:4px solid var(--primary);border-radius:8px;padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;box-shadow:0 1px 2px rgba(0,0,0,0.04)}
+.context-bar__title{font-size:13px;font-weight:700;letter-spacing:-0.01em;color:var(--ink-body)}
+.context-bar__sep{width:1px;height:18px;background:var(--border)}
+.field{display:flex;flex-direction:column;gap:3px;min-width:120px}
+.field__label{font-size:9px;font-weight:700;color:var(--ink-muted);letter-spacing:.06em;text-transform:uppercase}
+.select{height:30px;border:1px solid var(--border);border-radius:6px;background:#fff;padding:0 10px;font:inherit;font-size:12px;display:inline-flex;align-items:center;gap:6px;justify-content:space-between}
 .select svg{width:11px;height:11px;color:var(--ink-muted)}
-.seg{display:inline-flex;border:1px solid var(--border);border-radius:7px;overflow:hidden;height:32px;background:#fff}
-.seg button{padding:0 12px;font-size:12px;font-weight:600;color:var(--ink-muted);background:transparent;border:0;border-right:1px solid var(--border)}
+.seg{display:inline-flex;border:1px solid var(--border);border-radius:7px;overflow:hidden;height:30px;background:#fff}
+.seg button{padding:0 10px;font-size:11px;font-weight:600;color:var(--ink-muted);background:transparent;border:0;border-right:1px solid var(--border)}
 .seg button:last-child{border-right:0}
 .seg button.is-active{background:var(--primary);color:#fff}
-.toggle{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:var(--ink-body);height:32px}
-.toggle__switch{width:32px;height:18px;background:var(--primary);border-radius:99px;position:relative;flex:none}
-.toggle__switch::after{content:"";position:absolute;top:2px;right:2px;width:14px;height:14px;background:#fff;border-radius:50%}
+.toggle{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:600;height:30px;margin-left:auto}
+.toggle__switch{width:32px;height:18px;background:var(--soft);border:1px solid var(--border);border-radius:99px;position:relative;flex:none}
+.toggle__switch.is-on{background:var(--primary);border-color:var(--primary)}
+.toggle__switch::after{content:"";position:absolute;top:2px;left:2px;width:12px;height:12px;background:#fff;border-radius:50%;transition:left .15s var(--ease)}
+.toggle__switch.is-on::after{left:16px}
 
-/* Step card — large numbered hero */
-.steps{display:flex;flex-direction:column;gap:14px}
-.step{display:grid;grid-template-columns:96px 1fr;gap:0;background:var(--card-bg);border:1px solid var(--border);border-radius:10px;overflow:hidden;position:relative}
-.step__number{background:linear-gradient(180deg,var(--primary) 0%,var(--primary-dark) 100%);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:18px 8px;position:relative}
-.step__number::after{content:"";position:absolute;right:-7px;top:50%;transform:translateY(-50%) rotate(45deg);width:14px;height:14px;background:var(--primary-dark);border-right:1px solid var(--primary-dark);border-top:1px solid var(--primary-dark)}
-.step__num-big{font-family:var(--font-display);font-size:46px;font-weight:700;line-height:1;letter-spacing:-0.04em}
-.step__num-label{font-family:var(--font-mono);font-size:9px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;opacity:.85;margin-top:2px}
-.step__body{padding:14px 18px 16px;display:flex;flex-direction:column;gap:10px;min-width:0}
-.step__head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
-.step__title{font-size:16px;font-weight:700;letter-spacing:-0.01em;color:var(--ink-body);margin:0}
-.step__source{font-family:var(--font-mono);font-size:10px;font-weight:600;color:var(--ink-subtle);letter-spacing:.06em;text-transform:uppercase;display:inline-flex;align-items:center;gap:6px}
-.step__source .src-pill{background:var(--soft);color:var(--ink-body);padding:1px 6px;border-radius:3px}
-.step__sub{font-size:12px;color:var(--ink-muted);margin:0}
-.step__content{display:grid;gap:10px;align-items:stretch}
-.step--3col .step__content{grid-template-columns:repeat(3,1fr)}
-.step--2col .step__content{grid-template-columns:repeat(2,1fr)}
-.step__sub-card{background:var(--soft);border:1px solid var(--border);border-radius:7px;padding:10px}
-.step__sub-card__label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-muted);margin-bottom:4px}
-.step__sub-card__num{font-family:var(--font-mono);font-size:18px;font-weight:700;color:var(--ink-body);line-height:1.1;letter-spacing:-0.01em}
-.step__sub-card__num small{font-size:11px;font-weight:600;color:var(--ink-muted);margin-left:2px}
-.step__sub-card__delta{font-family:var(--font-mono);font-size:10px;font-weight:600;margin-top:2px}
-.step__chart{height:90px;background:var(--soft);border-radius:6px;position:relative;overflow:hidden}
-.step__chart svg{display:block;width:100%;height:100%}
-.step__bestworst{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.bw{padding:10px 12px;border-radius:7px;border:1px solid var(--border)}
-.bw--good{background:var(--status-good-tint)}
-.bw--bad{background:var(--status-bad-tint)}
-.bw__label{font-family:var(--font-mono);font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px}
-.bw--good .bw__label{color:var(--status-good)}
-.bw--bad .bw__label{color:var(--status-bad)}
-.bw__name{font-size:13px;font-weight:700;color:var(--ink-body)}
-.bw__num{font-family:var(--font-mono);font-size:18px;font-weight:700;color:var(--ink-body);margin-top:2px}
-.bw__sub{font-size:11px;color:var(--ink-muted);margin-top:2px}
-.ai-note{background:#FFFFFF;border:1px solid var(--border);border-left:3px solid var(--primary);border-radius:6px;padding:8px 12px;font-size:12px;color:var(--ink-body);line-height:1.5}
-.ai-note__label{font-family:var(--font-mono);font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--primary-dark);margin-right:6px}
+/* WILD asymmetric — main + 380px side */
+.top-grid{display:grid;grid-template-columns:1fr 380px;gap:14px;margin-bottom:14px}
+
+/* KPI strip — 4 cards horizontal w/ bold left bar */
+.kpi-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+.kpi{position:relative;background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:14px 16px 14px 18px;overflow:hidden}
+.kpi::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--primary)}
+.kpi__label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-muted);margin-bottom:4px}
+.kpi__num{font-family:var(--font-mono);font-size:24px;font-weight:700;color:var(--ink-body);line-height:1.1;letter-spacing:-0.02em}
+.kpi__num small{font-size:12px;font-weight:600;color:var(--ink-muted);margin-left:2px}
+.kpi__delta{font-family:var(--font-mono);font-size:11px;font-weight:600;margin-top:4px}
+
+/* Hero trend chart (left of top-grid) */
+.hero-chart{background:var(--card-bg);border:1px solid var(--border);border-left:3px solid var(--primary);border-radius:8px;padding:14px;display:flex;flex-direction:column;min-height:280px}
+.hero-chart__head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;gap:10px}
+.hero-chart__title{font-size:13px;font-weight:700;letter-spacing:-0.005em;color:var(--ink-body);text-transform:uppercase}
+.hero-chart__sub{font-family:var(--font-mono);font-size:10px;color:var(--ink-subtle);font-weight:400;letter-spacing:.04em}
+.hero-chart__legend{display:flex;gap:14px;font-size:11px;color:var(--ink-muted);margin-bottom:8px}
+.hero-chart__legend span{display:inline-flex;align-items:center;gap:5px}
+.legend-dot{width:8px;height:8px;border-radius:50%;background:var(--primary)}
+.hero-chart__body{flex:1;background:#fff;border-radius:6px;position:relative;overflow:hidden;min-height:200px}
+.hero-chart__body svg{display:block;width:100%;height:100%}
+
+/* Side panel: AI opinion + match sub */
+.side-panel{display:flex;flex-direction:column;gap:10px}
+.ai-card{background:var(--card-bg);border:1px solid var(--border);border-left:3px solid var(--primary);border-radius:8px;padding:14px;flex:1;display:flex;flex-direction:column;min-height:0}
+.ai-card__head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.ai-card__title{font-family:var(--font-mono);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--primary-dark)}
+.ai-card__bigtxt{font-size:13px;line-height:1.55;color:var(--ink-body)}
+.ai-card__bigtxt strong{color:var(--primary-dark);font-weight:700}
+.ai-card__divider{height:1px;background:var(--border);margin:10px 0}
+.ai-card__row{display:flex;justify-content:space-between;align-items:baseline;font-size:12px;margin-bottom:4px}
+.ai-card__row .label{color:var(--ink-muted);font-size:11px}
+.ai-card__row .val{font-family:var(--font-mono);font-weight:700;color:var(--ink-body)}
+
+/* Best vs Worst 2 col — bold left bar */
+.bw{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.bw-card{position:relative;background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:14px 14px 14px 18px;overflow:hidden}
+.bw-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px}
+.bw-card--best::before{background:var(--status-good)}
+.bw-card--worst::before{background:var(--status-bad)}
+.bw-card__label{font-family:var(--font-mono);font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px}
+.bw-card--best .bw-card__label{color:var(--status-good)}
+.bw-card--worst .bw-card__label{color:var(--status-bad)}
+.bw-card__name{font-size:14px;font-weight:700;letter-spacing:-0.01em}
+.bw-card__num{font-family:var(--font-mono);font-size:20px;font-weight:700;letter-spacing:-0.02em;margin-top:4px}
+.bw-card__sub{font-size:11px;color:var(--ink-muted);margin-top:3px}
+
+/* Two-col: deviation actions + trend pair */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.subcard{background:var(--card-bg);border:1px solid var(--border);border-left:3px solid var(--primary);border-radius:8px;padding:12px}
+.subcard__head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.subcard__title{font-size:12px;font-weight:700;letter-spacing:-0.005em;color:var(--ink-body);text-transform:uppercase}
+.subcard__sub{font-family:var(--font-mono);font-size:10px;color:var(--ink-subtle);font-weight:400;letter-spacing:.04em}
 .dev-list{display:flex;flex-direction:column;gap:4px;font-size:12px}
 .dev-row{display:grid;grid-template-columns:1fr 60px 60px;gap:8px;padding:6px 8px;background:var(--soft);border-radius:6px;align-items:center}
 .dev-row__name{color:var(--ink-body);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .dev-row__val{font-family:var(--font-mono);font-size:11px;color:var(--ink-body);text-align:right}
 .dev-row__pct{font-family:var(--font-mono);font-size:11px;text-align:right}
-@media (max-width:1280px){.step--3col .step__content,.step--2col .step__content{grid-template-columns:1fr 1fr}}
-@media (max-width:980px){.step{grid-template-columns:60px 1fr}.step__num-big{font-size:32px}.step--3col .step__content,.step--2col .step__content{grid-template-columns:1fr}}
+
+.trend-pair{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.trend-card{position:relative;background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:10px 12px}
+.trend-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px}
+.trend-card--up::before{background:var(--status-bad)}
+.trend-card--down::before{background:var(--status-good)}
+.trend-card__title{font-family:var(--font-mono);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+.trend-card--up .trend-card__title{color:var(--status-bad)}
+.trend-card--down .trend-card__title{color:var(--status-good)}
+
+@media (max-width:1280px){
+  .top-grid{grid-template-columns:1fr}
+  .kpi-strip{grid-template-columns:repeat(2,1fr)}
+  .bw,.two-col,.trend-pair{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
@@ -137,130 +173,115 @@
         </div>
       </header>
 
-      <!-- Filter bar -->
-      <div class="filter-bar">
+      <!-- Sticky context bar (Bold: 4px wine left border) -->
+      <div class="context-bar">
+        <span class="context-bar__title">A2 · 연마 · R53A</span>
+        <span class="context-bar__sep"></span>
         <div class="field"><span class="field__label" data-i18n="filter.factory">공장</span><span class="select">A2 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></span></div>
-        <div class="field"><span class="field__label" data-i18n="filter.process">공정</span><span class="select">CMP · 연마 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></span></div>
-        <div class="field"><span class="field__label" data-i18n="filter.model">모델</span><span class="select">R53A · R53B <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></span></div>
+        <div class="field"><span class="field__label" data-i18n="filter.process">공정</span><span class="select">연마 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></span></div>
+        <div class="field"><span class="field__label" data-i18n="filter.model">모델</span><span class="select">R53A <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></span></div>
         <div class="field"><span class="field__label" data-i18n="filter.date">날짜</span><span class="select">2026-04-29 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></span></div>
         <div class="field"><span class="field__label" data-i18n="filter.trend">Trend 기간</span><div class="seg"><button class="is-active">30d</button><button>90d</button></div></div>
-        <div class="filter-bar__spacer"></div>
-        <label class="toggle"><span class="toggle__switch"></span><span data-i18n="filter.itas_only">I-TAS 가능만 보기</span></label>
+        <label class="toggle"><span class="toggle__switch is-on"></span><span data-i18n="filter.itas_only">I-TAS 가능만 보기</span></label>
       </div>
 
-      <!-- 6 steps -->
-      <div class="steps">
-
-        <!-- STEP 1 — UPH 요약 (I-TAS) -->
-        <article class="step step--3col">
-          <div class="step__number"><div class="step__num-big">01</div><div class="step__num-label">STEP</div></div>
-          <div class="step__body">
-            <div class="step__head">
-              <div>
-                <h2 class="step__title" data-i18n="step1.title">UPH 요약 (I-TAS)</h2>
-                <p class="step__sub">필터 기반 평균 + I-TAS 일치율 + AI 의견</p>
-              </div>
-              <span class="step__source"><span class="src-pill" data-i18n="src.both">I-TAS + MES</span></span>
-            </div>
-            <div class="step__content">
-              <div class="step__sub-card"><div class="step__sub-card__label" data-i18n="step1.kpi_uph">평균 UPH</div><div class="step__sub-card__num">412<small>/h</small></div><div class="step__sub-card__delta delta-good">▲ 14 vs 어제</div></div>
-              <div class="step__sub-card"><div class="step__sub-card__label" data-i18n="step1.kpi_dev">편차율</div><div class="step__sub-card__num">8.3<small>%</small></div><div class="step__sub-card__delta delta-bad">▲ 1.1pt</div></div>
-              <div class="step__sub-card"><div class="step__sub-card__label" data-i18n="step1.kpi_match">I-TAS 일치율</div><div class="step__sub-card__num">96.4<small>%</small></div><div class="step__sub-card__delta delta-good">▲ 0.3pt</div></div>
-            </div>
-            <div class="ai-note"><span class="ai-note__label">AI</span><span data-i18n="step1.ai">AI 분석 의견 — R53A 모델 #1003 호기가 평균 대비 +12% 우위. 동작 시퀀스 단축 가능성 검토 권장.</span></div>
-          </div>
-        </article>
-
-        <!-- STEP 2 — Best vs Worst -->
-        <article class="step">
-          <div class="step__number"><div class="step__num-big">02</div><div class="step__num-label">STEP</div></div>
-          <div class="step__body">
-            <div class="step__head">
-              <div><h2 class="step__title" data-i18n="step2.title">Best vs Worst 동작 차이</h2><p class="step__sub">자동 선정 · 동작당 평균 편차</p></div>
-              <span class="step__source"><span class="src-pill" data-i18n="src.itas">I-TAS</span></span>
-            </div>
-            <div class="step__bestworst">
-              <div class="bw bw--good">
-                <div class="bw__label" data-i18n="step2.best">BEST · 자동선정</div>
-                <div class="bw__name">호기 #1003</div>
-                <div class="bw__num">461 UPH</div>
-                <div class="bw__sub">동작당 평균 7.78s · 평균 대비 −12%</div>
-              </div>
-              <div class="bw bw--bad">
-                <div class="bw__label" data-i18n="step2.worst">WORST · 자동선정</div>
-                <div class="bw__name">호기 #1116</div>
-                <div class="bw__num">368 UPH</div>
-                <div class="bw__sub">동작당 평균 9.78s · 평균 대비 +25.7%</div>
-              </div>
-            </div>
-          </div>
-        </article>
-
-        <!-- STEP 3 — Trend -->
-        <article class="step">
-          <div class="step__number"><div class="step__num-big">03</div><div class="step__num-label">STEP</div></div>
-          <div class="step__body">
-            <div class="step__head">
-              <div><h2 class="step__title" data-i18n="step3.title">UPH · 편차율 Trend</h2><p class="step__sub" data-i18n="step3.sub">30일 / 90일 segmented (필터 상단)</p></div>
-              <span class="step__source"><span class="src-pill" data-i18n="src.both">I-TAS + MES</span></span>
-            </div>
-            <div class="step__chart">
-              <svg viewBox="0 0 600 90" preserveAspectRatio="none">
-                <polyline fill="none" stroke="#A50034" stroke-width="1.6" points="0,55 20,52 40,49 60,53 80,46 100,42 120,45 140,40 160,38 180,42 200,36 220,32 240,38 260,30 280,28 300,32 320,26 340,28 360,22 380,26 400,20 420,24 440,18 460,22 480,16 500,18 520,14 540,16 560,10 580,12 600,8"/>
-                <polyline fill="none" stroke="#6B7280" stroke-width="1.2" stroke-dasharray="3,3" points="0,68 20,66 40,64 60,67 80,62 100,60 120,63 140,59 160,57 180,60 200,56 220,53 240,57 260,52 280,50 300,52 320,48 340,50 360,46 380,49 400,44 420,47 440,42 460,45 480,40 500,42 520,39 540,41 560,37 580,39 600,36"/>
-              </svg>
-            </div>
-          </div>
-        </article>
-
-        <!-- STEP 4 — Top deviation actions -->
-        <article class="step">
-          <div class="step__number"><div class="step__num-big">04</div><div class="step__num-label">STEP</div></div>
-          <div class="step__body">
-            <div class="step__head">
-              <div><h2 class="step__title" data-i18n="step4.title">주요 편차 동작</h2><p class="step__sub">평균 대비 ±편차 ≥ 1.5σ</p></div>
-              <span class="step__source"><span class="src-pill" data-i18n="src.itas">I-TAS</span></span>
-            </div>
-            <div class="dev-list">
-              <div class="dev-row"><span class="dev-row__name">웨이퍼 정렬 (align)</span><span class="dev-row__val">+2.4s</span><span class="dev-row__pct delta-bad">+18%</span></div>
-              <div class="dev-row"><span class="dev-row__name">슬러리 디스펜스</span><span class="dev-row__val">+1.6s</span><span class="dev-row__pct delta-bad">+11%</span></div>
-              <div class="dev-row"><span class="dev-row__name">패드 컨디셔닝</span><span class="dev-row__val">−0.9s</span><span class="dev-row__pct delta-good">−7%</span></div>
-              <div class="dev-row"><span class="dev-row__name">언로드 transfer</span><span class="dev-row__val">+1.2s</span><span class="dev-row__pct delta-bad">+9%</span></div>
-            </div>
-          </div>
-        </article>
-
-        <!-- STEP 5 — Increasing -->
-        <article class="step">
-          <div class="step__number"><div class="step__num-big">05</div><div class="step__num-label">STEP</div></div>
-          <div class="step__body">
-            <div class="step__head">
-              <div><h2 class="step__title" data-i18n="step5.title">동작시간 증가 추세 (악화)</h2><p class="step__sub">최근 14일 회귀 기울기 ≥ +0.05</p></div>
-              <span class="step__source"><span class="src-pill" data-i18n="src.itas">I-TAS</span></span>
-            </div>
-            <div class="dev-list">
-              <div class="dev-row"><span class="dev-row__name">웨이퍼 정렬</span><span class="dev-row__val">+0.18 s/d</span><span class="dev-row__pct delta-bad">14d ↑</span></div>
-              <div class="dev-row"><span class="dev-row__name">슬러리 디스펜스</span><span class="dev-row__val">+0.11 s/d</span><span class="dev-row__pct delta-bad">10d ↑</span></div>
-            </div>
-          </div>
-        </article>
-
-        <!-- STEP 6 — Decreasing -->
-        <article class="step">
-          <div class="step__number"><div class="step__num-big">06</div><div class="step__num-label">STEP</div></div>
-          <div class="step__body">
-            <div class="step__head">
-              <div><h2 class="step__title" data-i18n="step6.title">동작시간 하락 추세 (개선)</h2><p class="step__sub">최근 14일 회귀 기울기 ≤ −0.05</p></div>
-              <span class="step__source"><span class="src-pill" data-i18n="src.itas">I-TAS</span></span>
-            </div>
-            <div class="dev-list">
-              <div class="dev-row"><span class="dev-row__name">패드 컨디셔닝</span><span class="dev-row__val">−0.14 s/d</span><span class="dev-row__pct delta-good">12d ↓</span></div>
-              <div class="dev-row"><span class="dev-row__name">언로드 transfer</span><span class="dev-row__val">−0.07 s/d</span><span class="dev-row__pct delta-good">8d ↓</span></div>
-            </div>
-          </div>
-        </article>
-
+      <!-- KPI strip (4 cards w/ 3px wine left bar) -->
+      <div class="kpi-strip">
+        <div class="kpi"><div class="kpi__label" data-i18n="step1.kpi_uph">평균 UPH</div><div class="kpi__num">412<small>/h</small></div><div class="kpi__delta delta-good">▲ 14 vs 어제</div></div>
+        <div class="kpi"><div class="kpi__label" data-i18n="step1.kpi_dev">편차율</div><div class="kpi__num">8.3<small>%</small></div><div class="kpi__delta delta-bad">▲ 1.1pt</div></div>
+        <div class="kpi"><div class="kpi__label" data-i18n="step1.kpi_match">I-TAS 일치율</div><div class="kpi__num">96.4<small>%</small></div><div class="kpi__delta delta-good">▲ 0.3pt</div></div>
+        <div class="kpi"><div class="kpi__label">샘플 n</div><div class="kpi__num">6,797</div><div class="kpi__delta delta-flat">— 호기 6대</div></div>
       </div>
+
+      <!-- WILD asymmetric: hero chart 1fr · side panel 380px -->
+      <div class="top-grid">
+        <div class="hero-chart">
+          <div class="hero-chart__head">
+            <div>
+              <div class="hero-chart__title" data-i18n="step3.title">UPH · 편차율 Trend</div>
+              <div class="hero-chart__sub">30일 · I-TAS + MES</div>
+            </div>
+            <div class="hero-chart__legend">
+              <span><span class="legend-dot"></span>UPH</span>
+              <span><span class="legend-dot" style="background:#9CA3AF"></span>편차율</span>
+              <span><span class="legend-dot" style="background:#1F8B4C;border-radius:0;width:10px;height:2px"></span>목표 412</span>
+            </div>
+          </div>
+          <div class="hero-chart__body">
+            <svg viewBox="0 0 800 220" preserveAspectRatio="none">
+              <line x1="0" y1="80" x2="800" y2="80" stroke="#1F8B4C" stroke-width="1" stroke-dasharray="4,4"/>
+              <polyline fill="none" stroke="#A50034" stroke-width="1.8" points="0,140 27,132 54,124 81,138 108,118 135,108 162,116 189,100 216,94 243,108 270,90 297,80 324,96 351,76 378,68 405,82 432,64 459,72 486,52 513,66 540,48 567,60 594,40 621,54 648,32 675,46 702,28 729,42 756,20 783,32 800,18"/>
+              <polyline fill="none" stroke="#9CA3AF" stroke-width="1.4" stroke-dasharray="3,3" points="0,170 27,166 54,162 81,168 108,158 135,152 162,160 189,150 216,144 243,154 270,140 297,132 324,148 351,128 378,124 405,134 432,116 459,124 486,104 513,118 540,98 567,114 594,88 621,108 648,82 675,98 702,76 729,92 756,68 783,84 800,62"/>
+            </svg>
+          </div>
+        </div>
+
+        <div class="side-panel">
+          <div class="ai-card">
+            <div class="ai-card__head">
+              <span class="ai-card__title">AI 분석 의견</span>
+              <span class="badge badge--good"><span class="badge__dot"></span>실시간</span>
+            </div>
+            <p class="ai-card__bigtxt"><strong>R53A · #1003 호기</strong>가 평균 대비 +12% 우위. 동작 시퀀스 단축 가능성 검토 권장. <strong>#1116 호기</strong>는 슬러리 디스펜스 동작시간이 14일 누적 +0.18 s/d 로 악화 추세 — 노즐 점검 필요.</p>
+            <div class="ai-card__divider"></div>
+            <div class="ai-card__row"><span class="label" data-i18n="step1.kpi_match">I-TAS 일치율</span><span class="val">96.4%</span></div>
+            <div class="ai-card__row"><span class="label">분석 모델</span><span class="val">vitals-uph-v3</span></div>
+            <div class="ai-card__row"><span class="label">학습 윈도우</span><span class="val">D-30 ~ D-1</span></div>
+            <div class="ai-card__row"><span class="label">신뢰도</span><span class="val">0.87</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Best vs Worst — bold left accent (good/bad) -->
+      <div class="bw">
+        <article class="bw-card bw-card--best">
+          <div class="bw-card__label" data-i18n="step2.best">BEST · 자동선정</div>
+          <div class="bw-card__name">호기 #1003</div>
+          <div class="bw-card__num">461 UPH</div>
+          <div class="bw-card__sub">동작당 평균 7.78s · 평균 대비 −12%</div>
+        </article>
+        <article class="bw-card bw-card--worst">
+          <div class="bw-card__label" data-i18n="step2.worst">WORST · 자동선정</div>
+          <div class="bw-card__name">호기 #1116</div>
+          <div class="bw-card__num">368 UPH</div>
+          <div class="bw-card__sub">동작당 평균 9.78s · 평균 대비 +25.7%</div>
+        </article>
+      </div>
+
+      <!-- Two col: deviation + paired trend cards -->
+      <div class="two-col">
+        <div class="subcard">
+          <div class="subcard__head">
+            <span class="subcard__title" data-i18n="step4.title">주요 편차 동작</span>
+            <span class="subcard__sub">평균 대비 ±편차 ≥ 1.5σ</span>
+          </div>
+          <div class="dev-list">
+            <div class="dev-row"><span class="dev-row__name">웨이퍼 정렬 (align)</span><span class="dev-row__val">+2.4s</span><span class="dev-row__pct delta-bad">+18%</span></div>
+            <div class="dev-row"><span class="dev-row__name">슬러리 디스펜스</span><span class="dev-row__val">+1.6s</span><span class="dev-row__pct delta-bad">+11%</span></div>
+            <div class="dev-row"><span class="dev-row__name">패드 컨디셔닝</span><span class="dev-row__val">−0.9s</span><span class="dev-row__pct delta-good">−7%</span></div>
+            <div class="dev-row"><span class="dev-row__name">언로드 transfer</span><span class="dev-row__val">+1.2s</span><span class="dev-row__pct delta-bad">+9%</span></div>
+          </div>
+        </div>
+
+        <div class="trend-pair">
+          <div class="trend-card trend-card--up">
+            <div class="trend-card__title" data-i18n="step5.title">증가 추세 (악화)</div>
+            <div class="dev-list">
+              <div class="dev-row"><span class="dev-row__name">웨이퍼 정렬</span><span class="dev-row__val">+0.18</span><span class="dev-row__pct delta-bad">14d ↑</span></div>
+              <div class="dev-row"><span class="dev-row__name">슬러리 디스펜스</span><span class="dev-row__val">+0.11</span><span class="dev-row__pct delta-bad">10d ↑</span></div>
+            </div>
+          </div>
+          <div class="trend-card trend-card--down">
+            <div class="trend-card__title" data-i18n="step6.title">하락 추세 (개선)</div>
+            <div class="dev-list">
+              <div class="dev-row"><span class="dev-row__name">패드 컨디셔닝</span><span class="dev-row__val">−0.14</span><span class="dev-row__pct delta-good">12d ↓</span></div>
+              <div class="dev-row"><span class="dev-row__name">언로드 transfer</span><span class="dev-row__val">−0.07</span><span class="dev-row__pct delta-good">8d ↓</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- end of UPH wild+bold layout -->
 
       <footer class="page-foot">
         <span data-i18n="foot.creator">제작 · 생산혁신센터 Max Capa 팀</span>
