@@ -975,12 +975,7 @@ window.__LANG_LABEL__ = { ko:"한국어", en:"English", vi:"Tiếng Việt", pl:
       postForm(formLogin.dataset.action, payload).then(function(res){
         btn && (btn.disabled = false);
         if (res.ok) {
-          if (res.mock) {
-            showError('login-error', t('preview.mock_login', '미리보기 모드 — 백엔드 미연결. data-action에 실제 엔드포인트를 지정하세요.'));
-            // unhide as info (still uses error slot, fine for preview)
-            return;
-          }
-          var url = window.AUTH_REDIRECT_URL || '/Home';
+          var url = window.AUTH_REDIRECT_URL || './home.html';
           window.location.assign(url);
           return;
         }
@@ -1109,11 +1104,7 @@ window.__LANG_LABEL__ = { ko:"한국어", en:"English", vi:"Tiếng Việt", pl:
       postForm(formSignup2.dataset.action, { email: email, code: code }).then(function(res){
         btn && (btn.disabled = false);
         if (res.ok) {
-          if (res.mock) {
-            showError('verify-error', t('preview.mock_signup', '미리보기 모드 — 백엔드 미연결. 실제 서비스에서는 로그인 상태로 전환됩니다.'));
-            return;
-          }
-          var url = window.AUTH_REDIRECT_URL || '/Home';
+          var url = window.AUTH_REDIRECT_URL || './home.html';
           window.location.assign(url);
           return;
         }
