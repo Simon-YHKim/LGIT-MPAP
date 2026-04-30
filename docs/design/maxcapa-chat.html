@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<title>VITALS — MaxCapa Chat</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="./_app-shell.css" />
+<style>
+/* maxcapa-chat — full-page conversational =========================== */
+.page{padding:0 !important;display:flex;flex-direction:column;min-height:0;height:calc(100vh - var(--topbar-h))}
+.chat-main{display:flex;flex-direction:column;flex:1;min-height:0}
+.chat-main__head{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;padding:20px 28px 12px;border-bottom:1px solid var(--border);flex:none;flex-wrap:wrap}
+.chat-main__head h1{margin:0 0 4px;font-family:var(--font-display);font-size:22px;font-weight:700;letter-spacing:-0.02em;line-height:1.1}
+.chat-main__head .sub{margin:0;font-size:12px;color:var(--ink-muted)}
+.chat-main__head .eyebrow{margin-bottom:4px}
+.routing{display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:11px;color:var(--ink-muted);letter-spacing:.04em}
+.routing .pill{display:inline-flex;align-items:center;gap:5px;padding:3px 8px;border-radius:5px;background:var(--soft);color:var(--ink-body);font-weight:600}
+.routing .pill.is-active{background:var(--primary-tint);color:var(--primary-dark)}
+.routing .pill .dot{width:5px;height:5px;border-radius:50%;background:currentColor}
+
+.thread{flex:1;overflow-y:auto;padding:16px 28px 100px;min-height:0;display:flex;flex-direction:column;gap:18px;max-width:920px;width:100%;margin:0 auto}
+
+/* User message — text label, no avatar square */
+.msg{display:flex;flex-direction:column;gap:6px}
+.msg__role{font-family:var(--font-mono);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-subtle);display:flex;align-items:center;gap:8px}
+.msg__role::after{content:"";flex:1;height:1px;background:var(--border)}
+.msg--user .msg__role{color:var(--primary-dark)}
+.msg__body{font-size:14px;line-height:1.6;color:var(--ink-body)}
+.msg--user .msg__body{padding:12px 14px;background:var(--primary-tint);border:1px solid #F1D2DB;border-radius:8px}
+
+/* AI response — compound (trace + sql + result KPI + chart + table + opinion + followup) */
+.ai-stack{display:flex;flex-direction:column;gap:10px}
+.expander{background:var(--card-bg);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.expander__head{display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--soft);font-size:12px;font-weight:700;letter-spacing:-0.005em;color:var(--ink-body);cursor:pointer;list-style:none}
+.expander__head::-webkit-details-marker{display:none}
+.expander__head svg.caret{width:11px;height:11px;color:var(--ink-muted);transition:transform .15s var(--ease)}
+.expander[open] .expander__head svg.caret{transform:rotate(180deg)}
+.expander__sub{font-family:var(--font-mono);font-size:10px;color:var(--ink-subtle);font-weight:400;letter-spacing:.04em;margin-left:auto}
+.expander__body{padding:12px 14px;font-size:12px;color:var(--ink-body);line-height:1.6}
+
+/* trace */
+.trace-list{display:flex;flex-direction:column;gap:6px}
+.trace-step{display:grid;grid-template-columns:18px 1fr;gap:8px;align-items:start;font-size:12px}
+.trace-step__num{font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--primary);text-align:right;padding-top:2px}
+.trace-step__txt{color:var(--ink-body)}
+.trace-step__txt code{font-family:var(--font-mono);font-size:11px;background:var(--soft);padding:1px 4px;border-radius:3px;color:var(--primary-dark)}
+
+/* sql block */
+.sql-block{font-family:var(--font-mono);font-size:11px;background:#1F2430;color:#F7F8FA;padding:12px 14px;border-radius:6px;white-space:pre;overflow-x:auto;line-height:1.5}
+.sql-block .kw{color:#F8E5EC;font-weight:600}
+.sql-block .str{color:#9CD9A0}
+.sql-block .com{color:#9CA3AF}
+
+/* result KPI strip */
+.result-kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.result-kpi__card{background:var(--card-bg);border:1px solid var(--border);border-radius:7px;padding:10px 12px}
+.result-kpi__label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-muted);margin-bottom:3px}
+.result-kpi__num{font-family:var(--font-mono);font-size:18px;font-weight:700;letter-spacing:-0.01em;color:var(--ink-body);line-height:1.1}
+.result-kpi__num small{font-size:10px;color:var(--ink-muted);margin-left:2px}
+
+/* result chart */
+.result-chart{height:140px;background:var(--card-bg);border:1px solid var(--border);border-radius:7px;padding:8px}
+.result-chart svg{display:block;width:100%;height:100%}
+
+/* result table */
+.result-table{background:var(--card-bg);border:1px solid var(--border);border-radius:7px;overflow:hidden}
+.result-table table{width:100%;border-collapse:separate;border-spacing:0;font-size:11.5px}
+.result-table thead th{height:30px;background:var(--soft);text-align:left;padding:0 10px;font-size:10.5px;font-weight:700;color:var(--ink-body);border-bottom:1px solid var(--border)}
+.result-table thead th.num{text-align:right}
+.result-table tbody td{height:28px;padding:0 10px;border-bottom:1px solid var(--border)}
+.result-table tbody tr:last-child td{border-bottom:0}
+
+/* AI opinion */
+.opinion{background:#FFFFFF;border:1px solid var(--border);border-left:3px solid var(--primary);border-radius:6px;padding:10px 14px;font-size:13px;line-height:1.55;color:var(--ink-body)}
+.opinion__label{font-family:var(--font-mono);font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--primary-dark);margin-right:6px}
+.opinion strong{color:var(--primary-dark);font-weight:700}
+
+/* followup chips — no glyph */
+.followup{display:flex;flex-wrap:wrap;gap:6px}
+.followup__chip{display:inline-flex;align-items:center;height:28px;padding:0 12px;background:#fff;border:1px solid var(--border);border-radius:99px;font-size:11.5px;font-weight:600;color:var(--ink-body)}
+.followup__chip:hover{border-color:var(--primary);color:var(--primary-dark);background:var(--primary-tint)}
+
+/* Composer fixed bottom of main column */
+.composer-wrap{flex:none;border-top:1px solid var(--border);background:#FFFFFF;padding:12px 28px}
+.composer{max-width:920px;margin:0 auto;display:flex;flex-direction:column;gap:8px}
+.composer__row{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.composer__src{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:10.5px;font-weight:600;color:var(--ink-muted);letter-spacing:.06em;text-transform:uppercase}
+.composer__src .dot{width:6px;height:6px;border-radius:50%;background:var(--status-good)}
+.composer textarea{width:100%;min-height:54px;max-height:160px;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font:inherit;font-size:13px;line-height:1.5;color:var(--ink-body);resize:vertical;transition:border-color .12s var(--ease),box-shadow .12s var(--ease)}
+.composer textarea:focus{outline:0;border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-tint)}
+.composer__hint{font-size:10.5px;color:var(--ink-subtle);font-family:var(--font-mono);letter-spacing:.04em}
+.composer__send{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:34px;padding:0 16px;background:var(--primary);color:#FFFFFF;border:0;border-radius:7px;font-size:12px;font-weight:700;letter-spacing:-0.005em}
+.composer__send:hover{background:var(--primary-dark)}
+.composer__send svg{width:13px;height:13px}
+
+@media (max-width:1280px){.result-kpi{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="topbar">
+    <button type="button" class="topbar__menu" id="topbar-menu" aria-label="메뉴 토글" data-i18n-aria="topbar.menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div class="brand">
+      <img class="brand__logo" src="./assets/lg-innotek-logo-en-gray.png" alt="LG Innotek" />
+      <div class="brand__divider"></div>
+      <span class="brand__wordmark">VITALS</span>
+      <span class="brand__team" data-i18n="brand.team">생산혁신센터 · Max Capa 팀</span>
+    </div>
+    <div class="topbar__spacer"></div>
+    <div class="topbar__actions">
+      <div class="lang" id="lang">
+        <button type="button" class="lang__btn" id="lang-btn" aria-haspopup="menu" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>
+          <span id="lang-current">KO</span><span class="lang__caret">▾</span>
+        </button>
+        <div class="lang__menu" role="menu">
+          <button class="lang__item lang__item--active" type="button" data-lang="ko"><span>한국어</span><span class="lang__item-code">KO</span></button>
+          <button class="lang__item" type="button" data-lang="en"><span>English</span><span class="lang__item-code">EN</span></button>
+          <button class="lang__item" type="button" data-lang="vi"><span>Tiếng Việt</span><span class="lang__item-code">VI</span></button>
+          <button class="lang__item" type="button" data-lang="pl"><span>Polski</span><span class="lang__item-code">PL</span></button>
+          <button class="lang__item" type="button" data-lang="id"><span>Bahasa Indonesia</span><span class="lang__item-code">ID</span></button>
+          <button class="lang__item" type="button" data-lang="es"><span>Español</span><span class="lang__item-code">ES</span></button>
+          <button class="lang__item" type="button" data-lang="zh"><span>中文</span><span class="lang__item-code">ZH</span></button>
+        </div>
+      </div>
+      <button type="button" class="btn-logout" data-action="logout">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        <span data-i18n="topbar.logout">로그아웃</span>
+      </button>
+    </div>
+  </header>
+
+  <div class="shell">
+
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar__head">
+        <span class="sidebar__heading" data-i18n="nav.heading">메뉴</span>
+        <button type="button" class="sidebar__toggle" id="sidebar-toggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+      </div>
+      <nav class="nav" role="navigation">
+        <a class="nav__item" href="./home.html"><svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l9-9 9 9"/><path d="M5 10v10h14V10"/></svg><span class="nav__label" data-i18n="nav.home">Home</span></a>
+        <a class="nav__item" href="./cmp-dashboard.html"><svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span class="nav__label" data-i18n="nav.cmp">CMP 현황판</span></a>
+        <a class="nav__item" href="./uph-dashboard.html"><svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg><span class="nav__label" data-i18n="nav.uph">UPH 현황판</span></a>
+        <a class="nav__item" href="./mtba-dashboard.html"><svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg><span class="nav__label" data-i18n="nav.mtba">MTBA 현황판</span></a>
+        <a class="nav__item" href="./mtba-detail.html"><svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 22 8.5 12 15 2 8.5 12 2"/><polyline points="2 15.5 12 22 22 15.5"/></svg><span class="nav__label" data-i18n="nav.mtba_detail">MTBA 상세</span></a>
+        <a class="nav__item nav__item--active" aria-current="page" href="./maxcapa-chat.html"><svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span class="nav__label" data-i18n="nav.chat">MaxCapa Chat</span></a>
+      </nav>
+      <div class="sidebar__foot"><span>v0.4.3</span><span data-i18n="sidebar.intranet">사내망</span></div>
+    </aside>
+
+    <main class="main"><div class="page" id="page-content">
+
+      <div class="chat-main">
+        <header class="chat-main__head">
+          <div>
+            <div class="eyebrow"><strong data-i18n="eyebrow.chat">PLATFORM · MAXCAPA CHAT</strong></div>
+            <h1 data-i18n="page.chat_title">MaxCapa Chat</h1>
+            <p class="sub" data-i18n="page.chat_sub">대화형 생산지표 조회 · 자연어 질의 · MES / ITAS 자동 분기</p>
+          </div>
+          <div class="routing">
+            <span data-i18n="routing.label">DATA SOURCE</span>
+            <span class="pill is-active"><span class="dot"></span><span data-i18n="routing.mes">MES UPH</span></span>
+            <span class="pill"><span class="dot"></span><span data-i18n="routing.itas">ITAS UPH</span></span>
+          </div>
+        </header>
+
+        <div class="thread">
+
+          <!-- User message -->
+          <div class="msg msg--user">
+            <div class="msg__role"><span data-i18n="msg.user">사용자</span> · 14:22</div>
+            <div class="msg__body">R53A 모델 어제 UPH 평균은? 호기별로 보여줘.</div>
+          </div>
+
+          <!-- AI response -->
+          <div class="msg msg--ai">
+            <div class="msg__role"><span data-i18n="msg.ai">MaxCapa AI</span> · MES UPH</div>
+            <div class="msg__body">
+              <div class="ai-stack">
+
+                <!-- Trace expander -->
+                <details class="expander">
+                  <summary class="expander__head">
+                    <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                    <span data-i18n="exp.trace">분석 단계</span>
+                    <span class="expander__sub" data-i18n="exp.trace_sub">4 단계 · 자동 압축</span>
+                  </summary>
+                  <div class="expander__body">
+                    <div class="trace-list">
+                      <div class="trace-step"><span class="trace-step__num">1.</span><span class="trace-step__txt">의도 분류 — <code>uph_query</code> · 모델=<code>R53A</code> · 기간=<code>D-1</code> · 그룹=<code>호기</code></span></div>
+                      <div class="trace-step"><span class="trace-step__num">2.</span><span class="trace-step__txt">데이터소스 라우팅 — 키워드 "ITAS" 미포함 → <code>MES UPH</code> 선택</span></div>
+                      <div class="trace-step"><span class="trace-step__num">3.</span><span class="trace-step__txt">테이블 매핑 — <code>uph_input_runtime_daily_model</code> · 인덱스 <code>(model, date, machine_id)</code></span></div>
+                      <div class="trace-step"><span class="trace-step__num">4.</span><span class="trace-step__txt">결과 검증 — 6 호기 · 평균 412 UPH · 표준편차 32 (8.3%)</span></div>
+                    </div>
+                  </div>
+                </details>
+
+                <!-- SQL expander -->
+                <details class="expander">
+                  <summary class="expander__head">
+                    <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                    <span data-i18n="exp.sql">실행 SQL</span>
+                    <span class="expander__sub" data-i18n="exp.sql_sub">읽기 전용 · 압축 표시</span>
+                  </summary>
+                  <div class="expander__body">
+<pre class="sql-block"><span class="kw">SELECT</span> machine_id, <span class="kw">AVG</span>(uph) <span class="kw">AS</span> avg_uph, <span class="kw">COUNT</span>(*) <span class="kw">AS</span> n
+<span class="kw">FROM</span>   uph_input_runtime_daily_model
+<span class="kw">WHERE</span>  model = <span class="str">'R53A'</span>
+  <span class="kw">AND</span>  date = <span class="kw">CURRENT_DATE</span> - <span class="kw">INTERVAL</span> <span class="str">'1 day'</span>
+<span class="kw">GROUP BY</span> machine_id
+<span class="kw">ORDER BY</span> avg_uph <span class="kw">DESC</span>;</pre>
+                  </div>
+                </details>
+
+                <!-- Result KPI strip -->
+                <div class="result-kpi">
+                  <div class="result-kpi__card"><div class="result-kpi__label">평균 UPH</div><div class="result-kpi__num">412<small>/h</small></div></div>
+                  <div class="result-kpi__card"><div class="result-kpi__label">최고 UPH</div><div class="result-kpi__num">461<small>/h · #1003</small></div></div>
+                  <div class="result-kpi__card"><div class="result-kpi__label">최저 UPH</div><div class="result-kpi__num">368<small>/h · #1116</small></div></div>
+                  <div class="result-kpi__card"><div class="result-kpi__label">편차율</div><div class="result-kpi__num">8.3<small>%</small></div></div>
+                </div>
+
+                <!-- Result chart -->
+                <div class="result-chart">
+                  <svg viewBox="0 0 600 124" preserveAspectRatio="none">
+                    <g fill="#A50034">
+                      <rect x="20"  y="36" width="60" height="78"/>
+                      <rect x="110" y="44" width="60" height="70"/>
+                      <rect x="200" y="50" width="60" height="64"/>
+                      <rect x="290" y="56" width="60" height="58"/>
+                      <rect x="380" y="62" width="60" height="52"/>
+                      <rect x="470" y="76" width="60" height="38"/>
+                    </g>
+                    <g font-family="IBM Plex Mono" font-size="10" fill="#1F2430" text-anchor="middle">
+                      <text x="50"  y="30">461</text>
+                      <text x="140" y="38">434</text>
+                      <text x="230" y="44">421</text>
+                      <text x="320" y="50">408</text>
+                      <text x="410" y="56">395</text>
+                      <text x="500" y="70">368</text>
+                    </g>
+                    <g font-family="LG EI Text, sans-serif" font-size="10" fill="#6B7280" text-anchor="middle">
+                      <text x="50"  y="120">#1003</text>
+                      <text x="140" y="120">#1054</text>
+                      <text x="230" y="120">#1077</text>
+                      <text x="320" y="120">#1142</text>
+                      <text x="410" y="120">#1188</text>
+                      <text x="500" y="120">#1116</text>
+                    </g>
+                  </svg>
+                </div>
+
+                <!-- Result table -->
+                <div class="result-table">
+                  <table>
+                    <thead><tr><th>호기</th><th class="num">평균 UPH</th><th class="num">샘플 n</th><th class="num">평균 대비</th></tr></thead>
+                    <tbody>
+                      <tr><td>#1003</td><td class="num">461</td><td class="num">1,128</td><td class="num delta-good">+11.9%</td></tr>
+                      <tr><td>#1054</td><td class="num">434</td><td class="num">1,140</td><td class="num delta-good">+5.3%</td></tr>
+                      <tr><td>#1077</td><td class="num">421</td><td class="num">1,116</td><td class="num delta-good">+2.2%</td></tr>
+                      <tr><td>#1142</td><td class="num">408</td><td class="num">1,131</td><td class="num delta-flat">−0.9%</td></tr>
+                      <tr><td>#1188</td><td class="num">395</td><td class="num">1,124</td><td class="num delta-bad">−4.1%</td></tr>
+                      <tr><td>#1116</td><td class="num">368</td><td class="num">1,058</td><td class="num delta-bad">−10.7%</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <!-- AI opinion -->
+                <div class="opinion">
+                  <span class="opinion__label" data-i18n="opinion.label">AI 분석 의견</span>
+                  <strong>#1116 호기</strong>가 평균 대비 −10.7%로 단일 outlier. 동일 시점 MTBA 28.4h (임계 미달)와 일치 — <strong>슬러리 디스펜스 노즐 막힘</strong> 영향으로 추정. <a href="./mtba-detail.html" style="color:var(--primary-dark);border-bottom:1px solid var(--primary-dark)">MTBA 상세 →</a>
+                </div>
+
+                <!-- Followup chips (no glyph) -->
+                <div class="followup">
+                  <span class="opinion__label" data-i18n="followup.label">이어서 물어보기</span>
+                  <button class="followup__chip">#1116 호기 최근 7일 알람 보여줘</button>
+                  <button class="followup__chip">슬러리 디스펜스 동작시간 추이</button>
+                  <button class="followup__chip">ITAS 기준 R53A 같은 분석</button>
+                  <button class="followup__chip">호기간 동작 차이 시각화</button>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Composer -->
+        <div class="composer-wrap">
+          <div class="composer">
+            <div class="composer__row">
+              <span class="composer__src"><span class="dot"></span><span data-i18n="chat.src_label">데이터소스</span> · MES UPH</span>
+              <span class="composer__hint" data-i18n="composer.hint">Enter — 줄바꿈 / Cmd+Enter — 전송</span>
+            </div>
+            <textarea id="chat-input" rows="2" placeholder="공정 / 모델 / 기간을 포함해 자연어로 질문하세요. &quot;ITAS&quot; 키워드 시 자동 분기." data-i18n-ph="composer.placeholder"></textarea>
+            <div class="composer__row" style="justify-content:flex-end">
+              <button type="button" class="composer__send"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg><span data-i18n="composer.send">질문 분석 및 실행</span></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div></main>
+
+    <aside class="chat-panel" id="chat-panel" data-default="collapsed">
+      <div class="chat-handle" id="chat-handle"></div>
+      <header class="chat-head">
+        <button type="button" class="chat-toggle" id="chat-toggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+        <span class="chat-title" data-i18n="chat.title">MaxCapa Chat</span>
+        <span class="chat-live" data-i18n="chat.live">LIVE</span>
+      </header>
+      <div class="chat-body">
+        <div class="chat-scroll">
+          <div class="chat-empty">
+            <div class="chat-empty__title">메인 페이지에서 사용 중</div>
+            <div class="chat-empty__body">이 페이지는 MaxCapa Chat<br>전용 페이지입니다.</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+  </div>
+</div>
+<script>
+window.__I18N_PAGE__ = {
+  ko:{
+    "eyebrow.chat":"PLATFORM · MAXCAPA CHAT",
+    "page.chat_title":"MaxCapa Chat","page.chat_sub":"대화형 생산지표 조회 · 자연어 질의 · MES / ITAS 자동 분기",
+    "routing.label":"DATA SOURCE","routing.mes":"MES UPH","routing.itas":"ITAS UPH","routing.basis":"기본 조회",
+    "msg.user":"사용자","msg.ai":"MaxCapa AI",
+    "exp.trace":"분석 단계","exp.trace_sub":"4 단계 · 자동 압축",
+    "exp.sql":"실행 SQL","exp.sql_sub":"읽기 전용 · 압축 표시",
+    "exp.result":"결과 KPI · 차트 · 표","exp.result_sub":"R53A · 어제 기준",
+    "opinion.label":"AI 분석 의견","followup.label":"이어서 물어보기",
+    "composer.placeholder":"공정 / 모델 / 기간을 포함해 자연어로 질문하세요. \"ITAS\" 키워드 시 자동 분기.",
+    "composer.send":"질문 분석 및 실행",
+    "composer.hint":"Enter — 줄바꿈 / Cmd+Enter — 전송"
+  },
+  en:{
+    "page.chat_title":"MaxCapa Chat","page.chat_sub":"Conversational production query · NL · auto MES/ITAS routing",
+    "routing.label":"DATA SOURCE","routing.basis":"Default",
+    "msg.user":"You","msg.ai":"MaxCapa AI",
+    "exp.trace":"Analysis trace","exp.sql":"Executed SQL","exp.result":"Result KPI · chart · table",
+    "opinion.label":"AI opinion","followup.label":"Follow-up",
+    "composer.placeholder":"Ask in natural language. \"ITAS\" keyword routes to ITAS source.",
+    "composer.send":"Analyze & Run","composer.hint":"Enter — newline / Cmd+Enter — send"
+  }
+};
+</script>
+<script src="./_app-shell.js" defer></script>
+</body>
+</html>

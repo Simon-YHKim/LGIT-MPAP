@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<title>VITALS — UPH 현황판</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="./_app-shell.css" />
+<style>
+/* uph-specific — 단계 강조 (numbered steps) ===================== */
+.filter-bar{display:flex;align-items:flex-end;gap:10px;background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:14px;flex-wrap:wrap}
+.field{display:flex;flex-direction:column;gap:4px;min-width:130px}
+.field__label{font-size:10px;font-weight:700;color:var(--ink-muted);letter-spacing:.06em;text-transform:uppercase}
+.select{height:32px;border:1px solid var(--border);border-radius:7px;background:#fff;padding:0 10px;font:inherit;font-size:12px;color:var(--ink-body);display:inline-flex;align-items:center;gap:6px;justify-content:space-between}
+.select svg{width:11px;height:11px;color:var(--ink-muted)}
+.seg{display:inline-flex;border:1px solid var(--border);border-radius:7px;overflow:hidden;height:32px;background:#fff}
+.seg button{padding:0 12px;font-size:12px;font-weight:600;color:var(--ink-muted);background:transparent;border:0;border-right:1px solid var(--border)}
+.seg button:last-child{border-right:0}
+.seg button.is-active{background:var(--primary);color:#fff}
+.toggle{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:var(--ink-body);height:32px}
+.toggle__switch{width:32px;height:18px;background:var(--primary);border-radius:99px;position:relative;flex:none}
+.toggle__switch::after{content:"";position:absolute;top:2px;right:2px;width:14px;height:14px;background:#fff;border-radius:50%}
+
+/* Step card — large numbered hero */
+.steps{display:flex;flex-direction:column;gap:14px}
+.step{display:grid;grid-template-columns:96px 1fr;gap:0;background:var(--card-bg);border:1px solid var(--border);border-radius:10px;overflow:hidden;position:relative}
+.step__number{background:linear-gradient(180deg,var(--primary) 0%,var(--primary-dark) 100%);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:18px 8px;position:relative}
+.step__number::after{content:"";position:absolute;right:-7px;top:50%;transform:translateY(-50%) rotate(45deg);width:14px;height:14px;background:var(--primary-dark);border-right:1px solid var(--primary-dark);border-top:1px solid var(--primary-dark)}
+.step__num-big{font-family:var(--font-display);font-size:46px;font-weight:700;line-height:1;letter-spacing:-0.04em}
+.step__num-label{font-family:var(--font-mono);font-size:9px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;opacity:.85;margin-top:2px}
+.step__body{padding:14px 18px 16px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.step__head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.step__title{font-size:16px;font-weight:700;letter-spacing:-0.01em;color:var(--ink-body);margin:0}
+.step__source{font-family:var(--font-mono);font-size:10px;font-weight:600;color:var(--ink-subtle);letter-spacing:.06em;text-transform:uppercase;display:inline-flex;align-items:center;gap:6px}
+.step__source .src-pill{background:var(--soft);color:var(--ink-body);padding:1px 6px;border-radius:3px}
+.step__sub{font-size:12px;color:var(--ink-muted);margin:0}
+.step__content{display:grid;gap:10px;align-items:stretch}
+.step--3col .step__content{grid-template-columns:repeat(3,1fr)}
+.step--2col .step__content{grid-template-columns:repeat(2,1fr)}
+.step__sub-card{background:var(--soft);border:1px solid var(--border);border-radius:7px;padding:10px}
+.step__sub-card__label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-muted);margin-bottom:4px}
+.step__sub-card__num{font-family:var(--font-mono);font-size:18px;font-weight:700;color:var(--ink-body);line-height:1.1;letter-spacing:-0.01em}
+.step__sub-card__num small{font-size:11px;font-weight:600;color:var(--ink-muted);margin-left:2px}
+.step__sub-card__delta{font-family:var(--font-mono);font-size:10px;font-weight:600;margin-top:2px}
+.step__chart{height:90px;background:var(--soft);border-radius:6px;position:relative;overflow:hidden}
+.step__chart svg{display:block;width:100%;height:100%}
+.step__bestworst{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.bw{padding:10px 12px;border-radius:7px;border:1px solid var(--border)}
+.bw--good{background:var(--status-good-tint)}
+.bw--bad{background:var(--status-bad-tint)}
+.bw__label{font-family:var(--font-mono);font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px}
+.bw--good .bw__label{color:var(--status-good)}
+.bw--bad .bw__label{color:var(--status-bad)}
+.bw__name{font-size:13px;font-weight:700;color:var(--ink-body)}
+.bw__num{font-family:var(--font-mono);font-size:18px;font-weight:700;color:var(--ink-body);margin-top:2px}
+.bw__sub{font-size:11px;color:var(--ink-muted);margin-top:2px}
+.ai-note{background:#FFFFFF;border:1px solid var(--border);border-left:3px solid var(--primary);border-radius:6px;padding:8px 12px;font-size:12px;color:var(--ink-body);line-height:1.5}
+.ai-note__label{font-family:var(--font-mono);font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--primary-dark);margin-right:6px}
+.dev-list{display:flex;flex-direction:column;gap:4px;font-size:12px}
+.dev-row{display:grid;grid-template-columns:1fr 60px 60px;gap:8px;padding:6px 8px;background:var(--soft);border-radius:6px;align-items:center}
+.dev-row__name{color:var(--ink-body);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dev-row__val{font-family:var(--font-mono);font-size:11px;color:var(--ink-body);text-align:right}
+.dev-row__pct{font-family:var(--font-mono);font-size:11px;text-align:right}
+@media (max-width:1280px){.step--3col .step__content,.step--2col .step__content{grid-template-columns:1fr 1fr}}
+@media (max-width:980px){.step{grid-template-columns:60px 1fr}.step__num-big{font-size:32px}.step--3col .step__content,.step--2col .step__content{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="topbar">
+    <button type="button" class="topbar__menu" id="topbar-menu" aria-label="메뉴 토글" data-i18n-aria="topbar.menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div class="brand">
+      <img class="brand__logo" src="./assets/lg-innotek-logo-en-gray.png" alt="LG Innotek" />
+      <div class="brand__divider" aria-hidden="true"></div>
+      <span class="brand__wordmark">VITALS</span>
+      <span class="brand__team" data-i18n="brand.team">생산혁신센터 · Max Capa 팀</span>
+    </div>
+    <div class="topbar__spacer"></div>
+    <div class="topbar__actions">
+      <div class="lang" id="lang">
+        <button type="button" class="lang__btn" id="lang-btn" aria-haspopup="menu" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>
+          <span id="lang-current">KO</span><span class="lang__caret">▾</span>
+        </button>
+        <div class="lang__menu" role="menu">
+          <button class="lang__item lang__item--active" type="button" data-lang="ko"><span>한국어</span><span class="lang__item-code">KO</span></button>
+          <button class="lang__item" type="button" data-lang="en"><span>English</span><span class="lang__item-code">EN</span></button>
+          <button class="lang__item" type="button" data-lang="vi"><span>Tiếng Việt</span><span class="lang__item-code">VI</span></button>
+          <button class="lang__item" type="button" data-lang="pl"><span>Polski</span><span class="lang__item-code">PL</span></button>
+          <button class="lang__item" type="button" data-lang="id"><span>Bahasa Indonesia</span><span class="lang__item-code">ID</span></button>
+          <button class="lang__item" type="button" data-lang="es"><span>Español</span><span class="lang__item-code">ES</span></button>
+          <button class="lang__item" type="button" data-lang="zh"><span>中文</span><span class="lang__item-code">ZH</span></button>
+        </div>
+      </div>
+      <button type="button" class="btn-logout" data-action="logout">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        <span data-i18n="topbar.logout">로그아웃</span>
+      </button>
+    </div>
+  </header>
+
+  <div class="shell">
+
+    <aside class="sidebar" id="sidebar" aria-label="Primary navigation">
+      <div class="sidebar__head">
+        <span class="sidebar__heading" data-i18n="nav.heading">메뉴</span>
+        <button type="button" class="sidebar__toggle" id="sidebar-toggle" aria-label="사이드바 토글">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+      </div>
+      <nav class="nav" role="navigation">
+        <a class="nav__item" href="./home.html"><svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l9-9 9 9"/><path d="M5 10v10h14V10"/></svg><span class="nav__label" data-i18n="nav.home">Home</span></a>
+        <a class="nav__item" href="./cmp-dashboard.html"><svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span class="nav__label" data-i18n="nav.cmp">CMP 현황판</span></a>
+        <a class="nav__item nav__item--active" aria-current="page" href="./uph-dashboard.html"><svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg><span class="nav__label" data-i18n="nav.uph">UPH 현황판</span></a>
+        <a class="nav__item" href="./mtba-dashboard.html"><svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg><span class="nav__label" data-i18n="nav.mtba">MTBA 현황판</span></a>
+        <a class="nav__item" href="./mtba-detail.html"><svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 22 8.5 12 15 2 8.5 12 2"/><polyline points="2 15.5 12 22 22 15.5"/></svg><span class="nav__label" data-i18n="nav.mtba_detail">MTBA 상세</span></a>
+        <a class="nav__item" href="./maxcapa-chat.html"><svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span class="nav__label" data-i18n="nav.chat">MaxCapa Chat</span></a>
+      </nav>
+      <div class="sidebar__foot"><span>v0.4.3</span><span data-i18n="sidebar.intranet">사내망</span></div>
+    </aside>
+
+    <main class="main"><div class="page" id="page-content">
+
+      <header class="page-head">
+        <div class="page-head__main">
+          <div class="eyebrow"><strong data-i18n="eyebrow.uph">PERFORMANCE · UPH</strong></div>
+          <h1 data-i18n="page.uph_title">UPH 현황판</h1>
+          <p class="sub" data-i18n="page.uph_sub">실험적 구성 · 6 단계 분석 · I-TAS 분기 + MES</p>
+        </div>
+        <div class="page-head__tools">
+          <button class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>새로고침</button>
+          <button class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export</button>
+        </div>
+      </header>
+
+      <!-- Filter bar -->
+      <div class="filter-bar">
+        <div class="field"><span class="field__label" data-i18n="filter.factory">공장</span><span class="select">A2 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></span></div>
+        <div class="field"><span class="field__label" data-i18n="filter.process">공정</span><span class="select">CMP · 연마 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></span></div>
+        <div class="field"><span class="field__label" data-i18n="filter.model">모델</span><span class="select">R53A · R53B <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></span></div>
+        <div class="field"><span class="field__label" data-i18n="filter.date">날짜</span><span class="select">2026-04-29 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></span></div>
+        <div class="field"><span class="field__label" data-i18n="filter.trend">Trend 기간</span><div class="seg"><button class="is-active">30d</button><button>90d</button></div></div>
+        <div class="filter-bar__spacer"></div>
+        <label class="toggle"><span class="toggle__switch"></span><span data-i18n="filter.itas_only">I-TAS 가능만 보기</span></label>
+      </div>
+
+      <!-- 6 steps -->
+      <div class="steps">
+
+        <!-- STEP 1 — UPH 요약 (I-TAS) -->
+        <article class="step step--3col">
+          <div class="step__number"><div class="step__num-big">01</div><div class="step__num-label">STEP</div></div>
+          <div class="step__body">
+            <div class="step__head">
+              <div>
+                <h2 class="step__title" data-i18n="step1.title">UPH 요약 (I-TAS)</h2>
+                <p class="step__sub">필터 기반 평균 + I-TAS 일치율 + AI 의견</p>
+              </div>
+              <span class="step__source"><span class="src-pill" data-i18n="src.both">I-TAS + MES</span></span>
+            </div>
+            <div class="step__content">
+              <div class="step__sub-card"><div class="step__sub-card__label" data-i18n="step1.kpi_uph">평균 UPH</div><div class="step__sub-card__num">412<small>/h</small></div><div class="step__sub-card__delta delta-good">▲ 14 vs 어제</div></div>
+              <div class="step__sub-card"><div class="step__sub-card__label" data-i18n="step1.kpi_dev">편차율</div><div class="step__sub-card__num">8.3<small>%</small></div><div class="step__sub-card__delta delta-bad">▲ 1.1pt</div></div>
+              <div class="step__sub-card"><div class="step__sub-card__label" data-i18n="step1.kpi_match">I-TAS 일치율</div><div class="step__sub-card__num">96.4<small>%</small></div><div class="step__sub-card__delta delta-good">▲ 0.3pt</div></div>
+            </div>
+            <div class="ai-note"><span class="ai-note__label">AI</span><span data-i18n="step1.ai">AI 분석 의견 — R53A 모델 #1003 호기가 평균 대비 +12% 우위. 동작 시퀀스 단축 가능성 검토 권장.</span></div>
+          </div>
+        </article>
+
+        <!-- STEP 2 — Best vs Worst -->
+        <article class="step">
+          <div class="step__number"><div class="step__num-big">02</div><div class="step__num-label">STEP</div></div>
+          <div class="step__body">
+            <div class="step__head">
+              <div><h2 class="step__title" data-i18n="step2.title">Best vs Worst 동작 차이</h2><p class="step__sub">자동 선정 · 동작당 평균 편차</p></div>
+              <span class="step__source"><span class="src-pill" data-i18n="src.itas">I-TAS</span></span>
+            </div>
+            <div class="step__bestworst">
+              <div class="bw bw--good">
+                <div class="bw__label" data-i18n="step2.best">BEST · 자동선정</div>
+                <div class="bw__name">호기 #1003</div>
+                <div class="bw__num">461 UPH</div>
+                <div class="bw__sub">동작당 평균 7.78s · 평균 대비 −12%</div>
+              </div>
+              <div class="bw bw--bad">
+                <div class="bw__label" data-i18n="step2.worst">WORST · 자동선정</div>
+                <div class="bw__name">호기 #1116</div>
+                <div class="bw__num">368 UPH</div>
+                <div class="bw__sub">동작당 평균 9.78s · 평균 대비 +25.7%</div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- STEP 3 — Trend -->
+        <article class="step">
+          <div class="step__number"><div class="step__num-big">03</div><div class="step__num-label">STEP</div></div>
+          <div class="step__body">
+            <div class="step__head">
+              <div><h2 class="step__title" data-i18n="step3.title">UPH · 편차율 Trend</h2><p class="step__sub" data-i18n="step3.sub">30일 / 90일 segmented (필터 상단)</p></div>
+              <span class="step__source"><span class="src-pill" data-i18n="src.both">I-TAS + MES</span></span>
+            </div>
+            <div class="step__chart">
+              <svg viewBox="0 0 600 90" preserveAspectRatio="none">
+                <polyline fill="none" stroke="#A50034" stroke-width="1.6" points="0,55 20,52 40,49 60,53 80,46 100,42 120,45 140,40 160,38 180,42 200,36 220,32 240,38 260,30 280,28 300,32 320,26 340,28 360,22 380,26 400,20 420,24 440,18 460,22 480,16 500,18 520,14 540,16 560,10 580,12 600,8"/>
+                <polyline fill="none" stroke="#6B7280" stroke-width="1.2" stroke-dasharray="3,3" points="0,68 20,66 40,64 60,67 80,62 100,60 120,63 140,59 160,57 180,60 200,56 220,53 240,57 260,52 280,50 300,52 320,48 340,50 360,46 380,49 400,44 420,47 440,42 460,45 480,40 500,42 520,39 540,41 560,37 580,39 600,36"/>
+              </svg>
+            </div>
+          </div>
+        </article>
+
+        <!-- STEP 4 — Top deviation actions -->
+        <article class="step">
+          <div class="step__number"><div class="step__num-big">04</div><div class="step__num-label">STEP</div></div>
+          <div class="step__body">
+            <div class="step__head">
+              <div><h2 class="step__title" data-i18n="step4.title">주요 편차 동작</h2><p class="step__sub">평균 대비 ±편차 ≥ 1.5σ</p></div>
+              <span class="step__source"><span class="src-pill" data-i18n="src.itas">I-TAS</span></span>
+            </div>
+            <div class="dev-list">
+              <div class="dev-row"><span class="dev-row__name">웨이퍼 정렬 (align)</span><span class="dev-row__val">+2.4s</span><span class="dev-row__pct delta-bad">+18%</span></div>
+              <div class="dev-row"><span class="dev-row__name">슬러리 디스펜스</span><span class="dev-row__val">+1.6s</span><span class="dev-row__pct delta-bad">+11%</span></div>
+              <div class="dev-row"><span class="dev-row__name">패드 컨디셔닝</span><span class="dev-row__val">−0.9s</span><span class="dev-row__pct delta-good">−7%</span></div>
+              <div class="dev-row"><span class="dev-row__name">언로드 transfer</span><span class="dev-row__val">+1.2s</span><span class="dev-row__pct delta-bad">+9%</span></div>
+            </div>
+          </div>
+        </article>
+
+        <!-- STEP 5 — Increasing -->
+        <article class="step">
+          <div class="step__number"><div class="step__num-big">05</div><div class="step__num-label">STEP</div></div>
+          <div class="step__body">
+            <div class="step__head">
+              <div><h2 class="step__title" data-i18n="step5.title">동작시간 증가 추세 (악화)</h2><p class="step__sub">최근 14일 회귀 기울기 ≥ +0.05</p></div>
+              <span class="step__source"><span class="src-pill" data-i18n="src.itas">I-TAS</span></span>
+            </div>
+            <div class="dev-list">
+              <div class="dev-row"><span class="dev-row__name">웨이퍼 정렬</span><span class="dev-row__val">+0.18 s/d</span><span class="dev-row__pct delta-bad">14d ↑</span></div>
+              <div class="dev-row"><span class="dev-row__name">슬러리 디스펜스</span><span class="dev-row__val">+0.11 s/d</span><span class="dev-row__pct delta-bad">10d ↑</span></div>
+            </div>
+          </div>
+        </article>
+
+        <!-- STEP 6 — Decreasing -->
+        <article class="step">
+          <div class="step__number"><div class="step__num-big">06</div><div class="step__num-label">STEP</div></div>
+          <div class="step__body">
+            <div class="step__head">
+              <div><h2 class="step__title" data-i18n="step6.title">동작시간 하락 추세 (개선)</h2><p class="step__sub">최근 14일 회귀 기울기 ≤ −0.05</p></div>
+              <span class="step__source"><span class="src-pill" data-i18n="src.itas">I-TAS</span></span>
+            </div>
+            <div class="dev-list">
+              <div class="dev-row"><span class="dev-row__name">패드 컨디셔닝</span><span class="dev-row__val">−0.14 s/d</span><span class="dev-row__pct delta-good">12d ↓</span></div>
+              <div class="dev-row"><span class="dev-row__name">언로드 transfer</span><span class="dev-row__val">−0.07 s/d</span><span class="dev-row__pct delta-good">8d ↓</span></div>
+            </div>
+          </div>
+        </article>
+
+      </div>
+
+      <footer class="page-foot">
+        <span data-i18n="foot.creator">제작 · 생산혁신센터 Max Capa 팀</span>
+        <span><a href="#" data-i18n="foot.changelog">변경 로그 전체 보기 →</a></span>
+      </footer>
+
+    </div></main>
+
+    <aside class="chat-panel" id="chat-panel" data-default="expanded" aria-label="MaxCapa Chat">
+      <div class="chat-handle" id="chat-handle" aria-hidden="true"></div>
+      <header class="chat-head">
+        <button type="button" class="chat-toggle" id="chat-toggle" aria-label="패널 접기" data-i18n-aria="chat.collapse">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+        <span class="chat-title" data-i18n="chat.title">MaxCapa Chat</span>
+        <span class="chat-live" data-i18n="chat.live">LIVE</span>
+      </header>
+      <div class="chat-body">
+        <div class="chat-scroll">
+          <div class="chat-hint">
+            <div class="chat-hint__title" data-i18n="chat.hint_title">데이터소스 자동 분기</div>
+            <div class="chat-hint__body"><span data-i18n="chat.hint_body">기본 조회는 MES UPH</span> <code>uph_input_runtime_daily_model</code>. <span data-i18n="chat.hint_body2">"ITAS" 키워드 포함 시 ITAS UPH</span> <code>itas_uph_result</code>.</div>
+          </div>
+          <div class="chat-examples">
+            <div class="chat-examples__title" data-i18n="chat.examples_title">예시 질문</div>
+            <div class="chat-examples__list">
+              <button type="button" class="chat-example"><span class="chat-example__src">MES</span><span data-i18n="chat.ex1">R53A 모델 어제 UPH 평균은?</span></button>
+              <button type="button" class="chat-example"><span class="chat-example__src">ITAS</span><span data-i18n="chat.ex2">ITAS 기준 R50 지난주 UPH 추이</span></button>
+              <button type="button" class="chat-example"><span class="chat-example__src">MES</span><span data-i18n="chat.ex3">A2 라인에서 가장 느린 호기 5개</span></button>
+              <button type="button" class="chat-example"><span class="chat-example__src">MES</span><span data-i18n="chat.ex4">CMP 미달 공정만 3월 4주차</span></button>
+            </div>
+          </div>
+          <div class="chat-empty">
+            <div class="chat-empty__title" data-i18n="chat.empty_title">대화 비어 있음</div>
+            <div class="chat-empty__body" data-i18n="chat.empty_body">위 예시를 클릭하거나<br>아래에 자연어로 질문하세요.</div>
+          </div>
+        </div>
+        <div class="chat-composer">
+          <div class="chat-composer__row"><span class="chat-composer__src"><span class="dot"></span><span data-i18n="chat.src_label">데이터소스</span> · MES UPH</span></div>
+          <textarea id="chat-input" rows="3" placeholder="공정 / 모델 / 기간을 포함해 자연어로 질문하세요." data-i18n-ph="chat.placeholder"></textarea>
+          <div class="chat-composer__row" style="justify-content:flex-end">
+            <button type="button" class="chat-send"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg><span data-i18n="chat.send">질문 분석 및 실행</span></button>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+  </div>
+</div>
+<script>
+window.__I18N_PAGE__ = {
+  ko:{
+    "eyebrow.uph":"PERFORMANCE · UPH",
+    "page.uph_title":"UPH 현황판",
+    "page.uph_sub":"실험적 구성 · 6 단계 분석 · I-TAS 분기 + MES",
+    "filter.factory":"공장","filter.process":"공정","filter.model":"모델","filter.date":"날짜",
+    "filter.trend":"Trend 기간","filter.itas_only":"I-TAS 가능만 보기",
+    "step1.title":"UPH 요약 (I-TAS)","step1.label":"STEP 01",
+    "step1.kpi_uph":"평균 UPH","step1.kpi_dev":"편차율","step1.kpi_match":"I-TAS 일치율",
+    "step1.ai":"AI 분석 의견 — R53A 모델 #1003 호기가 평균 대비 +12% 우위. 동작 시퀀스 단축 가능성 검토 권장.",
+    "step2.title":"Best vs Worst 동작 차이","step2.label":"STEP 02",
+    "step2.best":"BEST · 자동선정","step2.worst":"WORST · 자동선정",
+    "step2.dev":"동작당 평균 편차",
+    "step3.title":"UPH · 편차율 Trend","step3.label":"STEP 03",
+    "step3.sub":"30일 / 90일 segmented (필터 상단)",
+    "step4.title":"주요 편차 동작","step4.label":"STEP 04",
+    "step5.title":"동작시간 증가 추세 (악화)","step5.label":"STEP 05",
+    "step6.title":"동작시간 하락 추세 (개선)","step6.label":"STEP 06",
+    "src.itas":"I-TAS","src.mes":"MES","src.both":"I-TAS + MES"
+  },
+  en:{
+    "page.uph_title":"UPH Board","page.uph_sub":"Experimental layout · 6-step analysis · I-TAS + MES",
+    "filter.factory":"Factory","filter.process":"Process","filter.model":"Model","filter.date":"Date",
+    "filter.trend":"Trend window","filter.itas_only":"I-TAS-capable only",
+    "step1.title":"UPH summary (I-TAS)","step2.title":"Best vs Worst run-time gap",
+    "step3.title":"UPH · deviation trend","step4.title":"Top deviation actions",
+    "step5.title":"Run-time increasing (worsening)","step6.title":"Run-time decreasing (improving)"
+  }
+};
+</script>
+<script src="./_app-shell.js" defer></script>
+</body>
+</html>

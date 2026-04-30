@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<title>VITALS — CMP 현황판</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="./_app-shell.css" />
+<style>
+/* cmp-specific ===================================================== */
+.filter-bar{display:flex;align-items:flex-end;gap:10px;background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:14px;flex-wrap:wrap}
+.field{display:flex;flex-direction:column;gap:4px;min-width:140px}
+.field__label{font-size:10px;font-weight:700;color:var(--ink-muted);letter-spacing:.06em;text-transform:uppercase}
+.select,.input{height:32px;border:1px solid var(--border);border-radius:7px;background:#fff;padding:0 10px;font:inherit;font-size:12px;color:var(--ink-body);display:inline-flex;align-items:center;gap:6px;justify-content:space-between}
+.select svg{width:11px;height:11px;color:var(--ink-muted)}
+.filter-bar__spacer{flex:1}
+.filter-bar__actions{display:flex;gap:6px;align-items:flex-end}
+
+/* KPI row — bold variant */
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+.kpi{position:relative;background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:14px 16px;overflow:hidden}
+.kpi--hero::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--primary)}
+.kpi__label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-muted);margin-bottom:4px}
+.kpi__num{font-family:var(--font-mono);font-size:30px;font-weight:700;color:var(--ink-body);line-height:1.1;letter-spacing:-0.02em}
+.kpi__num small{font-size:14px;font-weight:600;color:var(--ink-muted);margin-left:2px}
+.kpi__delta{font-family:var(--font-mono);font-size:11px;font-weight:600;margin-top:4px;display:inline-flex;align-items:center;gap:4px}
+.kpi__spark{position:absolute;right:12px;bottom:10px;width:88px;height:28px;opacity:.85}
+
+/* Model box grid */
+.section-head{display:flex;align-items:center;gap:10px;margin:18px 0 10px;justify-content:space-between}
+.section-head__left{display:flex;align-items:center;gap:8px}
+.section-head__title{font-size:15px;font-weight:700;letter-spacing:-0.01em}
+.section-head__bar{width:3px;height:14px;background:var(--primary);border-radius:2px}
+.section-head__sub{font-size:11px;color:var(--ink-muted)}
+.model-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:6px}
+.model-box{background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:12px}
+.model-box__head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.model-box__name{font-size:12px;font-weight:700;letter-spacing:-0.005em}
+.model-box__rate{font-family:var(--font-mono);font-size:14px;font-weight:700;color:var(--ink-body)}
+.proc-list{display:flex;flex-direction:column;gap:3px}
+.proc-row{display:grid;grid-template-columns:80px 1fr 50px;align-items:center;gap:8px;font-size:11px}
+.proc-row__name{color:var(--ink-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.proc-row__bar{height:6px;background:var(--soft);border-radius:99px;position:relative;overflow:hidden}
+.proc-row__bar-fill{position:absolute;left:0;top:0;bottom:0;background:var(--primary);border-radius:99px}
+.proc-row__bar-fill--bad{background:var(--status-bad)}
+.proc-row__bar-fill--warn{background:var(--status-warn)}
+.proc-row__rate{font-family:var(--font-mono);font-size:11px;color:var(--ink-body);text-align:right}
+
+/* Summary table with 30d trend */
+.table-wrap{background:#fff;border:1px solid var(--border);border-radius:8px;overflow:hidden}
+table{width:100%;border-collapse:separate;border-spacing:0;font-size:12px}
+thead th{height:32px;background:var(--soft);font-weight:700;text-align:left;padding:0 10px;border-bottom:1px solid var(--border);font-size:11px;color:var(--ink-body);white-space:nowrap;position:sticky;top:0}
+thead th.num{text-align:right}
+tbody td{height:30px;padding:0 10px;border-bottom:1px solid var(--border)}
+tbody tr:last-child td{border-bottom:0}
+tbody tr:hover td{background:var(--page-bg);cursor:pointer}
+tbody tr.is-active td{background:var(--primary-tint)}
+tbody tr.is-active td:first-child{box-shadow:inset 2px 0 0 0 var(--primary)}
+.spark-cell{padding:0 8px !important}
+.spark-cell svg{display:block;width:120px;height:22px}
+
+/* Detail tabs (process drill) */
+.detail{margin-top:14px;background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:14px}
+.detail__head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.detail__name{font-size:13px;font-weight:700}
+.detail__name strong{color:var(--primary-dark)}
+.detail__tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:10px}
+.detail__tab{padding:6px 12px;font-size:12px;font-weight:600;color:var(--ink-muted);background:transparent;border:0;border-bottom:2px solid transparent}
+.detail__tab--active{color:var(--ink-body);border-bottom-color:var(--primary)}
+.detail__chart{height:120px;background:repeating-linear-gradient(180deg,transparent 0,transparent 23px,var(--soft) 23px,var(--soft) 24px);border:1px solid var(--border);border-radius:6px;position:relative;overflow:hidden}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="topbar">
+    <button type="button" class="topbar__menu" id="topbar-menu" aria-label="메뉴 토글" data-i18n-aria="topbar.menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div class="brand">
+      <img class="brand__logo" src="./assets/lg-innotek-logo-en-gray.png" alt="LG Innotek" />
+      <div class="brand__divider" aria-hidden="true"></div>
+      <span class="brand__wordmark">VITALS</span>
+      <span class="brand__team" data-i18n="brand.team">생산혁신센터 · Max Capa 팀</span>
+    </div>
+    <div class="topbar__spacer"></div>
+    <div class="topbar__actions">
+      <div class="lang" id="lang">
+        <button type="button" class="lang__btn" id="lang-btn" aria-haspopup="menu" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>
+          <span id="lang-current">KO</span><span class="lang__caret">▾</span>
+        </button>
+        <div class="lang__menu" role="menu">
+          <button class="lang__item lang__item--active" type="button" data-lang="ko"><span>한국어</span><span class="lang__item-code">KO</span></button>
+          <button class="lang__item" type="button" data-lang="en"><span>English</span><span class="lang__item-code">EN</span></button>
+          <button class="lang__item" type="button" data-lang="vi"><span>Tiếng Việt</span><span class="lang__item-code">VI</span></button>
+          <button class="lang__item" type="button" data-lang="pl"><span>Polski</span><span class="lang__item-code">PL</span></button>
+          <button class="lang__item" type="button" data-lang="id"><span>Bahasa Indonesia</span><span class="lang__item-code">ID</span></button>
+          <button class="lang__item" type="button" data-lang="es"><span>Español</span><span class="lang__item-code">ES</span></button>
+          <button class="lang__item" type="button" data-lang="zh"><span>中文</span><span class="lang__item-code">ZH</span></button>
+        </div>
+      </div>
+      <button type="button" class="btn-logout" data-action="logout">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        <span data-i18n="topbar.logout">로그아웃</span>
+      </button>
+    </div>
+  </header>
+
+  <div class="shell">
+
+    <aside class="sidebar" id="sidebar" aria-label="Primary navigation">
+      <div class="sidebar__head">
+        <span class="sidebar__heading" data-i18n="nav.heading">메뉴</span>
+        <button type="button" class="sidebar__toggle" id="sidebar-toggle" aria-label="사이드바 토글">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+      </div>
+      <nav class="nav" role="navigation">
+        <a class="nav__item" href="./home.html"><svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l9-9 9 9"/><path d="M5 10v10h14V10"/></svg><span class="nav__label" data-i18n="nav.home">Home</span></a>
+        <a class="nav__item nav__item--active" aria-current="page" href="./cmp-dashboard.html"><svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span class="nav__label" data-i18n="nav.cmp">CMP 현황판</span></a>
+        <a class="nav__item" href="./uph-dashboard.html"><svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg><span class="nav__label" data-i18n="nav.uph">UPH 현황판</span></a>
+        <a class="nav__item" href="./mtba-dashboard.html"><svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg><span class="nav__label" data-i18n="nav.mtba">MTBA 현황판</span></a>
+        <a class="nav__item" href="./mtba-detail.html"><svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 22 8.5 12 15 2 8.5 12 2"/><polyline points="2 15.5 12 22 22 15.5"/></svg><span class="nav__label" data-i18n="nav.mtba_detail">MTBA 상세</span></a>
+        <a class="nav__item" href="./maxcapa-chat.html"><svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span class="nav__label" data-i18n="nav.chat">MaxCapa Chat</span></a>
+      </nav>
+      <div class="sidebar__foot"><span>v0.4.3</span><span data-i18n="sidebar.intranet">사내망</span></div>
+    </aside>
+
+    <main class="main"><div class="page" id="page-content">
+
+      <header class="page-head">
+        <div class="page-head__main">
+          <div class="eyebrow"><strong data-i18n="eyebrow.cmp">PRODUCTIVITY · CMP</strong></div>
+          <h1 data-i18n="page.cmp_title">CMP 현황판</h1>
+          <p class="sub" data-i18n="page.cmp_sub">'26.4월 4W 기준 · 영역×모델×기간 필터로 조회</p>
+        </div>
+        <div class="page-head__tools">
+          <button class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>새로고침</button>
+          <button class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export</button>
+        </div>
+      </header>
+
+      <!-- Filter bar -->
+      <div class="filter-bar">
+        <div class="field"><span class="field__label" data-i18n="filter.area">영역</span><span class="select">A2 · B1 · B2 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></span></div>
+        <div class="field"><span class="field__label" data-i18n="filter.model">모델</span><span class="select">R50 · R53A · R53B <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></span></div>
+        <div class="field"><span class="field__label" data-i18n="filter.period">기간</span><span class="select">2026-04-01 ~ 04-30 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></span></div>
+        <div class="filter-bar__spacer"></div>
+        <div class="filter-bar__actions"><button class="btn" data-i18n="filter.reset">초기화</button><button class="btn btn--primary" data-i18n="filter.apply">적용</button></div>
+      </div>
+
+      <!-- KPI row (bold) -->
+      <div class="kpi-row">
+        <div class="kpi kpi--hero">
+          <div class="kpi__label" data-i18n="kpi.total">전체 달성률</div>
+          <div class="kpi__num">96.2<small>%</small></div>
+          <div class="kpi__delta delta-good">▲ 1.8pt</div>
+          <svg class="kpi__spark" viewBox="0 0 88 28" preserveAspectRatio="none"><polyline fill="none" stroke="#A50034" stroke-width="1.5" points="0,18 8,15 16,17 24,12 32,14 40,10 48,9 56,11 64,7 72,9 80,5 88,6"/></svg>
+        </div>
+        <div class="kpi">
+          <div class="kpi__label" data-i18n="kpi.r50">R50 달성률</div>
+          <div class="kpi__num">98.1<small>%</small></div>
+          <div class="kpi__delta delta-good">▲ 0.6pt</div>
+          <svg class="kpi__spark" viewBox="0 0 88 28" preserveAspectRatio="none"><polyline fill="none" stroke="#1F8B4C" stroke-width="1.5" points="0,12 8,11 16,10 24,8 32,9 40,7 48,8 56,6 64,7 72,5 80,4 88,5"/></svg>
+        </div>
+        <div class="kpi">
+          <div class="kpi__label" data-i18n="kpi.r53a">R53A 달성률</div>
+          <div class="kpi__num">94.7<small>%</small></div>
+          <div class="kpi__delta delta-good">▲ 2.1pt</div>
+          <svg class="kpi__spark" viewBox="0 0 88 28" preserveAspectRatio="none"><polyline fill="none" stroke="#A50034" stroke-width="1.5" points="0,20 8,18 16,17 24,15 32,13 40,12 48,10 56,11 64,9 72,8 80,6 88,7"/></svg>
+        </div>
+        <div class="kpi">
+          <div class="kpi__label" data-i18n="kpi.r53b">R53B 달성률</div>
+          <div class="kpi__num">93.4<small>%</small></div>
+          <div class="kpi__delta delta-bad">▼ 0.4pt</div>
+          <svg class="kpi__spark" viewBox="0 0 88 28" preserveAspectRatio="none"><polyline fill="none" stroke="#B23A48" stroke-width="1.5" points="0,8 8,9 16,10 24,11 32,9 40,12 48,11 56,13 64,12 72,14 80,15 88,16"/></svg>
+        </div>
+      </div>
+
+      <!-- Models -->
+      <div class="section-head">
+        <div class="section-head__left"><div class="section-head__bar"></div><div class="section-head__title" data-i18n="section.models">모델별 공정 달성률</div></div>
+        <div class="section-head__sub">3 models · 6 processes</div>
+      </div>
+      <div class="model-grid">
+        <div class="model-box">
+          <div class="model-box__head"><span class="model-box__name">R50</span><span class="model-box__rate">98.1%</span></div>
+          <div class="proc-list">
+            <div class="proc-row"><span class="proc-row__name">절단</span><span class="proc-row__bar"><span class="proc-row__bar-fill" style="width:99%"></span></span><span class="proc-row__rate">99.2%</span></div>
+            <div class="proc-row"><span class="proc-row__name">연마</span><span class="proc-row__bar"><span class="proc-row__bar-fill" style="width:97%"></span></span><span class="proc-row__rate">97.4%</span></div>
+            <div class="proc-row"><span class="proc-row__name">CMP</span><span class="proc-row__bar"><span class="proc-row__bar-fill" style="width:98%"></span></span><span class="proc-row__rate">98.8%</span></div>
+            <div class="proc-row"><span class="proc-row__name">검사</span><span class="proc-row__bar"><span class="proc-row__bar-fill" style="width:96%"></span></span><span class="proc-row__rate">96.5%</span></div>
+            <div class="proc-row"><span class="proc-row__name">세정</span><span class="proc-row__bar"><span class="proc-row__bar-fill" style="width:99%"></span></span><span class="proc-row__rate">99.0%</span></div>
+            <div class="proc-row"><span class="proc-row__name">패키징</span><span class="proc-row__bar"><span class="proc-row__bar-fill" style="width:97%"></span></span><span class="proc-row__rate">97.6%</span></div>
+          </div>
+        </div>
+        <div class="model-box">
+          <div class="model-box__head"><span class="model-box__name">R53A</span><span class="model-box__rate">94.7%</span></div>
+          <div class="proc-list">
+            <div class="proc-row"><span class="proc-row__name">절단</span><span class="proc-row__bar"><span class="proc-row__bar-fill" style="width:96%"></span></span><span class="proc-row__rate">96.1%</span></div>
+            <div class="proc-row"><span class="proc-row__name">연마</span><span class="proc-row__bar"><span class="proc-row__bar-fill proc-row__bar-fill--warn" style="width:91%"></span></span><span class="proc-row__rate">91.3%</span></div>
+            <div class="proc-row"><span class="proc-row__name">CMP</span><span class="proc-row__bar"><span class="proc-row__bar-fill" style="width:95%"></span></span><span class="proc-row__rate">95.0%</span></div>
+            <div class="proc-row"><span class="proc-row__name">검사</span><span class="proc-row__bar"><span class="proc-row__bar-fill" style="width:97%"></span></span><span class="proc-row__rate">97.2%</span></div>
+            <div class="proc-row"><span class="proc-row__name">세정</span><span class="proc-row__bar"><span class="proc-row__bar-fill" style="width:94%"></span></span><span class="proc-row__rate">94.6%</span></div>
+            <div class="proc-row"><span class="proc-row__name">패키징</span><span class="proc-row__bar"><span class="proc-row__bar-fill" style="width:94%"></span></span><span class="proc-row__rate">94.0%</span></div>
+          </div>
+        </div>
+        <div class="model-box">
+          <div class="model-box__head"><span class="model-box__name">R53B</span><span class="model-box__rate">93.4%</span></div>
+          <div class="proc-list">
+            <div class="proc-row"><span class="proc-row__name">절단</span><span class="proc-row__bar"><span class="proc-row__bar-fill" style="width:95%"></span></span><span class="proc-row__rate">95.2%</span></div>
+            <div class="proc-row"><span class="proc-row__name">연마</span><span class="proc-row__bar"><span class="proc-row__bar-fill proc-row__bar-fill--bad" style="width:88%"></span></span><span class="proc-row__rate">88.4%</span></div>
+            <div class="proc-row"><span class="proc-row__name">CMP</span><span class="proc-row__bar"><span class="proc-row__bar-fill" style="width:94%"></span></span><span class="proc-row__rate">94.1%</span></div>
+            <div class="proc-row"><span class="proc-row__name">검사</span><span class="proc-row__bar"><span class="proc-row__bar-fill proc-row__bar-fill--warn" style="width:91%"></span></span><span class="proc-row__rate">91.7%</span></div>
+            <div class="proc-row"><span class="proc-row__name">세정</span><span class="proc-row__bar"><span class="proc-row__bar-fill" style="width:96%"></span></span><span class="proc-row__rate">96.0%</span></div>
+            <div class="proc-row"><span class="proc-row__name">패키징</span><span class="proc-row__bar"><span class="proc-row__bar-fill" style="width:95%"></span></span><span class="proc-row__rate">95.2%</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Process summary table with 30d trend -->
+      <div class="section-head">
+        <div class="section-head__left"><div class="section-head__bar"></div><div class="section-head__title" data-i18n="section.summary">공정 요약 (전 모델)</div></div>
+        <div class="section-head__sub" data-i18n="section.summary_sub">행 클릭 시 하단에 30일 상세 · CMP/UPH/Efficiency 탭</div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th data-i18n="th.process">공정</th>
+            <th class="num" data-i18n="th.target">목표</th>
+            <th class="num" data-i18n="th.actual">실적</th>
+            <th class="num" data-i18n="th.rate">달성률</th>
+            <th class="num" data-i18n="th.delta">전주 대비</th>
+            <th data-i18n="th.trend">30일 추이</th>
+          </tr></thead>
+          <tbody>
+            <tr><td>절단</td><td class="num">12,000</td><td class="num">11,830</td><td class="num">98.6%</td><td class="num delta-good">▲ 0.4pt</td>
+              <td class="spark-cell"><svg viewBox="0 0 120 22" preserveAspectRatio="none"><polyline fill="none" stroke="#A50034" stroke-width="1.4" points="0,12 6,11 12,13 18,10 24,12 30,9 36,11 42,8 48,10 54,7 60,9 66,8 72,6 78,8 84,5 90,7 96,4 102,6 108,3 114,5 120,4"/></svg></td></tr>
+            <tr class="is-active"><td>연마</td><td class="num">12,000</td><td class="num">11,140</td><td class="num">92.8%</td><td class="num delta-bad">▼ 1.2pt</td>
+              <td class="spark-cell"><svg viewBox="0 0 120 22" preserveAspectRatio="none"><polyline fill="none" stroke="#B23A48" stroke-width="1.4" points="0,5 6,7 12,6 18,9 24,8 30,11 36,10 42,12 48,11 54,13 60,12 66,14 72,13 78,15 84,14 90,16 96,15 102,17 108,16 114,18 120,17"/></svg></td></tr>
+            <tr><td>CMP</td><td class="num">12,000</td><td class="num">11,650</td><td class="num">97.1%</td><td class="num delta-good">▲ 0.8pt</td>
+              <td class="spark-cell"><svg viewBox="0 0 120 22" preserveAspectRatio="none"><polyline fill="none" stroke="#A50034" stroke-width="1.4" points="0,14 6,12 12,13 18,11 24,12 30,10 36,11 42,9 48,10 54,8 60,9 66,7 72,8 78,6 84,7 90,5 96,6 102,4 108,5 114,3 120,4"/></svg></td></tr>
+            <tr><td>검사</td><td class="num">12,000</td><td class="num">11,420</td><td class="num">95.2%</td><td class="num delta-flat">— 0.0pt</td>
+              <td class="spark-cell"><svg viewBox="0 0 120 22" preserveAspectRatio="none"><polyline fill="none" stroke="#6B7280" stroke-width="1.4" points="0,11 6,11 12,12 18,11 24,11 30,10 36,11 42,11 48,12 54,11 60,11 66,11 72,12 78,11 84,11 90,12 96,11 102,11 108,11 114,12 120,11"/></svg></td></tr>
+            <tr><td>세정</td><td class="num">12,000</td><td class="num">11,720</td><td class="num">97.7%</td><td class="num delta-good">▲ 0.5pt</td>
+              <td class="spark-cell"><svg viewBox="0 0 120 22" preserveAspectRatio="none"><polyline fill="none" stroke="#A50034" stroke-width="1.4" points="0,12 6,10 12,11 18,9 24,10 30,8 36,9 42,7 48,8 54,6 60,7 66,5 72,6 78,4 84,5 90,3 96,4 102,2 108,3 114,1 120,2"/></svg></td></tr>
+            <tr><td>패키징</td><td class="num">12,000</td><td class="num">11,360</td><td class="num">94.7%</td><td class="num delta-good">▲ 0.2pt</td>
+              <td class="spark-cell"><svg viewBox="0 0 120 22" preserveAspectRatio="none"><polyline fill="none" stroke="#A50034" stroke-width="1.4" points="0,13 6,12 12,13 18,11 24,12 30,10 36,11 42,9 48,10 54,8 60,9 66,7 72,8 78,6 84,7 90,5 96,6 102,4 108,5 114,3 120,5"/></svg></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Process drill-down -->
+      <div class="detail">
+        <div class="detail__head">
+          <div class="detail__name"><span data-i18n="detail.title">공정 상세 ·</span> <strong>연마</strong></div>
+          <span class="badge badge--bad"><span class="badge__dot"></span>임계 미달</span>
+        </div>
+        <div class="detail__tabs">
+          <button class="detail__tab detail__tab--active" data-i18n="tab.cmp">CMP</button>
+          <button class="detail__tab" data-i18n="tab.uph">UPH</button>
+          <button class="detail__tab" data-i18n="tab.eff">Efficiency</button>
+        </div>
+        <div class="detail__chart" aria-label="30일 CMP 달성률 추이"></div>
+      </div>
+
+      <footer class="page-foot">
+        <span data-i18n="foot.creator">제작 · 생산혁신센터 Max Capa 팀</span>
+        <span><a href="#" data-i18n="foot.changelog">변경 로그 전체 보기 →</a></span>
+      </footer>
+
+    </div></main>
+
+    <aside class="chat-panel" id="chat-panel" data-default="expanded" aria-label="MaxCapa Chat">
+      <div class="chat-handle" id="chat-handle" aria-hidden="true"></div>
+      <header class="chat-head">
+        <button type="button" class="chat-toggle" id="chat-toggle" aria-label="패널 접기" data-i18n-aria="chat.collapse">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+        <span class="chat-title" data-i18n="chat.title">MaxCapa Chat</span>
+        <span class="chat-live" data-i18n="chat.live">LIVE</span>
+      </header>
+      <div class="chat-body">
+        <div class="chat-scroll">
+          <div class="chat-hint">
+            <div class="chat-hint__title" data-i18n="chat.hint_title">데이터소스 자동 분기</div>
+            <div class="chat-hint__body"><span data-i18n="chat.hint_body">기본 조회는 MES UPH</span> <code>uph_input_runtime_daily_model</code>. <span data-i18n="chat.hint_body2">"ITAS" 키워드 포함 시 ITAS UPH</span> <code>itas_uph_result</code>.</div>
+          </div>
+          <div class="chat-examples">
+            <div class="chat-examples__title" data-i18n="chat.examples_title">예시 질문</div>
+            <div class="chat-examples__list">
+              <button type="button" class="chat-example"><span class="chat-example__src">MES</span><span data-i18n="chat.ex1">R53A 모델 어제 UPH 평균은?</span></button>
+              <button type="button" class="chat-example"><span class="chat-example__src">ITAS</span><span data-i18n="chat.ex2">ITAS 기준 R50 지난주 UPH 추이</span></button>
+              <button type="button" class="chat-example"><span class="chat-example__src">MES</span><span data-i18n="chat.ex3">A2 라인에서 가장 느린 호기 5개</span></button>
+              <button type="button" class="chat-example"><span class="chat-example__src">MES</span><span data-i18n="chat.ex4">CMP 미달 공정만 3월 4주차</span></button>
+            </div>
+          </div>
+          <div class="chat-empty">
+            <div class="chat-empty__title" data-i18n="chat.empty_title">대화 비어 있음</div>
+            <div class="chat-empty__body" data-i18n="chat.empty_body">위 예시를 클릭하거나<br>아래에 자연어로 질문하세요.</div>
+          </div>
+        </div>
+        <div class="chat-composer">
+          <div class="chat-composer__row"><span class="chat-composer__src"><span class="dot"></span><span data-i18n="chat.src_label">데이터소스</span> · MES UPH</span></div>
+          <textarea id="chat-input" rows="3" placeholder="공정 / 모델 / 기간을 포함해 자연어로 질문하세요." data-i18n-ph="chat.placeholder"></textarea>
+          <div class="chat-composer__row" style="justify-content:flex-end">
+            <button type="button" class="chat-send"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg><span data-i18n="chat.send">질문 분석 및 실행</span></button>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+  </div>
+</div>
+<script>
+window.__I18N_PAGE__ = {
+  ko:{
+    "eyebrow.cmp":"PRODUCTIVITY · CMP",
+    "page.cmp_title":"CMP 현황판",
+    "page.cmp_sub":"'26.4월 4W 기준 · 영역×모델×기간 필터로 조회",
+    "filter.area":"영역","filter.model":"모델","filter.period":"기간","filter.reset":"초기화","filter.apply":"적용",
+    "kpi.total":"전체 달성률","kpi.r50":"R50 달성률","kpi.r53a":"R53A 달성률","kpi.r53b":"R53B 달성률",
+    "section.models":"모델별 공정 달성률","section.summary":"공정 요약 (전 모델)",
+    "section.summary_sub":"행 클릭 시 하단에 30일 상세 · CMP/UPH/Efficiency 탭",
+    "th.process":"공정","th.target":"목표","th.actual":"실적","th.rate":"달성률","th.delta":"전주 대비","th.trend":"30일 추이",
+    "tab.cmp":"CMP","tab.uph":"UPH","tab.eff":"Efficiency",
+    "detail.title":"공정 상세 ·"
+  },
+  en:{
+    "page.cmp_title":"CMP Board","page.cmp_sub":"Apr W4 '26 · area × model × period filters",
+    "filter.area":"Area","filter.model":"Model","filter.period":"Period","filter.reset":"Reset","filter.apply":"Apply",
+    "kpi.total":"Total attainment","kpi.r50":"R50 attainment","kpi.r53a":"R53A attainment","kpi.r53b":"R53B attainment",
+    "section.models":"Per-model process attainment","section.summary":"Process summary (all models)",
+    "th.process":"Process","th.target":"Target","th.actual":"Actual","th.rate":"Rate","th.delta":"vs prev wk","th.trend":"30d trend",
+    "tab.cmp":"CMP","tab.uph":"UPH","tab.eff":"Efficiency","detail.title":"Process detail ·"
+  }
+};
+</script>
+<script src="./_app-shell.js" defer></script>
+</body>
+</html>

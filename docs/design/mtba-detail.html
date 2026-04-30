@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<title>VITALS — MTBA 상세</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="./_app-shell.css" />
+<style>
+/* mtba-detail ===================================================== */
+.linked{display:flex;align-items:center;gap:8px;padding:8px 12px;margin-bottom:12px;background:var(--primary-tint);border:1px solid var(--primary);border-radius:7px;font-size:12px;color:var(--primary-dark);font-weight:600}
+.linked svg{width:13px;height:13px;flex:none}
+.linked a{color:var(--primary-dark);border-bottom:1px solid var(--primary-dark);font-weight:700}
+
+.controls{display:flex;align-items:flex-end;gap:10px;background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:12px;flex-wrap:wrap}
+.field{display:flex;flex-direction:column;gap:3px;min-width:140px}
+.field__label{font-size:9px;font-weight:700;color:var(--ink-muted);letter-spacing:.06em;text-transform:uppercase}
+.select{height:32px;border:1px solid var(--border);border-radius:7px;background:#fff;padding:0 10px;font:inherit;font-size:12px;display:inline-flex;align-items:center;gap:6px;justify-content:space-between}
+.select svg{width:11px;height:11px;color:var(--ink-muted)}
+.toggle{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:600;height:32px}
+.toggle__switch{width:32px;height:18px;background:var(--soft);border:1px solid var(--border);border-radius:99px;position:relative;flex:none}
+.toggle__switch.is-on{background:var(--primary);border-color:var(--primary)}
+.toggle__switch::after{content:"";position:absolute;top:2px;left:2px;width:12px;height:12px;background:#fff;border-radius:50%;transition:left .15s var(--ease)}
+.toggle__switch.is-on::after{left:16px}
+
+/* Process × equipment matrix */
+.matrix-wrap{background:#fff;border:1px solid var(--border);border-radius:8px;overflow:auto;margin-bottom:14px}
+.matrix{width:100%;border-collapse:separate;border-spacing:0;font-size:11px}
+.matrix thead{position:sticky;top:0;z-index:2}
+.matrix thead th{height:36px;background:var(--soft);font-weight:700;text-align:center;padding:4px 6px;border-bottom:1px solid var(--border);font-size:10px;color:var(--ink-body);white-space:nowrap}
+.matrix thead th.row-head{background:var(--soft);text-align:left;padding:0 10px;position:sticky;left:0;z-index:3;border-right:1px solid var(--border-strong)}
+.matrix thead th.group-p{color:var(--primary-dark)}
+.matrix thead th.group-pk{color:var(--status-warn)}
+.matrix tbody td{padding:0 6px;border-bottom:1px solid var(--border);text-align:center;font-family:var(--font-mono);font-size:11px;color:var(--ink-body);height:30px;cursor:pointer}
+.matrix tbody td.row-head{position:sticky;left:0;background:#fff;text-align:left;font-family:var(--font-body);font-weight:600;color:var(--ink-body);padding:0 10px;border-right:1px solid var(--border-strong);z-index:1}
+.matrix tbody td.cell-good{background:var(--status-good-tint);color:var(--status-good)}
+.matrix tbody td.cell-warn{background:var(--status-warn-tint);color:var(--status-warn)}
+.matrix tbody td.cell-bad{background:var(--status-bad-tint);color:var(--status-bad)}
+.matrix tbody td.is-active{box-shadow:inset 0 0 0 2px var(--primary)}
+.matrix tbody tr:hover td:not(.row-head){background:var(--page-bg)}
+.matrix tbody tr:hover td.cell-good{background:var(--status-good-tint)}
+.matrix tbody tr:hover td.cell-warn{background:var(--status-warn-tint)}
+.matrix tbody tr:hover td.cell-bad{background:var(--status-bad-tint)}
+
+/* Alarm detail (linked from matrix cell) */
+.alarm-detail{background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:14px}
+.alarm-detail__head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;gap:10px;flex-wrap:wrap}
+.alarm-detail__title{font-size:14px;font-weight:700;letter-spacing:-0.01em;color:var(--ink-body);margin:0}
+.alarm-detail__title strong{color:var(--primary-dark)}
+.alarm-detail__meta{display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:var(--ink-muted)}
+.alarm-detail__meta strong{color:var(--ink-body);font-family:var(--font-mono)}
+
+.alarm-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:14px}
+.alarm-block{background:var(--soft);border:1px solid var(--border);border-radius:7px;padding:12px}
+.alarm-block__title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-body);margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
+.alarm-block__sub{font-family:var(--font-mono);font-size:10px;color:var(--ink-subtle);font-weight:400;letter-spacing:.04em}
+
+/* Recent alarms list */
+.alarm-list{display:flex;flex-direction:column;gap:4px;font-size:11.5px}
+.alarm-row{display:grid;grid-template-columns:90px 1fr 80px;gap:8px;padding:6px 8px;background:#fff;border-radius:5px;border:1px solid var(--border);align-items:center}
+.alarm-row__time{font-family:var(--font-mono);font-size:10.5px;color:var(--ink-muted)}
+.alarm-row__name{color:var(--ink-body);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.alarm-row__sev{font-family:var(--font-mono);font-size:10px;font-weight:700;text-align:right}
+.sev-bad{color:var(--status-bad)}.sev-warn{color:var(--status-warn)}.sev-good{color:var(--ink-subtle)}
+
+/* TOP5 alarm with count + share */
+.top5{display:flex;flex-direction:column;gap:6px;font-size:12px}
+.top5-row{display:grid;grid-template-columns:18px 1fr 50px 1fr 40px;gap:8px;align-items:center;padding:5px 0}
+.top5-row__rank{font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--ink-subtle);text-align:right}
+.top5-row__name{color:var(--ink-body);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.top5-row__count{font-family:var(--font-mono);font-size:11px;color:var(--ink-body);text-align:right}
+.top5-row__bar{height:8px;background:var(--soft);border-radius:99px;position:relative;overflow:hidden}
+.top5-row__bar-fill{position:absolute;left:0;top:0;bottom:0;background:var(--primary);border-radius:99px}
+.top5-row__pct{font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--primary-dark);text-align:right}
+
+/* Debug panel verbatim */
+.debug-panel{margin-top:14px;background:var(--card-bg);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.debug-panel__head{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--soft);font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--ink-muted);letter-spacing:.06em;text-transform:uppercase;cursor:pointer}
+.debug-panel__head svg{width:12px;height:12px}
+.debug-panel__body{padding:10px 14px;font-family:var(--font-mono);font-size:10.5px;color:var(--ink-body);line-height:1.7;background:#fff}
+.debug-panel__body code{color:var(--primary-dark)}
+.debug-panel__body .k{color:var(--ink-muted)}
+
+@media (max-width:1280px){.alarm-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="topbar">
+    <button type="button" class="topbar__menu" id="topbar-menu" aria-label="메뉴 토글" data-i18n-aria="topbar.menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div class="brand">
+      <img class="brand__logo" src="./assets/lg-innotek-logo-en-gray.png" alt="LG Innotek" />
+      <div class="brand__divider"></div>
+      <span class="brand__wordmark">VITALS</span>
+      <span class="brand__team" data-i18n="brand.team">생산혁신센터 · Max Capa 팀</span>
+    </div>
+    <div class="topbar__spacer"></div>
+    <div class="topbar__actions">
+      <div class="lang" id="lang">
+        <button type="button" class="lang__btn" id="lang-btn" aria-haspopup="menu" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>
+          <span id="lang-current">KO</span><span class="lang__caret">▾</span>
+        </button>
+        <div class="lang__menu" role="menu">
+          <button class="lang__item lang__item--active" type="button" data-lang="ko"><span>한국어</span><span class="lang__item-code">KO</span></button>
+          <button class="lang__item" type="button" data-lang="en"><span>English</span><span class="lang__item-code">EN</span></button>
+          <button class="lang__item" type="button" data-lang="vi"><span>Tiếng Việt</span><span class="lang__item-code">VI</span></button>
+          <button class="lang__item" type="button" data-lang="pl"><span>Polski</span><span class="lang__item-code">PL</span></button>
+          <button class="lang__item" type="button" data-lang="id"><span>Bahasa Indonesia</span><span class="lang__item-code">ID</span></button>
+          <button class="lang__item" type="button" data-lang="es"><span>Español</span><span class="lang__item-code">ES</span></button>
+          <button class="lang__item" type="button" data-lang="zh"><span>中文</span><span class="lang__item-code">ZH</span></button>
+        </div>
+      </div>
+      <button type="button" class="btn-logout" data-action="logout">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        <span data-i18n="topbar.logout">로그아웃</span>
+      </button>
+    </div>
+  </header>
+
+  <div class="shell">
+
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar__head">
+        <span class="sidebar__heading" data-i18n="nav.heading">메뉴</span>
+        <button type="button" class="sidebar__toggle" id="sidebar-toggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+      </div>
+      <nav class="nav" role="navigation">
+        <a class="nav__item" href="./home.html"><svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l9-9 9 9"/><path d="M5 10v10h14V10"/></svg><span class="nav__label" data-i18n="nav.home">Home</span></a>
+        <a class="nav__item" href="./cmp-dashboard.html"><svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span class="nav__label" data-i18n="nav.cmp">CMP 현황판</span></a>
+        <a class="nav__item" href="./uph-dashboard.html"><svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg><span class="nav__label" data-i18n="nav.uph">UPH 현황판</span></a>
+        <a class="nav__item" href="./mtba-dashboard.html"><svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg><span class="nav__label" data-i18n="nav.mtba">MTBA 현황판</span></a>
+        <a class="nav__item nav__item--active" aria-current="page" href="./mtba-detail.html"><svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 22 8.5 12 15 2 8.5 12 2"/><polyline points="2 15.5 12 22 22 15.5"/></svg><span class="nav__label" data-i18n="nav.mtba_detail">MTBA 상세</span></a>
+        <a class="nav__item" href="./maxcapa-chat.html"><svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span class="nav__label" data-i18n="nav.chat">MaxCapa Chat</span></a>
+      </nav>
+      <div class="sidebar__foot"><span>v0.4.3</span><span data-i18n="sidebar.intranet">사내망</span></div>
+    </aside>
+
+    <main class="main"><div class="page" id="page-content">
+
+      <header class="page-head">
+        <div class="page-head__main">
+          <div class="eyebrow"><strong data-i18n="eyebrow.detail">EFFICIENCY · MTBA · DETAIL</strong></div>
+          <h1 data-i18n="page.detail_title">MTBA 상세</h1>
+          <p class="sub" data-i18n="page.detail_sub">공정×설비 매트릭스 · 셀 클릭 시 알람 상세 · MTBA 현황판과 연계</p>
+        </div>
+        <div class="page-head__tools">
+          <button class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>새로고침</button>
+          <button class="btn">페이지 상태 초기화</button>
+        </div>
+      </header>
+
+      <!-- Linked notice -->
+      <div class="linked">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+        <span data-i18n="linked.text">MTBA 현황판 패널 1과 연계 — 패널 1의 셀을 클릭하면 이 페이지의 알람 상세로 이동합니다.</span>
+        <span style="margin-left:auto"><a href="./mtba-dashboard.html" data-i18n="linked.go">MTBA 현황판으로 →</a></span>
+      </div>
+
+      <!-- Controls -->
+      <div class="controls">
+        <div class="field"><span class="field__label" data-i18n="ctrl.panel">패널</span><span class="select">패널 1 — A2 · R53A <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></span></div>
+        <div class="field"><span class="field__label" data-i18n="ctrl.model">모델</span><span class="select">R53A <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></span></div>
+        <label class="toggle"><span class="toggle__switch is-on"></span><span data-i18n="ctrl.fol">FOL In-line</span></label>
+      </div>
+
+      <!-- Process × equipment matrix -->
+      <div class="section-head" style="display:flex;justify-content:space-between;align-items:center;margin:0 0 8px;font-size:13px;font-weight:700">
+        <span data-i18n="matrix.title">공정 × 설비 매트릭스 (12 공정)</span>
+        <span class="chart-card__sub" style="font-family:var(--font-mono);font-size:10.5px;color:var(--ink-subtle);font-weight:400;letter-spacing:.04em">단위: 시간 · 셀 클릭 → 아래 알람 상세</span>
+      </div>
+      <div class="matrix-wrap">
+        <table class="matrix">
+          <thead>
+            <tr>
+              <th class="row-head">호기</th>
+              <th class="group-p">p_정렬</th>
+              <th class="group-p">p_연마</th>
+              <th class="group-p">p_CMP</th>
+              <th class="group-p">p_검사</th>
+              <th class="group-p">p_세정</th>
+              <th class="group-p">p_패키징</th>
+              <th class="group-pk">pk_적재</th>
+              <th class="group-pk">pk_분류</th>
+              <th class="group-pk">pk_라벨</th>
+              <th class="group-pk">pk_검수</th>
+              <th class="group-pk">pk_출하</th>
+              <th class="group-pk">pk_복귀</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="row-head">#1003</td>
+              <td class="cell-good">52.1</td><td class="cell-good">48.6</td><td class="cell-good">61.4</td><td class="cell-good">46.8</td><td class="cell-good">58.2</td><td class="cell-good">44.0</td>
+              <td class="cell-good">71.5</td><td class="cell-good">68.3</td><td class="cell-good">82.1</td><td class="cell-good">59.7</td><td class="cell-good">66.4</td><td class="cell-good">54.2</td>
+            </tr>
+            <tr>
+              <td class="row-head">#1054</td>
+              <td class="cell-good">49.7</td><td class="cell-warn">38.1</td><td class="cell-good">55.3</td><td class="cell-good">42.9</td><td class="cell-good">53.6</td><td class="cell-good">41.2</td>
+              <td class="cell-good">66.8</td><td class="cell-warn">37.2</td><td class="cell-good">75.9</td><td class="cell-good">52.3</td><td class="cell-good">61.0</td><td class="cell-good">49.8</td>
+            </tr>
+            <tr>
+              <td class="row-head">#1077</td>
+              <td class="cell-good">50.4</td><td class="cell-good">44.2</td><td class="cell-warn">36.7</td><td class="cell-good">45.1</td><td class="cell-good">56.4</td><td class="cell-good">42.6</td>
+              <td class="cell-good">68.9</td><td class="cell-good">61.5</td><td class="cell-good">78.3</td><td class="cell-good">54.6</td><td class="cell-good">63.7</td><td class="cell-good">51.1</td>
+            </tr>
+            <tr>
+              <td class="row-head">#1116</td>
+              <td class="cell-warn">39.2</td><td class="cell-bad is-active">28.4</td><td class="cell-warn">37.1</td><td class="cell-warn">35.6</td><td class="cell-good">48.3</td><td class="cell-warn">36.8</td>
+              <td class="cell-good">58.4</td><td class="cell-warn">39.6</td><td class="cell-good">62.7</td><td class="cell-bad">26.1</td><td class="cell-warn">38.2</td><td class="cell-warn">37.5</td>
+            </tr>
+            <tr>
+              <td class="row-head">#1142</td>
+              <td class="cell-good">47.8</td><td class="cell-good">43.5</td><td class="cell-good">52.7</td><td class="cell-good">44.3</td><td class="cell-good">55.1</td><td class="cell-good">41.9</td>
+              <td class="cell-good">65.4</td><td class="cell-good">59.8</td><td class="cell-good">73.6</td><td class="cell-good">53.2</td><td class="cell-good">60.5</td><td class="cell-good">48.6</td>
+            </tr>
+            <tr>
+              <td class="row-head">#1188</td>
+              <td class="cell-good">51.3</td><td class="cell-good">47.9</td><td class="cell-good">59.2</td><td class="cell-good">46.0</td><td class="cell-good">57.5</td><td class="cell-good">43.4</td>
+              <td class="cell-good">70.1</td><td class="cell-good">66.7</td><td class="cell-good">80.4</td><td class="cell-good">58.1</td><td class="cell-good">65.3</td><td class="cell-good">52.9</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Alarm detail (linked from active cell) -->
+      <article class="alarm-detail">
+        <div class="alarm-detail__head">
+          <div>
+            <h2 class="alarm-detail__title"><span data-i18n="alarm.title">알람 상세 ·</span> <strong>슬러리 디스펜스 노즐 막힘</strong></h2>
+            <div class="alarm-detail__meta">
+              <span><span data-i18n="alarm.equipment">호기</span> <strong>#1116</strong></span>
+              <span><span data-i18n="alarm.model">모델</span> <strong>R53A</strong></span>
+              <span><span data-i18n="alarm.segment">설비 세그먼트</span> <strong>p_연마</strong></span>
+              <span><span data-i18n="alarm.mtba">MTBA</span> <strong>28.4 h</strong></span>
+              <span><span data-i18n="alarm.qty">생산수량</span> <strong>11,140</strong></span>
+            </div>
+          </div>
+          <span class="badge badge--bad"><span class="badge__dot"></span>임계 미달 · 평균 대비 −33%</span>
+        </div>
+
+        <div class="alarm-grid">
+
+          <!-- Recent alarms -->
+          <div class="alarm-block">
+            <div class="alarm-block__title"><span data-i18n="alarm.recent">최근 알람 이력</span><span class="alarm-block__sub" data-i18n="alarm.recent_sub">7일 · 시간순</span></div>
+            <div class="alarm-list">
+              <div class="alarm-row"><span class="alarm-row__time">04-29 14:22</span><span class="alarm-row__name">슬러리 디스펜스 노즐 막힘</span><span class="alarm-row__sev sev-bad">CRITICAL</span></div>
+              <div class="alarm-row"><span class="alarm-row__time">04-29 09:08</span><span class="alarm-row__name">패드 컨디셔닝 압력 이상</span><span class="alarm-row__sev sev-warn">WARN</span></div>
+              <div class="alarm-row"><span class="alarm-row__time">04-28 22:41</span><span class="alarm-row__name">슬러리 디스펜스 노즐 막힘</span><span class="alarm-row__sev sev-bad">CRITICAL</span></div>
+              <div class="alarm-row"><span class="alarm-row__time">04-28 16:55</span><span class="alarm-row__name">언로드 transfer 지연</span><span class="alarm-row__sev sev-warn">WARN</span></div>
+              <div class="alarm-row"><span class="alarm-row__time">04-27 11:13</span><span class="alarm-row__name">웨이퍼 정렬 보정 실패</span><span class="alarm-row__sev sev-warn">WARN</span></div>
+              <div class="alarm-row"><span class="alarm-row__time">04-26 19:34</span><span class="alarm-row__name">슬러리 디스펜스 노즐 막힘</span><span class="alarm-row__sev sev-bad">CRITICAL</span></div>
+              <div class="alarm-row"><span class="alarm-row__time">04-25 08:22</span><span class="alarm-row__name">패드 마모 임계 초과</span><span class="alarm-row__sev sev-warn">WARN</span></div>
+              <div class="alarm-row"><span class="alarm-row__time">04-24 13:47</span><span class="alarm-row__name">슬러리 라인 압력 저하</span><span class="alarm-row__sev sev-good">INFO</span></div>
+            </div>
+          </div>
+
+          <!-- Weekly TOP 5 with count + share bar -->
+          <div class="alarm-block">
+            <div class="alarm-block__title"><span data-i18n="alarm.top5">주간 TOP 5 알람</span><span class="alarm-block__sub" data-i18n="alarm.top5_sub">횟수 / 비중</span></div>
+            <div class="top5">
+              <div class="top5-row"><span class="top5-row__rank">1.</span><span class="top5-row__name">슬러리 디스펜스 노즐 막힘</span><span class="top5-row__count">23회</span><span class="top5-row__bar"><span class="top5-row__bar-fill" style="width:100%;background:var(--primary)"></span></span><span class="top5-row__pct">38.3%</span></div>
+              <div class="top5-row"><span class="top5-row__rank">2.</span><span class="top5-row__name">패드 컨디셔닝 압력 이상</span><span class="top5-row__count">14회</span><span class="top5-row__bar"><span class="top5-row__bar-fill" style="width:61%"></span></span><span class="top5-row__pct">23.3%</span></div>
+              <div class="top5-row"><span class="top5-row__rank">3.</span><span class="top5-row__name">언로드 transfer 지연</span><span class="top5-row__count">11회</span><span class="top5-row__bar"><span class="top5-row__bar-fill" style="width:48%"></span></span><span class="top5-row__pct">18.3%</span></div>
+              <div class="top5-row"><span class="top5-row__rank">4.</span><span class="top5-row__name">웨이퍼 정렬 보정 실패</span><span class="top5-row__count">7회</span><span class="top5-row__bar"><span class="top5-row__bar-fill" style="width:30%"></span></span><span class="top5-row__pct">11.7%</span></div>
+              <div class="top5-row"><span class="top5-row__rank">5.</span><span class="top5-row__name">패드 마모 임계 초과</span><span class="top5-row__count">5회</span><span class="top5-row__bar"><span class="top5-row__bar-fill" style="width:22%"></span></span><span class="top5-row__pct">8.3%</span></div>
+            </div>
+            <p style="font-size:10.5px;color:var(--ink-subtle);font-family:var(--font-mono);letter-spacing:.04em;margin:10px 0 0">총 60회 · 04-23 ~ 04-29 · 호기 #1116</p>
+          </div>
+
+        </div>
+      </article>
+
+      <!-- Debug panel verbatim -->
+      <details class="debug-panel" open>
+        <summary class="debug-panel__head">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          <span data-i18n="debug.title">디버그 정보 (panel_id, grid_kind, ...)</span>
+        </summary>
+        <div class="debug-panel__body">
+          <span class="k">panel_id</span> = <code>"panel_1"</code><br>
+          <span class="k">grid_kind</span> = <code>"matrix_proc_eq"</code><br>
+          <span class="k">streamlit_version</span> = <code>"1.36.0"</code><br>
+          <span class="k">st_aggrid_version</span> = <code>"0.3.4.post3"</code><br>
+          <span class="k">response_keys</span> = <code>["data","selected_rows","selected_data","columns_state","grid_state","event_data","focused_cell"]</code><br>
+          <span class="k">eventData</span> = <code>{"type":"cellClicked","row":3,"col":"p_연마","value":28.4}</code><br>
+          <span class="k">focusedCell</span> = <code>{"rowIndex":3,"colId":"p_연마"}</code><br>
+          <span class="k">gridState</span> = <code>{"sort":[],"filter":{},"columnSize":"auto"}</code><br>
+          <span class="k">selected_rows</span> = <code>[{"호기":"#1116","model":"R53A"}]</code><br>
+          <span class="k">popup_key</span> = <code>"popup_1116_p_연마"</code><br>
+          <span class="k">click_marker</span> = <code>"click_1716459722"</code><br>
+          <span class="k">last_popup_marker_before</span> = <code>"click_1716458104"</code><br>
+          <span class="k">selected_row_summary</span> = <code>{"alarm_count":60,"top1":"슬러리 디스펜스 노즐 막힘"}</code><br>
+          <span class="k">marker_rows</span> = <code>[3]</code><br>
+          <span class="k">work_df_shape</span> = <code>(6, 13)</code><br>
+          <span class="k">work_df_columns_head</span> = <code>["호기","p_정렬","p_연마","p_CMP","p_검사"]</code>
+        </div>
+      </details>
+
+      <footer class="page-foot">
+        <span data-i18n="foot.creator">제작 · 생산혁신센터 Max Capa 팀</span>
+        <span><a href="#" data-i18n="foot.changelog">변경 로그 전체 보기 →</a></span>
+      </footer>
+
+    </div></main>
+
+    <aside class="chat-panel" id="chat-panel" data-default="expanded">
+      <div class="chat-handle" id="chat-handle"></div>
+      <header class="chat-head">
+        <button type="button" class="chat-toggle" id="chat-toggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+        <span class="chat-title" data-i18n="chat.title">MaxCapa Chat</span>
+        <span class="chat-live" data-i18n="chat.live">LIVE</span>
+      </header>
+      <div class="chat-body">
+        <div class="chat-scroll">
+          <div class="chat-hint">
+            <div class="chat-hint__title" data-i18n="chat.hint_title">데이터소스 자동 분기</div>
+            <div class="chat-hint__body"><span data-i18n="chat.hint_body">기본 조회는 MES UPH</span> <code>uph_input_runtime_daily_model</code>. <span data-i18n="chat.hint_body2">"ITAS" 키워드 포함 시 ITAS UPH</span> <code>itas_uph_result</code>.</div>
+          </div>
+          <div class="chat-examples">
+            <div class="chat-examples__title" data-i18n="chat.examples_title">예시 질문</div>
+            <div class="chat-examples__list">
+              <button type="button" class="chat-example"><span class="chat-example__src">MES</span><span data-i18n="chat.ex1">R53A 모델 어제 UPH 평균은?</span></button>
+              <button type="button" class="chat-example"><span class="chat-example__src">ITAS</span><span data-i18n="chat.ex2">ITAS 기준 R50 지난주 UPH 추이</span></button>
+              <button type="button" class="chat-example"><span class="chat-example__src">MES</span><span data-i18n="chat.ex3">A2 라인에서 가장 느린 호기 5개</span></button>
+              <button type="button" class="chat-example"><span class="chat-example__src">MES</span><span data-i18n="chat.ex4">CMP 미달 공정만 3월 4주차</span></button>
+            </div>
+          </div>
+          <div class="chat-empty">
+            <div class="chat-empty__title" data-i18n="chat.empty_title">대화 비어 있음</div>
+            <div class="chat-empty__body" data-i18n="chat.empty_body">위 예시를 클릭하거나<br>아래에 자연어로 질문하세요.</div>
+          </div>
+        </div>
+        <div class="chat-composer">
+          <div class="chat-composer__row"><span class="chat-composer__src"><span class="dot"></span><span data-i18n="chat.src_label">데이터소스</span> · MES UPH</span></div>
+          <textarea id="chat-input" rows="3" placeholder="공정 / 모델 / 기간을 포함해 자연어로 질문하세요." data-i18n-ph="chat.placeholder"></textarea>
+          <div class="chat-composer__row" style="justify-content:flex-end">
+            <button type="button" class="chat-send"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg><span data-i18n="chat.send">질문 분석 및 실행</span></button>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+  </div>
+</div>
+<script>
+window.__I18N_PAGE__ = {
+  ko:{
+    "eyebrow.detail":"EFFICIENCY · MTBA · DETAIL",
+    "page.detail_title":"MTBA 상세",
+    "page.detail_sub":"공정×설비 매트릭스 · 셀 클릭 시 알람 상세 · MTBA 현황판과 연계",
+    "linked.text":"MTBA 현황판 패널 1과 연계 — 패널 1의 셀을 클릭하면 이 페이지의 알람 상세로 이동합니다.",
+    "linked.go":"MTBA 현황판으로 →",
+    "ctrl.panel":"패널","ctrl.model":"모델","ctrl.fol":"FOL In-line",
+    "matrix.title":"공정 × 설비 매트릭스 (12 공정)",
+    "alarm.title":"알람 상세 ·","alarm.equipment":"호기","alarm.model":"모델","alarm.mtba":"MTBA","alarm.qty":"생산수량","alarm.segment":"설비 세그먼트",
+    "alarm.recent":"최근 알람 이력","alarm.recent_sub":"7일 · 시간순",
+    "alarm.top5":"주간 TOP 5 알람","alarm.top5_sub":"횟수 / 비중",
+    "debug.title":"디버그 정보 (panel_id, grid_kind, ...)"
+  },
+  en:{
+    "page.detail_title":"MTBA Detail","page.detail_sub":"Process × equipment matrix · cell click → alarm detail · linked with MTBA Board",
+    "linked.text":"Linked with MTBA Board panel 1 — clicking a panel-1 cell brings you here.",
+    "linked.go":"Open MTBA Board →",
+    "alarm.title":"Alarm detail ·","alarm.recent":"Recent alarms","alarm.top5":"Weekly TOP 5 alarms","alarm.top5_sub":"count / share"
+  }
+};
+</script>
+<script src="./_app-shell.js" defer></script>
+</body>
+</html>

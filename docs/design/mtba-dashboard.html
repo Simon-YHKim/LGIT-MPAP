@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<title>VITALS — MTBA 현황판</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="./_app-shell.css" />
+<style>
+/* mtba-dashboard — chart-emphasized ============================== */
+.panel-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.panel-bar__count{font-family:var(--font-mono);font-size:11px;color:var(--ink-subtle);letter-spacing:.06em;text-transform:uppercase}
+
+.panel{background:var(--card-bg);border:1px solid var(--border);border-radius:10px;margin-bottom:14px;overflow:hidden}
+.panel__head{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--border);background:var(--soft);flex-wrap:wrap}
+.panel__num{width:24px;height:24px;background:var(--primary);color:#fff;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:12px;font-weight:700;flex:none}
+.panel__title{font-size:14px;font-weight:700;letter-spacing:-0.01em;color:var(--ink-body);margin:0;flex:none}
+.panel__filters{display:flex;gap:8px;flex-wrap:wrap;flex:1}
+.panel__actions{display:flex;gap:6px;flex:none}
+.field{display:flex;flex-direction:column;gap:3px;min-width:120px}
+.field__label{font-size:9px;font-weight:700;color:var(--ink-muted);letter-spacing:.06em;text-transform:uppercase}
+.select{height:30px;border:1px solid var(--border);border-radius:6px;background:#fff;padding:0 10px;font:inherit;font-size:12px;color:var(--ink-body);display:inline-flex;align-items:center;gap:6px;justify-content:space-between}
+.select svg{width:11px;height:11px;color:var(--ink-muted)}
+.btn-icon{width:30px;height:30px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--border);border-radius:6px;background:#fff;color:var(--ink-muted)}
+.btn-icon:hover{color:var(--primary-dark);border-color:var(--primary)}
+.btn-icon svg{width:13px;height:13px}
+
+.panel__body{padding:14px;display:grid;grid-template-columns:1.4fr 1fr;gap:14px}
+
+/* Bar chart with all-period values labeled */
+.chart-card{background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:14px}
+.chart-card__head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.chart-card__title{font-size:12px;font-weight:700;letter-spacing:-0.005em;color:var(--ink-body);text-transform:uppercase}
+.chart-card__sub{font-family:var(--font-mono);font-size:10px;color:var(--ink-subtle);letter-spacing:.04em}
+.bar-chart{display:flex;align-items:flex-end;gap:14px;height:180px;padding:0 6px;border-bottom:1px solid var(--border)}
+.bar{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;min-width:0;position:relative}
+.bar__value{font-family:var(--font-mono);font-size:13px;font-weight:700;color:var(--ink-body);white-space:nowrap}
+.bar--current .bar__value{color:var(--primary-dark);font-size:15px}
+.bar__bar{flex:1;width:90%;max-width:50px;background:var(--soft);border-radius:4px 4px 0 0;position:relative;display:flex;align-items:flex-end;justify-content:center;min-height:6px}
+.bar__fill{width:100%;background:linear-gradient(180deg,#CBD0D6 0%,#9CA3AF 100%);border-radius:4px 4px 0 0;transition:height .3s var(--ease)}
+.bar--current .bar__fill{background:linear-gradient(180deg,var(--primary) 0%,var(--primary-dark) 100%)}
+.bar__label{font-size:11px;color:var(--ink-muted);text-align:center;line-height:1.3;margin-top:6px;white-space:nowrap}
+.bar--current .bar__label{color:var(--ink-body);font-weight:700}
+.bar__delta{font-family:var(--font-mono);font-size:10px;font-weight:600}
+.chart-axis{display:flex;justify-content:space-around;padding:8px 6px 0;border-top:0;font-size:11px}
+
+/* Side: summary table + memo */
+.side-stack{display:flex;flex-direction:column;gap:10px}
+.side-card{background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:10px 12px}
+.side-card__head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.side-card__title{font-size:11px;font-weight:700;letter-spacing:-0.005em;color:var(--ink-body);text-transform:uppercase}
+.summary-list{display:flex;flex-direction:column;gap:3px;font-size:12px}
+.summary-row{display:grid;grid-template-columns:14px 1fr 60px 50px;gap:8px;align-items:center;padding:5px 6px;border-radius:5px}
+.summary-row.is-active{background:var(--primary-tint)}
+.summary-row.is-active .summary-row__name{color:var(--primary-dark);font-weight:700}
+.summary-row__name{color:var(--ink-body);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.summary-row__val{font-family:var(--font-mono);font-size:11px;color:var(--ink-body);text-align:right}
+.summary-row__delta{font-family:var(--font-mono);font-size:10px;text-align:right}
+
+.memo{display:flex;flex-direction:column;gap:6px}
+.memo textarea{width:100%;min-height:60px;padding:8px;border:1px solid var(--border);border-radius:6px;font:inherit;font-size:12px;color:var(--ink-body);resize:vertical}
+.memo__row{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.memo__hint{font-size:10px;color:var(--ink-subtle);font-family:var(--font-mono);letter-spacing:.04em}
+.memo__upload{display:inline-flex;align-items:center;gap:5px;height:28px;padding:0 10px;background:#fff;border:1px solid var(--border);border-radius:6px;font-size:11px;font-weight:600;color:var(--ink-muted)}
+.memo__upload:hover{color:var(--primary-dark);border-color:var(--primary)}
+.memo__upload svg{width:11px;height:11px}
+
+.add-panel{display:flex;justify-content:center;margin:20px 0}
+.add-panel button{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 18px;background:#fff;border:1.5px dashed var(--border-strong);color:var(--ink-muted);font:inherit;font-size:12px;font-weight:600;border-radius:7px}
+.add-panel button:hover{border-color:var(--primary);color:var(--primary-dark);background:var(--primary-tint)}
+.add-panel button svg{width:13px;height:13px}
+
+@media (max-width:1280px){.panel__body{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="topbar">
+    <button type="button" class="topbar__menu" id="topbar-menu" aria-label="메뉴 토글" data-i18n-aria="topbar.menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div class="brand">
+      <img class="brand__logo" src="./assets/lg-innotek-logo-en-gray.png" alt="LG Innotek" />
+      <div class="brand__divider"></div>
+      <span class="brand__wordmark">VITALS</span>
+      <span class="brand__team" data-i18n="brand.team">생산혁신센터 · Max Capa 팀</span>
+    </div>
+    <div class="topbar__spacer"></div>
+    <div class="topbar__actions">
+      <div class="lang" id="lang">
+        <button type="button" class="lang__btn" id="lang-btn" aria-haspopup="menu" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>
+          <span id="lang-current">KO</span><span class="lang__caret">▾</span>
+        </button>
+        <div class="lang__menu" role="menu">
+          <button class="lang__item lang__item--active" type="button" data-lang="ko"><span>한국어</span><span class="lang__item-code">KO</span></button>
+          <button class="lang__item" type="button" data-lang="en"><span>English</span><span class="lang__item-code">EN</span></button>
+          <button class="lang__item" type="button" data-lang="vi"><span>Tiếng Việt</span><span class="lang__item-code">VI</span></button>
+          <button class="lang__item" type="button" data-lang="pl"><span>Polski</span><span class="lang__item-code">PL</span></button>
+          <button class="lang__item" type="button" data-lang="id"><span>Bahasa Indonesia</span><span class="lang__item-code">ID</span></button>
+          <button class="lang__item" type="button" data-lang="es"><span>Español</span><span class="lang__item-code">ES</span></button>
+          <button class="lang__item" type="button" data-lang="zh"><span>中文</span><span class="lang__item-code">ZH</span></button>
+        </div>
+      </div>
+      <button type="button" class="btn-logout" data-action="logout">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        <span data-i18n="topbar.logout">로그아웃</span>
+      </button>
+    </div>
+  </header>
+
+  <div class="shell">
+
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar__head">
+        <span class="sidebar__heading" data-i18n="nav.heading">메뉴</span>
+        <button type="button" class="sidebar__toggle" id="sidebar-toggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+      </div>
+      <nav class="nav" role="navigation">
+        <a class="nav__item" href="./home.html"><svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l9-9 9 9"/><path d="M5 10v10h14V10"/></svg><span class="nav__label" data-i18n="nav.home">Home</span></a>
+        <a class="nav__item" href="./cmp-dashboard.html"><svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span class="nav__label" data-i18n="nav.cmp">CMP 현황판</span></a>
+        <a class="nav__item" href="./uph-dashboard.html"><svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg><span class="nav__label" data-i18n="nav.uph">UPH 현황판</span></a>
+        <a class="nav__item nav__item--active" aria-current="page" href="./mtba-dashboard.html"><svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg><span class="nav__label" data-i18n="nav.mtba">MTBA 현황판</span></a>
+        <a class="nav__item" href="./mtba-detail.html"><svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 22 8.5 12 15 2 8.5 12 2"/><polyline points="2 15.5 12 22 22 15.5"/></svg><span class="nav__label" data-i18n="nav.mtba_detail">MTBA 상세</span></a>
+        <a class="nav__item" href="./maxcapa-chat.html"><svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span class="nav__label" data-i18n="nav.chat">MaxCapa Chat</span></a>
+      </nav>
+      <div class="sidebar__foot"><span>v0.4.3</span><span data-i18n="sidebar.intranet">사내망</span></div>
+    </aside>
+
+    <main class="main"><div class="page" id="page-content">
+
+      <header class="page-head">
+        <div class="page-head__main">
+          <div class="eyebrow"><strong data-i18n="eyebrow.mtba">EFFICIENCY · MTBA</strong></div>
+          <h1 data-i18n="page.mtba_title">MTBA 현황판</h1>
+          <p class="sub" data-i18n="page.mtba_sub">다중 패널 · 6구간 비교 · 메모/이미지 첨부</p>
+        </div>
+        <div class="page-head__tools">
+          <button class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>새로고침</button>
+          <button class="btn btn--primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span data-i18n="panel.add">패널 추가</span></button>
+        </div>
+      </header>
+
+      <div class="panel-bar">
+        <span class="panel-bar__count">PANEL · 1 / 1</span>
+        <span class="note" style="font-size:11px;color:var(--ink-subtle);font-family:var(--font-mono);letter-spacing:.04em">SCROLL FOR MORE</span>
+      </div>
+
+      <!-- Panel 1 -->
+      <article class="panel">
+        <header class="panel__head">
+          <span class="panel__num">1</span>
+          <h2 class="panel__title" data-i18n="panel.title1">패널 1 — A2 · R53A</h2>
+          <div class="panel__filters">
+            <div class="field"><span class="field__label" data-i18n="filter.team">팀</span><span class="select">A2 · 1팀 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></span></div>
+            <div class="field"><span class="field__label" data-i18n="filter.model">모델</span><span class="select">R53A <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></span></div>
+            <div class="field"><span class="field__label" data-i18n="filter.period">기간</span><span class="select">2026-04-22 ~ 04-29 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></span></div>
+          </div>
+          <div class="panel__actions">
+            <button class="btn-icon" title="이 아래 패널 추가" data-i18n-aria="panel.add_below" aria-label="이 아래 패널 추가"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+            <button class="btn-icon" title="이 패널 제거" data-i18n-aria="panel.remove" aria-label="이 패널 제거"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button>
+          </div>
+        </header>
+
+        <div class="panel__body">
+
+          <!-- Bar chart with all-period values -->
+          <div class="chart-card">
+            <div class="chart-card__head">
+              <div class="chart-card__title" data-i18n="chart.title">6구간 MTBA 비교</div>
+              <div class="chart-card__sub" data-i18n="chart.sub">단위: 시간 · 모든 기간 숫자 표기</div>
+            </div>
+            <div class="bar-chart">
+              <div class="bar bar--current">
+                <span class="bar__value">42.8</span>
+                <div class="bar__bar"><div class="bar__fill" style="height:75%"></div></div>
+                <span class="bar__label" data-i18n="period.current">선택</span>
+                <span class="bar__delta delta-good">기준</span>
+              </div>
+              <div class="bar">
+                <span class="bar__value">38.4</span>
+                <div class="bar__bar"><div class="bar__fill" style="height:67%"></div></div>
+                <span class="bar__label" data-i18n="period.w1">1주전</span>
+                <span class="bar__delta delta-good">▲ +4.4</span>
+              </div>
+              <div class="bar">
+                <span class="bar__value">35.9</span>
+                <div class="bar__bar"><div class="bar__fill" style="height:63%"></div></div>
+                <span class="bar__label" data-i18n="period.w2">2주전</span>
+                <span class="bar__delta delta-good">▲ +6.9</span>
+              </div>
+              <div class="bar">
+                <span class="bar__value">39.2</span>
+                <div class="bar__bar"><div class="bar__fill" style="height:69%"></div></div>
+                <span class="bar__label" data-i18n="period.m1">지난달</span>
+                <span class="bar__delta delta-good">▲ +3.6</span>
+              </div>
+              <div class="bar">
+                <span class="bar__value">31.7</span>
+                <div class="bar__bar"><div class="bar__fill" style="height:55%"></div></div>
+                <span class="bar__label" data-i18n="period.m2">2달전</span>
+                <span class="bar__delta delta-good">▲ +11.1</span>
+              </div>
+              <div class="bar">
+                <span class="bar__value">29.4</span>
+                <div class="bar__bar"><div class="bar__fill" style="height:51%"></div></div>
+                <span class="bar__label" data-i18n="period.y1">지난해</span>
+                <span class="bar__delta delta-good">▲ +13.4</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Side stack: summary + memo -->
+          <div class="side-stack">
+            <div class="side-card">
+              <div class="side-card__head"><span class="side-card__title" data-i18n="summary.title">공정별 MTBA 요약</span><span class="chart-card__sub">선택 기간</span></div>
+              <div class="summary-list">
+                <div class="summary-row is-active"><span class="checkbox checkbox--checked" style="display:inline-block;width:11px;height:11px;background:var(--primary);border-radius:2px"></span><span class="summary-row__name">연마</span><span class="summary-row__val">38.2 h</span><span class="summary-row__delta delta-bad">▼ −2.1</span></div>
+                <div class="summary-row"><span class="checkbox" style="display:inline-block;width:11px;height:11px;border:1px solid var(--border);border-radius:2px;background:#fff"></span><span class="summary-row__name">CMP</span><span class="summary-row__val">52.1 h</span><span class="summary-row__delta delta-good">▲ +5.3</span></div>
+                <div class="summary-row"><span class="checkbox" style="display:inline-block;width:11px;height:11px;border:1px solid var(--border);border-radius:2px;background:#fff"></span><span class="summary-row__name">검사</span><span class="summary-row__val">46.8 h</span><span class="summary-row__delta delta-good">▲ +1.2</span></div>
+                <div class="summary-row"><span class="checkbox" style="display:inline-block;width:11px;height:11px;border:1px solid var(--border);border-radius:2px;background:#fff"></span><span class="summary-row__name">세정</span><span class="summary-row__val">61.4 h</span><span class="summary-row__delta delta-good">▲ +4.7</span></div>
+                <div class="summary-row"><span class="checkbox" style="display:inline-block;width:11px;height:11px;border:1px solid var(--border);border-radius:2px;background:#fff"></span><span class="summary-row__name">절단</span><span class="summary-row__val">44.0 h</span><span class="summary-row__delta delta-flat">— 0.0</span></div>
+              </div>
+            </div>
+
+            <div class="side-card">
+              <div class="side-card__head"><span class="side-card__title" data-i18n="memo.title">메모 · 이미지</span></div>
+              <div class="memo">
+                <textarea placeholder="이상 원인 / 조치 / 이슈 메모를 입력하세요." data-i18n-ph="memo.placeholder">'26.4월 4W — 연마 공정 MTBA −2.1 h, 슬러리 디스펜스 노즐 오염 추정. 4/30 점검 예정.</textarea>
+                <div class="memo__row">
+                  <button type="button" class="memo__upload"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg><span data-i18n="memo.upload">이미지 업로드</span></button>
+                  <span class="memo__hint" data-i18n="memo.hint">PNG/JPG/JPEG/BMP · 최대 200MB</span>
+                  <button type="button" class="btn btn--primary" style="height:28px;padding:0 12px;font-size:11px"><span data-i18n="memo.save">저장</span></button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </article>
+
+      <div class="add-panel">
+        <button type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span data-i18n="panel.add">패널 추가</span></button>
+      </div>
+
+      <footer class="page-foot">
+        <span data-i18n="foot.creator">제작 · 생산혁신센터 Max Capa 팀</span>
+        <span><a href="#" data-i18n="foot.changelog">변경 로그 전체 보기 →</a></span>
+      </footer>
+
+    </div></main>
+
+    <aside class="chat-panel" id="chat-panel" data-default="expanded">
+      <div class="chat-handle" id="chat-handle"></div>
+      <header class="chat-head">
+        <button type="button" class="chat-toggle" id="chat-toggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+        <span class="chat-title" data-i18n="chat.title">MaxCapa Chat</span>
+        <span class="chat-live" data-i18n="chat.live">LIVE</span>
+      </header>
+      <div class="chat-body">
+        <div class="chat-scroll">
+          <div class="chat-hint">
+            <div class="chat-hint__title" data-i18n="chat.hint_title">데이터소스 자동 분기</div>
+            <div class="chat-hint__body"><span data-i18n="chat.hint_body">기본 조회는 MES UPH</span> <code>uph_input_runtime_daily_model</code>. <span data-i18n="chat.hint_body2">"ITAS" 키워드 포함 시 ITAS UPH</span> <code>itas_uph_result</code>.</div>
+          </div>
+          <div class="chat-examples">
+            <div class="chat-examples__title" data-i18n="chat.examples_title">예시 질문</div>
+            <div class="chat-examples__list">
+              <button type="button" class="chat-example"><span class="chat-example__src">MES</span><span data-i18n="chat.ex1">R53A 모델 어제 UPH 평균은?</span></button>
+              <button type="button" class="chat-example"><span class="chat-example__src">ITAS</span><span data-i18n="chat.ex2">ITAS 기준 R50 지난주 UPH 추이</span></button>
+              <button type="button" class="chat-example"><span class="chat-example__src">MES</span><span data-i18n="chat.ex3">A2 라인에서 가장 느린 호기 5개</span></button>
+              <button type="button" class="chat-example"><span class="chat-example__src">MES</span><span data-i18n="chat.ex4">CMP 미달 공정만 3월 4주차</span></button>
+            </div>
+          </div>
+          <div class="chat-empty">
+            <div class="chat-empty__title" data-i18n="chat.empty_title">대화 비어 있음</div>
+            <div class="chat-empty__body" data-i18n="chat.empty_body">위 예시를 클릭하거나<br>아래에 자연어로 질문하세요.</div>
+          </div>
+        </div>
+        <div class="chat-composer">
+          <div class="chat-composer__row"><span class="chat-composer__src"><span class="dot"></span><span data-i18n="chat.src_label">데이터소스</span> · MES UPH</span></div>
+          <textarea id="chat-input" rows="3" placeholder="공정 / 모델 / 기간을 포함해 자연어로 질문하세요." data-i18n-ph="chat.placeholder"></textarea>
+          <div class="chat-composer__row" style="justify-content:flex-end">
+            <button type="button" class="chat-send"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg><span data-i18n="chat.send">질문 분석 및 실행</span></button>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+  </div>
+</div>
+<script>
+window.__I18N_PAGE__ = {
+  ko:{
+    "eyebrow.mtba":"EFFICIENCY · MTBA",
+    "page.mtba_title":"MTBA 현황판",
+    "page.mtba_sub":"다중 패널 · 6구간 비교 · 메모/이미지 첨부",
+    "panel.add":"패널 추가","panel.remove":"이 패널 제거","panel.add_below":"이 아래 패널 추가",
+    "panel.title1":"패널 1 — A2 · R53A",
+    "filter.team":"팀","filter.model":"모델","filter.period":"기간",
+    "chart.title":"6구간 MTBA 비교","chart.sub":"단위: 시간 · 모든 기간 숫자 표기",
+    "period.current":"선택","period.w1":"1주전","period.w2":"2주전","period.m1":"지난달","period.m2":"2달전","period.y1":"지난해",
+    "summary.title":"공정별 MTBA 요약","summary.head":"공정 / MTBA / Δ",
+    "memo.title":"메모 · 이미지","memo.placeholder":"이상 원인 / 조치 / 이슈 메모를 입력하세요.",
+    "memo.upload":"이미지 업로드","memo.hint":"PNG/JPG/JPEG/BMP · 최대 200MB","memo.save":"저장"
+  },
+  en:{
+    "page.mtba_title":"MTBA Board","page.mtba_sub":"Multi-panel · 6-period compare · memo/image",
+    "panel.add":"Add panel","panel.remove":"Remove this panel","panel.add_below":"Add panel below",
+    "filter.team":"Team","filter.model":"Model","filter.period":"Period",
+    "chart.title":"6-period MTBA compare","chart.sub":"hours · all values labeled",
+    "period.current":"Current","period.w1":"1w ago","period.w2":"2w ago","period.m1":"Last month","period.m2":"2m ago","period.y1":"Last year",
+    "summary.title":"Per-process MTBA","memo.title":"Memo · image","memo.placeholder":"Notes on cause / action / issue.",
+    "memo.upload":"Upload image","memo.hint":"PNG/JPG/JPEG/BMP · max 200MB","memo.save":"Save"
+  }
+};
+</script>
+<script src="./_app-shell.js" defer></script>
+</body>
+</html>
