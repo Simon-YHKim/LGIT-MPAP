@@ -39,11 +39,10 @@ button,input,textarea{font-family:inherit}
 /* Iframe is the fallback — hidden when local <video> loads successfully */
 .bg-video.has-local-video iframe{display:none}
 
-/* radial overlay — left dark, right lighter; CENTER strongly darkened
-   to mask YouTube poster's play-button while initial autoplay loads.  */
+/* radial overlay — left darkened for text legibility; right lighter.
+   No center mask: play button may show, that's intended.            */
 .bg-overlay{position:fixed;inset:0;z-index:1;pointer-events:none;
   background:
-    radial-gradient(circle 240px at 50% 50%, rgba(10,12,16,0.95) 0%, rgba(10,12,16,0.55) 60%, transparent 100%),
     radial-gradient(ellipse 90% 80% at 78% 50%, rgba(10,12,16,0.42) 0%, rgba(10,12,16,0.82) 60%, rgba(10,12,16,0.94) 100%),
     linear-gradient(90deg, rgba(10,12,16,0.62) 0%, rgba(10,12,16,0.22) 60%, rgba(10,12,16,0.10) 100%);
 }
