@@ -86,30 +86,17 @@
         </button>
       </div>
       <nav class="nav" role="navigation">
-        <a class="nav__item nav__item--active" aria-current="page" href="./home.html" data-page="home">
-          <svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12l9-9 9 9"/><path d="M5 10v10h14V10"/></svg>
-          <span class="nav__label" data-i18n="nav.home">Home</span>
-        </a>
-        <a class="nav__item" href="./cmp-dashboard.html" data-page="cmp">
-          <svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-          <span class="nav__label" data-i18n="nav.cmp">CMP 현황판</span>
-        </a>
-        <a class="nav__item" href="./uph-dashboard.html" data-page="uph">
-          <svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg>
-          <span class="nav__label" data-i18n="nav.uph">UPH 현황판</span>
-        </a>
-        <a class="nav__item" href="./mtba-dashboard.html" data-page="mtba">
-          <svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-          <span class="nav__label" data-i18n="nav.mtba">MTBA 현황판</span>
-        </a>
-        <a class="nav__item" href="./mtba-detail.html" data-page="mtba-detail">
-          <svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 22 8.5 12 15 2 8.5 12 2"/><polyline points="2 15.5 12 22 22 15.5"/></svg>
-          <span class="nav__label" data-i18n="nav.mtba_detail">MTBA 상세</span>
-        </a>
-        <a class="nav__item" href="./maxcapa-chat.html" data-page="chat">
-          <svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-          <span class="nav__label" data-i18n="nav.chat">MaxCapa Chat</span>
-        </a>
+        <a class="nav__item nav__item--active" href="./home.html" aria-current="page"><svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l9-9 9 9"/><path d="M5 10v10h14V10"/></svg><span class="nav__label" data-i18n="nav.home">Home</span></a>
+        <a class="nav__item" href="./cmp-dashboard.html"><svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span class="nav__label" data-i18n="nav.cmp">CMP 현황판</span></a>
+        <a class="nav__item" href="./uph-dashboard.html"><svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg><span class="nav__label" data-i18n="nav.uph">UPH 현황판</span></a>
+        <div class="nav__group" id="nav-mtba">
+          <button type="button" class="nav__group__head"><svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg><span class="nav__label" data-i18n="nav.mtba">MTBA</span><svg class="nav__group__caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button>
+          <div class="nav__group__list">
+            <a class="nav__item nav__item--child" href="./mtba-detail.html"><span class="nav__label" data-i18n="nav.mtba_board">MTBA 현황판</span></a>
+            <a class="nav__item nav__item--child" href="./mtba-dashboard.html"><span class="nav__label" data-i18n="nav.mtba_by_process">공정별 MTBA</span></a>
+          </div>
+        </div>
+        <a class="nav__item" href="./maxcapa-chat.html"><svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span class="nav__label" data-i18n="nav.chat">MaxCapa Chat</span></a>
       </nav>
       <div class="sidebar__foot">
         <span>v0.4.3</span>
@@ -190,23 +177,7 @@
               <span class="category__title-en" data-i18n="cat.eff_en">Equipment Efficiency</span>
             </header>
             <div class="category__cards">
-              <a class="tool-card" href="./mtba-dashboard.html" data-tool="mtba">
-                <div class="tool-card__head">
-                  <div class="tool-card__icon-wrap">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-                  </div>
-                  <span class="badge badge--warn"><span class="badge__dot"></span><span data-i18n="status.preview">가오픈</span></span>
-                </div>
-                <div class="tool-card__body">
-                  <h3 class="tool-card__title" data-i18n="nav.mtba">MTBA 현황판</h3>
-                  <p class="tool-card__desc" data-i18n="tool.mtba_desc">공정별 MTBA 통계 · 다중 패널 · 메모/이미지 업로드</p>
-                </div>
-                <div class="tool-card__foot">
-                  <span data-i18n="tool.mtba_meta">가오픈 4/29~ · 정식 5/15E</span>
-                  <span class="tool-card__arrow">→</span>
-                </div>
-              </a>
-              <a class="tool-card" href="./mtba-detail.html" data-tool="mtba-detail">
+              <a class="tool-card" href="./mtba-detail.html" data-tool="mtba-board">
                 <div class="tool-card__head">
                   <div class="tool-card__icon-wrap">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 22 8.5 12 15 2 8.5 12 2"/><polyline points="2 15.5 12 22 22 15.5"/></svg>
@@ -214,11 +185,27 @@
                   <span class="badge badge--warn"><span class="badge__dot"></span><span data-i18n="status.preview">가오픈</span></span>
                 </div>
                 <div class="tool-card__body">
-                  <h3 class="tool-card__title" data-i18n="nav.mtba_detail">MTBA 상세</h3>
-                  <p class="tool-card__desc" data-i18n="tool.mtba_detail_desc">공정×설비 매트릭스 · 알람 상세 · 주간 TOP5 · 비중</p>
+                  <h3 class="tool-card__title" data-i18n="nav.mtba_board">MTBA 현황판</h3>
+                  <p class="tool-card__desc" data-i18n="tool.mtba_board_desc">공장 매트릭스 — 공정×호기 MTBA · 셀 클릭 시 알람 상세 팝업 (TOP5 · 비중)</p>
                 </div>
                 <div class="tool-card__foot">
-                  <span data-i18n="tool.mtba_detail_meta">가오픈 4/29~ · 정식 5/15E</span>
+                  <span data-i18n="tool.mtba_board_meta">가오픈 4/29~ · 정식 5/15E</span>
+                  <span class="tool-card__arrow">→</span>
+                </div>
+              </a>
+              <a class="tool-card" href="./mtba-dashboard.html" data-tool="mtba-by-process">
+                <div class="tool-card__head">
+                  <div class="tool-card__icon-wrap">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                  </div>
+                  <span class="badge badge--warn"><span class="badge__dot"></span><span data-i18n="status.preview">가오픈</span></span>
+                </div>
+                <div class="tool-card__body">
+                  <h3 class="tool-card__title" data-i18n="nav.mtba_by_process">공정별 MTBA</h3>
+                  <p class="tool-card__desc" data-i18n="tool.mtba_proc_desc">공정별 다중 패널 · 6구간 비교 차트 · 메모/이미지 업로드</p>
+                </div>
+                <div class="tool-card__foot">
+                  <span data-i18n="tool.mtba_proc_meta">가오픈 4/29~ · 정식 5/15E</span>
                   <span class="tool-card__arrow">→</span>
                 </div>
               </a>
@@ -300,10 +287,10 @@ window.__I18N_PAGE__ = {
     "tool.cmp_meta":"정식 5/22E · v4 · 2026-04-30",
     "tool.uph_desc":"UPH · 동작시간 분석 · I-TAS 분기 + 6 섹션 추적",
     "tool.uph_meta":"가오픈 4/29~ · 정식 5/22E",
-    "tool.mtba_desc":"공정별 MTBA 통계 · 다중 패널 · 메모/이미지 업로드",
-    "tool.mtba_meta":"가오픈 4/29~ · 정식 5/15E",
-    "tool.mtba_detail_desc":"공정×설비 매트릭스 · 알람 상세 · 주간 TOP5 · 비중",
-    "tool.mtba_detail_meta":"가오픈 4/29~ · 정식 5/15E"
+    "tool.mtba_board_desc":"공장 매트릭스 — 공정×호기 MTBA · 셀 클릭 시 알람 상세 팝업 (TOP5 · 비중)",
+    "tool.mtba_board_meta":"가오픈 4/29~ · 정식 5/15E",
+    "tool.mtba_proc_desc":"공정별 다중 패널 · 6구간 비교 차트 · 메모/이미지 업로드",
+    "tool.mtba_proc_meta":"가오픈 4/29~ · 정식 5/15E"
   },
   en:{
     "home.title":"Analytics Tools",
@@ -314,10 +301,10 @@ window.__I18N_PAGE__ = {
     "tool.cmp_meta":"Live 5/22E · v4 · 2026-04-30",
     "tool.uph_desc":"UPH · run-time analytics · I-TAS branching + 6 sections",
     "tool.uph_meta":"Preview 4/29~ · Live 5/22E",
-    "tool.mtba_desc":"Per-process MTBA stats · multi-panel · memo/image upload",
-    "tool.mtba_meta":"Preview 4/29~ · Live 5/15E",
-    "tool.mtba_detail_desc":"Process × equipment matrix · alarm detail · weekly TOP5 share",
-    "tool.mtba_detail_meta":"Preview 4/29~ · Live 5/15E"
+    "tool.mtba_board_desc":"Plant matrix — process × equipment MTBA · cell click → alarm popup (TOP5 share)",
+    "tool.mtba_board_meta":"Preview 4/29~ · Live 5/15E",
+    "tool.mtba_proc_desc":"Per-process multi-panel · 6-period compare chart · memo/image upload",
+    "tool.mtba_proc_meta":"Preview 4/29~ · Live 5/15E"
   }
 };
 </script>

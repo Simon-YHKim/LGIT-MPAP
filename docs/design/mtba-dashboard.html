@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8" />
-<title>VITALS — MTBA 현황판</title>
+<title>VITALS — 공정별 MTBA</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css" />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" />
@@ -11,6 +11,11 @@
 /* mtba-dashboard — chart-emphasized ============================== */
 .panel-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
 .panel-bar__count{font-family:var(--font-mono);font-size:11px;color:var(--ink-subtle);letter-spacing:.06em;text-transform:uppercase}
+.linked{display:flex;align-items:center;gap:8px;padding:8px 12px;margin-bottom:12px;background:var(--primary-tint);border:1px solid var(--primary);border-radius:7px;font-size:12px;color:var(--primary-dark);font-weight:600}
+.linked svg{width:13px;height:13px;flex:none}
+.linked a{color:var(--primary-dark);border-bottom:1px solid var(--primary-dark);font-weight:700}
+.summary-row{cursor:pointer;transition:background .12s var(--ease)}
+.summary-row:hover{background:var(--soft)}
 
 .panel{background:var(--card-bg);border:1px solid var(--border);border-radius:10px;margin-bottom:14px;overflow:hidden}
 .panel__head{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--border);background:var(--soft);flex-wrap:wrap}
@@ -122,8 +127,13 @@
         <a class="nav__item" href="./home.html"><svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l9-9 9 9"/><path d="M5 10v10h14V10"/></svg><span class="nav__label" data-i18n="nav.home">Home</span></a>
         <a class="nav__item" href="./cmp-dashboard.html"><svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span class="nav__label" data-i18n="nav.cmp">CMP 현황판</span></a>
         <a class="nav__item" href="./uph-dashboard.html"><svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg><span class="nav__label" data-i18n="nav.uph">UPH 현황판</span></a>
-        <a class="nav__item nav__item--active" aria-current="page" href="./mtba-dashboard.html"><svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg><span class="nav__label" data-i18n="nav.mtba">MTBA 현황판</span></a>
-        <a class="nav__item" href="./mtba-detail.html"><svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 22 8.5 12 15 2 8.5 12 2"/><polyline points="2 15.5 12 22 22 15.5"/></svg><span class="nav__label" data-i18n="nav.mtba_detail">MTBA 상세</span></a>
+        <div class="nav__group" id="nav-mtba">
+          <button type="button" class="nav__group__head"><svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg><span class="nav__label" data-i18n="nav.mtba">MTBA</span><svg class="nav__group__caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button>
+          <div class="nav__group__list">
+            <a class="nav__item nav__item--child" href="./mtba-detail.html"><span class="nav__label" data-i18n="nav.mtba_board">MTBA 현황판</span></a>
+            <a class="nav__item nav__item--child nav__item--active" href="./mtba-dashboard.html" aria-current="page"><span class="nav__label" data-i18n="nav.mtba_by_process">공정별 MTBA</span></a>
+          </div>
+        </div>
         <a class="nav__item" href="./maxcapa-chat.html"><svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span class="nav__label" data-i18n="nav.chat">MaxCapa Chat</span></a>
       </nav>
       <div class="sidebar__foot"><span>v0.4.3</span><span data-i18n="sidebar.intranet">사내망</span></div>
@@ -133,15 +143,22 @@
 
       <header class="page-head">
         <div class="page-head__main">
-          <div class="eyebrow"><strong data-i18n="eyebrow.mtba">EFFICIENCY · MTBA</strong></div>
-          <h1 data-i18n="page.mtba_title">MTBA 현황판</h1>
-          <p class="sub" data-i18n="page.mtba_sub">다중 패널 · 6구간 비교 · 메모/이미지 첨부</p>
+          <div class="eyebrow"><strong data-i18n="eyebrow.mtba_proc">EFFICIENCY · MTBA · BY PROCESS</strong></div>
+          <h1 data-i18n="page.mtba_proc_title">공정별 MTBA</h1>
+          <p class="sub" data-i18n="page.mtba_proc_sub">공정별 다중 패널 · 6구간 비교 · 메모/이미지 첨부 · 패널 행 클릭 시 MTBA 현황판으로 진입</p>
         </div>
         <div class="page-head__tools">
           <button class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>새로고침</button>
           <button class="btn btn--primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span data-i18n="panel.add">패널 추가</span></button>
         </div>
       </header>
+
+      <!-- Linked notice -->
+      <div class="linked">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+        <span data-i18n="linked.text">공정별 MTBA · 행/공정명 클릭 시 MTBA 현황판(공장 매트릭스)으로 진입해 호기별 상세를 확인할 수 있습니다.</span>
+        <span style="margin-left:auto"><a href="./mtba-detail.html" data-i18n="linked.go">MTBA 현황판으로 →</a></span>
+      </div>
 
       <div class="panel-bar">
         <span class="panel-bar__count">PANEL · 1 / 1</span>

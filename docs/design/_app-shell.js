@@ -14,7 +14,7 @@
     ko:{
       "nav.heading":"메뉴","sidebar.intranet":"사내망",
       "nav.home":"Home","nav.cmp":"CMP 현황판","nav.uph":"UPH 현황판",
-      "nav.mtba":"MTBA 현황판","nav.mtba_detail":"MTBA 상세","nav.chat":"MaxCapa Chat",
+      "nav.mtba":"MTBA","nav.mtba_board":"MTBA 현황판","nav.mtba_by_process":"공정별 MTBA","nav.chat":"MaxCapa Chat",
       "topbar.logout":"로그아웃","topbar.menu":"메뉴 토글",
       "brand.team":"생산혁신센터 · Max Capa 팀",
       "chat.title":"MaxCapa Chat","chat.live":"LIVE",
@@ -38,7 +38,7 @@
     en:{
       "nav.heading":"MENU","sidebar.intranet":"Intranet",
       "nav.home":"Home","nav.cmp":"CMP Board","nav.uph":"UPH Board",
-      "nav.mtba":"MTBA Board","nav.mtba_detail":"MTBA Detail","nav.chat":"MaxCapa Chat",
+      "nav.mtba":"MTBA","nav.mtba_board":"MTBA Board","nav.mtba_by_process":"MTBA by Process","nav.chat":"MaxCapa Chat",
       "topbar.logout":"Logout","topbar.menu":"Toggle menu",
       "brand.team":"Production Innovation Center · Max Capa Team",
       "chat.title":"MaxCapa Chat","chat.live":"LIVE",
@@ -59,11 +59,11 @@
       "foot.creator":"Built by · Production Innovation Center · Max Capa Team",
       "foot.changelog":"View full changelog →"
     },
-    vi:{"nav.home":"Home","nav.cmp":"Bảng CMP","nav.uph":"Bảng UPH","nav.mtba":"Bảng MTBA","nav.mtba_detail":"Chi tiết MTBA","nav.chat":"MaxCapa Chat","topbar.logout":"Đăng xuất","brand.team":"Trung tâm Đổi mới · Đội Max Capa","chat.send":"Phân tích & Chạy","chat.collapse":"Thu gọn","chat.expand":"Mở rộng","foot.creator":"Đội Max Capa · Trung tâm Đổi mới Sản xuất"},
-    pl:{"nav.home":"Home","nav.cmp":"Tablica CMP","nav.uph":"Tablica UPH","nav.mtba":"Tablica MTBA","nav.mtba_detail":"MTBA — szczegóły","nav.chat":"MaxCapa Chat","topbar.logout":"Wyloguj","brand.team":"Centrum Innowacji · Zespół Max Capa","chat.send":"Analizuj","chat.collapse":"Zwiń","chat.expand":"Rozwiń","foot.creator":"Zespół Max Capa · Centrum Innowacji Produkcji"},
-    id:{"nav.home":"Home","nav.cmp":"Papan CMP","nav.uph":"Papan UPH","nav.mtba":"Papan MTBA","nav.mtba_detail":"MTBA Detail","nav.chat":"MaxCapa Chat","topbar.logout":"Keluar","brand.team":"Pusat Inovasi · Tim Max Capa","chat.send":"Analisis","chat.collapse":"Ciutkan","chat.expand":"Bentangkan","foot.creator":"Tim Max Capa · Pusat Inovasi Produksi"},
-    es:{"nav.home":"Home","nav.cmp":"Panel CMP","nav.uph":"Panel UPH","nav.mtba":"Panel MTBA","nav.mtba_detail":"Detalle MTBA","nav.chat":"MaxCapa Chat","topbar.logout":"Cerrar sesión","brand.team":"Centro de Innovación · Equipo Max Capa","chat.send":"Analizar","chat.collapse":"Contraer","chat.expand":"Expandir","foot.creator":"Equipo Max Capa · Centro de Innovación de Producción"},
-    zh:{"nav.home":"Home","nav.cmp":"CMP 看板","nav.uph":"UPH 看板","nav.mtba":"MTBA 看板","nav.mtba_detail":"MTBA 详情","nav.chat":"MaxCapa Chat","topbar.logout":"登出","brand.team":"生产革新中心 · Max Capa 团队","chat.send":"分析并执行","chat.collapse":"收起","chat.expand":"展开","foot.creator":"Max Capa 团队 · 生产革新中心"}
+    vi:{"nav.home":"Home","nav.cmp":"Bảng CMP","nav.uph":"Bảng UPH","nav.mtba":"MTBA","nav.mtba_board":"Bảng MTBA","nav.mtba_by_process":"MTBA theo công đoạn","nav.chat":"MaxCapa Chat","topbar.logout":"Đăng xuất","brand.team":"Trung tâm Đổi mới · Đội Max Capa","chat.send":"Phân tích & Chạy","chat.collapse":"Thu gọn","chat.expand":"Mở rộng","foot.creator":"Đội Max Capa · Trung tâm Đổi mới Sản xuất"},
+    pl:{"nav.home":"Home","nav.cmp":"Tablica CMP","nav.uph":"Tablica UPH","nav.mtba":"MTBA","nav.mtba_board":"Tablica MTBA","nav.mtba_by_process":"MTBA wg procesu","nav.chat":"MaxCapa Chat","topbar.logout":"Wyloguj","brand.team":"Centrum Innowacji · Zespół Max Capa","chat.send":"Analizuj","chat.collapse":"Zwiń","chat.expand":"Rozwiń","foot.creator":"Zespół Max Capa · Centrum Innowacji Produkcji"},
+    id:{"nav.home":"Home","nav.cmp":"Papan CMP","nav.uph":"Papan UPH","nav.mtba":"MTBA","nav.mtba_board":"Papan MTBA","nav.mtba_by_process":"MTBA per Proses","nav.chat":"MaxCapa Chat","topbar.logout":"Keluar","brand.team":"Pusat Inovasi · Tim Max Capa","chat.send":"Analisis","chat.collapse":"Ciutkan","chat.expand":"Bentangkan","foot.creator":"Tim Max Capa · Pusat Inovasi Produksi"},
+    es:{"nav.home":"Home","nav.cmp":"Panel CMP","nav.uph":"Panel UPH","nav.mtba":"MTBA","nav.mtba_board":"Panel MTBA","nav.mtba_by_process":"MTBA por proceso","nav.chat":"MaxCapa Chat","topbar.logout":"Cerrar sesión","brand.team":"Centro de Innovación · Equipo Max Capa","chat.send":"Analizar","chat.collapse":"Contraer","chat.expand":"Expandir","foot.creator":"Equipo Max Capa · Centro de Innovación de Producción"},
+    zh:{"nav.home":"Home","nav.cmp":"CMP 看板","nav.uph":"UPH 看板","nav.mtba":"MTBA","nav.mtba_board":"MTBA 看板","nav.mtba_by_process":"工序 MTBA","nav.chat":"MaxCapa Chat","topbar.logout":"登出","brand.team":"生产革新中心 · Max Capa 团队","chat.send":"分析并执行","chat.collapse":"收起","chat.expand":"展开","foot.creator":"Max Capa 团队 · 生产革新中心"}
   };
 
   /* ---- i18n apply ------------------------------------------------- */
@@ -188,6 +188,50 @@
         });
       }
     }
+
+    /* sidebar nav tree toggle */
+    document.querySelectorAll('.nav__group').forEach(function(grp){
+      var head = grp.querySelector('.nav__group__head');
+      var key = grp.id || 'nav-group';
+      var hasActive = !!grp.querySelector('.nav__item--active');
+      var saved = localStorage.getItem('app.'+key+'.open');
+      var open = (saved === null) ? (hasActive || true) : (saved === '1');
+      function applyGrp(){
+        grp.classList.toggle('is-open', open);
+        if (hasActive) grp.classList.add('nav__group--has-active');
+      }
+      applyGrp();
+      if (head) head.addEventListener('click', function(){
+        open = !open;
+        localStorage.setItem('app.'+key+'.open', open ? '1' : '0');
+        applyGrp();
+      });
+    });
+
+    /* modal — open via [data-modal-target=#id], close via .modal__close or overlay click */
+    document.querySelectorAll('[data-modal-target]').forEach(function(trigger){
+      trigger.addEventListener('click', function(e){
+        var sel = trigger.getAttribute('data-modal-target');
+        var modal = document.querySelector(sel);
+        if (modal) { modal.classList.add('is-open'); document.body.style.overflow='hidden'; e.preventDefault(); }
+      });
+    });
+    document.querySelectorAll('.modal-overlay').forEach(function(overlay){
+      overlay.addEventListener('click', function(e){
+        if (e.target === overlay || e.target.closest('.modal__close')) {
+          overlay.classList.remove('is-open');
+          document.body.style.overflow='';
+        }
+      });
+    });
+    document.addEventListener('keydown', function(e){
+      if (e.key === 'Escape') {
+        document.querySelectorAll('.modal-overlay.is-open').forEach(function(o){
+          o.classList.remove('is-open');
+        });
+        document.body.style.overflow='';
+      }
+    });
 
     /* example chips → composer */
     var input = document.getElementById('chat-input');

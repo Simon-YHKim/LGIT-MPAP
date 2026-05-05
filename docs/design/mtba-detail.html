@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8" />
-<title>VITALS — MTBA 상세</title>
+<title>VITALS — MTBA 현황판</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css" />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" />
@@ -133,8 +133,13 @@
         <a class="nav__item" href="./home.html"><svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l9-9 9 9"/><path d="M5 10v10h14V10"/></svg><span class="nav__label" data-i18n="nav.home">Home</span></a>
         <a class="nav__item" href="./cmp-dashboard.html"><svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span class="nav__label" data-i18n="nav.cmp">CMP 현황판</span></a>
         <a class="nav__item" href="./uph-dashboard.html"><svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg><span class="nav__label" data-i18n="nav.uph">UPH 현황판</span></a>
-        <a class="nav__item" href="./mtba-dashboard.html"><svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg><span class="nav__label" data-i18n="nav.mtba">MTBA 현황판</span></a>
-        <a class="nav__item nav__item--active" aria-current="page" href="./mtba-detail.html"><svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 22 8.5 12 15 2 8.5 12 2"/><polyline points="2 15.5 12 22 22 15.5"/></svg><span class="nav__label" data-i18n="nav.mtba_detail">MTBA 상세</span></a>
+        <div class="nav__group" id="nav-mtba">
+          <button type="button" class="nav__group__head"><svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg><span class="nav__label" data-i18n="nav.mtba">MTBA</span><svg class="nav__group__caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button>
+          <div class="nav__group__list">
+            <a class="nav__item nav__item--child nav__item--active" href="./mtba-detail.html" aria-current="page"><span class="nav__label" data-i18n="nav.mtba_board">MTBA 현황판</span></a>
+            <a class="nav__item nav__item--child" href="./mtba-dashboard.html"><span class="nav__label" data-i18n="nav.mtba_by_process">공정별 MTBA</span></a>
+          </div>
+        </div>
         <a class="nav__item" href="./maxcapa-chat.html"><svg class="nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span class="nav__label" data-i18n="nav.chat">MaxCapa Chat</span></a>
       </nav>
       <div class="sidebar__foot"><span>v0.4.3</span><span data-i18n="sidebar.intranet">사내망</span></div>
@@ -144,9 +149,9 @@
 
       <header class="page-head">
         <div class="page-head__main">
-          <div class="eyebrow"><strong data-i18n="eyebrow.detail">EFFICIENCY · MTBA · DETAIL</strong></div>
-          <h1 data-i18n="page.detail_title">MTBA 상세</h1>
-          <p class="sub" data-i18n="page.detail_sub">공정×설비 매트릭스 · 셀 클릭 시 알람 상세 · MTBA 현황판과 연계</p>
+          <div class="eyebrow"><strong data-i18n="eyebrow.board">EFFICIENCY · MTBA · BOARD</strong></div>
+          <h1 data-i18n="page.board_title">MTBA 현황판</h1>
+          <p class="sub" data-i18n="page.board_sub">공정×설비 매트릭스 · MTBA 수치 클릭 시 그 공정·그 날 알람 상세 팝업</p>
         </div>
         <div class="page-head__tools">
           <button class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>새로고침</button>
@@ -157,8 +162,8 @@
       <!-- Linked notice -->
       <div class="linked">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-        <span data-i18n="linked.text">MTBA 현황판 패널 1과 연계 — 패널 1의 셀을 클릭하면 이 페이지의 알람 상세로 이동합니다.</span>
-        <span style="margin-left:auto"><a href="./mtba-dashboard.html" data-i18n="linked.go">MTBA 현황판으로 →</a></span>
+        <span data-i18n="linked.text">공정별 MTBA(다중 패널)와 연계 — 패널의 행/셀을 클릭하면 이 매트릭스로 진입해 해당 공정의 호기별 MTBA 를 확인할 수 있습니다.</span>
+        <span style="margin-left:auto"><a href="./mtba-dashboard.html" data-i18n="linked.go">공정별 MTBA로 →</a></span>
       </div>
 
       <!-- Controls -->
@@ -195,55 +200,63 @@
           <tbody>
             <tr>
               <td class="row-head">#1003</td>
-              <td class="cell-good">52.1</td><td class="cell-good">48.6</td><td class="cell-good">61.4</td><td class="cell-good">46.8</td><td class="cell-good">58.2</td><td class="cell-good">44.0</td>
-              <td class="cell-good">71.5</td><td class="cell-good">68.3</td><td class="cell-good">82.1</td><td class="cell-good">59.7</td><td class="cell-good">66.4</td><td class="cell-good">54.2</td>
+              <td data-modal-target="#alarm-modal" class="cell-good">52.1</td><td data-modal-target="#alarm-modal" class="cell-good">48.6</td><td data-modal-target="#alarm-modal" class="cell-good">61.4</td><td data-modal-target="#alarm-modal" class="cell-good">46.8</td><td data-modal-target="#alarm-modal" class="cell-good">58.2</td><td data-modal-target="#alarm-modal" class="cell-good">44.0</td>
+              <td data-modal-target="#alarm-modal" class="cell-good">71.5</td><td data-modal-target="#alarm-modal" class="cell-good">68.3</td><td data-modal-target="#alarm-modal" class="cell-good">82.1</td><td data-modal-target="#alarm-modal" class="cell-good">59.7</td><td data-modal-target="#alarm-modal" class="cell-good">66.4</td><td data-modal-target="#alarm-modal" class="cell-good">54.2</td>
             </tr>
             <tr>
               <td class="row-head">#1054</td>
-              <td class="cell-good">49.7</td><td class="cell-warn">38.1</td><td class="cell-good">55.3</td><td class="cell-good">42.9</td><td class="cell-good">53.6</td><td class="cell-good">41.2</td>
-              <td class="cell-good">66.8</td><td class="cell-warn">37.2</td><td class="cell-good">75.9</td><td class="cell-good">52.3</td><td class="cell-good">61.0</td><td class="cell-good">49.8</td>
+              <td data-modal-target="#alarm-modal" class="cell-good">49.7</td><td data-modal-target="#alarm-modal" class="cell-warn">38.1</td><td data-modal-target="#alarm-modal" class="cell-good">55.3</td><td data-modal-target="#alarm-modal" class="cell-good">42.9</td><td data-modal-target="#alarm-modal" class="cell-good">53.6</td><td data-modal-target="#alarm-modal" class="cell-good">41.2</td>
+              <td data-modal-target="#alarm-modal" class="cell-good">66.8</td><td data-modal-target="#alarm-modal" class="cell-warn">37.2</td><td data-modal-target="#alarm-modal" class="cell-good">75.9</td><td data-modal-target="#alarm-modal" class="cell-good">52.3</td><td data-modal-target="#alarm-modal" class="cell-good">61.0</td><td data-modal-target="#alarm-modal" class="cell-good">49.8</td>
             </tr>
             <tr>
               <td class="row-head">#1077</td>
-              <td class="cell-good">50.4</td><td class="cell-good">44.2</td><td class="cell-warn">36.7</td><td class="cell-good">45.1</td><td class="cell-good">56.4</td><td class="cell-good">42.6</td>
-              <td class="cell-good">68.9</td><td class="cell-good">61.5</td><td class="cell-good">78.3</td><td class="cell-good">54.6</td><td class="cell-good">63.7</td><td class="cell-good">51.1</td>
+              <td data-modal-target="#alarm-modal" class="cell-good">50.4</td><td data-modal-target="#alarm-modal" class="cell-good">44.2</td><td data-modal-target="#alarm-modal" class="cell-warn">36.7</td><td data-modal-target="#alarm-modal" class="cell-good">45.1</td><td data-modal-target="#alarm-modal" class="cell-good">56.4</td><td data-modal-target="#alarm-modal" class="cell-good">42.6</td>
+              <td data-modal-target="#alarm-modal" class="cell-good">68.9</td><td data-modal-target="#alarm-modal" class="cell-good">61.5</td><td data-modal-target="#alarm-modal" class="cell-good">78.3</td><td data-modal-target="#alarm-modal" class="cell-good">54.6</td><td data-modal-target="#alarm-modal" class="cell-good">63.7</td><td data-modal-target="#alarm-modal" class="cell-good">51.1</td>
             </tr>
             <tr>
               <td class="row-head">#1116</td>
-              <td class="cell-warn">39.2</td><td class="cell-bad is-active">28.4</td><td class="cell-warn">37.1</td><td class="cell-warn">35.6</td><td class="cell-good">48.3</td><td class="cell-warn">36.8</td>
-              <td class="cell-good">58.4</td><td class="cell-warn">39.6</td><td class="cell-good">62.7</td><td class="cell-bad">26.1</td><td class="cell-warn">38.2</td><td class="cell-warn">37.5</td>
+              <td data-modal-target="#alarm-modal" class="cell-warn">39.2</td><td data-modal-target="#alarm-modal" class="cell-bad is-active">28.4</td><td data-modal-target="#alarm-modal" class="cell-warn">37.1</td><td data-modal-target="#alarm-modal" class="cell-warn">35.6</td><td data-modal-target="#alarm-modal" class="cell-good">48.3</td><td data-modal-target="#alarm-modal" class="cell-warn">36.8</td>
+              <td data-modal-target="#alarm-modal" class="cell-good">58.4</td><td data-modal-target="#alarm-modal" class="cell-warn">39.6</td><td data-modal-target="#alarm-modal" class="cell-good">62.7</td><td data-modal-target="#alarm-modal" class="cell-bad">26.1</td><td data-modal-target="#alarm-modal" class="cell-warn">38.2</td><td data-modal-target="#alarm-modal" class="cell-warn">37.5</td>
             </tr>
             <tr>
               <td class="row-head">#1142</td>
-              <td class="cell-good">47.8</td><td class="cell-good">43.5</td><td class="cell-good">52.7</td><td class="cell-good">44.3</td><td class="cell-good">55.1</td><td class="cell-good">41.9</td>
-              <td class="cell-good">65.4</td><td class="cell-good">59.8</td><td class="cell-good">73.6</td><td class="cell-good">53.2</td><td class="cell-good">60.5</td><td class="cell-good">48.6</td>
+              <td data-modal-target="#alarm-modal" class="cell-good">47.8</td><td data-modal-target="#alarm-modal" class="cell-good">43.5</td><td data-modal-target="#alarm-modal" class="cell-good">52.7</td><td data-modal-target="#alarm-modal" class="cell-good">44.3</td><td data-modal-target="#alarm-modal" class="cell-good">55.1</td><td data-modal-target="#alarm-modal" class="cell-good">41.9</td>
+              <td data-modal-target="#alarm-modal" class="cell-good">65.4</td><td data-modal-target="#alarm-modal" class="cell-good">59.8</td><td data-modal-target="#alarm-modal" class="cell-good">73.6</td><td data-modal-target="#alarm-modal" class="cell-good">53.2</td><td data-modal-target="#alarm-modal" class="cell-good">60.5</td><td data-modal-target="#alarm-modal" class="cell-good">48.6</td>
             </tr>
             <tr>
               <td class="row-head">#1188</td>
-              <td class="cell-good">51.3</td><td class="cell-good">47.9</td><td class="cell-good">59.2</td><td class="cell-good">46.0</td><td class="cell-good">57.5</td><td class="cell-good">43.4</td>
-              <td class="cell-good">70.1</td><td class="cell-good">66.7</td><td class="cell-good">80.4</td><td class="cell-good">58.1</td><td class="cell-good">65.3</td><td class="cell-good">52.9</td>
+              <td data-modal-target="#alarm-modal" class="cell-good">51.3</td><td data-modal-target="#alarm-modal" class="cell-good">47.9</td><td data-modal-target="#alarm-modal" class="cell-good">59.2</td><td data-modal-target="#alarm-modal" class="cell-good">46.0</td><td data-modal-target="#alarm-modal" class="cell-good">57.5</td><td data-modal-target="#alarm-modal" class="cell-good">43.4</td>
+              <td data-modal-target="#alarm-modal" class="cell-good">70.1</td><td data-modal-target="#alarm-modal" class="cell-good">66.7</td><td data-modal-target="#alarm-modal" class="cell-good">80.4</td><td data-modal-target="#alarm-modal" class="cell-good">58.1</td><td data-modal-target="#alarm-modal" class="cell-good">65.3</td><td data-modal-target="#alarm-modal" class="cell-good">52.9</td>
             </tr>
           </tbody>
         </table>
       </div>
 
       <!-- Alarm detail (linked from active cell) -->
-      <article class="alarm-detail">
-        <div class="alarm-detail__head">
-          <div>
-            <h2 class="alarm-detail__title"><span data-i18n="alarm.title">알람 상세 ·</span> <strong>슬러리 디스펜스 노즐 막힘</strong></h2>
-            <div class="alarm-detail__meta">
-              <span><span data-i18n="alarm.equipment">호기</span> <strong>#1116</strong></span>
-              <span><span data-i18n="alarm.model">모델</span> <strong>R53A</strong></span>
-              <span><span data-i18n="alarm.segment">설비 세그먼트</span> <strong>p_연마</strong></span>
-              <span><span data-i18n="alarm.mtba">MTBA</span> <strong>28.4 h</strong></span>
-              <span><span data-i18n="alarm.qty">생산수량</span> <strong>11,140</strong></span>
+      <!-- Alarm modal — opened by clicking any matrix MTBA cell -->
+      <div class="modal-overlay" id="alarm-modal" role="dialog" aria-modal="true" aria-labelledby="alarm-modal-title">
+        <div class="modal">
+          <header class="modal__head">
+            <div>
+              <h2 class="modal__title" id="alarm-modal-title"><span data-i18n="alarm.title">알람 상세 ·</span> <strong>슬러리 디스펜스 노즐 막힘</strong></h2>
+              <span class="modal__sub">호기 #1116 · R53A · p_연마 · '26.4월 4W</span>
             </div>
-          </div>
-          <span class="badge badge--bad"><span class="badge__dot"></span>임계 미달 · 평균 대비 −33%</span>
-        </div>
+            <button type="button" class="modal__close" aria-label="닫기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+          </header>
+          <div class="modal__body">
 
-        <div class="alarm-grid">
+            <div class="alarm-detail__head">
+              <div class="alarm-detail__meta">
+                <span><span data-i18n="alarm.equipment">호기</span> <strong>#1116</strong></span>
+                <span><span data-i18n="alarm.model">모델</span> <strong>R53A</strong></span>
+                <span><span data-i18n="alarm.segment">설비 세그먼트</span> <strong>p_연마</strong></span>
+                <span><span data-i18n="alarm.mtba">MTBA</span> <strong>28.4 h</strong></span>
+                <span><span data-i18n="alarm.qty">생산수량</span> <strong>11,140</strong></span>
+              </div>
+              <span class="badge badge--bad"><span class="badge__dot"></span>임계 미달 · 평균 대비 −33%</span>
+            </div>
+
+            <div class="alarm-grid">
 
           <!-- Recent alarms -->
           <div class="alarm-block">
@@ -273,8 +286,10 @@
             <p style="font-size:10.5px;color:var(--ink-subtle);font-family:var(--font-mono);letter-spacing:.04em;margin:10px 0 0">총 60회 · 04-23 ~ 04-29 · 호기 #1116</p>
           </div>
 
+            </div>
+          </div>
         </div>
-      </article>
+      </div>
 
       <!-- Debug panel verbatim -->
       <details class="debug-panel" open>
