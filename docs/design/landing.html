@@ -133,20 +133,24 @@ button,input,textarea{font-family:inherit}
 .auth-pane .actions{margin-top:auto}  /* push CTA to bottom of card */
 
 /* error slot */
-/* inline field-level error (no border/background, just red text under the input) */
+/* inline field-level error — reserves vertical space ALWAYS (visibility toggle, no layout shift) */
 .field__error{
+  display:block;
+  visibility:hidden;
   margin:4px 0 0;
   padding:0;
   color:var(--status-bad);
   font-size:11px;
   line-height:1.4;
+  min-height:1.4em;
 }
-.field__error[hidden]{display:none !important}
-.field__error:not([hidden]){display:block}
+.field__error[hidden]{display:block !important;visibility:hidden}
+.field__error:not([hidden]){display:block;visibility:visible}
 
 /* keep submit button anchored to card bottom regardless of error visibility */
 .auth-pane > form{display:flex;flex-direction:column;flex:1 1 auto;min-height:0}
 .auth-pane > form[hidden]{display:none !important}
+.btn:active{transform:none}
 
 /* signup sent line */
 .signup__sent{margin:0 0 12px;font-size:13px;color:var(--ink-muted);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
