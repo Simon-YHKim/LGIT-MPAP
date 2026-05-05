@@ -133,20 +133,20 @@ button,input,textarea{font-family:inherit}
 .auth-pane .actions{margin-top:auto}  /* push CTA to bottom of card */
 
 /* error slot */
-.auth__error{
-  display:none;
-  margin:4px 0 12px;
-  padding:8px 10px;
-  border:1px solid rgba(178,58,72,0.3);
-  background:rgba(178,58,72,0.08);
+/* inline field-level error (no border/background, just red text under the input) */
+.field__error{
+  margin:4px 0 0;
+  padding:0;
   color:var(--status-bad);
-  font-size:12px;
+  font-size:11px;
   line-height:1.4;
-  border-radius:6px;
-  box-sizing:border-box;
 }
-.auth__error:not([hidden]){display:block}
-.auth__error[hidden]{display:none !important}
+.field__error[hidden]{display:none !important}
+.field__error:not([hidden]){display:block}
+
+/* keep submit button anchored to card bottom regardless of error visibility */
+.auth-pane > form{display:flex;flex-direction:column;flex:1 1 auto;min-height:0}
+.auth-pane > form[hidden]{display:none !important}
 
 /* signup sent line */
 .signup__sent{margin:0 0 12px;font-size:13px;color:var(--ink-muted);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
@@ -434,11 +434,10 @@ button,input,textarea{font-family:inherit}
             <div class="field__input-wrap">
               <input id="user-pw" name="password" type="password" autocomplete="current-password" required />
             </div>
+            <div class="field__error" id="login-error" data-error-slot role="alert" hidden></div>
           </div>
 
           <input type="hidden" id="user-email-hidden" name="email" value="" />
-
-          <div class="auth__error" id="login-error" data-error-slot role="alert" hidden></div>
 
           <div class="actions">
             <button type="submit" class="btn btn--primary" id="btn-login" data-i18n="btn.signin">로그인</button>
@@ -467,9 +466,8 @@ button,input,textarea{font-family:inherit}
                 <input id="signup-email" name="email" type="email" placeholder="ex) maxcapa@lginnotek.com" required autocomplete="email" spellcheck="false" autocapitalize="none" pattern=".+@lginnotek\.com" />
               </div>
               <span class="field__hint" data-i18n="signup.domain_hint">@lginnotek.com 도메인만 사용 가능합니다.</span>
+              <div class="field__error" id="signup-error" data-error-slot role="alert" hidden></div>
             </div>
-
-            <div class="auth__error" id="signup-error" data-error-slot role="alert" hidden></div>
 
             <div class="actions">
               <button type="submit" class="btn btn--primary" id="btn-send-code" data-i18n="btn.send_code">인증코드 발송</button>
@@ -500,11 +498,10 @@ button,input,textarea{font-family:inherit}
                 <span data-i18n="signup.timer_label">유효시간</span>
                 <span class="signup__timer" id="signup-timer" aria-live="polite">5:00</span>
               </span>
+              <div class="field__error" id="verify-error" data-error-slot role="alert" hidden></div>
             </div>
 
             <input type="hidden" id="signup-email-hidden" name="email" value="" />
-
-            <div class="auth__error" id="verify-error" data-error-slot role="alert" hidden></div>
 
             <div class="actions actions--row">
               <button type="submit" class="btn btn--primary" id="btn-verify" data-i18n="btn.signup_submit">회원가입 완료</button>
