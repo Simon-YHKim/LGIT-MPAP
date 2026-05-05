@@ -106,15 +106,16 @@ a{color:inherit;text-decoration:none}
 .nav__group__head:hover{background:var(--soft);color:var(--ink-body)}
 .nav__group__head .nav__icon{opacity:.75}
 .nav__group--has-active .nav__group__head{color:var(--ink-body)}
-.nav__group__caret{width:10px;height:10px;margin-left:auto;color:var(--ink-subtle);transition:transform .15s var(--ease);flex:none}
+.nav__group__caret{width:11px;height:11px;min-width:11px;min-height:11px;flex:none;margin-left:auto;color:var(--ink-subtle);transition:transform .15s var(--ease)}
 .nav__group.is-open .nav__group__caret{transform:rotate(180deg)}
 .sidebar.is-collapsed .nav__group__caret{display:none}
-.nav__group__list{display:flex;flex-direction:column;gap:1px;overflow:hidden;max-height:0;transition:max-height .18s var(--ease);padding-left:24px;position:relative}
-.nav__group__list::before{content:"";position:absolute;left:18px;top:4px;bottom:4px;width:1px;background:var(--border)}
-.nav__group.is-open .nav__group__list{max-height:200px}
+.nav__group__list{display:flex;flex-direction:column;gap:1px;overflow:hidden;max-height:0;transition:max-height .18s var(--ease);padding-left:32px;position:relative;margin-top:1px}
+.nav__group__list::before{content:"";position:absolute;left:20px;top:4px;bottom:6px;width:1px;background:var(--border-strong)}
+.nav__group.is-open .nav__group__list{max-height:240px}
 .sidebar.is-collapsed .nav__group__list{display:none}
-.nav__item--child{height:30px;font-size:12px;padding:0 10px;font-weight:500}
-.nav__item--child.nav__item--active::before{left:-12px;top:6px;bottom:6px}
+.nav__item--child{height:30px;font-size:12px;padding:0 10px;font-weight:500;position:relative}
+.nav__item--child::after{content:"";position:absolute;left:-12px;top:50%;width:8px;height:1px;background:var(--border-strong)}
+.nav__item--child.nav__item--active::before{left:-12px;top:6px;bottom:6px;width:2px}
 
 /* modal — alarm detail popup ======================================= */
 .modal-overlay{position:fixed;inset:0;background:rgba(15,17,21,0.45);z-index:50;display:none;align-items:center;justify-content:center;padding:24px;animation:modal-fade .15s var(--ease)}
