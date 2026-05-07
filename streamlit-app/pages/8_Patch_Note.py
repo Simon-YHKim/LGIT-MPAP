@@ -348,6 +348,21 @@ def apply_board_styles():
             padding-left: 0 !important;
             padding-right: 0 !important;
         }
+
+        /* preview sec-patch 의 sc-mono meta — date · author · tag-pill 한 줄. */
+        .board-detail-meta {
+            font-family: var(--font-mono, 'SF Mono', 'Consolas', monospace);
+            font-size: 11px;
+            color: var(--ink-muted, #6B7280);
+            letter-spacing: 0.02em;
+            margin: 0 0 14px;
+            line-height: 1.6;
+        }
+        .board-detail-meta .board-tag {
+            margin-left: 4px;
+            padding: 2px 6px;
+            font-size: 10px;
+        }
         </style>
         """,
         unsafe_allow_html=True
@@ -405,8 +420,10 @@ if query_post_id:
 
 apply_board_styles()
 
-# vit-page-head — mockup-S8-B 의 wine-red 띠 + 타이틀 패턴
-st.markdown('<div class="board-top-strip"></div>', unsafe_allow_html=True)
+# vit-top-strip + vit-page-head — preview-streamlit-clone.html sec-patch 와 동일.
+# render_top_strip() = ui/vitals/components.py 의 STAGE 2 primitive — 6px wine bar.
+from ui.vitals.components import render_top_strip, render_sub_head
+render_top_strip()
 st.markdown('<div class="board-top-title vit-page-head">Patch Note · 패치노트</div>', unsafe_allow_html=True)
 st.markdown(
     '<div class="board-top-sub">최신 변경 이력을 확인하고 상세 내용을 조회할 수 있습니다.</div>',
@@ -465,7 +482,8 @@ with col1:
     left_pad, content_col, right_pad = st.columns([0.04, 0.92, 0.04], gap="small")
 
     with content_col:
-        st.markdown('<div class="board-section-title">목록</div>', unsafe_allow_html=True)
+        # preview sec-patch 의 cmp-sub-head 패턴 — 좌측 4px wine bar + 제목.
+        render_sub_head("목록", "최근 게시글")
 
         for idx, (post_id, category, tag, title, created_by, created_at) in enumerate(posts):
             if idx > 0:
@@ -506,7 +524,7 @@ with col2:
     left_pad, content_col, right_pad = st.columns([0.04, 0.92, 0.04], gap="small")
 
     with content_col:
-        st.markdown('<div class="board-section-title">상세</div>', unsafe_allow_html=True)
+        render_sub_head("상세", "선택한 게시글의 본문")
 
         if st.session_state.selected_post_id:
             detail = get_board_post_detail(st.session_state.selected_post_id)
@@ -514,24 +532,23 @@ with col2:
             if detail:
                 _, category, tag, title, content, created_by, created_at, updated_at = detail
 
-                st.markdown(
-                    f'<div class="{tag_class(tag)}">{_esc(str(tag or ""))}</div>',
-                    unsafe_allow_html=True
-                )
+                # preview sec-patch 의 detail head — h3 title + sc-mono meta (date · author · tag pill)
                 st.markdown(
                     f'<div class="board-detail-title">{_esc(str(title or ""))}</div>',
                     unsafe_allow_html=True
                 )
+                meta_parts = [
+                    f'{created_at.strftime("%Y-%m-%d")}',
+                    f'{_esc(str(created_by or ""))}',
+                    f'<span class="{tag_class(tag)}">{_esc(str(tag or ""))}</span>',
+                ]
+                if updated_at and updated_at != created_at:
+                    meta_parts.append(f'수정 {updated_at.strftime("%Y-%m-%d")}')
+                meta_html = ' · '.join(meta_parts)
                 st.markdown(
-                    f'<div class="board-meta">작성자: {_esc(str(created_by or ""))}<br>작성일: {created_at.strftime("%Y-%m-%d %H:%M")}</div>',
+                    f'<div class="board-detail-meta sc-mono">{meta_html}</div>',
                     unsafe_allow_html=True
                 )
-
-                if updated_at and updated_at != created_at:
-                    st.markdown(
-                        f'<div class="board-meta">수정일: {updated_at.strftime("%Y-%m-%d %H:%M")}</div>',
-                        unsafe_allow_html=True
-                    )
 
                 st.divider()
                 st.write(content)
