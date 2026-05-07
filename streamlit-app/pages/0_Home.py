@@ -2070,7 +2070,9 @@ def render_cmp_summary_section():
         return
     init_filter_state(df)
 
-    # 제목을 최상단에 배치하고, 필터는 제목 아래에 표시합니다.
+    # preview sec-home-1 와 정렬 — vit-top-strip 6px wine + flat title.
+    from ui.vitals.components import render_top_strip
+    render_top_strip()
     st.markdown(
         """
         <div class="cmp-page-title-top">
@@ -2358,6 +2360,9 @@ def render_case1_best_worst_cards():
         st.warning("CMP 데이터가 없습니다.")
         return
 
+    # preview sec-home-2 와 정렬 — vit-top-strip 6px wine + flat title.
+    from ui.vitals.components import render_top_strip
+    render_top_strip()
     st.markdown(
         """
         <div class="cmp-page-title-top">
