@@ -3466,6 +3466,335 @@ body.is-login-active .vitals-app section[data-testid="stSidebar"] {
 }
 @media (max-width: 980px) { .adm-row-2 { grid-template-columns: 1fr; } }
 
+/* =============================================================================
+   sec-mtba / sec-detail / sec-alarm — S5-B / S6-B parity components
+   ============================================================================ */
+
+/* note-list (S5-B 안내 박스) */
+.vit-note-list {
+  list-style: none;
+  margin: 0 0 1rem;
+  padding: 12px 16px;
+  background: var(--soft);
+  border-left: 3px solid var(--ink-subtle);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.vit-note-list li {
+  font-size: 12px;
+  color: var(--ink-muted);
+  position: relative;
+  padding-left: 14px;
+}
+.vit-note-list li::before {
+  content: "※";
+  position: absolute;
+  left: 0;
+  color: var(--ink-subtle);
+}
+
+/* MTBA 비교 막대 차트 (S5-B 6 기간 그룹) */
+.vit-chart-card {
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  padding: 14px 16px;
+}
+.vit-chart-card__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  font-size: 11px;
+  color: var(--ink-muted);
+  margin-bottom: 8px;
+}
+.vit-chart-card__legend > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.vit-legend-dot {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  flex: 0 0 auto;
+}
+.vit-bar-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 12px;
+  align-items: end;
+  height: 200px;
+  padding: 8px 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.vit-bar-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  height: 100%;
+  min-width: 0;
+}
+.vit-bar-grp {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 2px;
+  align-items: end;
+  min-height: 0;
+}
+.vit-bar {
+  position: relative;
+  min-height: 6px;
+}
+.vit-bar__lbl {
+  position: absolute;
+  left: 0; right: 0;
+  top: -16px;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--ink-body);
+}
+.vit-bar-x {
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink-body);
+  padding-top: 6px;
+}
+.vit-chart-card__hint {
+  font-size: 11px;
+  color: var(--ink-subtle);
+  margin-top: 8px;
+}
+
+/* heatmap detail variant — pk_ small label + cell value */
+.vit-heatmap__cell-val { font-family: var(--font-mono); font-size: 13px; font-weight: 700; }
+.vit-heatmap__cell-pk {
+  display: block;
+  margin-top: 2px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--ink-subtle);
+  font-weight: 500;
+}
+.vit-heatmap--detail .vit-heatmap__cell { flex-direction: column; gap: 0; min-height: 48px; padding: 4px 2px; }
+.vit-heatmap--detail .vit-heatmap__cell--head small {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--ink-subtle);
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+  margin-top: 2px;
+}
+
+/* 메모 / 이미지 업로드 (S5-B) */
+.vit-upload {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+@media (max-width: 720px) { .vit-upload { grid-template-columns: 1fr; } }
+.vit-upload__col { display: flex; flex-direction: column; gap: 6px; }
+.vit-upload__label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink-body);
+}
+.vit-upload__textarea {
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  padding: 10px 12px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--ink-body);
+  resize: vertical;
+  min-height: 100px;
+  outline: none;
+}
+.vit-upload__textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-tint); }
+.vit-upload__dropzone {
+  border: 1px dashed var(--border-strong);
+  background: var(--soft);
+  padding: 18px 14px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  min-height: 100px;
+  justify-content: center;
+}
+.vit-upload__dropzone svg { width: 24px; height: 24px; color: var(--ink-muted); }
+.vit-upload__dz-title { font-size: 13px; font-weight: 600; color: var(--ink-body); }
+.vit-upload__dz-sub { font-size: 11px; color: var(--ink-muted); }
+.vit-upload__browse {
+  margin-top: 6px;
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.vit-upload__browse:hover { background: var(--soft); border-color: var(--border-strong); }
+.vit-actions-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+
+/* 패널 actions (S5-B / S6-B 공통) */
+.vit-panel-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--card-bg);
+  border: 1px dashed var(--border);
+  padding: 10px 14px;
+  margin-top: 14px;
+  font-size: 12px;
+  color: var(--ink-muted);
+}
+.vit-panel-actions__btns { display: flex; gap: 6px; }
+
+/* 디버그 패널 (S6-B 간소화) */
+.vit-debug {
+  background: #0F1115;
+  color: #E5E7EB;
+  border: 1px solid #1F2430;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  overflow: hidden;
+}
+.vit-debug__body {
+  padding: 14px 16px;
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  row-gap: 6px;
+  column-gap: 16px;
+  margin: 0;
+}
+.vit-debug__body dt { color: #9CA3AF; }
+.vit-debug__body dd { margin: 0; color: #E5E7EB; word-break: break-all; }
+
+/* sec-alarm — 타임라인 + 알람 리스트 */
+.vit-timeline { display: flex; flex-direction: column; gap: 14px; }
+.vit-timeline-day {
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+}
+.vit-timeline-day__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 10px 14px;
+  background: var(--soft);
+  border-bottom: 1px solid var(--border);
+}
+.vit-timeline-day__date {
+  font-family: 'LG EI Headline', 'LG EI Text', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink-body);
+}
+.vit-timeline-day__count {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-muted);
+}
+.vit-alarm-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.vit-alarm-list__item {
+  display: grid;
+  grid-template-columns: 70px 96px 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  border-left: 3px solid var(--ink-subtle);
+  font-size: 12.5px;
+}
+.vit-alarm-list__item:last-child { border-bottom: 0; }
+.vit-alarm-list__item--bad  { border-left-color: var(--status-bad); }
+.vit-alarm-list__item--warn { border-left-color: var(--status-warn); }
+.vit-alarm-list__time { font-family: var(--font-mono); color: var(--ink-muted); }
+.vit-alarm-list__id   { font-family: var(--font-mono); font-weight: 700; color: var(--ink-body); }
+.vit-alarm-list__msg  { color: var(--ink-body); }
+
+/* alarm-detail-modal (S6-B popup 양식) */
+#alarm-detail-modal .vit-modal { width: min(720px, 96vw); }
+.vit-modal__pill {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  background: var(--primary-tint);
+  color: var(--primary-dark);
+  padding: 2px 8px;
+  margin-left: 8px;
+}
+.vit-kv {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  row-gap: 8px;
+  column-gap: 14px;
+  margin: 0;
+  font-size: 13px;
+}
+.vit-kv dt { color: var(--ink-muted); font-weight: 600; font-size: 12px; }
+.vit-kv dd { margin: 0; color: var(--ink-body); font-family: var(--font-mono); }
+.vit-kv dd.high { color: var(--status-bad); font-weight: 700; }
+.vit-modal__sect {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--border);
+}
+.vit-modal__sect h4 {
+  margin: 0 0 8px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--ink-muted);
+  font-weight: 700;
+}
+.vit-alm-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 12px;
+  font-family: var(--font-mono);
+}
+.vit-alm-list__item {
+  display: grid;
+  grid-template-columns: 84px 110px 1fr;
+  gap: 12px;
+  padding: 6px 10px;
+  background: var(--soft);
+  border-left: 3px solid var(--ink-subtle);
+}
+.vit-alm-list__item--high { border-left-color: var(--status-bad); }
+.vit-alm-list__item--mid  { border-left-color: var(--status-warn); }
+.vit-alm-list__t { color: var(--ink-muted); }
+.vit-alm-list__id { color: var(--ink-body); font-weight: 700; }
+.vit-modal__foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 12px 18px;
+  background: var(--soft);
+  border-top: 1px solid var(--border);
+}
+
 /* 호기별 탭 — 좌측 차트 2개 stacked + 우측 호기 picker (높이 매칭) */
 .uph-trend-grid {
   display: grid;
