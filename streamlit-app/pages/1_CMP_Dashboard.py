@@ -1499,8 +1499,8 @@ def main():
     render_home_button()
     st.markdown("""
     <div class='page-shell'>
-      <div class='page-eyebrow'>CMP PERFORMANCE DASHBOARD</div>
-      <h1 style='margin:0;'>CMP 달성률 Dashboard</h1>
+      <div class='page-eyebrow' style='display:flex;align-items:center;gap:8px;'><span style='display:inline-block;width:4px;height:14px;background:var(--primary);border-radius:2px;'></span>PRODUCTIVITY · CMP</div>
+      <h1 style='margin:0;font-family:var(--font-display, var(--font-body));letter-spacing:-0.02em;'>CMP 달성률 Dashboard</h1>
       <div class='page-subtitle'>CMP대비 Capa/UPH/Effciecny 달성률을 확인 할 수 있는 Dashboard 입니다.</div>
     </div>
     """, unsafe_allow_html=True)
