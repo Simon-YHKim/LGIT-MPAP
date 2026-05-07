@@ -67,10 +67,10 @@ UPH_MACHINE_TREND_Y_RANGE_RATIO = 0.20
 # Dashboard visual constants
 # 그래프는 빨간색 계열 대신 제조 대시보드에서 무난한 Blue/Teal 계열을 사용합니다.
 DASHBOARD_FONT_FAMILY = 'Malgun Gothic, 맑은 고딕, Arial, sans-serif'
-CHART_PRIMARY_COLOR = '#2563EB'   # main blue
-CHART_SECONDARY_COLOR = '#14B8A6' # teal
-CHART_REFERENCE_COLOR = '#10B981' # green reference/target line
-CHART_MUTED_COLOR = '#94A3B8'     # muted gray-blue
+CHART_PRIMARY_COLOR = '#A50034'   # main blue
+CHART_SECONDARY_COLOR = '#1F8B4C' # teal
+CHART_REFERENCE_COLOR = '#1F8B4C' # green reference/target line
+CHART_MUTED_COLOR = '#9CA3AF'     # muted gray-blue
 # 성능 최적화 포인트: 불필요한 선행 쿼리 제거, BW 전체테이블 세션 캐시 재사용
 
 
@@ -105,19 +105,19 @@ def inject_vitals_theme():
 <style>
 
 :root{
-  --v-primary:#2563EB;
+  --v-primary:#A50034;
   --v-accent:#A50034;
-  --v-primary-dark:#1E40AF;
-  --v-bg:#F6F7F9;
+  --v-primary-dark:#7E0027;
+  --v-bg:#F7F8FA;
   --v-card:#FFFFFF;
   --v-border:#E5E7EB;
-  --v-soft:#F3F4F6;
-  --v-ink:#111827;
-  --v-body:#374151;
+  --v-soft:#F1F3F5;
+  --v-ink:#1F2430;
+  --v-body:#1F2430;
   --v-muted:#6B7280;
   --v-subtle:#9CA3AF;
-  --v-good:#10B981;
-  --v-bad:#DC2626;
+  --v-good:#1F8B4C;
+  --v-bad:#B23A48;
   --v-shadow:0 1px 2px rgba(17,24,39,.04), 0 8px 24px rgba(17,24,39,.035);
   --v-radius:8px;
 }
@@ -1070,19 +1070,19 @@ def fetch_action_line_sql(db: DbConfig, process_name: str, start_date: pd.Timest
 def apply_plot_theme(fig: go.Figure) -> go.Figure:
     """Plotly 그래프 전체 폰트/배경/격자 스타일 통일."""
     fig.update_layout(
-        font=dict(family=DASHBOARD_FONT_FAMILY, color='#111827'),
+        font=dict(family=DASHBOARD_FONT_FAMILY, color='#1F2430'),
         paper_bgcolor='rgba(0,0,0,0)',
         plot_bgcolor='white',
     )
     fig.update_xaxes(
-        tickfont=dict(family=DASHBOARD_FONT_FAMILY, color='#475569'),
-        title_font=dict(family=DASHBOARD_FONT_FAMILY, color='#334155'),
+        tickfont=dict(family=DASHBOARD_FONT_FAMILY, color='#6B7280'),
+        title_font=dict(family=DASHBOARD_FONT_FAMILY, color='#1F2430'),
         gridcolor='#E5E7EB',
         zerolinecolor='#E5E7EB',
     )
     fig.update_yaxes(
-        tickfont=dict(family=DASHBOARD_FONT_FAMILY, color='#475569'),
-        title_font=dict(family=DASHBOARD_FONT_FAMILY, color='#334155'),
+        tickfont=dict(family=DASHBOARD_FONT_FAMILY, color='#6B7280'),
+        title_font=dict(family=DASHBOARD_FONT_FAMILY, color='#1F2430'),
         gridcolor='#E5E7EB',
         zerolinecolor='#E5E7EB',
     )
@@ -1248,7 +1248,7 @@ def plot_empty_machine_trend_box():
     )
     for axis in ['xaxis', 'yaxis']:
         fig['layout'][axis]['showline'] = True
-        fig['layout'][axis]['linecolor'] = '#CBD5E1'
+        fig['layout'][axis]['linecolor'] = '#CBD0D6'
         fig['layout'][axis]['mirror'] = True
     return apply_plot_theme(fig)
 
@@ -1330,7 +1330,7 @@ def plot_empty_bw_trend_box():
     )
     for axis in ['xaxis', 'yaxis']:
         fig['layout'][axis]['showline'] = True
-        fig['layout'][axis]['linecolor'] = '#CBD5E1'
+        fig['layout'][axis]['linecolor'] = '#CBD0D6'
         fig['layout'][axis]['mirror'] = True
     return apply_plot_theme(fig)
 
