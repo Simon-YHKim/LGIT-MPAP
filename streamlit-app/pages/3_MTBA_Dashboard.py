@@ -66,17 +66,18 @@ ensure_alarm_annotation_table(engine)
 UPLOAD_DIR = Path("uploads")
 UPLOAD_DIR.mkdir(exist_ok=True)
 
-PRIMARY = "#A50034"
-PRIMARY_2 = "#7E0027"
-BG = "#FAF6F8"
-CARD = "#FFFDFE"
-ROSE = "#F7E7EC"
-MIST = "#F6F1F4"
-BORDER = "#E8D8DE"
-TEXT = "#3D2430"
-SUB = "#7A5A67"
-PASTEL_RED = "#F6D9DF"
-PASTEL_BLUE = "#E8F0FD"
+# Vitals 팔레트 정렬 — legacy 변수명 보존, 값만 통일 → 모든 CSS 자동 와인+모노톤
+PRIMARY     = "#A50034"  # Vitals primary
+PRIMARY_2   = "#7E0027"  # Vitals primary-dark
+BG          = "#F7F8FA"  # Vitals page-bg (legacy 핑크-회색 → cool 회백)
+CARD        = "#FFFFFF"  # Vitals card-bg
+ROSE        = "#F8E5EC"  # Vitals primary-tint
+MIST        = "#F1F3F5"  # Vitals soft
+BORDER      = "#E5E7EB"  # Vitals border
+TEXT        = "#1F2430"  # Vitals ink-body
+SUB         = "#6B7280"  # Vitals ink-muted
+PASTEL_RED  = "#FDECEF"  # Vitals bad-tint
+PASTEL_BLUE = "#E6F4EA"  # Vitals good-tint (legacy '블루' → 그린-tint, 신호등 의미)
 COMMENT_TABLE = "mtba.alarm_comment_history"
 
 PAGE_STYLE = f"""
@@ -84,16 +85,17 @@ PAGE_STYLE = f"""
     .stApp {{ background: {BG}; color: {TEXT}; }}
     .block-container {{ padding-top: 1rem; padding-bottom: 2rem; }}
     .page-banner {{
-    background: linear-gradient(135deg, #7B0F2E 0%, #9A163E 100%);
+    background: linear-gradient(135deg, {PRIMARY_2} 0%, {PRIMARY} 100%);
     color: #fff;
     border-radius: 12px;
     padding: 40px 28px 24px 28px;
-    box-shadow: 0 10px 24px rgba(109,16,40,.18);
+    box-shadow: 0 10px 24px rgba(165,0,52,.18);
     margin: 0 0 14px 0;
     overflow: visible;
+    font-family: var(--font-display, var(--font-body));
     font-size: 30px;
-    font-weight: 800;
-    letter-spacing: -0.2px;
+    font-weight: 700;
+    letter-spacing: -0.025em;
 }}
     .page-subtitle {{ color: {SUB}; font-size: 13px; margin: 4px 2px 18px 4px; }}
     .soft-card {{
