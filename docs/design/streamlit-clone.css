@@ -1070,3 +1070,499 @@ section[data-testid="stSidebar"] {
   font-size: 11px !important;
   text-align: center;
 }
+
+/* =============================================================================
+   HIGH-FIDELITY CLONE ADDITIONS — matplotlib-like charts, AgGrid, signal cards
+   ============================================================================= */
+
+/* ---- Section heading: 4px wine bar + eyebrow + h2 ------------------- */
+.sc-sec-head {
+  display: grid;
+  grid-template-columns: 4px 1fr;
+  gap: 0.875rem;
+  align-items: stretch;
+  margin: 1.25rem 0 0.875rem;
+}
+.sc-sec-head__bar {
+  background: var(--primary);
+  border-radius: 2px;
+  min-height: 36px;
+}
+.sc-sec-head__body { display: flex; flex-direction: column; gap: 2px; }
+.sc-sec-head__eyebrow {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--ink-subtle);
+  text-transform: uppercase;
+}
+.sc-sec-head__title {
+  margin: 0;
+  font-family: 'LG EI Headline', 'LG EI Text', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.018em;
+  color: var(--ink-body);
+}
+.sc-sec-head__sub {
+  margin: 4px 0 0;
+  font-size: 12.5px;
+  color: var(--ink-muted);
+  line-height: 1.5;
+}
+
+/* ---- Matplotlib-like chart shell ----------------------------------- */
+.sc-mpl {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--sc-radius);
+  padding: 0.5rem 0.625rem 0.625rem;
+  position: relative;
+}
+.sc-mpl-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.25rem;
+}
+.sc-mpl-title {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--ink-body);
+  letter-spacing: -0.005em;
+}
+.sc-mpl-legend {
+  display: inline-flex;
+  gap: 0.625rem;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--ink-muted);
+}
+.sc-mpl-legend span { display: inline-flex; align-items: center; gap: 4px; }
+.sc-mpl-legend i {
+  display: inline-block;
+  width: 10px; height: 2px;
+  background: currentColor;
+  border-radius: 1px;
+}
+.sc-mpl svg { width: 100%; display: block; }
+.sc-mpl text {
+  font-family: var(--font-mono);
+  fill: var(--ink-muted);
+  font-size: 9px;
+}
+.sc-mpl .sc-mpl-grid line { stroke: var(--border); stroke-width: 0.6; }
+.sc-mpl .sc-mpl-axis { stroke: var(--ink-subtle); stroke-width: 0.6; }
+.sc-mpl .sc-mpl-line { fill: none; stroke-width: 1.6; }
+.sc-mpl .sc-mpl-area { opacity: 0.10; }
+.sc-mpl .sc-mpl-dot { stroke: var(--card-bg); stroke-width: 1; }
+
+/* ---- AgGrid-like styled table -------------------------------------- */
+.sc-aggrid {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--card-bg);
+  font-size: 12px;
+}
+.sc-aggrid table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+.sc-aggrid thead th {
+  position: sticky; top: 0;
+  background: linear-gradient(180deg, #FBEEF2 0%, #F4DCE3 100%);
+  color: var(--primary-dark);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-align: left;
+  padding: 8px 10px;
+  border-right: 1px solid #ECC8D2;
+  border-bottom: 2px solid var(--primary);
+  height: 32px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sc-aggrid thead th:last-child { border-right: 0; }
+.sc-aggrid tbody td {
+  padding: 0 10px;
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  height: 32px;
+  font-size: 11.5px;
+  color: var(--ink-body);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sc-aggrid tbody td:last-child { border-right: 0; }
+.sc-aggrid tbody tr:hover td { background: rgba(165,0,52,0.025); }
+.sc-aggrid tbody tr:last-child td { border-bottom: 0; }
+.sc-aggrid .sc-cell-bad  { background: rgba(178,58,72,0.08); color: var(--status-bad); font-weight: 700; }
+.sc-aggrid .sc-cell-warn { background: rgba(181,127,27,0.08); color: var(--status-warn); font-weight: 700; }
+.sc-aggrid .sc-cell-good { background: rgba(31,139,76,0.06); color: var(--status-good); font-weight: 700; }
+.sc-aggrid .sc-cell-soft { background: var(--soft); }
+.sc-aggrid td.sc-cell-num { text-align: right; font-family: var(--font-mono); }
+
+/* ---- Signal cards (MTBA dashboard) --------------------------------- */
+.sc-signal-card {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--card-bg);
+  padding: 0.875rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  box-shadow: 0 4px 10px rgba(109,16,40,0.04);
+}
+.sc-signal-card.is-good { border-left: 4px solid var(--status-good); }
+.sc-signal-card.is-warn { border-left: 4px solid var(--status-warn); }
+.sc-signal-card.is-bad  { border-left: 4px solid var(--status-bad); }
+.sc-signal-card__head {
+  display: flex; justify-content: space-between; align-items: baseline;
+  gap: 0.5rem;
+}
+.sc-signal-card__title {
+  font-family: 'LG EI Headline', 'LG EI Text', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink-body);
+  letter-spacing: -0.015em;
+}
+.sc-signal-card__total {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-muted);
+  letter-spacing: 0.04em;
+}
+.sc-signal-row {
+  display: flex; align-items: center; gap: 0.5rem;
+  font-size: 12px;
+  color: var(--ink-body);
+  padding: 1px 0;
+}
+.sc-signal-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  flex: 0 0 auto;
+}
+.sc-signal-dot.is-good { background: var(--status-good); }
+.sc-signal-dot.is-warn { background: var(--status-warn); }
+.sc-signal-dot.is-bad  { background: var(--status-bad); }
+.sc-signal-row strong { font-family: var(--font-mono); margin-left: auto; font-weight: 700; }
+.sc-signal-divider {
+  border-top: 1px dashed var(--border);
+  margin: 0.375rem 0 0.25rem;
+}
+.sc-signal-stat {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  display: flex; gap: 0.5rem;
+  line-height: 1.6;
+}
+.sc-signal-stat .lbl { color: var(--ink-muted); width: 50px; }
+.sc-signal-stat .val { font-weight: 700; }
+.sc-signal-stat.is-good .val { color: var(--status-good); }
+.sc-signal-stat.is-bad  .val { color: var(--primary); }
+
+/* ---- Page banner (wine gradient hero) ------------------------------ */
+.sc-page-banner {
+  background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+  color: #fff;
+  border-radius: 12px;
+  padding: 1.75rem 1.5rem 1.25rem;
+  box-shadow: 0 10px 24px rgba(109,16,40,0.18);
+  margin-bottom: 1rem;
+}
+.sc-page-banner h1 {
+  margin: 0;
+  font-family: 'LG EI Headline', 'LG EI Text', sans-serif;
+  font-size: 30px;
+  line-height: 1.1;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #fff;
+}
+.sc-page-banner p {
+  margin: 0.5rem 0 0;
+  font-size: 13px;
+  color: rgba(255,255,255,0.92);
+  line-height: 1.55;
+}
+
+/* ---- Heatmap with axis labels (MTBA Detail) ------------------------ */
+.sc-heat-shell {
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  gap: 4px;
+  margin-top: 0.5rem;
+}
+.sc-heat-row-labels { display: grid; gap: 2px; }
+.sc-heat-row-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--ink-muted);
+  text-align: right;
+  padding-right: 4px;
+  height: 22px; line-height: 22px;
+}
+.sc-heat-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 2px;
+}
+.sc-heat-grid .sc-heat-cell { height: 22px; border-radius: 2px; }
+.sc-heat-col-labels {
+  grid-column: 2;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 2px;
+  margin-top: 4px;
+}
+.sc-heat-col-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--ink-muted);
+  text-align: center;
+}
+
+/* ---- Filter row (Vitals primary tag chips) ------------------------- */
+[data-baseweb="tag"].sc-tag-area {
+  background: var(--primary-tint);
+  color: var(--primary-dark);
+  border: 1px solid rgba(165,0,52,0.22);
+  font-weight: 700;
+}
+
+/* ---- Patch note board layout -------------------------------------- */
+.sc-board-row {
+  display: flex; align-items: center; gap: 0.625rem;
+  padding: 0.5rem 0.25rem;
+  border-bottom: 1px dashed var(--border);
+  cursor: pointer;
+}
+.sc-board-row:last-child { border-bottom: 0; }
+.sc-board-row.is-active {
+  background: var(--primary-tint);
+  margin: 0 -0.5rem; padding: 0.5rem 0.5rem;
+  border-radius: 6px;
+  border-bottom: 1px dashed transparent;
+}
+.sc-board-row .title { flex: 1; font-size: 13px; font-weight: 600; color: var(--ink-body); }
+.sc-board-row .date { font-family: var(--font-mono); font-size: 10.5px; color: var(--ink-muted); }
+
+/* ---- Soft card (Alarm intro / generic) ----------------------------- */
+.sc-soft-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0.875rem 1rem;
+  box-shadow: 0 8px 18px rgba(109,16,40,0.04);
+  margin-bottom: 0.75rem;
+}
+.sc-soft-card .sc-section-title {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--primary);
+  margin: 0 0 0.375rem;
+}
+.sc-soft-card .sc-small-muted {
+  font-size: 12px;
+  color: var(--ink-muted);
+  margin: 0;
+}
+
+/* ---- Timeline (Alarm Action List) --------------------------------- */
+.sc-timeline-day {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0.875rem 1rem;
+  background: rgba(255,255,255,0.96);
+  box-shadow: 0 8px 18px rgba(109,16,40,0.05);
+  margin-bottom: 0.75rem;
+}
+.sc-timeline-head {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 0.625rem;
+}
+.sc-timeline-date {
+  font-size: 20px;
+  font-weight: 900;
+  color: var(--primary);
+  font-family: 'LG EI Headline', 'LG EI Text', sans-serif;
+  letter-spacing: -0.015em;
+}
+.sc-timeline-stats {
+  color: var(--ink-muted);
+  font-size: 11.5px;
+  font-family: var(--font-mono);
+}
+.sc-comment-card {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 0.625rem 0.875rem;
+  background: var(--card-bg);
+  margin-bottom: 0.5rem;
+  box-shadow: 0 4px 10px rgba(109,16,40,0.04);
+}
+.sc-comment-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--primary);
+  margin-bottom: 0.25rem;
+}
+.sc-comment-meta {
+  color: var(--ink-muted);
+  font-size: 11.5px;
+  font-family: var(--font-mono);
+  margin-bottom: 0.375rem;
+  line-height: 1.5;
+}
+.sc-comment-body {
+  color: var(--ink-body);
+  font-size: 12.5px;
+  white-space: pre-wrap;
+  line-height: 1.55;
+  background: #fff;
+  border: 1px solid #EFE4E8;
+  border-radius: 10px;
+  padding: 0.5rem 0.625rem;
+}
+
+/* ---- Dashed divider in cards -------------------------------------- */
+.sc-dashed-div {
+  border-top: 1px dashed var(--border);
+  margin: 0.5rem 0;
+}
+
+/* ---- KPI badge row (admin / mtba detail) -------------------------- */
+.sc-badge-row { display: flex; gap: 0.375rem; flex-wrap: wrap; margin: 0.5rem 0; }
+.sc-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--soft);
+  color: var(--ink-body);
+}
+.sc-badge.is-good { background: #E6F4EA; color: var(--status-good); border-color: #B3DEC2; }
+.sc-badge.is-warn { background: #FAF1DD; color: var(--status-warn); border-color: #E5CC83; }
+.sc-badge.is-bad  { background: #FDECEF; color: var(--primary);     border-color: #F1BCC6; }
+.sc-badge.is-strong { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+/* ---- Click density heatmap (10x16) -------------------------------- */
+.sc-density-grid {
+  display: grid;
+  grid-template-columns: repeat(16, 1fr);
+  gap: 1px;
+  background: var(--border);
+  padding: 1px;
+  border-radius: 6px;
+}
+.sc-density-cell {
+  aspect-ratio: 1.4 / 1;
+  background: rgba(165,0,52,0.05);
+}
+
+/* ---- Session / log expandable rows -------------------------------- */
+.sc-session-row {
+  display: grid;
+  grid-template-columns: 18px 100px 1fr 70px 70px;
+  gap: 0.625rem;
+  padding: 0.5rem 0.625rem;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+  align-items: center;
+}
+.sc-session-row .caret { color: var(--ink-muted); font-family: var(--font-mono); }
+.sc-session-row .who   { font-weight: 700; }
+.sc-session-row .pages { color: var(--ink-muted); font-family: var(--font-mono); font-size: 11px; }
+.sc-session-row .dur   { font-family: var(--font-mono); text-align: right; }
+.sc-session-row .events { font-family: var(--font-mono); text-align: right; color: var(--ink-muted); }
+
+/* ---- Vertical bar chart (UPH deviation) ---------------------------- */
+.sc-bar-axis text { font-family: var(--font-mono); fill: var(--ink-muted); font-size: 9px; }
+.sc-bar-axis line { stroke: var(--border); stroke-width: 0.6; }
+
+/* ---- Contact box (Home footer) ------------------------------------ */
+.sc-contact-box {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: var(--soft);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin-top: 1.5rem;
+  font-size: 12px;
+  color: var(--ink-muted);
+}
+.sc-contact-box .sep { color: var(--ink-subtle); }
+.sc-contact-box a {
+  margin-left: auto;
+  background: var(--primary);
+  color: #fff;
+  padding: 6px 14px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 12px;
+}
+
+/* ---- Worst/Best best card (Home Case 1) — proc card layout -------- */
+.sc-proc-card {
+  border-radius: 12px;
+  padding: 0.75rem 0.875rem;
+  display: flex; flex-direction: column;
+  gap: 0.25rem;
+  border: 1px solid var(--border);
+  position: relative;
+}
+.sc-proc-card.is-bad  { background: linear-gradient(180deg, #FDECEF 0%, var(--card-bg) 60%); border-left: 4px solid var(--status-bad); }
+.sc-proc-card.is-warn { background: linear-gradient(180deg, #FAF1DD 0%, var(--card-bg) 60%); border-left: 4px solid var(--status-warn); }
+.sc-proc-card.is-good { background: linear-gradient(180deg, #E6F4EA 0%, var(--card-bg) 60%); border-left: 4px solid var(--status-good); }
+.sc-proc-card__rank {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--ink-muted);
+  letter-spacing: 0.08em;
+}
+.sc-proc-card__title {
+  font-family: 'LG EI Headline', 'LG EI Text', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink-body);
+  letter-spacing: -0.015em;
+  line-height: 1.2;
+}
+.sc-proc-card__rate { font-size: 28px; font-weight: 800; line-height: 1.05; font-family: 'LG EI Headline', 'LG EI Text', sans-serif; }
+.sc-proc-card.is-bad  .sc-proc-card__rate { color: var(--status-bad); }
+.sc-proc-card.is-warn .sc-proc-card__rate { color: var(--status-warn); }
+.sc-proc-card.is-good .sc-proc-card__rate { color: var(--status-good); }
+.sc-proc-card__meta {
+  font-size: 11.5px;
+  color: var(--ink-muted);
+  font-family: var(--font-mono);
+}
+.sc-proc-card__sec {
+  margin-top: 0.25rem; padding-top: 0.375rem;
+  border-top: 1px dashed rgba(0,0,0,0.08);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-muted);
+  display: flex; gap: 0.625rem;
+}
+.sc-proc-card__sec .lbl { color: var(--ink-subtle); }
+.sc-proc-card__sec .val { color: var(--ink-body); font-weight: 700; }
