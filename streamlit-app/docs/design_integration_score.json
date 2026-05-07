@@ -204,8 +204,8 @@
       "breakdown": {
         "tokens(30)": {
           "pts": 30.0,
-          "total": 37,
-          "vitals": 37,
+          "total": 38,
+          "vitals": 38,
           "off": 0,
           "off_samples": []
         },
@@ -377,13 +377,13 @@
     },
     {
       "file": "streamlit-app/pages/5_Alarm_Action_List.py",
-      "score": 97.4,
+      "score": 97.6,
       "max": 100,
       "breakdown": {
         "tokens(30)": {
-          "pts": 27.4,
-          "total": 23,
-          "vitals": 21,
+          "pts": 27.6,
+          "total": 25,
+          "vitals": 23,
           "off": 2,
           "off_samples": [
             "EFE4E8",
@@ -403,8 +403,8 @@
         "hero(10)": {
           "pts": 10.0,
           "matched": [
-            "main-title",
-            "<h1\\b"
+            "vit-page-head",
+            "main-title"
           ]
         },
         "components(15)": {
@@ -428,8 +428,8 @@
       "breakdown": {
         "tokens(30)": {
           "pts": 30.0,
-          "total": 41,
-          "vitals": 41,
+          "total": 42,
+          "vitals": 42,
           "off": 0,
           "off_samples": []
         },
