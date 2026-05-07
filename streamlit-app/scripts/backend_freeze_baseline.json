@@ -1352,6 +1352,7 @@
   },
   "tracking.py": {
     "functions": [
+      "_get_tracking_engine()",
       "_safe_int(v, default)",
       "_truncate(s, n)",
       "aggregate_heatmap_daily(target_date)",
@@ -1372,6 +1373,8 @@
       "json",
       "psycopg2",
       "psycopg2.extras",
+      "sqlalchemy",
+      "sqlalchemy.pool",
       "streamlit",
       "time"
     ],
