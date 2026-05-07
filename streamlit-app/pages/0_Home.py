@@ -2159,11 +2159,314 @@ def render_contact_box():
     )
 
 
+def render_home_mode_selector() -> str:
+    """Home 페이지 상단 3-모드 선택기.
+    - current  : 우리 home.html 디자인 (3 카테고리 메뉴) — 기본
+    - case1    : 심플 필터 + Best 3 / Worst 3 CMP 카드
+    - case2    : 원본 zip 의 CMP 요약 상황판 (디자인은 Vitals 톤)
+    Returns: 현재 선택된 모드 키.
+    """
+    st.markdown(
+        """
+        <style>
+        .vit-mode-bar {
+            display:flex; align-items:center; gap:6px; flex-wrap:wrap;
+            padding: 6px;
+            background: var(--soft);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            margin-bottom: 22px;
+            width: max-content;
+        }
+        .vit-mode-bar .vit-mode-eyebrow{
+            font-family: var(--font-mono);
+            font-size: 10px; font-weight: 700; letter-spacing: .1em;
+            color: var(--ink-subtle); text-transform: uppercase;
+            padding: 0 10px;
+        }
+        /* 모드 버튼 — st-key 로 스코프 */
+        div[class*="st-key-vit_mode_btn_"] button {
+            background: transparent !important;
+            border: 1px solid transparent !important;
+            color: var(--ink-muted) !important;
+            font-weight: 600 !important;
+            min-height: 32px !important;
+            padding: 0 14px !important;
+            border-radius: 8px !important;
+            box-shadow: none !important;
+        }
+        div[class*="st-key-vit_mode_btn_"] button:hover {
+            background: rgba(255,255,255,0.7) !important;
+            color: var(--ink-body) !important;
+        }
+        div[class*="st-key-vit_mode_btn_"] button:disabled,
+        div[class*="st-key-vit_mode_btn_"] button[disabled] {
+            background: var(--card-bg) !important;
+            border-color: var(--border) !important;
+            color: var(--ink-body) !important;
+            font-weight: 700 !important;
+            box-shadow: 0 1px 2px rgba(15,17,21,0.04) !important;
+            opacity: 1 !important;
+            cursor: default !important;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    # 기본값: 'current'
+    mode = st.session_state.get("home_mode", "current")
+
+    # 모드 바 — 3 버튼 + 안내 eyebrow
+    st.markdown('<div class="vit-mode-bar">', unsafe_allow_html=True)
+    cols = st.columns([1.4, 1.6, 2.0, 2.6, 1.0])
+    with cols[0]:
+        st.markdown('<span class="vit-mode-eyebrow">View</span>', unsafe_allow_html=True)
+    with cols[1]:
+        if st.button("기본", key="vit_mode_btn_current", disabled=(mode == "current")):
+            st.session_state["home_mode"] = "current"
+            st.rerun()
+    with cols[2]:
+        if st.button("Best · Worst 카드", key="vit_mode_btn_case1", disabled=(mode == "case1")):
+            st.session_state["home_mode"] = "case1"
+            st.rerun()
+    with cols[3]:
+        if st.button("CMP 요약 상황판", key="vit_mode_btn_case2", disabled=(mode == "case2")):
+            st.session_state["home_mode"] = "case2"
+            st.rerun()
+    with cols[4]:
+        st.empty()
+    st.markdown('</div>', unsafe_allow_html=True)
+
+    return mode
+
+
+def _render_simple_cmp_filter(df):
+    """Case 1 전용 — 심플 필터: 일/주 토글 + 영역(전체 또는 선택). 모델 필터는 생략 (직관적).
+    Returns: (view_mode, areas, models) — build_summary 호환.
+    """
+    init_filter_state(df)
+    st.markdown('<div class="cmp-filter-title">요약 필터</div>', unsafe_allow_html=True)
+    c1, c2, c3 = st.columns([0.85, 4.0, 1.5], gap="small")
+    with c1:
+        view_mode = st.radio(
+            "기간",
+            options=["일별", "주간"],
+            index=0 if st.session_state.get("home_view_mode_simple", "일별") == "일별" else 1,
+            horizontal=True,
+            key="home_view_mode_simple",
+            label_visibility="collapsed",
+        )
+    with c2:
+        all_areas = sorted(df[AREA_COL].dropna().unique().tolist())
+        areas = st.multiselect(
+            "영역",
+            options=all_areas,
+            default=st.session_state.get("home_areas_simple", all_areas),
+            key="home_areas_simple",
+            label_visibility="collapsed",
+            placeholder="영역(전체) — 비우면 모든 영역",
+        )
+    with c3:
+        st.markdown(
+            f'<div style="font-family:var(--font-mono);font-size:11px;color:var(--ink-subtle);'
+            f'letter-spacing:.06em;text-transform:uppercase;text-align:right;padding-top:6px;">'
+            f"latest · {df[DATE_COL].max().strftime('%Y-%m-%d') if not df.empty else '-'}</div>",
+            unsafe_allow_html=True,
+        )
+    # 모델 미선택 = 전체
+    return view_mode, areas, []
+
+
+def _compute_best_worst_processes(summary, n: int = 3):
+    """summary["cur"] 에서 공정별 평균 CMP 달성률 계산 → Best n / Worst n 반환.
+    Returns: (best_df, worst_df) — 각 DataFrame 컬럼: process_l1, area, model, cmp_rate."""
+    cur = summary.get("cur") if summary else None
+    if cur is None or cur.empty:
+        empty = pd.DataFrame(columns=[PROCESS_COL, AREA_COL, MODEL_COL, CMP_COL])
+        return empty, empty
+
+    # 공정 단위 평균 (영역·모델 cross — 가장 큰 단위로 집계)
+    proc = (
+        cur.groupby(PROCESS_COL, as_index=False)
+           .agg({CMP_COL: "mean", AREA_COL: "first", MODEL_COL: "first"})
+    )
+    proc = proc.dropna(subset=[CMP_COL])
+    proc_sorted = proc.sort_values(CMP_COL, ascending=False)
+    best = proc_sorted.head(n).reset_index(drop=True)
+    worst = proc_sorted.tail(n).iloc[::-1].reset_index(drop=True)  # 최악 1위 먼저
+    return best, worst
+
+
+def _render_proc_card(rank: int, row, kind: str = "best"):
+    """단일 공정 카드 — 우리 home.html 의 카드 톤 + 신호등 색.
+    kind: 'best' / 'worst' / 'mid'."""
+    proc_name = str(row.get(PROCESS_COL, "-"))
+    rate = row.get(CMP_COL)
+    klass = achievement_class(rate)  # 'good' / 'warn' / 'bad' / 'empty'
+    rate_str = fmt_pct(rate)
+    area_lbl = row.get(AREA_COL, "")
+    model_lbl = row.get(MODEL_COL, "")
+
+    st.markdown(
+        f"""
+        <div class="vit-proc-card vit-proc-card--{kind} vit-proc-card--{klass}">
+            <div class="vit-proc-card__rank">#{rank}</div>
+            <div class="vit-proc-card__title">{html.escape(proc_name)}</div>
+            <div class="vit-proc-card__rate vit-rate--{klass}">{rate_str}</div>
+            <div class="vit-proc-card__meta">
+                <span>{html.escape(str(area_lbl))}</span>
+                <span class="vit-proc-card__sep">·</span>
+                <span>{html.escape(str(model_lbl))}</span>
+            </div>
+            <div class="vit-proc-card__sec">
+                <span class="vit-proc-card__sec-label">UPH</span>
+                <span class="vit-proc-card__sec-val">—</span>
+                <span class="vit-proc-card__sec-sep">·</span>
+                <span class="vit-proc-card__sec-label">MTBA</span>
+                <span class="vit-proc-card__sec-val">—</span>
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+def render_case1_best_worst_cards():
+    """Case 1 — 심플 필터 + Best 3 / Worst 3 CMP 카드 (신호등 색).
+    UPH/MTBA 는 백엔드 호출 구조상 페이지 단일 컨텍스트에서 process×model 단위로
+    한번에 가져올 수 없어 카드 안에는 '—' 로 placeholder, 안내문 표시.
+    """
+    try:
+        df = load_cmp_data()
+    except Exception as e:
+        st.error(f"CMP 데이터 로딩 실패: {e}")
+        return
+    if df.empty:
+        st.warning("CMP 데이터가 없습니다.")
+        return
+
+    st.markdown(
+        """
+        <div class="cmp-page-title-top">
+            <h1>전체 CMP 요약 · Best 3 / Worst 3</h1>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+    view_mode, areas, models = _render_simple_cmp_filter(df)
+    summary = build_summary(df, areas, models, view_mode)
+    if summary is None or summary.get("cur") is None or summary["cur"].empty:
+        st.info("선택한 조건에 데이터가 없습니다.")
+        return
+
+    best_df, worst_df = _compute_best_worst_processes(summary, n=3)
+
+    # CSS once
+    st.markdown(
+        """
+        <style>
+        .vit-best-worst-grid { display:grid; grid-template-columns: repeat(3, 1fr); gap:12px; margin-bottom: 14px; }
+        @media (max-width:1280px){ .vit-best-worst-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width:980px){  .vit-best-worst-grid { grid-template-columns: 1fr; } }
+        .vit-proc-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--border-strong);
+            border-radius: 12px;
+            padding: 14px 16px;
+            display:flex; flex-direction:column; gap:6px;
+            position: relative;
+        }
+        .vit-proc-card--good  { border-left-color: var(--status-good); background: linear-gradient(180deg, var(--status-good-tint) 0%, var(--card-bg) 60%); }
+        .vit-proc-card--warn  { border-left-color: var(--status-warn); background: linear-gradient(180deg, var(--status-warn-tint, #FAF1DD) 0%, var(--card-bg) 60%); }
+        .vit-proc-card--bad   { border-left-color: var(--status-bad);  background: linear-gradient(180deg, #FDECEF 0%, var(--card-bg) 60%); }
+        .vit-proc-card--empty { border-left-color: var(--border-strong); }
+        .vit-proc-card__rank {
+            font-family: var(--font-mono);
+            font-size: 10px; font-weight:700; letter-spacing: .1em;
+            color: var(--ink-subtle); text-transform: uppercase;
+        }
+        .vit-proc-card__title {
+            font-family: var(--font-display);
+            font-size: 16px; font-weight:700; letter-spacing:-0.01em;
+            color: var(--ink-body);
+        }
+        .vit-proc-card__rate {
+            font-family: var(--font-mono);
+            font-size: 28px; font-weight:700; letter-spacing:-0.02em;
+            line-height: 1.05;
+        }
+        .vit-rate--good  { color: var(--status-good); }
+        .vit-rate--warn  { color: var(--status-warn); }
+        .vit-rate--bad   { color: var(--status-bad); }
+        .vit-rate--empty { color: var(--ink-subtle); }
+        .vit-proc-card__meta {
+            font-family: var(--font-mono); font-size:11px; color: var(--ink-muted);
+            display:flex; gap:6px; flex-wrap:wrap;
+        }
+        .vit-proc-card__sep,
+        .vit-proc-card__sec-sep { color: var(--ink-subtle); }
+        .vit-proc-card__sec {
+            margin-top:4px; padding-top:8px;
+            border-top: 1px dashed var(--border);
+            display:flex; gap:6px; flex-wrap:wrap;
+            font-family: var(--font-mono); font-size:11px; color: var(--ink-muted);
+        }
+        .vit-proc-card__sec-label { font-weight:700; color: var(--ink-subtle); letter-spacing: .04em; text-transform: uppercase; }
+        .vit-proc-card__sec-val   { color: var(--ink-body); font-weight:600; }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    # Worst 3 (먼저 — 주의 환기)
+    st.markdown('<div class="vit-cat-head"><span class="vit-cat-bar"></span><h3 class="vit-cat-title">Worst 3<span class="vit-cat-sub">개선 우선순위</span></h3></div>', unsafe_allow_html=True)
+    st.markdown('<div class="vit-best-worst-grid">', unsafe_allow_html=True)
+    cols_w = st.columns(3, gap="small")
+    for i, (idx, row) in enumerate(worst_df.iterrows()):
+        with cols_w[i % 3]:
+            _render_proc_card(i + 1, row, kind="worst")
+    st.markdown('</div>', unsafe_allow_html=True)
+
+    # Best 3
+    st.markdown('<div class="vit-cat-head" style="margin-top:18px;"><span class="vit-cat-bar"></span><h3 class="vit-cat-title">Best 3<span class="vit-cat-sub">달성률 상위</span></h3></div>', unsafe_allow_html=True)
+    st.markdown('<div class="vit-best-worst-grid">', unsafe_allow_html=True)
+    cols_b = st.columns(3, gap="small")
+    for i, (idx, row) in enumerate(best_df.iterrows()):
+        with cols_b[i % 3]:
+            _render_proc_card(i + 1, row, kind="best")
+    st.markdown('</div>', unsafe_allow_html=True)
+
+    # 데이터 가용성 안내 (UPH/MTBA placeholder)
+    st.markdown(
+        '<div class="cmp-page-title-top" style="margin-top:18px;"><p class="home-sub" '
+        'style="font-size:12px;color:var(--ink-subtle);">'
+        'UPH · MTBA 는 모델·기간 컨텍스트가 필요해 카드 내에서는 표시 생략. '
+        '각 공정의 상세는 우측 상단 카테고리 메뉴(UPH / MTBA Dashboard)에서 확인하세요.'
+        '</p></div>',
+        unsafe_allow_html=True,
+    )
+
+
 def main():
     inject_css()
-    render_cmp_summary_section()
-    render_menu_section()
-    render_contact_box()
+    mode = render_home_mode_selector()
+
+    if mode == "case1":
+        # Case 1 — 심플 필터 + Best/Worst 카드
+        render_case1_best_worst_cards()
+        render_menu_section()
+        render_contact_box()
+    elif mode == "case2":
+        # Case 2 — 원본 zip 의 CMP 요약 상황판 구조 (디자인은 Vitals 톤)
+        render_cmp_summary_section()
+        render_menu_section()
+        render_contact_box()
+    else:
+        # Current (default) — 우리 home.html 디자인 (3 카테고리 메뉴 only)
+        render_menu_section()
+        render_contact_box()
 
 
 if __name__ == "__main__":
