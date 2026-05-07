@@ -833,8 +833,18 @@ body.is-login-active .vitals-app section[data-testid="stSidebar"] {
 .sc-muted { color: var(--ink-muted); }
 
 /* page section anchor offset (header height) */
+/* ── 단일 페이지 라우팅 — 사이드바 nav 클릭 시 해당 섹션만 표시 ──────────
+   기본 모든 섹션 hidden, .is-active 만 노출. 인라인 <script> 가 hash
+   변경 또는 nav-link 클릭에 따라 .is-active 토글. */
 .sc-page-section {
   scroll-margin-top: 24px;
+  display: none;
+}
+.sc-page-section.is-active {
+  display: block;
+}
+.sc-preview-divider {
+  display: none;
 }
 
 /* dark-mode toggle button (corner) */
@@ -2676,7 +2686,7 @@ body.is-login-active .vitals-app section[data-testid="stSidebar"] {
   margin-left: 0.02em;
 }
 .sc-login-section .identity__sub {
-  margin: 18px 0 0;
+  margin: 11px 0 0;
   font-size: 18px;
   font-weight: 500;
   color: var(--on-dark);
@@ -2686,7 +2696,7 @@ body.is-login-active .vitals-app section[data-testid="stSidebar"] {
   opacity: 0.92;
 }
 .sc-login-section .identity__bu {
-  margin: 14px 0 0;
+  margin: 10px 0 0;
   font-family: var(--font-mono);
   font-size: 11px;
   color: var(--on-dark-subtle);
