@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Vitals · Preview Index — LGIT MPAP</title>
+<link rel="stylesheet" href="./_shared.css">
+<style>
+  /* index 전용 — 공유 CSS 위에 카드 그리드 */
+  .pi-hero {
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+    color: #fff;
+    border-radius: 12px;
+    padding: 36px 32px 28px;
+    margin-bottom: 24px;
+  }
+  .pi-hero__eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px; font-weight: 700; letter-spacing: .12em;
+    text-transform: uppercase; opacity: .82; margin-bottom: 6px;
+  }
+  .pi-hero__title { font-family: 'LG EI Headline','LG EI Text',sans-serif; font-size: 36px; font-weight: 700; letter-spacing: -0.025em; line-height: 1.1; margin: 0; }
+  .pi-hero__sub { margin-top: 10px; font-size: 14px; max-width: 760px; opacity: .92; }
+  .pi-hero__meta { margin-top: 16px; display:flex; gap:16px; flex-wrap:wrap; font-size:12px; font-family: var(--font-mono); opacity:.86; }
+
+  .pi-summary { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 28px; }
+  @media (max-width: 1100px){ .pi-summary { grid-template-columns: repeat(2, 1fr); } }
+  .pi-stat {
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-left: 3px solid var(--primary);
+    border-radius: 10px; padding: 14px 16px;
+  }
+  .pi-stat__label { font-size: 10px; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color: var(--ink-muted); }
+  .pi-stat__value { font-family: 'LG EI Headline','LG EI Text',sans-serif; font-size: 22px; font-weight:700; color: var(--ink-body); margin-top: 4px; letter-spacing:-0.02em; }
+  .pi-stat__delta { font-family: var(--font-mono); font-size: 11px; color: var(--status-good); margin-top: 2px; }
+
+  .pi-section-head {
+    display: flex; align-items: center; gap: 10px; margin: 8px 0 14px;
+  }
+  .pi-section-head__bar { width: 4px; height: 18px; background: var(--primary); border-radius: 2px; }
+  .pi-section-head h2 { margin: 0; font-family: 'LG EI Headline','LG EI Text',sans-serif; font-size: 18px; font-weight: 700; letter-spacing:-0.01em; }
+  .pi-section-head__sub { font-size: 12px; color: var(--ink-muted); margin-left: 8px; }
+
+  .pi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 28px; }
+  @media (max-width: 1280px){ .pi-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 820px){  .pi-grid { grid-template-columns: 1fr; } }
+
+  .pi-card {
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: 12px; padding: 16px 18px; display: flex; flex-direction: column; gap: 8px;
+    transition: border-color .15s ease, box-shadow .15s ease;
+  }
+  .pi-card:hover { border-color: var(--border-strong); box-shadow: 0 8px 22px rgba(17,24,39,.06); }
+  .pi-card__head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+  .pi-card__title { font-family: 'LG EI Headline','LG EI Text',sans-serif; font-size: 16px; font-weight: 700; color: var(--ink-body); letter-spacing:-0.01em; }
+  .pi-card__sub   { font-size: 11px; color: var(--ink-muted); font-family: var(--font-mono); margin-top: 2px; letter-spacing:.04em; }
+  .pi-card__desc  { font-size: 13px; color: var(--ink-body); line-height: 1.5; flex: 1; }
+  .pi-card__score {
+    font-family: var(--font-mono); font-size: 12px; font-weight: 700;
+    padding: 3px 8px; border-radius: 999px; white-space: nowrap;
+  }
+  .pi-card__score--good { background: #E6F4EA; color: var(--status-good); }
+  .pi-card__score--ok   { background: #FAF1DD; color: var(--status-warn); }
+  .pi-card__score--low  { background: #FDECEF; color: var(--status-bad); }
+  .pi-card__links { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; padding-top: 10px; border-top: 1px dashed var(--border); }
+  .pi-card__link {
+    display: inline-flex; align-items: center; gap: 5px;
+    height: 28px; padding: 0 12px;
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: 6px; font-size: 12px; font-weight: 600;
+    color: var(--ink-body); text-decoration: none;
+  }
+  .pi-card__link:hover { border-color: var(--primary); color: var(--primary); }
+  .pi-card__link--primary { background: var(--primary); border-color: var(--primary); color: #fff; }
+  .pi-card__link--primary:hover { background: var(--primary-dark); border-color: var(--primary-dark); color: #fff; }
+
+  .pi-note {
+    font-size: 12px; color: var(--ink-muted); line-height: 1.6; margin-bottom: 14px;
+    padding: 12px 14px; background: var(--soft); border-radius: 8px;
+    border-left: 3px solid var(--border-strong);
+  }
+</style>
+</head>
+<body>
+<div class="top-strip"></div>
+<main class="content" style="grid-column: 1 / -1; max-width: 1280px; margin: 0 auto;">
+
+  <div class="pi-hero">
+    <div class="pi-hero__eyebrow">VITALS · LGIT MPAP · PREVIEW INDEX</div>
+    <h1 class="pi-hero__title">공정의 호흡을 데이터로 듣다</h1>
+    <p class="pi-hero__sub">
+      LG Innotek 광학솔루션 사업부 · 생산혁신센터 Max Capa 팀 — Vitals 디자인 통합 미리보기.
+      각 페이지의 mockup HTML 을 직접 열람할 수 있습니다.
+    </p>
+    <div class="pi-hero__meta">
+      <span>BRANCH · claude/streamlit-vitals-Sry57</span>
+      <span>BACKEND · 100% PRESERVED</span>
+      <span>INTEGRATION · 93.5%</span>
+    </div>
+  </div>
+
+  <div class="pi-summary">
+    <div class="pi-stat">
+      <div class="pi-stat__label">Average score</div>
+      <div class="pi-stat__value">93.5 / 100</div>
+      <div class="pi-stat__delta">▲ 22.0 from baseline 71.5</div>
+    </div>
+    <div class="pi-stat">
+      <div class="pi-stat__label">Pages above 90</div>
+      <div class="pi-stat__value">8 / 10</div>
+      <div class="pi-stat__delta">2_UPH · 5_Alarm · 6_Chat · 9_Admin · 8_Patch · 0_Home · login · 3_MTBA</div>
+    </div>
+    <div class="pi-stat">
+      <div class="pi-stat__label">Backend signature changes</div>
+      <div class="pi-stat__value">0</div>
+      <div class="pi-stat__delta">✓ AST diff vs streamlit-source</div>
+    </div>
+    <div class="pi-stat">
+      <div class="pi-stat__label">Perf ops shipped</div>
+      <div class="pi-stat__value">8 / 8</div>
+      <div class="pi-stat__delta">cache · index · rerun · vars</div>
+    </div>
+  </div>
+
+  <div class="pi-note">
+    이 페이지는 <strong>정적 디자인 시안 (mockup HTML)</strong> 모음입니다.
+    실제 데이터 연동된 Streamlit 화면은 사내 PC 에서 <code>streamlit run login.py</code> 로 확인하세요.
+    각 mockup 의 디자인 토큰 (와인 #A50034, LG EI Text/Headline 폰트, F7F8FA 배경) 은
+    그대로 Streamlit 페이지에도 적용되어 있습니다.
+  </div>
+
+  <!-- =============== Hero / Identity =============== -->
+  <div class="pi-section-head">
+    <div class="pi-section-head__bar"></div>
+    <h2>Identity</h2>
+    <span class="pi-section-head__sub">진입 · 브랜드</span>
+  </div>
+  <div class="pi-grid">
+    <div class="pi-card">
+      <div class="pi-card__head">
+        <div>
+          <div class="pi-card__title">Landing</div>
+          <div class="pi-card__sub">vit · brand · video bg</div>
+        </div>
+        <div class="pi-card__score pi-card__score--good">100</div>
+      </div>
+      <div class="pi-card__desc">
+        유튜브 영상 어두운 그라데이션 배경 + LG Innotek 로고 + 글래스 카드.
+        "공정의 호흡을 데이터로 듣다" 캐치프레이즈.
+      </div>
+      <div class="pi-card__links">
+        <a class="pi-card__link pi-card__link--primary" href="./landing.html" target="_blank">미리보기</a>
+      </div>
+    </div>
+
+    <div class="pi-card">
+      <div class="pi-card__head">
+        <div>
+          <div class="pi-card__title">Login</div>
+          <div class="pi-card__sub">login.py · 92.5/100</div>
+        </div>
+        <div class="pi-card__score pi-card__score--good">92.5</div>
+      </div>
+      <div class="pi-card__desc">
+        다크 비디오 배경 + 우측 light Vitals 카드. 6개국 언어 selector.
+        var(--card-bg / --border / --soft / --ink-body / status-*) 토큰 모두 적용.
+      </div>
+      <div class="pi-card__links">
+        <a class="pi-card__link pi-card__link--primary" href="./mockup-S1-B.html" target="_blank">B (선택안)</a>
+        <a class="pi-card__link" href="./mockup-S1-A.html" target="_blank">A</a>
+        <a class="pi-card__link" href="./mockup-S1-C.html" target="_blank">C</a>
+      </div>
+    </div>
+
+    <div class="pi-card">
+      <div class="pi-card__head">
+        <div>
+          <div class="pi-card__title">Home</div>
+          <div class="pi-card__sub">0_Home.py · 95.9/100</div>
+        </div>
+        <div class="pi-card__score pi-card__score--good">95.9</div>
+      </div>
+      <div class="pi-card__desc">
+        3-mode selector (Current · Case 1 Best/Worst · Case 2 CMP summary).
+        대분류 카드 그리드 + 우측 채팅창. 가장 완성도 높은 페이지.
+      </div>
+      <div class="pi-card__links">
+        <a class="pi-card__link pi-card__link--primary" href="./home.html" target="_blank">미리보기 (최신)</a>
+        <a class="pi-card__link" href="./mockup-S2-B.html" target="_blank">구버전 시안</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- =============== Performance =============== -->
+  <div class="pi-section-head">
+    <div class="pi-section-head__bar"></div>
+    <h2>Performance Dashboards</h2>
+    <span class="pi-section-head__sub">CMP · UPH · MTBA</span>
+  </div>
+  <div class="pi-grid">
+    <div class="pi-card">
+      <div class="pi-card__head">
+        <div>
+          <div class="pi-card__title">CMP Dashboard</div>
+          <div class="pi-card__sub">1_CMP_Dashboard.py · 86.2/100</div>
+        </div>
+        <div class="pi-card__score pi-card__score--good">86.2</div>
+      </div>
+      <div class="pi-card__desc">
+        모델별 일자별 라인 차트 (CMP / UPH / Efficiency). Vitals primary / status-warn /
+        status-good 으로 차트 색상 일관화.
+      </div>
+      <div class="pi-card__links">
+        <a class="pi-card__link pi-card__link--primary" href="./mockup-S3-B.html" target="_blank">B</a>
+        <a class="pi-card__link" href="./mockup-S3-A.html" target="_blank">A</a>
+        <a class="pi-card__link" href="./mockup-S3-C.html" target="_blank">C</a>
+      </div>
+    </div>
+
+    <div class="pi-card">
+      <div class="pi-card__head">
+        <div>
+          <div class="pi-card__title">UPH Dashboard</div>
+          <div class="pi-card__sub">2_UPH_Dashboard.py · 98.5/100</div>
+        </div>
+        <div class="pi-card__score pi-card__score--good">98.5</div>
+      </div>
+      <div class="pi-card__desc">
+        설비별 UPH 동작시간 분석 (PostgreSQL SQL 집계형 v4). Malgun !important
+        모두 제거하고 LG EI 스택으로 통일. Vitals 토큰 alias 추가.
+      </div>
+      <div class="pi-card__links">
+        <a class="pi-card__link pi-card__link--primary" href="./mockup-S4-B.html" target="_blank">B</a>
+        <a class="pi-card__link" href="./mockup-S4-A.html" target="_blank">A</a>
+        <a class="pi-card__link" href="./mockup-S4-C.html" target="_blank">C</a>
+      </div>
+    </div>
+
+    <div class="pi-card">
+      <div class="pi-card__head">
+        <div>
+          <div class="pi-card__title">MTBA Dashboard</div>
+          <div class="pi-card__sub">3_MTBA_Dashboard.py · 94.1/100</div>
+        </div>
+        <div class="pi-card__score pi-card__score--good">94.1</div>
+      </div>
+      <div class="pi-card__desc">
+        AgGrid 기반 공정×호기 매트릭스. Best/Worst row 가 wine + status-good.
+        Tailwind 색 (#16a34a, #dc2626 등) 모두 Vitals 시맨틱으로 교체.
+      </div>
+      <div class="pi-card__links">
+        <a class="pi-card__link pi-card__link--primary" href="./mockup-S5-B.html" target="_blank">B</a>
+        <a class="pi-card__link" href="./mockup-S5-A.html" target="_blank">A</a>
+      </div>
+    </div>
+
+    <div class="pi-card">
+      <div class="pi-card__head">
+        <div>
+          <div class="pi-card__title">MTBA Detail View</div>
+          <div class="pi-card__sub">4_MTBA_Detail_View.py · 81.1/100</div>
+        </div>
+        <div class="pi-card__score pi-card__score--ok">81.1</div>
+      </div>
+      <div class="pi-card__desc">
+        패널형 상세 분석 + heatmap. 댓글 히스토리 캐시 (60s TTL).
+        팝업 응답 5-30s → &lt;1s (st.rerun 제거 + DB index).
+        Heatmap 시각 의미상 일부 off-palette 색 잔존.
+      </div>
+      <div class="pi-card__links">
+        <a class="pi-card__link pi-card__link--primary" href="./mockup-S6-B.html" target="_blank">B</a>
+      </div>
+    </div>
+
+    <div class="pi-card">
+      <div class="pi-card__head">
+        <div>
+          <div class="pi-card__title">Alarm Action List</div>
+          <div class="pi-card__sub">5_Alarm_Action_List.py · 97.4/100</div>
+        </div>
+        <div class="pi-card__score pi-card__score--good">97.4</div>
+      </div>
+      <div class="pi-card__desc">
+        팀별 알람 처리 액션 리스트 + 댓글 타임라인. 처리 상태 라벨에
+        status-good/warn/bad 시맨틱 적용.
+      </div>
+      <div class="pi-card__links">
+        <a class="pi-card__link pi-card__link--primary" href="./mockup-S5-B.html" target="_blank">시안 (S5-B 공유)</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- =============== AI / Tools =============== -->
+  <div class="pi-section-head">
+    <div class="pi-section-head__bar"></div>
+    <h2>AI · Tools</h2>
+    <span class="pi-section-head__sub">MaxCapa · Patch Note · Admin</span>
+  </div>
+  <div class="pi-grid">
+    <div class="pi-card">
+      <div class="pi-card__head">
+        <div>
+          <div class="pi-card__title">MaxCapa Chat</div>
+          <div class="pi-card__sub">6_MaxCapa_Chat.py · 97.0/100</div>
+        </div>
+        <div class="pi-card__score pi-card__score--good">97.0</div>
+      </div>
+      <div class="pi-card__desc">
+        vLLM intent_parser + planner. 자연어 질문 → SQL → 결과.
+        chat-status-good/warn/bad 시맨틱으로 응답 검증 라벨.
+      </div>
+      <div class="pi-card__links">
+        <a class="pi-card__link pi-card__link--primary" href="./mockup-S7-B.html" target="_blank">B</a>
+      </div>
+    </div>
+
+    <div class="pi-card">
+      <div class="pi-card__head">
+        <div>
+          <div class="pi-card__title">Patch Note</div>
+          <div class="pi-card__sub">8_Patch_Note.py · 95.0/100</div>
+        </div>
+        <div class="pi-card__score pi-card__score--good">95.0</div>
+      </div>
+      <div class="pi-card__desc">
+        Board → Patch Note 리네임 + dark → light Vitals 전환 (mockup-S8-B 일치).
+        NEW/UPD/FIX 태그가 status-good / status-warn / primary.
+      </div>
+      <div class="pi-card__links">
+        <a class="pi-card__link pi-card__link--primary" href="./mockup-S8-B.html" target="_blank">B</a>
+      </div>
+    </div>
+
+    <div class="pi-card">
+      <div class="pi-card__head">
+        <div>
+          <div class="pi-card__title">Admin Analytics</div>
+          <div class="pi-card__sub">9_Admin_Analytics.py · 97.0/100</div>
+        </div>
+        <div class="pi-card__score pi-card__score--good">97.0</div>
+      </div>
+      <div class="pi-card__desc">
+        사용자 로그인 / 페이지 조회 로그 분석. vit-page-head + 메트릭 카드 +
+        DataFrame 모두 Vitals 토큰화. 신규 mockup.
+      </div>
+      <div class="pi-card__links">
+        <a class="pi-card__link pi-card__link--primary" href="./mockup-S9-B.html" target="_blank">B (신규)</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- =============== Footer =============== -->
+  <div class="pi-section-head">
+    <div class="pi-section-head__bar"></div>
+    <h2>Reports</h2>
+    <span class="pi-section-head__sub">측정 · 백엔드 보존 · 변경 내역</span>
+  </div>
+  <div class="pi-grid">
+    <div class="pi-card">
+      <div class="pi-card__head">
+        <div>
+          <div class="pi-card__title">Integration Score (JSON)</div>
+          <div class="pi-card__sub">design_integration_score.json</div>
+        </div>
+      </div>
+      <div class="pi-card__desc">10 페이지의 6차원 점수 (tokens·font·theme·hero·components·status) 원본 데이터.</div>
+      <div class="pi-card__links">
+        <a class="pi-card__link" href="../../../streamlit-app/docs/design_integration_score.json" target="_blank">JSON</a>
+      </div>
+    </div>
+    <div class="pi-card">
+      <div class="pi-card__head">
+        <div>
+          <div class="pi-card__title">SimonK Multi-Angle Audit</div>
+          <div class="pi-card__sub">INTEGRATION_REPORT.md</div>
+        </div>
+      </div>
+      <div class="pi-card__desc">5개 에이전트 (review · codex · design · qa · backend) 병렬 검토 결과.</div>
+      <div class="pi-card__links">
+        <a class="pi-card__link" href="../../../streamlit-app/docs/INTEGRATION_REPORT.md" target="_blank">MD</a>
+      </div>
+    </div>
+    <div class="pi-card">
+      <div class="pi-card__head">
+        <div>
+          <div class="pi-card__title">Performance Audit</div>
+          <div class="pi-card__sub">PERF_AUDIT.md</div>
+        </div>
+      </div>
+      <div class="pi-card__desc">8개 perf 항목 + DB 인덱스 SQL + 적용 가이드.</div>
+      <div class="pi-card__links">
+        <a class="pi-card__link" href="../../../streamlit-app/docs/PERF_AUDIT.md" target="_blank">MD</a>
+      </div>
+    </div>
+  </div>
+
+  <p style="margin-top: 36px; padding-top: 18px; border-top: 1px solid var(--border); font-size: 11px; color: var(--ink-subtle); font-family: var(--font-mono); letter-spacing: .04em;">
+    © LG Innotek 광학솔루션 사업부 · 생산혁신센터 Max Capa 팀 · Vitals · 공정의 호흡을 데이터로 듣다
+  </p>
+</main>
+</body>
+</html>

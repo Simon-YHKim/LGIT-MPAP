@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Vitals · Admin Analytics — S9-B</title>
+<link rel="stylesheet" href="./_shared.css">
+<style>
+  /* S9-B — 관리자 분석 대시보드 mockup. 9_Admin_Analytics.py 의 vit-page-head + 메트릭 카드 + 테이블 + 차트 영역 시각화. */
+  .filter-bar {
+    display: flex; gap: 10px; flex-wrap: wrap; align-items: center;
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: 10px; padding: 12px 14px; margin-bottom: 18px;
+  }
+  .filter-bar label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-muted); }
+  .filter-bar select, .filter-bar input[type=date] {
+    background: var(--soft); border: 1px solid var(--border); border-radius: 6px;
+    padding: 6px 10px; font-size: 13px; color: var(--ink-body); font-family: var(--font-body);
+  }
+  .filter-bar .btn-apply {
+    margin-left: auto;
+    background: var(--primary); color: #fff; border: 1px solid var(--primary);
+    border-radius: 6px; padding: 8px 16px; font-size: 12px; font-weight: 700;
+  }
+
+  .metric-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 22px; }
+  @media (max-width: 1100px){ .metric-grid { grid-template-columns: repeat(2, 1fr); } }
+  .metric {
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: 10px; padding: 14px 16px;
+    border-left: 3px solid var(--primary);
+  }
+  .metric__label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-muted); }
+  .metric__value { font-family: 'LG EI Headline','LG EI Text',sans-serif; font-size: 26px; font-weight: 700; color: var(--ink-body); margin-top: 4px; letter-spacing: -0.02em; }
+  .metric__delta { font-family: var(--font-mono); font-size: 11px; margin-top: 2px; }
+  .metric__delta--up { color: var(--status-good); }
+  .metric__delta--down { color: var(--status-bad); }
+  .metric__delta--flat { color: var(--ink-subtle); }
+
+  .panel-grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: 14px; margin-bottom: 22px; }
+  @media (max-width: 1100px){ .panel-grid { grid-template-columns: 1fr; } }
+
+  .panel {
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: 10px; padding: 16px 18px;
+  }
+  .panel__head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .panel__title { font-family: 'LG EI Headline','LG EI Text',sans-serif; font-size: 14px; font-weight: 700; color: var(--ink-body); }
+  .panel__sub   { font-size: 11px; color: var(--ink-muted); font-family: var(--font-mono); }
+
+  /* line chart 가짜 SVG */
+  .chart-area svg { width: 100%; height: 200px; display: block; }
+
+  /* 테이블 */
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead th {
+    background: var(--soft); color: var(--ink-muted);
+    font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .08em;
+    padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--border);
+  }
+  tbody td {
+    padding: 10px; border-bottom: 1px solid var(--border);
+    color: var(--ink-body);
+  }
+  tbody tr:hover { background: var(--soft); }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 700; }
+  .badge--good { background: #E6F4EA; color: var(--status-good); }
+  .badge--warn { background: #FAF1DD; color: var(--status-warn); }
+  .badge--bad  { background: #FDECEF; color: var(--status-bad); }
+</style>
+</head>
+<body>
+<div class="top-strip"></div>
+<main class="content" style="max-width: 1280px; margin: 0 auto;">
+
+  <!-- vit-page-head — 9_Admin_Analytics.py 와 동일한 헤더 패턴 -->
+  <div class="page-head" style="background: var(--card-bg); border: 1px solid var(--border); border-left: 4px solid var(--primary); border-radius: 12px; padding: 18px 22px; margin-bottom: 18px; align-items: flex-start;">
+    <div>
+      <div style="font-family: var(--font-mono); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-muted); margin-bottom: 4px;">VITALS · ADMIN</div>
+      <h1 style="font-family: 'LG EI Headline','LG EI Text',sans-serif; font-size: 22px; font-weight: 700; letter-spacing: -0.01em; color: var(--ink-body); margin: 0;">관리자 분석 대시보드</h1>
+      <p style="margin: 4px 0 0; font-size: 12px; color: var(--ink-muted);">사용자 로그인 · 페이지 조회 로그 기반 분석</p>
+    </div>
+    <div style="display: flex; gap: 6px;">
+      <button class="btn" style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;color:var(--ink-body);">CSV 다운로드</button>
+      <button class="btn" style="background:var(--primary);border:1px solid var(--primary);border-radius:8px;padding:8px 14px;font-size:12px;font-weight:700;color:#fff;">새로고침</button>
+    </div>
+  </div>
+
+  <!-- 필터 -->
+  <div class="filter-bar">
+    <label>기간</label>
+    <input type="date" value="2026-04-07">
+    <span style="color: var(--ink-subtle);">→</span>
+    <input type="date" value="2026-05-07">
+    <label style="margin-left: 14px;">부서</label>
+    <select>
+      <option>전체</option>
+      <option>CM FOL생산기술팀</option>
+      <option>CM MOL생산기술팀</option>
+    </select>
+    <label style="margin-left: 14px;">페이지</label>
+    <select>
+      <option>전체</option>
+      <option>0_Home</option>
+      <option>1_CMP_Dashboard</option>
+      <option>4_MTBA_Detail_View</option>
+    </select>
+    <button class="btn-apply">적용</button>
+  </div>
+
+  <!-- 메트릭 -->
+  <div class="metric-grid">
+    <div class="metric">
+      <div class="metric__label">총 로그인 (30d)</div>
+      <div class="metric__value">2,148</div>
+      <div class="metric__delta metric__delta--up">▲ 18.4% vs 이전 30일</div>
+    </div>
+    <div class="metric">
+      <div class="metric__label">고유 사용자</div>
+      <div class="metric__value">312</div>
+      <div class="metric__delta metric__delta--up">▲ 6.1% vs 이전 30일</div>
+    </div>
+    <div class="metric">
+      <div class="metric__label">평균 세션 길이</div>
+      <div class="metric__value">14.6 min</div>
+      <div class="metric__delta metric__delta--flat">─ 0.2% vs 이전 30일</div>
+    </div>
+    <div class="metric">
+      <div class="metric__label">팝업 응답 P95</div>
+      <div class="metric__value">0.84 s</div>
+      <div class="metric__delta metric__delta--up">▼ 96.4% (perf 적용 후)</div>
+    </div>
+  </div>
+
+  <!-- 차트 + 테이블 -->
+  <div class="panel-grid">
+    <div class="panel">
+      <div class="panel__head">
+        <div class="panel__title">일자별 로그인 추이</div>
+        <div class="panel__sub">2026-04-07 → 2026-05-07</div>
+      </div>
+      <div class="chart-area">
+        <svg viewBox="0 0 600 220" preserveAspectRatio="none">
+          <!-- grid -->
+          <line x1="0" y1="40" x2="600" y2="40" stroke="#E5E7EB" stroke-dasharray="3 3"/>
+          <line x1="0" y1="100" x2="600" y2="100" stroke="#E5E7EB" stroke-dasharray="3 3"/>
+          <line x1="0" y1="160" x2="600" y2="160" stroke="#E5E7EB" stroke-dasharray="3 3"/>
+          <!-- area fill -->
+          <path d="M0,160 L40,140 L80,150 L120,120 L160,130 L200,90 L240,100 L280,70 L320,85 L360,55 L400,70 L440,40 L480,55 L520,30 L560,45 L600,25 L600,200 L0,200 Z" fill="rgba(165,0,52,0.08)"/>
+          <!-- line -->
+          <polyline fill="none" stroke="#A50034" stroke-width="2"
+            points="0,160 40,140 80,150 120,120 160,130 200,90 240,100 280,70 320,85 360,55 400,70 440,40 480,55 520,30 560,45 600,25"/>
+          <!-- last point -->
+          <circle cx="600" cy="25" r="4" fill="#A50034"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel__head">
+        <div class="panel__title">상위 페이지 (조회수)</div>
+        <div class="panel__sub">최근 30일</div>
+      </div>
+      <table>
+        <thead>
+          <tr><th>페이지</th><th style="text-align:right;">조회</th><th style="text-align:right;">유저</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>0_Home</td><td style="text-align:right;font-family:var(--font-mono);">3,842</td><td style="text-align:right;font-family:var(--font-mono);">298</td></tr>
+          <tr><td>4_MTBA_Detail_View</td><td style="text-align:right;font-family:var(--font-mono);">1,648</td><td style="text-align:right;font-family:var(--font-mono);">142</td></tr>
+          <tr><td>1_CMP_Dashboard</td><td style="text-align:right;font-family:var(--font-mono);">1,209</td><td style="text-align:right;font-family:var(--font-mono);">104</td></tr>
+          <tr><td>3_MTBA_Dashboard</td><td style="text-align:right;font-family:var(--font-mono);">876</td><td style="text-align:right;font-family:var(--font-mono);">88</td></tr>
+          <tr><td>2_UPH_Dashboard</td><td style="text-align:right;font-family:var(--font-mono);">762</td><td style="text-align:right;font-family:var(--font-mono);">72</td></tr>
+          <tr><td>6_MaxCapa_Chat</td><td style="text-align:right;font-family:var(--font-mono);">412</td><td style="text-align:right;font-family:var(--font-mono);">48</td></tr>
+          <tr><td>8_Patch_Note</td><td style="text-align:right;font-family:var(--font-mono);">328</td><td style="text-align:right;font-family:var(--font-mono);">240</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 부서별 사용 -->
+  <div class="panel" style="margin-bottom: 22px;">
+    <div class="panel__head">
+      <div class="panel__title">부서별 활성 사용자</div>
+      <div class="panel__sub">최근 30일</div>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>부서</th>
+          <th style="text-align:right;">활성 사용자</th>
+          <th style="text-align:right;">평균 세션</th>
+          <th style="text-align:right;">최근 7일 추세</th>
+          <th>상태</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>CM FOL생산기술팀</td><td style="text-align:right;font-family:var(--font-mono);">42</td><td style="text-align:right;font-family:var(--font-mono);">18.2 min</td><td style="text-align:right;color:var(--status-good);font-family:var(--font-mono);">▲ 12%</td><td><span class="badge badge--good">정상</span></td></tr>
+        <tr><td>CM MOL생산기술팀</td><td style="text-align:right;font-family:var(--font-mono);">38</td><td style="text-align:right;font-family:var(--font-mono);">15.6 min</td><td style="text-align:right;color:var(--status-good);font-family:var(--font-mono);">▲ 6%</td><td><span class="badge badge--good">정상</span></td></tr>
+        <tr><td>CM EOL생산기술팀</td><td style="text-align:right;font-family:var(--font-mono);">31</td><td style="text-align:right;font-family:var(--font-mono);">14.0 min</td><td style="text-align:right;color:var(--ink-subtle);font-family:var(--font-mono);">─ 1%</td><td><span class="badge badge--good">정상</span></td></tr>
+        <tr><td>DM 생산기술팀</td><td style="text-align:right;font-family:var(--font-mono);">28</td><td style="text-align:right;font-family:var(--font-mono);">12.4 min</td><td style="text-align:right;color:var(--status-warn);font-family:var(--font-mono);">▼ 8%</td><td><span class="badge badge--warn">관찰</span></td></tr>
+        <tr><td>Actuator생산팀</td><td style="text-align:right;font-family:var(--font-mono);">14</td><td style="text-align:right;font-family:var(--font-mono);">9.2 min</td><td style="text-align:right;color:var(--status-bad);font-family:var(--font-mono);">▼ 22%</td><td><span class="badge badge--bad">위험</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p style="font-size: 11px; color: var(--ink-subtle); font-family: var(--font-mono); letter-spacing: .04em;">
+    © LG Innotek 광학솔루션 사업부 · Vitals · 9_Admin_Analytics · S9-B
+  </p>
+</main>
+</body>
+</html>
