@@ -1162,55 +1162,57 @@ body.is-login-active .vitals-app section[data-testid="stSidebar"] {
 @media (max-width: 1280px) { .sc-nav-cards { grid-template-columns: repeat(3, 1fr); } }
 @media (max-width: 720px)  { .sc-nav-cards { grid-template-columns: 1fr; } }
 
+/* nav-card — mockup-S2-B `.tool-card` pattern (와인 3px 좌측 bar는 항상 노출).
+   Vitals 아이덴티티의 핵심 시각 요소 = 와인색 가로/세로 선이므로 hover 만이 아니라
+   기본 상태에도 wine bar 가 보인다. */
 .sc-nav-card {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding: 14px;
+  gap: 12px;
+  padding: 18px 20px 18px 24px;
   background: var(--card-bg);
   border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: 8px;
   position: relative;
   text-decoration: none;
-  color: inherit;
+  color: var(--ink-body);
   cursor: pointer;
-  transition: border-color 150ms, box-shadow 150ms;
+  transition: border-color 160ms var(--ease, cubic-bezier(.2,.6,.3,1)), box-shadow 160ms var(--ease, cubic-bezier(.2,.6,.3,1));
   overflow: hidden;
-  min-height: 158px;
+  min-height: 132px;
 }
 .sc-nav-card::before {
   content: "";
   position: absolute;
   left: 0; top: 0; bottom: 0;
-  width: 0;
+  width: 3px;
   background: var(--primary);
-  transition: width 150ms;
+  transition: background 160ms;
 }
 .sc-nav-card:hover {
   border-color: var(--border-strong);
-  box-shadow: 0 8px 22px -4px rgba(15, 17, 21, 0.06);
+  box-shadow: 0 1px 3px rgba(31, 36, 48, .04);
 }
-.sc-nav-card:hover::before { width: 3px; }
+.sc-nav-card:hover::before { background: var(--primary-dark); }
 .sc-nav-card[aria-disabled="true"] { opacity: 0.55; cursor: not-allowed; }
 
 .sc-nav-card__head {
   display: flex;
-  justify-content: space-between;
   align-items: flex-start;
-  gap: 10px;
+  justify-content: space-between;
+  gap: 12px;
 }
 .sc-nav-card__icon {
-  width: 30px; height: 30px;
-  border-radius: 7px;
+  width: 36px; height: 36px;
+  border-radius: 6px;
   background: var(--soft);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex: none;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
   color: var(--ink-body);
-  transition: background 150ms, color 150ms;
+  transition: background 160ms, color 160ms;
 }
-.sc-nav-card__icon svg { width: 15px; height: 15px; stroke-width: 1.6; }
+.sc-nav-card__icon svg { width: 18px; height: 18px; stroke-width: 1.6; }
 .sc-nav-card:hover .sc-nav-card__icon {
   background: var(--primary-tint);
   color: var(--primary-dark);
@@ -1218,69 +1220,85 @@ body.is-login-active .vitals-app section[data-testid="stSidebar"] {
 .sc-nav-card__badge {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  padding: 2px 8px;
+  border-radius: 4px;
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: .04em;
-  padding: 3px 8px;
-  border-radius: 999px;
-  border: 1px solid var(--border);
+  text-transform: uppercase;
+  line-height: 1.4;
+  background: var(--soft);
   color: var(--ink-subtle);
 }
-.sc-nav-card__badge::before {
-  content: "";
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: currentColor;
-  flex: none;
-}
-.sc-nav-card__badge--good { color: var(--status-good); border-color: rgba(31,139,76,0.3); background: rgba(31,139,76,0.08); }
-.sc-nav-card__badge--warn { color: var(--status-warn); border-color: rgba(181,127,27,0.3); background: rgba(181,127,27,0.08); }
+.sc-nav-card__badge--good { color: var(--status-good); background: rgba(31, 139, 76, 0.08); }
+.sc-nav-card__badge--warn { color: var(--status-warn); background: rgba(181, 127, 27, 0.08); }
 .sc-nav-card__body {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 4px;
   flex: 1;
   min-width: 0;
-  justify-content: flex-end;
 }
 .sc-nav-card__title {
   margin: 0;
   font-family: 'LG EI Headline', 'LG EI Text', sans-serif;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 700;
   letter-spacing: -0.01em;
+  line-height: 1.4;
   color: var(--ink-body);
 }
 .sc-nav-card__desc {
   margin: 0;
-  font-size: 12px;
+  font-size: 13px;
   color: var(--ink-muted);
-  line-height: 1.45;
+  line-height: 1.5;
 }
-.sc-nav-card__foot {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-top: 6px;
-  border-top: 1px dashed var(--border);
+/* foot is intentionally hidden — S2-B `.tool-card` is flat (no meta line). */
+.sc-nav-card__foot { display: none; }
+
+/* ── Vitals 아이덴티티 라인 ──────────────────────────────────────────
+   사용자 지시: "와인색 선들은 우리 아이덴티티 — 앞으로 계속 기억해서 적용".
+   재사용 가능한 wine 라인 prim:
+     .vit-top-strip   — 페이지 최상단 8px wine 가로 strip (mockup-S2-B 패턴)
+     .vit-page-head   — eyebrow + h1 + p (S2-B 페이지 헤더)
+   --------------------------------------------------------------- */
+.vit-top-strip {
+  height: 6px;
+  background: var(--primary);
+  margin: 0 -1.5rem 1.25rem;
+  border-radius: 0;
+}
+.sc-mode-card .vit-top-strip {
+  /* mode-card 안쪽에선 카드 외곽선과 어긋나지 않도록 살짝 마이너스 마진 */
+  margin: -1.25rem -1.25rem 1.25rem;
+}
+.vit-page-head {
+  margin: 0 0 1.5rem;
+}
+.vit-page-head .eyebrow {
   font-family: var(--font-mono);
-  font-size: 10.5px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .08em;
   color: var(--ink-subtle);
-  letter-spacing: .04em;
+  margin-bottom: 8px;
 }
-.sc-nav-card__arrow {
-  color: var(--primary);
-  font-size: 14px;
-  font-family: var(--font-mono);
-  opacity: 0;
-  transform: translateX(-3px);
-  transition: opacity 150ms, transform 150ms;
+.vit-page-head h1 {
+  margin: 0 0 6px;
+  font-family: 'LG EI Headline', 'LG EI Text', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  line-height: 1.2;
+  color: var(--ink-body);
 }
-.sc-nav-card:hover .sc-nav-card__arrow {
-  opacity: 1;
-  transform: translateX(0);
+.vit-page-head p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--ink-muted);
 }
 
 /* =============================================================================
