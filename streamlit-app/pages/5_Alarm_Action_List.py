@@ -42,8 +42,8 @@ ensure_team_process_filter_table(engine)
 COMMENT_TABLE = 'mtba.alarm_comment_history'
 TEAM_OPTIONS = ['전체', 'FOL팀', 'MOL팀', 'EOL팀']
 
-PRIMARY = '#6D1028'
-PRIMARY_2 = '#8B1E3F'
+PRIMARY = '#A50034'
+PRIMARY_2 = '#7E0027'
 BG = '#FAF6F8'
 ROSE = '#F7E7EC'
 BORDER = '#E8D8DE'
@@ -61,7 +61,7 @@ st.markdown(f"""
 .main-title {{
     background: linear-gradient(135deg, #7B0F2E 0%, #9A163E 100%);
     color: #fff;
-    border-radius: 22px;
+    border-radius: 12px;
     padding: 40px 28px 24px 28px;
     box-shadow: 0 10px 24px rgba(109,16,40,.18);
     margin: 0 0 14px 0;
@@ -79,12 +79,12 @@ st.markdown(f"""
     font-size: 13px;
     color: rgba(255,255,255,.92);
 }}
-.soft-card {{ border:1px solid var(--border); border-radius:24px; padding:12px 14px; background:rgba(255,255,255,.96); box-shadow:0 8px 18px rgba(109,16,40,.05); margin-bottom:10px; }}
+.soft-card {{ border:1px solid var(--border); border-radius: 12px; padding:12px 14px; background:rgba(255,255,255,.96); box-shadow:0 8px 18px rgba(109,16,40,.05); margin-bottom:10px; }}
 .section-title {{ font-size:13px; font-weight:800; color:var(--primary); margin:0 0 8px 0; }}
 .small-muted {{ color:var(--sub); font-size:12px; }}
 .info-chip {{ display:inline-block; padding:6px 12px; border-radius:999px; background:var(--rose); color:var(--primary); font-size:12px; font-weight:800; margin-right:6px; margin-bottom:6px; border:1px solid var(--border); }}
 .team-badge {{ display:inline-block; padding:4px 10px; border-radius:999px; background:#fff; color:var(--primary); border:1px solid var(--border); font-size:12px; font-weight:800; margin-left:8px; }}
-.timeline-day {{ border:1px solid var(--border); border-radius:22px; padding:14px 16px; background:rgba(255,255,255,.96); box-shadow:0 8px 18px rgba(109,16,40,.05); margin-bottom:12px; }}
+.timeline-day {{ border:1px solid var(--border); border-radius: 12px; padding:14px 16px; background:rgba(255,255,255,.96); box-shadow:0 8px 18px rgba(109,16,40,.05); margin-bottom:12px; }}
 .timeline-day-header {{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:10px; }}
 .timeline-date {{ font-size:20px; font-weight:900; color:var(--primary); }}
 .timeline-stats {{ color:var(--sub); font-size:12px; }}

@@ -81,14 +81,14 @@ def inject_css() -> None:
         @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css');
         @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap');
 
-        @font-face{font-family:'Malgun Gothic', '맑은 고딕', sans-serif;;font-weight:300;font-style:normal;font-display:swap;src:url('./fonts/lg-ei-text-300.woff2') format('woff2')}
-        @font-face{font-family:'Malgun Gothic', '맑은 고딕', sans-serif;;font-weight:400;font-style:normal;font-display:swap;src:url('./fonts/lg-ei-text-400.woff2') format('woff2')}
-        @font-face{font-family:'Malgun Gothic', '맑은 고딕', sans-serif;;font-weight:600;font-style:normal;font-display:swap;src:url('./fonts/lg-ei-text-600.woff2') format('woff2')}
-        @font-face{font-family:'Malgun Gothic', '맑은 고딕', sans-serif;;font-weight:700;font-style:normal;font-display:swap;src:url('./fonts/lg-ei-text-700.woff2') format('woff2')}
-        @font-face{font-family:'Malgun Gothic', '맑은 고딕', sans-serif;;font-weight:300;font-style:normal;font-display:swap;src:url('./fonts/lg-ei-headline-300.woff2') format('woff2')}
-        @font-face{font-family:'Malgun Gothic', '맑은 고딕', sans-serif;;font-weight:400;font-style:normal;font-display:swap;src:url('./fonts/lg-ei-headline-400.woff2') format('woff2')}
-        @font-face{font-family:'Malgun Gothic', '맑은 고딕', sans-serif;;font-weight:600;font-style:normal;font-display:swap;src:url('./fonts/lg-ei-headline-600.woff2') format('woff2')}
-        @font-face{font-family:'Malgun Gothic', '맑은 고딕', sans-serif;;font-weight:700;font-style:normal;font-display:swap;src:url('./fonts/lg-ei-headline-700.woff2') format('woff2')}
+        @font-face{font-family:'LG EI Text';font-weight:300;font-style:normal;font-display:swap;src:url('./fonts/lg-ei-text-300.woff2') format('woff2')}
+        @font-face{font-family:'LG EI Text';font-weight:400;font-style:normal;font-display:swap;src:url('./fonts/lg-ei-text-400.woff2') format('woff2')}
+        @font-face{font-family:'LG EI Text';font-weight:600;font-style:normal;font-display:swap;src:url('./fonts/lg-ei-text-600.woff2') format('woff2')}
+        @font-face{font-family:'LG EI Text';font-weight:700;font-style:normal;font-display:swap;src:url('./fonts/lg-ei-text-700.woff2') format('woff2')}
+        @font-face{font-family:'LG EI Headline';font-weight:300;font-style:normal;font-display:swap;src:url('./fonts/lg-ei-headline-300.woff2') format('woff2')}
+        @font-face{font-family:'LG EI Headline';font-weight:400;font-style:normal;font-display:swap;src:url('./fonts/lg-ei-headline-400.woff2') format('woff2')}
+        @font-face{font-family:'LG EI Headline';font-weight:600;font-style:normal;font-display:swap;src:url('./fonts/lg-ei-headline-600.woff2') format('woff2')}
+        @font-face{font-family:'LG EI Headline';font-weight:700;font-style:normal;font-display:swap;src:url('./fonts/lg-ei-headline-700.woff2') format('woff2')}
 
         :root{
             --primary:#A50034;
@@ -107,8 +107,8 @@ def inject_css() -> None:
             --status-good-tint:#E6F4EA;
             --status-warn-tint:#FAF1DD;
             --status-subtle-tint:#EEF0F3;
-            --font-body:'Malgun Gothic', '맑은 고딕', sans-serif;,'LG Smart','Pretendard Variable',Pretendard,'Malgun Gothic',system-ui,sans-serif;
-            --font-display:'Malgun Gothic', '맑은 고딕', sans-serif;,'Malgun Gothic', '맑은 고딕', sans-serif;,'Pretendard Variable',Pretendard,sans-serif;
+            --font-body:'LG EI Text','LG Smart','Pretendard Variable',Pretendard,'Malgun Gothic',system-ui,sans-serif;
+            --font-display:'LG EI Headline','LG EI Text','Pretendard Variable',Pretendard,sans-serif;
             --font-mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
         }
 

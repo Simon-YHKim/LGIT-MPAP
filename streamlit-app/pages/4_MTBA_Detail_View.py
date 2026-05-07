@@ -50,8 +50,8 @@ DIM_EQUIPMENT = 'mtba.dim_equipment'
 COMMENT_TABLE = 'mtba.alarm_comment_history'
 WHITELIST_TABLE = 'mtba.alarm_whitelist'
 
-PRIMARY = '#6D1028'
-PRIMARY_2 = '#8B1E3F'
+PRIMARY = '#A50034'
+PRIMARY_2 = '#7E0027'
 BG = '#FAF6F8'
 CARD = '#FFFDFE'
 ROSE = '#F7E7EC'
@@ -71,7 +71,7 @@ st.markdown(f"""
 .soft-card {{
     background: rgba(255,255,255,.92);
     border: 1px solid {BORDER};
-    border-radius: 20px;
+    border-radius: 12px;
     padding: 14px 18px;
     box-shadow: 0 10px 24px rgba(109,16,40,.05);
 }}
@@ -99,7 +99,7 @@ div.stButton > button[kind="primary"] {{background:{PRIMARY} !important; color:w
 .popup-sub {{color:{SUB}; font-size:.9rem; line-height:1.5;}}
 .page-hero {{
     background: linear-gradient(135deg, #7B0F2E 0%, #9A163E 100%);
-    border-radius: 22px;
+    border-radius: 12px;
     padding: 40px 28px 24px 28px;
     box-shadow: 0 10px 24px rgba(109,16,40,.18);
     margin: 0 0 14px 0;
@@ -126,14 +126,14 @@ div[data-testid="stTextInput"] input {{
     border-radius: 999px !important;
     border: 1px solid #E8D8DE !important;
     background: #FFFDFE !important;
-    color: #6D1028 !important;
+    color: #A50034 !important;
     font-weight: 700 !important;
     min-height: 42px !important;
     padding-left: 14px !important;
 }}
 
 .query-panel-title {{
-    color: #6D1028;
+    color: #A50034;
     font-size: 1.05rem;
     font-weight: 800;
     line-height: 1.3;

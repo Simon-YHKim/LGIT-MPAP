@@ -66,8 +66,8 @@ ensure_alarm_annotation_table(engine)
 UPLOAD_DIR = Path("uploads")
 UPLOAD_DIR.mkdir(exist_ok=True)
 
-PRIMARY = "#6D1028"
-PRIMARY_2 = "#8B1E3F"
+PRIMARY = "#A50034"
+PRIMARY_2 = "#7E0027"
 BG = "#FAF6F8"
 CARD = "#FFFDFE"
 ROSE = "#F7E7EC"
@@ -86,7 +86,7 @@ PAGE_STYLE = f"""
     .page-banner {{
     background: linear-gradient(135deg, #7B0F2E 0%, #9A163E 100%);
     color: #fff;
-    border-radius: 22px;
+    border-radius: 12px;
     padding: 40px 28px 24px 28px;
     box-shadow: 0 10px 24px rgba(109,16,40,.18);
     margin: 0 0 14px 0;
@@ -97,7 +97,7 @@ PAGE_STYLE = f"""
 }}
     .page-subtitle {{ color: {SUB}; font-size: 13px; margin: 4px 2px 18px 4px; }}
     .soft-card {{
-        background: {CARD}; border: 1px solid {BORDER}; border-radius: 20px;
+        background: {CARD}; border: 1px solid {BORDER}; border-radius: 12px;
         padding: 14px 16px; box-shadow: 0 6px 18px rgba(109,16,40,.05);
     }}
     .section-title {{ font-size: 22px; font-weight: 800; color: {PRIMARY}; margin: 2px 0 8px 0; }}
@@ -676,7 +676,7 @@ def render_fast_dialog_close_button(button_text="팝업 닫기"):
         height:46px;
         border:0;
         border-radius:10px;
-        background:#6D1028;
+        background:#A50034;
         color:white;
         font-weight:800;
         font-size:15px;
@@ -891,10 +891,10 @@ def render_alarm_top5_compare_grid(alarm_df, best_eq_name, worst_eq_name, panel_
     custom_css = {
         ".ag-root-wrapper": {"border": "1px solid #E8D8DE !important", "border-radius": "20px !important", "overflow": "hidden !important"},
         ".ag-header": {"background": "linear-gradient(180deg, #F7E7EC, #FFFDFE) !important"},
-        ".ag-header-cell, .ag-header-group-cell": {"justify-content": "center !important", "text-align": "center !important", "font-size": "13px !important", "font-weight": "800 !important", "border-right": "1px solid #E8D8DE !important", "color": "#6D1028 !important"},
+        ".ag-header-cell, .ag-header-group-cell": {"justify-content": "center !important", "text-align": "center !important", "font-size": "13px !important", "font-weight": "800 !important", "border-right": "1px solid #E8D8DE !important", "color": "#A50034 !important"},
         ".ag-cell": {"display": "flex !important", "align-items": "center !important", "justify-content": "center !important", "font-size": "12px !important", "font-weight": "700 !important", "color": "#3D2430 !important", "border-right": "1px solid #E8D8DE !important", "border-bottom": "1px solid #F0E5EA !important"},
-        ".worst-group-header": {"background-color": "#F6D9DF !important", "color": "#6D1028 !important"},
-        ".best-group-header": {"background-color": "#E8F0FD !important", "color": "#6D1028 !important"},
+        ".worst-group-header": {"background-color": "#F6D9DF !important", "color": "#A50034 !important"},
+        ".best-group-header": {"background-color": "#E8F0FD !important", "color": "#A50034 !important"},
         ".worst-col-header": {"background-color": "#FAECEF !important"},
         ".best-col-header": {"background-color": "#EEF3FB !important"},
         ".worst-cell": {"background-color": "#FCF1F2 !important"},
