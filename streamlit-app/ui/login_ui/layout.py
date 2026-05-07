@@ -1,6 +1,9 @@
 import streamlit as st
 import streamlit.components.v1 as components
 
+# Vitals 컴포넌트 — LG Innotek 로고 PNG 를 base64 data URI 로 (외부 의존 0)
+from ui.vitals import LOGO_WHITE_DATA_URI
+
 
 def render_left_panel_background():
     st.markdown(
@@ -12,16 +15,26 @@ def render_left_panel_background():
 
 
 def render_top_brand():
+    """상단 브랜드 행 — 다크 비디오 배경 위에 흰 LG Innotek 공식 로고 PNG +
+    구분선 + 팀명 + 우측 ALL SYSTEMS OPERATIONAL 상태."""
     st.markdown(
-        """
+        f"""
         <div class="landing-topbar">
             <div class="landing-brand">
-                <span class="landing-brand__name">LG Innotek</span>
+                <img src="{LOGO_WHITE_DATA_URI}" alt="LG Innotek"
+                     class="landing-brand__logo" />
                 <span class="landing-brand__divider"></span>
                 <span class="landing-brand__team">광학 MaxCapa TDR · 광학솔루션사업부 · 생산혁신센터 · Max Capa팀</span>
             </div>
             <div class="landing-status">ALL SYSTEMS OPERATIONAL</div>
         </div>
+        <style>
+        .landing-brand__logo {{
+            height: 22px; width: auto; display: block;
+            /* 흰 PNG — 다크 배경에 자연스럽게 올라감 */
+        }}
+        .landing-brand__name {{ display: none; }}  /* 텍스트 워드마크 폐기 */
+        </style>
         """,
         unsafe_allow_html=True
     )
@@ -39,13 +52,45 @@ def render_auth_intro():
 
 
 def render_identity_block():
+    """Vitals 브랜드 hero — 우리 landing.html 처럼 LG EI Headline 큰 타이포 + 와인 점."""
     st.markdown(
         """
         <div class="identity-block">
-            <h3 class="identity-name">설비 생산성 분석 플랫폼_Vitals<span class="dot">.</span></h3>
+            <h3 class="identity-name">Vitals<span class="dot">.</span></h3>
             <p class="identity-sub">공정의 호흡을 데이터로 듣다.</p>
-            <p class="identity-bu">광학 MaxCapa TDR · 광학솔루션 사업부 · CMP · UPH · MTBA · MaxCapa Chat</p>
+            <p class="identity-bu">광학솔루션 사업부 · CMP · UPH · MTBA · MaxCapa Chat</p>
         </div>
+        <style>
+        /* identity 블록 폰트를 LG EI Headline 으로 교체 + 56px hero 타이포 */
+        .identity-name {
+            font-family: var(--font-display) !important;
+            font-size: 56px !important;
+            font-weight: 700 !important;
+            letter-spacing: -0.04em !important;
+            line-height: 0.95 !important;
+            color: var(--on-dark) !important;
+            margin: 0 !important;
+        }
+        .identity-name .dot { color: var(--primary) !important; }
+        .identity-sub {
+            font-family: var(--font-body) !important;
+            font-size: 18px !important;
+            font-weight: 500 !important;
+            color: var(--on-dark) !important;
+            opacity: 0.92;
+            margin: 14px 0 0 !important;
+            letter-spacing: -0.01em !important;
+            line-height: 1.4;
+        }
+        .identity-bu {
+            font-family: var(--font-mono) !important;
+            font-size: 11px !important;
+            color: var(--on-dark-subtle) !important;
+            letter-spacing: .08em !important;
+            text-transform: uppercase;
+            margin: 12px 0 0 !important;
+        }
+        </style>
         """,
         unsafe_allow_html=True
     )

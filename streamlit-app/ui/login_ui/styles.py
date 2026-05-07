@@ -1,22 +1,21 @@
 import streamlit as st
 
+# Vitals 디자인 시스템 진입점 — 와인 팔레트 + LG EI 폰트 + Streamlit 기본 hide.
+# apply_global_styles() 호출 시 자동으로 vitals 테마가 먼저 적용된 뒤
+# 그 위에 로그인 페이지 전용 다크 오버레이가 깔린다.
+from ui.vitals import apply_vitals_theme
+
 
 def apply_global_styles():
+    # 1) Vitals 글로벌 (LG EI 폰트 base64 임베드, 와인 팔레트, 사이드바 hide) 먼저
+    apply_vitals_theme()
+
+    # 2) 로그인 페이지 전용 오버레이 — 다크 비디오 배경 위 흰 카드 톤
     st.markdown(
         """
         <style>
-        :root{
-            --primary:#A50034;
-            --primary-dark:#7E0027;
-            --primary-tint:#F8E5EC;
-            --ink-body:#1F2430;
-            --ink-muted:#6B7280;
-            --ink-subtle:#9CA3AF;
-            --border:#E5E7EB;
-            --soft:#F1F3F5;
-            --status-good:#1F8B4C;
-            --status-warn:#B57F1B;
-            --status-bad:#B23A48;
+        /* :root 토큰은 vitals 테마에서 모두 정의됨. 여기선 페이지 전용 추가만. */
+        :root {
             --on-dark:#FFFFFF;
             --on-dark-muted:rgba(255,255,255,0.76);
             --on-dark-subtle:rgba(255,255,255,0.56);
@@ -24,8 +23,9 @@ def apply_global_styles():
             --panel-border-dark:rgba(255,255,255,0.10);
         }
 
+        /* 폰트 — vitals 의 LG EI 스택을 페이지 전체에 강제 적용 */
         html, body, [class*="css"] {
-            font-family: "Pretendard", "Malgun Gothic", sans-serif;
+            font-family: var(--font-body) !important;
         }
 
         .stApp {
