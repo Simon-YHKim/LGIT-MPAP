@@ -80,12 +80,34 @@ html, body {{
     -webkit-font-smoothing: antialiased;
 }}
 
-/* Streamlit 기본 사이드바·헤더 숨김 (우리 헤더로 대체) -------------- */
+/* Streamlit 사이드바 — 우리 디자인 톤으로 스타일 (기본 표시, 페이지 이동에 사용)
+   로그인 페이지는 ui/login_ui/styles.py 에서 별도 hide 함. */
 [data-testid="stSidebar"],
-[data-testid="stSidebarNav"],
-section[data-testid="stSidebar"] {{ display: none !important; }}
+section[data-testid="stSidebar"] {{
+    background: #FFFFFF !important;
+    border-right: 1px solid var(--border) !important;
+}}
+[data-testid="stSidebar"] [data-testid="stSidebarNav"] a,
+[data-testid="stSidebar"] [data-testid="stSidebarNavLink"] {{
+    font-family: var(--font-body) !important;
+    font-weight: 600 !important;
+    color: var(--ink-muted) !important;
+    border-radius: var(--radius) !important;
+    transition: background .12s, color .12s !important;
+}}
+[data-testid="stSidebar"] [data-testid="stSidebarNav"] a:hover,
+[data-testid="stSidebar"] [data-testid="stSidebarNavLink"]:hover {{
+    background: var(--soft) !important;
+    color: var(--ink-body) !important;
+}}
+[data-testid="stSidebar"] [data-testid="stSidebarNav"] a[aria-current="page"],
+[data-testid="stSidebar"] [data-testid="stSidebarNavLink"][aria-current="page"] {{
+    color: var(--ink-body) !important;
+    background: var(--primary-tint) !important;
+    border-left: 3px solid var(--primary) !important;
+    padding-left: 13px !important;
+}}
 [data-testid="stHeader"] {{ background: transparent !important; }}
-[data-testid="collapsedControl"] {{ display: none !important; }}
 
 /* Streamlit 기본 푸터 hide */
 footer {{ visibility: hidden; }}

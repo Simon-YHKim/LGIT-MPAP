@@ -1,0 +1,26 @@
+# Streamlit Vitals — recommended .gitignore policy
+# (사용자 결정으로 .streamlit/secrets.toml 은 폐쇄망 환경에서 현재 추적 중.
+#  외부 가시성이 있다면 아래 주석 해제 권장)
+
+# Secrets — 실제 비밀번호. PUBLIC 레포 시 즉시 활성화하고 회전.
+# .streamlit/secrets.toml
+
+# Runtime / state — 환경별 다르므로 절대 덮어쓰기 금지
+Data/*
+!Data/.gitkeep
+logs/
+uploads/
+access_log/access_logs.db
+access_log/access_stats_output/
+
+# Python 캐시·IDE
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.idea/
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db

@@ -14,6 +14,15 @@ def apply_global_styles():
     st.markdown(
         """
         <style>
+        /* 로그인 페이지에서만 사이드바·collapsed 컨트롤 hide
+           (다른 페이지는 vitals 테마가 사이드바를 표시 — 페이지 이동에 사용) */
+        [data-testid="stSidebar"],
+        section[data-testid="stSidebar"],
+        [data-testid="stSidebarNav"],
+        [data-testid="collapsedControl"] {
+            display: none !important;
+        }
+
         /* :root 토큰은 vitals 테마에서 모두 정의됨. 여기선 페이지 전용 추가만. */
         :root {
             --on-dark:#FFFFFF;

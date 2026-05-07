@@ -1058,11 +1058,40 @@ def render_video_background():
         </style>
 
         <div class="video-background-wrap">
-            <video autoplay muted loop playsinline>
+            <video id="vit-bg-video" autoplay muted loop playsinline preload="auto">
                 <source src="data:video/mp4;base64,{encoded}" type="video/mp4">
             </video>
             <div class="video-background-overlay"></div>
         </div>
+
+        <script>
+        // 탭 전환 / 앱 백그라운드 후 복귀 시 자동 재개 + 매 3초 안전망
+        // (모바일 브라우저 자동재생 정책 우회 — muted + playsinline 필수)
+        (function() {{
+            function safePlay() {{
+                var v = document.getElementById('vit-bg-video');
+                if (!v) return;
+                v.muted = true;
+                if (v.paused) {{
+                    var p = v.play();
+                    if (p && p.catch) p.catch(function(){{}});
+                }}
+            }}
+            document.addEventListener('visibilitychange', function() {{
+                if (!document.hidden) safePlay();
+            }});
+            window.addEventListener('focus', safePlay);
+            window.addEventListener('pageshow', safePlay);
+            // 사용자 첫 제스처에 무조건 재생 (자동재생 막힐 때 백업)
+            ['touchstart','pointerdown','click','keydown','scroll'].forEach(function(ev) {{
+                document.addEventListener(ev, safePlay, {{ passive: true }});
+            }});
+            // 안전망 — 페이지 표시 중일 때 3초마다 idempotent 재생 호출
+            setInterval(function() {{
+                if (!document.hidden) safePlay();
+            }}, 3000);
+        }})();
+        </script>
         """,
         unsafe_allow_html=True
     )

@@ -71,9 +71,14 @@
 ### 🛑 R4. `streamlit-app/.streamlit/secrets.toml` 가 git 추적됨 (DB 비번 노출)
 **위치**: `streamlit-app/.streamlit/secrets.toml` — 실 DB password 평문.
 **사용자 명시**: "그냥 보안 관련도 그대로 유지해서 작업해. 어짜피 폐쇠 환경" → 사용자가 위험 수용함.
+
+**현재 라운드에서 추가 조치** (2025-05-07 추가):
+- `streamlit-app/.streamlit/secrets.toml.example` — 안전한 템플릿 추가 (실제 비번 없음)
+- `streamlit-app/.gitignore` — 런타임/캐시/IDE 추적 제외 정책 명문화. `secrets.toml` 줄은 폐쇄망 결정 따라 주석 처리해 둠 (PUBLIC 가시성 생기면 활성화)
+
 **그래도 권장**: 외부 깃허브 가시성 = 회사 자산 노출. 만약 레포가 PUBLIC 이면 **즉시 비밀번호 회전 + force-push 히스토리 정리** 권장.
 
-또한 `pages/0_Home.py:35` 와 `llm_api/uph_llm_queries.py:17` 에 비밀번호 하드코드 의심 — secrets.toml 조회로 통일 권장.
+또한 `pages/0_Home.py:35` 와 `llm_api/uph_llm_queries.py:17` 에 비밀번호 하드코드 의심 — secrets.toml 조회로 통일 권장 (이번 라운드 미픽스, 별도 보안 라운드에서 처리).
 
 ---
 
