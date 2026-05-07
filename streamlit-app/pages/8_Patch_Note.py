@@ -237,22 +237,23 @@ def apply_board_styles():
             vertical-align: middle;
         }
 
+        /* Vitals 팔레트 정렬 — 태그 텍스트는 항상 진한 status 색으로 통일 */
         .board-tag-new {
-            background: rgba(31,139,76,0.24);
-            border: 1px solid rgba(31,139,76,0.42);
-            color: #d7ffe5;
+            background: #E6F4EA;            /* status-good-tint */
+            border: 1px solid #1F8B4C;      /* status-good */
+            color: #1F8B4C;
         }
 
         .board-tag-upd {
-            background: rgba(37,99,235,0.24);
-            border: 1px solid rgba(37,99,235,0.42);
-            color: #dbeafe;
+            background: #FAF1DD;            /* status-warn-tint */
+            border: 1px solid #B57F1B;      /* status-warn */
+            color: #B57F1B;
         }
 
         .board-tag-fix {
-            background: rgba(165,0,52,0.25);
-            border: 1px solid rgba(165,0,52,0.40);
-            color: #ffe4ec;
+            background: #F8E5EC;            /* primary-tint (Vitals wine) */
+            border: 1px solid #A50034;      /* primary */
+            color: #A50034;
         }
 
         .board-tag-default {

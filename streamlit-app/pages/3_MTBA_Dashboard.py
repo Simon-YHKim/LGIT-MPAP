@@ -893,19 +893,21 @@ def render_alarm_top5_compare_grid(alarm_df, best_eq_name, worst_eq_name, panel_
         {"field": "popup_key", "hide": True},
     ]
 
+    # Vitals 팔레트 정렬 — 구 분홍/파랑 잡색 제거. worst/best 는 wine-red 톤만 사용
+    # (Vitals 는 monochrome accent — 파랑은 사용하지 않음).
     custom_css = {
-        ".ag-root-wrapper": {"border": "1px solid #E8D8DE !important", "border-radius": "20px !important", "overflow": "hidden !important"},
-        ".ag-header": {"background": "linear-gradient(180deg, #F7E7EC, #FFFDFE) !important"},
-        ".ag-header-cell, .ag-header-group-cell": {"justify-content": "center !important", "text-align": "center !important", "font-size": "13px !important", "font-weight": "800 !important", "border-right": "1px solid #E8D8DE !important", "color": "#A50034 !important"},
-        ".ag-cell": {"display": "flex !important", "align-items": "center !important", "justify-content": "center !important", "font-size": "12px !important", "font-weight": "700 !important", "color": "#3D2430 !important", "border-right": "1px solid #E8D8DE !important", "border-bottom": "1px solid #F0E5EA !important"},
-        ".worst-group-header": {"background-color": "#F6D9DF !important", "color": "#A50034 !important"},
-        ".best-group-header": {"background-color": "#E8F0FD !important", "color": "#A50034 !important"},
-        ".worst-col-header": {"background-color": "#FAECEF !important"},
-        ".best-col-header": {"background-color": "#EEF3FB !important"},
-        ".worst-cell": {"background-color": "#FCF1F2 !important"},
-        ".best-cell": {"background-color": "#F2F6FD !important"},
-        ".alarm-name-cell": {"justify-content": "flex-start !important", "text-align": "left !important", "padding-left": "12px !important", "cursor": "pointer !important", "font-weight": "800 !important", "background-color": "#F6F1F4 !important"},
-        ".alarm-name-cell:hover": {"background-color": "#F3E7EC !important"},
+        ".ag-root-wrapper": {"border": "1px solid #E5E7EB !important", "border-radius": "20px !important", "overflow": "hidden !important"},
+        ".ag-header": {"background": "linear-gradient(180deg, #F8E5EC, #FFFFFF) !important"},
+        ".ag-header-cell, .ag-header-group-cell": {"justify-content": "center !important", "text-align": "center !important", "font-size": "13px !important", "font-weight": "800 !important", "border-right": "1px solid #E5E7EB !important", "color": "#A50034 !important"},
+        ".ag-cell": {"display": "flex !important", "align-items": "center !important", "justify-content": "center !important", "font-size": "12px !important", "font-weight": "700 !important", "color": "#1F2430 !important", "border-right": "1px solid #E5E7EB !important", "border-bottom": "1px solid #F1F3F5 !important"},
+        ".worst-group-header": {"background-color": "#F8E5EC !important", "color": "#A50034 !important"},
+        ".best-group-header":  {"background-color": "#F1F3F5 !important", "color": "#1F2430 !important"},
+        ".worst-col-header":   {"background-color": "#FDECEF !important"},
+        ".best-col-header":    {"background-color": "#F7F8FA !important"},
+        ".worst-cell":         {"background-color": "#FDECEF !important"},
+        ".best-cell":          {"background-color": "#F7F8FA !important"},
+        ".alarm-name-cell": {"justify-content": "flex-start !important", "text-align": "left !important", "padding-left": "12px !important", "cursor": "pointer !important", "font-weight": "800 !important", "background-color": "#F7F8FA !important"},
+        ".alarm-name-cell:hover": {"background-color": "#F8E5EC !important"},
     }
 
     try:
@@ -1089,9 +1091,9 @@ def render_signal_summary_card(summary_info: dict, process_name: str):
           height: 16px;
           border-radius: 50%;
         }}
-        .dot-green {{ background: #16a34a; }}
-        .dot-yellow {{ background: #facc15; }}
-        .dot-red {{ background: #dc2626; }}
+        .dot-green {{ background: #1F8B4C; }}    /* Vitals status-good */
+        .dot-yellow {{ background: #B57F1B; }}   /* Vitals status-warn */
+        .dot-red {{ background: #B23A48; }}      /* Vitals status-bad */
 
         .summary {{
           line-height: 1.9;
@@ -1100,12 +1102,12 @@ def render_signal_summary_card(summary_info: dict, process_name: str):
         }}
 
         .best-row {{
-          color: #1d4ed8;
+          color: #1F8B4C;     /* Vitals status-good (best = 좋음) */
           font-weight: 700;
         }}
 
         .worst-row {{
-          color: #b91c1c;
+          color: #A50034;     /* Vitals primary (worst = 주목) */
           font-weight: 700;
         }}
 
@@ -1164,12 +1166,12 @@ def render_best_worst_snapshot_card(snapshot_df: pd.DataFrame, process_name: str
         row_type = str(row["구분"]).strip().lower()
 
         if row_type == "worst":
-            row_color = "#b91c1c"
-            row_bg = "#fef2f2"
+            row_color = "#A50034"           # Vitals primary
+            row_bg = "#FDECEF"               # Vitals bad-tint
             row_weight = "700"
         elif row_type == "best":
-            row_color = "#1d4ed8"
-            row_bg = "#eff6ff"
+            row_color = "#1F8B4C"           # Vitals status-good
+            row_bg = "#E6F4EA"               # Vitals good-tint
             row_weight = "700"
         else:
             row_color = "#111111"

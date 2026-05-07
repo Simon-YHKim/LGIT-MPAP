@@ -99,7 +99,7 @@ div.stButton > button[kind="primary"] {{background:{PRIMARY} !important; color:w
 .popup-title {{color:{PRIMARY}; font-weight:800; font-size:1.05rem; margin-bottom:4px;}}
 .popup-sub {{color:{SUB}; font-size:.9rem; line-height:1.5;}}
 .page-hero {{
-    background: linear-gradient(135deg, #7B0F2E 0%, #9A163E 100%);
+    background: linear-gradient(135deg, {PRIMARY_2} 0%, {PRIMARY} 100%);
     border-radius: 12px;
     padding: 40px 28px 24px 28px;
     box-shadow: 0 10px 24px rgba(109,16,40,.18);
@@ -1286,9 +1286,11 @@ def render_standard_panel(panel_id, panel, model_name, source_view):
     elif popup_key and click_marker and click_marker != last_marker and popup_key in bundle['popup_map']:
         st.session_state.detail_last_grid_click[panel_key] = click_marker
         request_panel_popup(panel_id, popup_key)
-        # PERF: st.rerun() 제거 — 같은 rerun 안에서 아래 consume_panel_popup_request
-        # 가 즉시 팝업을 띄우므로, 중복 rerun 으로 인한 build_standard_bundle (5-30s)
-        # 재호출이 사라져 팝업 응답 속도 5-30s → <1s.
+        # ⚠️  DO NOT add st.rerun() here, and DO NOT insert any widget / state
+        # 변경 / early return 사이에 있는 request_panel_popup() ↔ consume_panel_popup_request()
+        # 사이에 끼워 넣지 말 것.
+        # 이 두 호출은 반드시 same rerun frame 에서 연속 실행되어야 popup 이 즉시 열림.
+        # st.rerun() 추가 시 build_standard_bundle (5-30s) 재호출 → 팝업 5-30s 지연.
 
     open_key = consume_panel_popup_request(panel_id)
     if open_key and open_key in bundle['popup_map']:
@@ -1335,8 +1337,9 @@ def render_fol_panel(panel_id, panel, model_name, source_view):
     elif popup_key and click_marker and click_marker != last_marker and popup_key in bundle.get('popup_map', {}):
         st.session_state.detail_last_grid_click[panel_key] = click_marker
         request_panel_popup(panel_id, popup_key)
-        # PERF: FOL 패널도 동일 — st.rerun() 제거. 중복 rerun 으로 인한
-        # build_fol_bundle 재호출 회피.
+        # ⚠️  Standard panel 과 동일 규칙 — request_panel_popup ↔ consume_panel_popup_request
+        # 사이에 st.rerun / 위젯 변경 / early return 추가 금지. same-frame 보장 깨지면
+        # 팝업이 닫혀 보이거나, build_fol_bundle (수 초) 재호출이 발생함.
 
     open_key = consume_panel_popup_request(panel_id)
     if open_key and open_key in bundle.get('popup_map', {}):

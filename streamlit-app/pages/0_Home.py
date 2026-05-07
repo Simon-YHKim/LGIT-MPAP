@@ -463,7 +463,7 @@ def inject_css() -> None:
             height:22px !important;
             margin-top:1px !important;
             margin-bottom:1px !important;
-            background:#EF4444 !important;
+            background:var(--status-bad, #B23A48) !important;
             border-radius:5px !important;
         }
         .cmp-filter-compact div[data-baseweb="tag"] span{
@@ -622,7 +622,7 @@ def inject_css() -> None:
             margin:1px 2px 1px 0 !important;
             padding:0 4px !important;
             border-radius:4px !important;
-            background:#EF4444 !important;
+            background:var(--status-bad, #B23A48) !important;
         }
         div[data-testid="stForm"] div[data-baseweb="tag"] span{
             font-size:8px !important;
@@ -2364,6 +2364,10 @@ def render_case1_best_worst_cards():
         return
 
     best_df, worst_df = _compute_best_worst_processes(summary, n=3)
+    if best_df.empty and worst_df.empty:
+        # 모든 공정이 NaN/0 인 edge case — 빈 카드 그리드 대신 안내문 표시.
+        st.info("선택 조건의 공정별 CMP 달성률 데이터가 모두 비어 있습니다.")
+        return
 
     # CSS once
     st.markdown(

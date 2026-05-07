@@ -277,14 +277,8 @@ def apply_common_css():
         --radius: 12px;
     }
 
-    /* 전체 UI 글꼴
-       - 영문/숫자: ArialLocal 우선
-       - 한글: Arial에 glyph가 없으므로 LGLocal로 fallback */
-    html, body, [class*='css'], .stApp, .stMarkdown, .stText, .stSelectbox,
-    .stMultiSelect, .stDateInput, .stButton, .stDataFrame, .stMetric,
-    label, input, textarea, select, button, table, th, td, div, span, p, li {
-        font-family: 'Malgun Gothic', '맑은 고딕', Arial, sans-serif !important;
-    }
+    /* 전체 UI 글꼴 — ui.vitals.theme 의 LG EI Text/Headline 스택 사용.
+       페이지 단위로 override 하지 않음. */
 
     .stApp {
         background: linear-gradient(180deg, #fcfdff 0%, #f7f9fc 100%);
@@ -588,12 +582,7 @@ def apply_common_css():
        2) Streamlit 기본 상단/좌측 구성요소 삭제/투명화
        3) 상단 메뉴 복귀 버튼 스타일
        ========================================================= */
-    html, body, [class*="css"], [class*="st-"], .stApp,
-    .stMarkdown, .stText, .stSelectbox, .stMultiSelect, .stDateInput,
-    .stButton, .stDataFrame, .stMetric, label, input, textarea,
-    select, button, table, th, td, div, span, p, li, a {
-        font-family: 'Malgun Gothic', '맑은 고딕', Arial, sans-serif !important;
-    }
+    /* 폰트 override 제거 — ui.vitals.theme LG EI 스택 사용 */
 
     header[data-testid="stHeader"] {
         display: none !important;
@@ -1046,15 +1035,15 @@ def render_top_model_section(model_df: pd.DataFrame, model_name: str):
     with c1:
         st.markdown(f"<div class='model-box'>{model_box_text(model_name)}</div>", unsafe_allow_html=True)
     with c2:
-        fig_cmp = make_line_chart(daily, 'CMP', f'CMP 달성률 ({model_name})', '#3776e8')
+        fig_cmp = make_line_chart(daily, 'CMP', f'CMP 달성률 ({model_name})', '#A50034')  # Vitals primary
         st.pyplot(fig_cmp, use_container_width=True)
         plt.close(fig_cmp)
 
-        fig_uph = make_line_chart(daily, 'UPH', f'UPH 달성률 ({model_name})', '#d9534f')
+        fig_uph = make_line_chart(daily, 'UPH', f'UPH 달성률 ({model_name})', '#B57F1B')  # Vitals status-warn
         st.pyplot(fig_uph, use_container_width=True)
         plt.close(fig_uph)
 
-        fig_eff = make_line_chart(daily, 'Efficiency', f'Efficiency 달성률 ({model_name})', '#2ca25f')
+        fig_eff = make_line_chart(daily, 'Efficiency', f'Efficiency 달성률 ({model_name})', '#1F8B4C')  # Vitals status-good
         st.pyplot(fig_eff, use_container_width=True)
         plt.close(fig_eff)
     with c3:

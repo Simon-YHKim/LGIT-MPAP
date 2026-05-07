@@ -122,9 +122,8 @@ def inject_vitals_theme():
   --v-radius:8px;
 }
 
-html, body, [class*="css"], [class*="st-"]{
-  font-family:'Malgun Gothic','맑은 고딕',Arial,sans-serif !important;
-}
+/* 폰트는 ui.vitals.theme 의 LG EI Text/Headline 스택을 사용. 본 페이지에서는
+   override 하지 않음 — 디자인 일관성 유지. */
 
 body, .stApp{
   background:var(--v-bg) !important;
@@ -292,7 +291,6 @@ div[data-testid="metric-container"] label{
   text-transform:uppercase !important;
 }
 div[data-testid="metric-container"] [data-testid="stMetricValue"]{
-  font-family:'Malgun Gothic','맑은 고딕',Arial,sans-serif !important;
   color:var(--v-ink) !important;
   font-size:24px !important;
   font-weight:800 !important;
@@ -360,7 +358,6 @@ div[data-testid="stPlotlyChart"]:hover .modebar{opacity:.75;}
   background:rgba(255,255,255,.94);
   color:var(--v-ink) !important;
   text-decoration:none !important;
-  font-family:'Malgun Gothic','맑은 고딕',Arial,sans-serif !important;
   font-size:12px;
   font-weight:700;
   box-shadow:0 6px 18px rgba(15,23,42,.08);
