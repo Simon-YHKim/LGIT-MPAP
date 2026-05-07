@@ -842,18 +842,23 @@
 }
 .sc-section-meta:first-child { border-top: 0; margin-top: 0; }
 
-/* responsive */
+/* responsive — .vitals-app 셀렉터로 한정 (글로벌 한정 fix 와 specificity 매칭).
+   이전엔 [data-testid="stApp"] 만 한정해서 specificity 부족으로 mobile 에서
+   sidebar sticky 가 풀리지 않았음. 결과: 긴 스크린샷에 sidebar 가 viewport 마다
+   반복되어 "중복" 처럼 보였음. */
 @media (max-width: 980px) {
-  [data-testid="stApp"] {
+  .vitals-app[data-testid="stApp"] {
     grid-template-columns: 1fr;
   }
-  [data-testid="stSidebar"], section[data-testid="stSidebar"] {
+  .vitals-app > [data-testid="stSidebar"],
+  .vitals-app section[data-testid="stSidebar"] {
     position: static;
     height: auto;
+    overflow-y: visible;
     border-right: 0;
     border-bottom: 1px solid var(--border);
   }
-  [data-testid="stHorizontalBlock"] {
+  .vitals-app [data-testid="stHorizontalBlock"] {
     flex-direction: column;
   }
 }
@@ -1582,3 +1587,71 @@
 }
 .sc-proc-card__sec .lbl { color: var(--ink-subtle); }
 .sc-proc-card__sec .val { color: var(--ink-body); font-weight: 700; }
+
+/* =============================================================
+   Mode banners — Home 페이지의 3-mode 구분 표시
+   ============================================================= */
+.sc-mode-banner {
+  display: flex;
+  align-items: baseline;
+  gap: 0.625rem;
+  padding: 0.625rem 0.875rem;
+  background: var(--soft);
+  border-left: 3px solid var(--primary);
+  border-radius: 6px;
+  margin-bottom: 0.75rem;
+  font-size: 12px;
+  flex-wrap: wrap;
+}
+.sc-mode-banner__num {
+  font-family: var(--font-mono);
+  font-size: 10px; font-weight: 700;
+  letter-spacing: .1em;
+  background: var(--primary); color: #fff;
+  padding: 2px 8px; border-radius: 4px;
+  text-transform: uppercase;
+}
+.sc-mode-banner__label {
+  font-family: 'LG EI Headline','LG EI Text',sans-serif;
+  font-size: 14px; font-weight: 700; letter-spacing: -0.01em;
+  color: var(--ink-body);
+}
+.sc-mode-banner__desc {
+  font-size: 12px; color: var(--ink-muted);
+}
+
+.sc-mode-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem 1.5rem;
+  box-shadow: 0 1px 2px rgba(17,24,39,.04), 0 8px 24px rgba(17,24,39,.035);
+  margin-bottom: 0.5rem;
+}
+
+/* sidebar — zip 이전 mockup 링크 */
+.sc-sidebar-divider {
+  height: 1px; background: var(--border);
+  margin: 16px 12px 10px;
+}
+.sc-sidebar-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 9px; font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--ink-subtle);
+  padding: 0 16px 6px;
+}
+.sc-sidebar-mocklink {
+  display: block;
+  padding: 4px 16px;
+  font-size: 11px;
+  font-family: var(--font-mono);
+  color: var(--ink-muted);
+  text-decoration: none;
+  letter-spacing: .02em;
+}
+.sc-sidebar-mocklink:hover {
+  color: var(--primary);
+  background: var(--soft);
+}
