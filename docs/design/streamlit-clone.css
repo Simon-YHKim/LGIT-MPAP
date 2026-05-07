@@ -7,9 +7,13 @@
 
 /* ------------------------------------------------------------------ Layout */
 :root {
-  --sc-radius: 8px;
-  --sc-radius-lg: 12px;
-  --sc-radius-pill: 999px;
+  /* Vitals 디자인 원칙: 직사각형만. radius 토큰을 0 으로 통일.
+     pill 형태가 의식적으로 필요한 곳 (alarm severity badge 등) 만
+     인라인 border-radius:999px 으로 명시. theme.py 의 --radius/
+     --radius-card 와 동일 약속. */
+  --sc-radius: 0;
+  --sc-radius-lg: 0;
+  --sc-radius-pill: 0;
   --sc-gap: 1rem;             /* Streamlit element 간 기본 vertical gap */
   --sc-pad-x: 1rem;           /* block-container horizontal padding */
   --sc-pad-y: 1.5rem;
@@ -24,16 +28,19 @@
   --sc-button-h: 38px;
 }
 
+/* Dark theme tokens — streamlit-app/ui/vitals/theme.py 와 hex 동일.
+   (이전엔 두 파일이 미세하게 다른 hex 를 declared 해서 STAGE 2 통합 시
+   token drift 가 발생할 위험.) */
 [data-theme="dark"] {
   --page-bg: #0E1117;
-  --card-bg: #14171F;
-  --soft: #1B1F2A;
-  --border: #2A3040;
-  --border-strong: #3B4252;
-  --ink-body: #E6E9EF;
-  --ink-muted: #9AA3B2;
-  --ink-subtle: #6B7385;
-  --primary-tint: rgba(165, 0, 52, 0.18);
+  --card-bg: #161B22;
+  --soft: #1A1F2A;
+  --border: #2A2F3A;
+  --border-strong: #3A4051;
+  --ink-body: #E5E7EB;
+  --ink-muted: #9CA3AF;
+  --ink-subtle: #6B7280;
+  --primary-tint: #2A1218;
 }
 
 /* preview 페이지 전체 — _shared.css 의 html,body 와 충돌 회피 (동일 값) */

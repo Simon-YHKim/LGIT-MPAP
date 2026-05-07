@@ -95,9 +95,11 @@ def _build_css() -> str:
     --font-display: {FONT_DISPLAY_STACK};
     --font-mono:    {FONT_MONO_STACK};
 
-    /* Layout */
-    --radius:        8px;
-    --radius-card:   12px;
+    /* Layout — Vitals 디자인 원칙: 직사각형. radius 토큰을 0 으로 통일.
+       (이전 8/12 값은 streamlit-clone.css 의 --sc-radius 8/12 와 충돌해
+       cascade 가 마지막 로드 순서에 좌우됐음.) */
+    --radius:        0;
+    --radius-card:   0;
     --shadow-card:   0 8px 22px -4px rgba(15,17,21,0.06);
     --shadow-elev:   0 30px 80px -20px rgba(0,0,0,0.55);
 }}
