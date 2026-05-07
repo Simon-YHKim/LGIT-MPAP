@@ -921,6 +921,16 @@ body.is-login-active .vitals-app section[data-testid="stSidebar"] {
   background: var(--soft);
   font-weight: 600;
 }
+/* 자식 active 시 dash → 와인 4px 좌측 bar 로 override (specificity 보장) */
+.sc-nav-group__list [data-testid="stSidebarNavLink"][aria-current="page"]::before {
+  content: "";
+  left: 0;
+  top: 6px;
+  bottom: 6px;
+  width: 4px;
+  height: auto;
+  background: var(--primary);
+}
 
 /* dark-mode toggle button (corner) */
 .sc-theme-toggle {
@@ -1783,13 +1793,21 @@ body.is-login-active .vitals-app section[data-testid="stSidebar"] {
 
 /* ---- Section heading: flat with bottom black underline (no card chrome) ---- */
 .sc-sec-head {
-  display: block;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
   border-bottom: 1px solid var(--ink-body);
   padding: 0 0 0.625rem;
   margin: 0 0 1.125rem;
 }
-.sc-sec-head__bar { display: none; } /* legacy 4px wine bar 제거 — 검정 하단선으로 대체 */
-.sc-sec-head__body { display: flex; flex-direction: column; gap: 2px; }
+.sc-sec-head__bar { display: none; }
+.sc-sec-head__body { display: flex; flex-direction: column; gap: 2px; flex: 1 1 auto; min-width: 0; }
+.sc-sec-head__actions { display: flex; gap: 8px; flex: 0 0 auto; }
+.sc-sec-head__actions [data-testid="stButton"] > button {
+  font-size: 12px;
+  padding: 6px 12px;
+}
 .sc-sec-head__eyebrow {
   font-family: var(--font-mono);
   font-size: 10px;
@@ -3959,3 +3977,138 @@ body.is-login-active .vitals-app section[data-testid="stSidebar"] {
     min-height: 200px;
   }
 }
+
+/* =============================================================================
+   추가 컴포넌트 — MTBA Dashboard, Detail, modals, exports
+   ============================================================================ */
+
+/* CMP filter row 가 3-field 모드 (팀+모델+공정대분류) */
+.cmp-filter__row--3 {
+  grid-template-columns: 1fr 1fr 1fr !important;
+}
+@media (max-width: 880px) { .cmp-filter__row--3 { grid-template-columns: 1fr !important; } }
+
+/* Bar chart SVG (MTBA 공정별 비교) */
+.vit-bar-chart-svg {
+  width: 100%;
+  height: 280px;
+  display: block;
+}
+.vit-bar-grid line { stroke: var(--border); stroke-width: 0.5; }
+.vit-bar-axis line { stroke: var(--ink-subtle); stroke-width: 1; }
+.vit-bar-chart-svg text { fill: var(--ink-muted); font-family: 'IBM Plex Mono', monospace; font-size: 10px; }
+.vit-bar-grp[data-hidden="1"] { display: none; }
+.vit-legend-dash {
+  display: inline-block;
+  width: 18px;
+  height: 0;
+  border-top: 2px dashed var(--status-good);
+  flex: 0 0 auto;
+}
+
+/* Target MTBA input */
+.vit-chart-card__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+.vit-target-input {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--ink-body);
+  font-weight: 600;
+}
+.vit-target-input input {
+  width: 80px;
+  padding: 5px 8px;
+  border: 1px solid var(--border-strong);
+  background: var(--card-bg);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--status-good);
+  outline: none;
+  text-align: right;
+}
+.vit-target-input input:focus { border-color: var(--status-good); box-shadow: 0 0 0 3px rgba(31,139,76,0.18); }
+
+/* Export button (.vit-export-btn — sc-sec-head__actions 안) */
+.vit-export-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.vit-export-btn::before {
+  content: "";
+  display: inline-block;
+  width: 12px; height: 12px;
+  background: currentColor;
+  -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>') no-repeat center / contain;
+          mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>') no-repeat center / contain;
+}
+
+/* Heatmap flexible (MTBA Heatmap — 윈도 폭 가득 채움) */
+.vit-heatmap-wrap--flex { overflow-x: auto; }
+.vit-heatmap--flex {
+  width: 100%;
+  min-width: 0 !important;
+}
+.vit-heatmap--flex .vit-heatmap__row { width: 100%; }
+
+/* Modal sizes & sect-grid (Worst 5 표 2개) */
+.vit-modal--lg { width: min(1100px, 96vw) !important; }
+.vit-modal__sect-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--border);
+}
+@media (max-width: 880px) { .vit-modal__sect-grid { grid-template-columns: 1fr; } }
+.vit-modal__col h4 {
+  margin: 0 0 8px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--ink-muted);
+  font-weight: 700;
+}
+
+/* Team-procs modal */
+.vit-team-procs__hint {
+  font-size: 12px;
+  color: var(--ink-muted);
+  margin-bottom: 12px;
+}
+.vit-team-procs__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  max-height: 50vh;
+  overflow-y: auto;
+}
+.vit-team-procs__item label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  cursor: pointer;
+  font-size: 13px;
+  user-select: none;
+}
+.vit-team-procs__item label:hover { background: var(--soft); }
+.vit-team-procs__item input[type="checkbox"] { accent-color: var(--primary); }
+
+/* MTBA summary table checkbox - 한 줄 */
+table[data-mtba-summary] input[type="checkbox"] { accent-color: var(--primary); cursor: pointer; }

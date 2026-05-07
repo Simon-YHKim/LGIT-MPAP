@@ -800,6 +800,8 @@
             <div class="sc-sec-head__body">
               <h2 class="sc-sec-head__title">CMP 달성률 Dashboard</h2>
             </div>
+            <div class="sc-sec-head__actions"><div data-testid="stButton"><button class="vit-export-btn" data-export="sec-cmp">CSV 내보내기</button></div></div>
+          
           </div>
 
           <!-- ── 필터 (모델 / 공정 대분류 / 공정 / 기간 / 적용 / 초기화) ─── -->
@@ -994,6 +996,8 @@
             <div class="sc-sec-head__body">
               <h2 class="sc-sec-head__title">UPH / 동작시간 분석</h2>
             </div>
+            <div class="sc-sec-head__actions"><div data-testid="stButton"><button class="vit-export-btn" data-export="sec-uph">CSV 내보내기</button></div></div>
+          
           </div>
 
           <!-- ── 필터 (CMP-style: 모델 / 공정 대분류 / 공정 / 날짜) ─── -->
@@ -1317,7 +1321,7 @@
       <!-- =========================================================== -->
       <!--  MTBA — 3_MTBA_Dashboard.py · MTBA Dashboard                -->
       <!-- =========================================================== -->
-                  <section id="sec-mtba" class="sc-page-section">
+                        <section id="sec-mtba" class="sc-page-section">
         <div data-testid="stVerticalBlock">
 
           <div class="sc-sec-head">
@@ -1325,19 +1329,25 @@
             <div class="sc-sec-head__body">
               <h2 class="sc-sec-head__title">MTBA 분석 Reporting</h2>
             </div>
+            <div class="sc-sec-head__actions">
+              <div data-testid="stButton"><button class="vit-export-btn" data-export="sec-mtba">CSV 내보내기</button></div>
+            </div>
           </div>
 
-          <!-- 사용 안내 (S5-B note-list 재현) -->
           <ul class="vit-note-list">
             <li>팀 = 전체 : 모든 공정을 대상으로 조회합니다.</li>
             <li>그래프 구간: 선택한 기간 / 1주전 / 2주전 / 지난달 / 2달전 / 지난해</li>
-            <li>MTBA가 0이거나 없는 설비는 자동 제외 후, 유효 설비만 평균하여 계산합니다.</li>
-            <li>요약표 체크박스와 비교 차트는 연동됩니다 — 최대 5개 공정.</li>
+            <li>요약표 체크박스 = 비교 차트 연동 (체크 해제 시 그래프에서 제외).</li>
+            <li>"팀별 공정" 버튼 = 팀에 저장된 공정 목록을 모달로 편집 후 저장.</li>
           </ul>
 
-          <!-- 필터 (CMP-style: 모델 / 공정 대분류 / 공정 / 기간) -->
+          <!-- 필터 (CMP-style + 팀 추가) -->
           <div class="cmp-filter">
-            <div class="cmp-filter__row">
+            <div class="cmp-filter__row cmp-filter__row--3">
+              <div data-testid="stSelectbox">
+                <label>팀</label>
+                <div data-baseweb="select"><div>광학 MaxCapa TDR</div></div>
+              </div>
               <div data-testid="stMultiSelect">
                 <label>모델</label>
                 <div data-baseweb="select"><div class="sc-select-tag-wrap">
@@ -1373,211 +1383,148 @@
               </div>
             </div>
             <div class="cmp-filter__actions">
+              <div data-testid="stButton"><button id="mtba-team-procs-btn">팀별 공정</button></div>
               <div data-testid="stButton"><button>초기화</button></div>
               <div data-testid="stButton"><button kind="primary">필터 적용</button></div>
             </div>
           </div>
 
-          <!-- ── §1 비교 — 공정별 MTBA 기간 비교 (6 기간 막대 그룹) ───── -->
-          <div class="cmp-sub-head" style="margin-top:1.5rem;">
-            <div class="cmp-sub-head__left">
-              <span class="cmp-sub-head__bar" aria-hidden="true"></span>
-              <h3 class="cmp-sub-head__title">공정별 MTBA 기간 비교</h3>
-            </div>
-            <span class="cmp-sub-head__meta">y: MTBA · max 120 cap · 막대 = 선택 기간 / 1주전 / 2주전 / 지난달 / 2달전 / 지난해</span>
-          </div>
-          <div class="vit-chart-card">
-            <div class="vit-chart-card__legend">
-              <span><span class="vit-legend-dot" style="background:#A50034"></span>선택 기간</span>
-              <span><span class="vit-legend-dot" style="background:#D88FA2"></span>1주전</span>
-              <span><span class="vit-legend-dot" style="background:#CBD0D6"></span>2주전</span>
-              <span><span class="vit-legend-dot" style="background:#9CA3AF"></span>지난달</span>
-              <span><span class="vit-legend-dot" style="background:#6B7280"></span>2달전</span>
-              <span><span class="vit-legend-dot" style="background:#1F2430"></span>지난해</span>
-            </div>
-            <div class="vit-bar-grid">
-              <div class="vit-bar-stack"><div class="vit-bar-grp">
-                <div class="vit-bar" style="background:#A50034;height:100%"><span class="vit-bar__lbl">142</span></div>
-                <div class="vit-bar" style="background:#D88FA2;height:96%"></div>
-                <div class="vit-bar" style="background:#CBD0D6;height:94%"></div>
-                <div class="vit-bar" style="background:#9CA3AF;height:89%"></div>
-                <div class="vit-bar" style="background:#6B7280;height:86%"></div>
-                <div class="vit-bar" style="background:#1F2430;height:82%"></div>
-              </div><div class="vit-bar-x">Lens AA</div></div>
-              <div class="vit-bar-stack"><div class="vit-bar-grp">
-                <div class="vit-bar" style="background:#A50034;height:82%"><span class="vit-bar__lbl">98</span></div>
-                <div class="vit-bar" style="background:#D88FA2;height:85%"></div>
-                <div class="vit-bar" style="background:#CBD0D6;height:79%"></div>
-                <div class="vit-bar" style="background:#9CA3AF;height:73%"></div>
-                <div class="vit-bar" style="background:#6B7280;height:68%"></div>
-                <div class="vit-bar" style="background:#1F2430;height:63%"></div>
-              </div><div class="vit-bar-x">Flip Chip</div></div>
-              <div class="vit-bar-stack"><div class="vit-bar-grp">
-                <div class="vit-bar" style="background:#A50034;height:52%"><span class="vit-bar__lbl">62</span></div>
-                <div class="vit-bar" style="background:#D88FA2;height:57%"></div>
-                <div class="vit-bar" style="background:#CBD0D6;height:59%"></div>
-                <div class="vit-bar" style="background:#9CA3AF;height:62%"></div>
-                <div class="vit-bar" style="background:#6B7280;height:65%"></div>
-                <div class="vit-bar" style="background:#1F2430;height:68%"></div>
-              </div><div class="vit-bar-x">IRCF Attach</div></div>
-              <div class="vit-bar-stack"><div class="vit-bar-grp">
-                <div class="vit-bar" style="background:#A50034;height:88%"><span class="vit-bar__lbl">124</span></div>
-                <div class="vit-bar" style="background:#D88FA2;height:87%"></div>
-                <div class="vit-bar" style="background:#CBD0D6;height:84%"></div>
-                <div class="vit-bar" style="background:#9CA3AF;height:81%"></div>
-                <div class="vit-bar" style="background:#6B7280;height:78%"></div>
-                <div class="vit-bar" style="background:#1F2430;height:75%"></div>
-              </div><div class="vit-bar-x">Module AA</div></div>
-              <div class="vit-bar-stack"><div class="vit-bar-grp">
-                <div class="vit-bar" style="background:#A50034;height:73%"><span class="vit-bar__lbl">88</span></div>
-                <div class="vit-bar" style="background:#D88FA2;height:75%"></div>
-                <div class="vit-bar" style="background:#CBD0D6;height:72%"></div>
-                <div class="vit-bar" style="background:#9CA3AF;height:70%"></div>
-                <div class="vit-bar" style="background:#6B7280;height:67%"></div>
-                <div class="vit-bar" style="background:#1F2430;height:64%"></div>
-              </div><div class="vit-bar-x">Pre Focus</div></div>
-              <div class="vit-bar-stack"><div class="vit-bar-grp">
-                <div class="vit-bar" style="background:#A50034;height:100%"><span class="vit-bar__lbl">156</span></div>
-                <div class="vit-bar" style="background:#D88FA2;height:100%"></div>
-                <div class="vit-bar" style="background:#CBD0D6;height:100%"></div>
-                <div class="vit-bar" style="background:#9CA3AF;height:100%"></div>
-                <div class="vit-bar" style="background:#6B7280;height:100%"></div>
-                <div class="vit-bar" style="background:#1F2430;100%"></div>
-              </div><div class="vit-bar-x">APS Test</div></div>
-            </div>
-            <div class="vit-chart-card__hint">※ Shift+클릭으로 여러 공정을 선택할 수 있습니다.</div>
-          </div>
-
-          <!-- ── §2 요약 — 공정별 6 기간 표 ──────────────────────────── -->
+          <!-- ── §1 공정별 요약 — 체크박스 = 비교 차트 필터 ───────────── -->
           <div class="cmp-sub-head" style="margin-top:1.5rem;">
             <div class="cmp-sub-head__left">
               <span class="cmp-sub-head__bar" aria-hidden="true"></span>
               <h3 class="cmp-sub-head__title">2026-04-27 ~ 2026-04-28 공정별 요약</h3>
             </div>
-            <span class="cmp-sub-head__meta">체크박스 = 비교 차트 연동</span>
+            <span class="cmp-sub-head__meta">체크 = 비교 차트 표시 / 해제 = 제외</span>
           </div>
           <div class="sc-aggrid">
-            <table>
-              <thead><tr><th style="width:32px;"></th><th>공정명</th><th class="sc-cell-num">선택 기간</th><th class="sc-cell-num">1주전</th><th class="sc-cell-num">2주전</th><th class="sc-cell-num">지난달</th><th class="sc-cell-num">2달전</th><th class="sc-cell-num">지난해</th><th class="sc-cell-num">설비수</th></tr></thead>
+            <table data-mtba-summary>
+              <thead><tr><th style="width:40px;"></th><th>공정명</th><th class="sc-cell-num">선택 기간</th><th class="sc-cell-num">1주전</th><th class="sc-cell-num">2주전</th><th class="sc-cell-num">지난달</th><th class="sc-cell-num">2달전</th><th class="sc-cell-num">지난해</th><th class="sc-cell-num">설비수</th></tr></thead>
               <tbody>
-                <tr><td><input type="checkbox" checked></td><td>Lens AA</td><td class="sc-cell-num sc-cell-good">142</td><td class="sc-cell-num">138</td><td class="sc-cell-num">135</td><td class="sc-cell-num">128</td><td class="sc-cell-num">124</td><td class="sc-cell-num">118</td><td class="sc-cell-num">8</td></tr>
-                <tr><td><input type="checkbox" checked></td><td>Flip Chip Bonding</td><td class="sc-cell-num">98</td><td class="sc-cell-num">102</td><td class="sc-cell-num">95</td><td class="sc-cell-num">88</td><td class="sc-cell-num">82</td><td class="sc-cell-num">76</td><td class="sc-cell-num">6</td></tr>
-                <tr><td><input type="checkbox" checked></td><td>IRCF Attach</td><td class="sc-cell-num sc-cell-bad">62</td><td class="sc-cell-num">68</td><td class="sc-cell-num">71</td><td class="sc-cell-num">74</td><td class="sc-cell-num">78</td><td class="sc-cell-num">82</td><td class="sc-cell-num">4</td></tr>
-                <tr><td><input type="checkbox"></td><td>Module AA</td><td class="sc-cell-num">124</td><td class="sc-cell-num">122</td><td class="sc-cell-num">119</td><td class="sc-cell-num">115</td><td class="sc-cell-num">112</td><td class="sc-cell-num">108</td><td class="sc-cell-num">5</td></tr>
-                <tr><td><input type="checkbox"></td><td>APS Test</td><td class="sc-cell-num sc-cell-good">156</td><td class="sc-cell-num">152</td><td class="sc-cell-num">148</td><td class="sc-cell-num">142</td><td class="sc-cell-num">138</td><td class="sc-cell-num">132</td><td class="sc-cell-num">8</td></tr>
+                <tr data-mtba-proc="Lens AA"><td><input type="checkbox" class="vit-mtba-cb" data-proc="Lens AA" checked></td><td>Lens AA</td><td class="sc-cell-num sc-cell-good">142</td><td class="sc-cell-num">138</td><td class="sc-cell-num">135</td><td class="sc-cell-num">128</td><td class="sc-cell-num">124</td><td class="sc-cell-num">118</td><td class="sc-cell-num">8</td></tr>
+                <tr data-mtba-proc="Flip Chip"><td><input type="checkbox" class="vit-mtba-cb" data-proc="Flip Chip" checked></td><td>Flip Chip Bonding</td><td class="sc-cell-num">98</td><td class="sc-cell-num">102</td><td class="sc-cell-num">95</td><td class="sc-cell-num">88</td><td class="sc-cell-num">82</td><td class="sc-cell-num">76</td><td class="sc-cell-num">6</td></tr>
+                <tr data-mtba-proc="IRCF Attach"><td><input type="checkbox" class="vit-mtba-cb" data-proc="IRCF Attach" checked></td><td>IRCF Attach</td><td class="sc-cell-num sc-cell-bad">62</td><td class="sc-cell-num">68</td><td class="sc-cell-num">71</td><td class="sc-cell-num">74</td><td class="sc-cell-num">78</td><td class="sc-cell-num">82</td><td class="sc-cell-num">4</td></tr>
+                <tr data-mtba-proc="Module AA"><td><input type="checkbox" class="vit-mtba-cb" data-proc="Module AA" checked></td><td>Module AA</td><td class="sc-cell-num">124</td><td class="sc-cell-num">122</td><td class="sc-cell-num">119</td><td class="sc-cell-num">115</td><td class="sc-cell-num">112</td><td class="sc-cell-num">108</td><td class="sc-cell-num">5</td></tr>
+                <tr data-mtba-proc="Pre Focus"><td><input type="checkbox" class="vit-mtba-cb" data-proc="Pre Focus" checked></td><td>Pre Focus</td><td class="sc-cell-num">88</td><td class="sc-cell-num">90</td><td class="sc-cell-num">87</td><td class="sc-cell-num">84</td><td class="sc-cell-num">81</td><td class="sc-cell-num">78</td><td class="sc-cell-num">5</td></tr>
+                <tr data-mtba-proc="APS Test"><td><input type="checkbox" class="vit-mtba-cb" data-proc="APS Test" checked></td><td>APS Test</td><td class="sc-cell-num sc-cell-good">156</td><td class="sc-cell-num">152</td><td class="sc-cell-num">148</td><td class="sc-cell-num">142</td><td class="sc-cell-num">138</td><td class="sc-cell-num">132</td><td class="sc-cell-num">8</td></tr>
               </tbody>
             </table>
           </div>
 
-          <!-- ── §3 현황 — MTBA 현황 Heatmap (호기 × 공정) ───────────── -->
+          <!-- ── §2 공정별 MTBA 기간 비교 — 6 기간 막대 + Target 점선 ─── -->
           <div class="cmp-sub-head" style="margin-top:1.5rem;">
             <div class="cmp-sub-head__left">
               <span class="cmp-sub-head__bar" aria-hidden="true"></span>
-              <h3 class="cmp-sub-head__title">MTBA 현황 (2026-04-27 ~ 2026-04-28)</h3>
+              <h3 class="cmp-sub-head__title">공정별 MTBA 기간 비교</h3>
             </div>
-            <span class="cmp-sub-head__meta">셀 클릭 시 공정/알람 상세 팝업</span>
+            <span class="cmp-sub-head__meta">y: MTBA · max 200 cap · Target 점선 = 목표값</span>
           </div>
-          <div class="vit-heatmap-wrap">
-            <div class="vit-heatmap" data-mtba-heatmap>
-              <div class="vit-heatmap__row vit-heatmap__row--head">
-                <div class="vit-heatmap__cell vit-heatmap__cell--head">호기</div>
-                <div class="vit-heatmap__cell vit-heatmap__cell--head">Lens AA</div>
-                <div class="vit-heatmap__cell vit-heatmap__cell--head">Flip Chip</div>
-                <div class="vit-heatmap__cell vit-heatmap__cell--head">IRCF</div>
-                <div class="vit-heatmap__cell vit-heatmap__cell--head">Module AA</div>
-                <div class="vit-heatmap__cell vit-heatmap__cell--head">APS Test</div>
-                <div class="vit-heatmap__cell vit-heatmap__cell--head">Pre Focus</div>
-                <div class="vit-heatmap__cell vit-heatmap__cell--head">Sensor UF</div>
-                <div class="vit-heatmap__cell vit-heatmap__cell--head">VCM Attach</div>
+          <div class="vit-chart-card">
+            <div class="vit-chart-card__top">
+              <div class="vit-chart-card__legend">
+                <span><span class="vit-legend-dot" style="background:#A50034"></span>선택 기간</span>
+                <span><span class="vit-legend-dot" style="background:#D88FA2"></span>1주전</span>
+                <span><span class="vit-legend-dot" style="background:#7E0027"></span>2주전</span>
+                <span><span class="vit-legend-dot" style="background:#B57F1B"></span>지난달</span>
+                <span><span class="vit-legend-dot" style="background:#6B7280"></span>2달전</span>
+                <span><span class="vit-legend-dot" style="background:#1F2430"></span>지난해</span>
+                <span><span class="vit-legend-dash"></span>Target</span>
               </div>
-              <div class="vit-heatmap__row">
-                <div class="vit-heatmap__cell vit-heatmap__cell--head">#1003</div>
-                <div class="vit-heatmap__cell vit-heatmap__cell--good"  data-process="Lens AA"   data-machine="#1003" data-model="CM모델A" data-seg="SEG-A1" data-qty="12,480" data-status="정상" data-alarm="—">152</div>
-                <div class="vit-heatmap__cell vit-heatmap__cell--ok"    data-process="Flip Chip" data-machine="#1003" data-model="CM모델A" data-seg="SEG-A1" data-qty="11,420" data-status="정상" data-alarm="—">112</div>
-                <div class="vit-heatmap__cell vit-heatmap__cell--ok"    data-process="IRCF Attach" data-machine="#1003" data-model="CM모델A" data-seg="SEG-A1" data-qty="10,920" data-status="정상" data-alarm="—">98</div>
-                <div class="vit-heatmap__cell vit-heatmap__cell--good"  data-process="Module AA" data-machine="#1003" data-model="CM모델A" data-seg="SEG-A1" data-qty="11,210" data-status="정상" data-alarm="—">128</div>
-                <div class="vit-heatmap__cell vit-heatmap__cell--good"  data-process="APS Test"  data-machine="#1003" data-model="CM모델A" data-seg="SEG-A1" data-qty="12,840" data-status="정상" data-alarm="—">156</div>
-                <div class="vit-heatmap__cell vit-heatmap__cell--ok"    data-process="Pre Focus" data-machine="#1003" data-model="CM모델A" data-seg="SEG-A1" data-qty="10,480" data-status="정상" data-alarm="—">88</div>
-                <div class="vit-heatmap__cell vit-heatmap__cell--warn"  data-process="Sensor UF" data-machine="#1003" data-model="CM모델A" data-seg="SEG-A1" data-qty="9,820"  data-status="주의" data-alarm="ALM-1042 · Nozzle Drift">74</div>
-                <div class="vit-heatmap__cell vit-heatmap__cell--ok"    data-process="VCM Attach" data-machine="#1003" data-model="CM모델A" data-seg="SEG-A1" data-qty="10,640" data-status="정상" data-alarm="—">102</div>
-              </div>
-              <div class="vit-heatmap__row">
-                <div class="vit-heatmap__cell vit-heatmap__cell--head">#1108</div>
-                <div class="vit-heatmap__cell vit-heatmap__cell--ok"    data-process="Lens AA"   data-machine="#1108" data-model="CM모델A" data-seg="SEG-B2" data-qty="11,120" data-status="정상" data-alarm="—">128</div>
-                <div class="vit-heatmap__cell vit-heatmap__cell--warn"  data-process="Flip Chip" data-machine="#1108" data-model="CM모델A" data-seg="SEG-B2" data-qty="9,820"  data-status="주의" data-alarm="ALM-1042 · Nozzle Position Drift">94</div>
-                <div class="vit-heatmap__cell vit-heatmap__cell--bad"   data-process="IRCF Attach" data-machine="#1108" data-model="CM모델A" data-seg="SEG-B2" data-qty="7,820"  data-status="이상" data-alarm="ALM-2031 · Pickup Vacuum Loss">62</div>
-                <div class="vit-heatmap__cell vit-heatmap__cell--ok"    data-process="Module AA" data-machine="#1108" data-model="CM모델A" data-seg="SEG-B2" data-qty="10,640" data-status="정상" data-alarm="—">118</div>
-                <div class="vit-heatmap__cell vit-heatmap__cell--good"  data-process="APS Test"  data-machine="#1108" data-model="CM모델A" data-seg="SEG-B2" data-qty="12,140" data-status="정상" data-alarm="—">142</div>
-                <div class="vit-heatmap__cell vit-heatmap__cell--warn"  data-process="Pre Focus" data-machine="#1108" data-model="CM모델A" data-seg="SEG-B2" data-qty="9,440"  data-status="주의" data-alarm="ALM-1117 · Z-axis Drift">82</div>
-                <div class="vit-heatmap__cell vit-heatmap__cell--ok"    data-process="Sensor UF" data-machine="#1108" data-model="CM모델A" data-seg="SEG-B2" data-qty="10,480" data-status="정상" data-alarm="—">94</div>
-                <div class="vit-heatmap__cell vit-heatmap__cell--ok"    data-process="VCM Attach" data-machine="#1108" data-model="CM모델A" data-seg="SEG-B2" data-qty="10,560" data-status="정상" data-alarm="—">96</div>
-              </div>
-              <div class="vit-heatmap__row">
-                <div class="vit-heatmap__cell vit-heatmap__cell--head">#1116</div>
-                <div class="vit-heatmap__cell vit-heatmap__cell--warn"  data-process="Lens AA"   data-machine="#1116" data-model="CM모델A" data-seg="SEG-B3" data-qty="9,640"  data-status="주의" data-alarm="ALM-1042 · 반복알람 (3회)">86</div>
-                <div class="vit-heatmap__cell vit-heatmap__cell--bad"   data-process="Flip Chip" data-machine="#1116" data-model="CM모델A" data-seg="SEG-B3" data-qty="6,840"  data-status="반복알람" data-alarm="ALM-2031 · Pickup Vacuum Loss · 3회">52</div>
-                <div class="vit-heatmap__cell vit-heatmap__cell--bad"   data-process="IRCF Attach" data-machine="#1116" data-model="CM모델A" data-seg="SEG-B3" data-qty="7,240"  data-status="반복알람" data-alarm="ALM-2031 · Pickup Vacuum Loss · 3회 반복">38</div>
-                <div class="vit-heatmap__cell vit-heatmap__cell--ok"    data-process="Module AA" data-machine="#1116" data-model="CM모델A" data-seg="SEG-B3" data-qty="10,420" data-status="정상" data-alarm="—">112</div>
-                <div class="vit-heatmap__cell vit-heatmap__cell--ok"    data-process="APS Test"  data-machine="#1116" data-model="CM모델A" data-seg="SEG-B3" data-qty="11,420" data-status="정상" data-alarm="—">128</div>
-                <div class="vit-heatmap__cell vit-heatmap__cell--bad"   data-process="Pre Focus" data-machine="#1116" data-model="CM모델A" data-seg="SEG-B3" data-qty="7,840"  data-status="이상" data-alarm="ALM-2014 · Vibration Out-of-spec">66</div>
-                <div class="vit-heatmap__cell vit-heatmap__cell--warn"  data-process="Sensor UF" data-machine="#1116" data-model="CM모델A" data-seg="SEG-B3" data-qty="9,180"  data-status="주의" data-alarm="ALM-1042 · Nozzle Drift">78</div>
-                <div class="vit-heatmap__cell vit-heatmap__cell--bad"   data-process="VCM Attach" data-machine="#1116" data-model="CM모델A" data-seg="SEG-B3" data-qty="7,440"  data-status="이상" data-alarm="ALM-1881 · Force Calibration Fail">58</div>
-              </div>
-              <div class="vit-heatmap__row">
-                <div class="vit-heatmap__cell vit-heatmap__cell--head">#1024</div>
-                <div class="vit-heatmap__cell vit-heatmap__cell--good"  data-process="Lens AA"   data-machine="#1024" data-model="CM모델A" data-seg="SEG-A2" data-qty="12,180" data-status="정상" data-alarm="—">148</div>
-                <div class="vit-heatmap__cell vit-heatmap__cell--ok"    data-process="Flip Chip" data-machine="#1024" data-model="CM모델A" data-seg="SEG-A2" data-qty="11,210" data-status="정상" data-alarm="—">108</div>
-                <div class="vit-heatmap__cell vit-heatmap__cell--ok"    data-process="IRCF Attach" data-machine="#1024" data-model="CM모델A" data-seg="SEG-A2" data-qty="10,820" data-status="정상" data-alarm="—">102</div>
-                <div class="vit-heatmap__cell vit-heatmap__cell--good"  data-process="Module AA" data-machine="#1024" data-model="CM모델A" data-seg="SEG-A2" data-qty="11,820" data-status="정상" data-alarm="—">132</div>
-                <div class="vit-heatmap__cell vit-heatmap__cell--good"  data-process="APS Test"  data-machine="#1024" data-model="CM모델A" data-seg="SEG-A2" data-qty="13,020" data-status="정상" data-alarm="—">158</div>
-                <div class="vit-heatmap__cell vit-heatmap__cell--ok"    data-process="Pre Focus" data-machine="#1024" data-model="CM모델A" data-seg="SEG-A2" data-qty="10,920" data-status="정상" data-alarm="—">118</div>
-                <div class="vit-heatmap__cell vit-heatmap__cell--ok"    data-process="Sensor UF" data-machine="#1024" data-model="CM모델A" data-seg="SEG-A2" data-qty="10,420" data-status="정상" data-alarm="—">96</div>
-                <div class="vit-heatmap__cell vit-heatmap__cell--good"  data-process="VCM Attach" data-machine="#1024" data-model="CM모델A" data-seg="SEG-A2" data-qty="11,520" data-status="정상" data-alarm="—">128</div>
-              </div>
+              <label class="vit-target-input">
+                <span>Target MTBA (min)</span>
+                <input type="number" id="mtba-target-input" value="120" min="1" step="1">
+              </label>
             </div>
-            <div class="vit-heatmap__legend">
-              <span class="vit-heatmap__legend-item"><span class="vit-heatmap__cell vit-heatmap__cell--bad" style="width:16px;height:14px;display:inline-block;cursor:default;">&nbsp;</span>위험 (≤70)</span>
-              <span class="vit-heatmap__legend-item"><span class="vit-heatmap__cell vit-heatmap__cell--warn" style="width:16px;height:14px;display:inline-block;cursor:default;">&nbsp;</span>주의 (71~90)</span>
-              <span class="vit-heatmap__legend-item"><span class="vit-heatmap__cell vit-heatmap__cell--ok" style="width:16px;height:14px;display:inline-block;cursor:default;">&nbsp;</span>정상 (91~130)</span>
-              <span class="vit-heatmap__legend-item"><span class="vit-heatmap__cell vit-heatmap__cell--good" style="width:16px;height:14px;display:inline-block;cursor:default;">&nbsp;</span>양호 (≥131)</span>
-            </div>
+            <svg id="mtba-bar-chart" class="vit-bar-chart-svg" viewBox="0 0 720 240" preserveAspectRatio="none">
+              <g class="vit-bar-grid">
+                <line x1="40" y1="20"  x2="710" y2="20"/>
+                <line x1="40" y1="65"  x2="710" y2="65"/>
+                <line x1="40" y1="110" x2="710" y2="110"/>
+                <line x1="40" y1="155" x2="710" y2="155"/>
+                <line x1="40" y1="200" x2="710" y2="200"/>
+              </g>
+              <g class="vit-bar-axis">
+                <line x1="40" y1="20" x2="40" y2="200"/>
+                <line x1="40" y1="200" x2="710" y2="200"/>
+              </g>
+              <text x="38" y="24"  text-anchor="end">200</text>
+              <text x="38" y="69"  text-anchor="end">160</text>
+              <text x="38" y="114" text-anchor="end">120</text>
+              <text x="38" y="159" text-anchor="end">80</text>
+              <text x="38" y="204" text-anchor="end">40</text>
+              <!-- Target 점선 (초기 120 → y=110) -->
+              <line id="mtba-target-line" x1="40" y1="110" x2="710" y2="110" stroke="#1F8B4C" stroke-width="2" stroke-dasharray="6 4"/>
+              <text id="mtba-target-text" x="715" y="114" fill="#1F8B4C" font-family="IBM Plex Mono, monospace" font-size="10" font-weight="700">Target 120</text>
+              <!-- 6 공정 그룹 (group_x = 40 + 30 + i*110 = 70, 180, 290, 400, 510, 620) -->
+              <g id="mtba-bar-groups">
+                <g class="vit-bar-grp" data-proc="Lens AA" transform="translate(70,0)">
+                  <rect x="0" y="72.2" width="12" height="127.8" fill="#A50034" data-period="선택 기간"></rect>
+                  <text x="6" y="68.2" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10" font-weight="700" fill="#1F2430">142</text>
+                  <rect x="14" y="75.8" width="12" height="124.2" fill="#D88FA2" data-period="1주전"></rect>
+                  <rect x="28" y="78.5" width="12" height="121.5" fill="#7E0027" data-period="2주전"></rect>
+                  <rect x="42" y="84.8" width="12" height="115.2" fill="#B57F1B" data-period="지난달"></rect>
+                  <rect x="56" y="88.4" width="12" height="111.6" fill="#6B7280" data-period="2달전"></rect>
+                  <rect x="70" y="93.8" width="12" height="106.2" fill="#1F2430" data-period="지난해"></rect>
+                </g>
+                <g class="vit-bar-grp" data-proc="Flip Chip" transform="translate(180,0)">
+                  <rect x="0" y="111.8" width="12" height="88.2" fill="#A50034" data-period="선택 기간"></rect>
+                  <text x="6" y="107.8" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10" font-weight="700" fill="#1F2430">98</text>
+                  <rect x="14" y="108.2" width="12" height="91.8" fill="#D88FA2" data-period="1주전"></rect>
+                  <rect x="28" y="114.5" width="12" height="85.5" fill="#7E0027" data-period="2주전"></rect>
+                  <rect x="42" y="120.8" width="12" height="79.2" fill="#B57F1B" data-period="지난달"></rect>
+                  <rect x="56" y="126.2" width="12" height="73.8" fill="#6B7280" data-period="2달전"></rect>
+                  <rect x="70" y="131.6" width="12" height="68.4" fill="#1F2430" data-period="지난해"></rect>
+                </g>
+                <g class="vit-bar-grp" data-proc="IRCF Attach" transform="translate(290,0)">
+                  <rect x="0" y="144.2" width="12" height="55.8" fill="#A50034" data-period="선택 기간"></rect>
+                  <text x="6" y="140.2" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10" font-weight="700" fill="#1F2430">62</text>
+                  <rect x="14" y="138.8" width="12" height="61.2" fill="#D88FA2" data-period="1주전"></rect>
+                  <rect x="28" y="136.1" width="12" height="63.9" fill="#7E0027" data-period="2주전"></rect>
+                  <rect x="42" y="133.4" width="12" height="66.6" fill="#B57F1B" data-period="지난달"></rect>
+                  <rect x="56" y="129.8" width="12" height="70.2" fill="#6B7280" data-period="2달전"></rect>
+                  <rect x="70" y="126.2" width="12" height="73.8" fill="#1F2430" data-period="지난해"></rect>
+                </g>
+                <g class="vit-bar-grp" data-proc="Module AA" transform="translate(400,0)">
+                  <rect x="0" y="88.4" width="12" height="111.6" fill="#A50034" data-period="선택 기간"></rect>
+                  <text x="6" y="84.4" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10" font-weight="700" fill="#1F2430">124</text>
+                  <rect x="14" y="90.2" width="12" height="109.8" fill="#D88FA2" data-period="1주전"></rect>
+                  <rect x="28" y="92.9" width="12" height="107.1" fill="#7E0027" data-period="2주전"></rect>
+                  <rect x="42" y="96.5" width="12" height="103.5" fill="#B57F1B" data-period="지난달"></rect>
+                  <rect x="56" y="99.2" width="12" height="100.8" fill="#6B7280" data-period="2달전"></rect>
+                  <rect x="70" y="102.8" width="12" height="97.2" fill="#1F2430" data-period="지난해"></rect>
+                </g>
+                <g class="vit-bar-grp" data-proc="Pre Focus" transform="translate(510,0)">
+                  <rect x="0" y="120.8" width="12" height="79.2" fill="#A50034" data-period="선택 기간"></rect>
+                  <text x="6" y="116.8" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10" font-weight="700" fill="#1F2430">88</text>
+                  <rect x="14" y="119.0" width="12" height="81.0" fill="#D88FA2" data-period="1주전"></rect>
+                  <rect x="28" y="121.7" width="12" height="78.3" fill="#7E0027" data-period="2주전"></rect>
+                  <rect x="42" y="124.4" width="12" height="75.6" fill="#B57F1B" data-period="지난달"></rect>
+                  <rect x="56" y="127.1" width="12" height="72.9" fill="#6B7280" data-period="2달전"></rect>
+                  <rect x="70" y="129.8" width="12" height="70.2" fill="#1F2430" data-period="지난해"></rect>
+                </g>
+                <g class="vit-bar-grp" data-proc="APS Test" transform="translate(620,0)">
+                  <rect x="0" y="59.6" width="12" height="140.4" fill="#A50034" data-period="선택 기간"></rect>
+                  <text x="6" y="55.6" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10" font-weight="700" fill="#1F2430">156</text>
+                  <rect x="14" y="63.2" width="12" height="136.8" fill="#D88FA2" data-period="1주전"></rect>
+                  <rect x="28" y="66.8" width="12" height="133.2" fill="#7E0027" data-period="2주전"></rect>
+                  <rect x="42" y="72.2" width="12" height="127.8" fill="#B57F1B" data-period="지난달"></rect>
+                  <rect x="56" y="75.8" width="12" height="124.2" fill="#6B7280" data-period="2달전"></rect>
+                  <rect x="70" y="81.2" width="12" height="118.8" fill="#1F2430" data-period="지난해"></rect>
+                </g>
+              </g>
+              <g id="mtba-bar-x" font-size="11" font-family="LG EI Text, sans-serif" fill="#1F2430">
+                <text x="125" y="220" text-anchor="middle" data-x-proc="Lens AA">Lens AA</text>
+                <text x="235" y="220" text-anchor="middle" data-x-proc="Flip Chip">Flip Chip</text>
+                <text x="345" y="220" text-anchor="middle" data-x-proc="IRCF Attach">IRCF Attach</text>
+                <text x="455" y="220" text-anchor="middle" data-x-proc="Module AA">Module AA</text>
+                <text x="565" y="220" text-anchor="middle" data-x-proc="Pre Focus">Pre Focus</text>
+                <text x="675" y="220" text-anchor="middle" data-x-proc="APS Test">APS Test</text>
+              </g>
+            </svg>
+            <div class="vit-chart-card__hint">※ 공정별 요약표에서 체크박스를 토글하면 막대 그룹이 표시/숨김됩니다.</div>
           </div>
 
-          <!-- ── §4 메모 / 이미지 업로드 ─────────────────────────────── -->
-          <div class="cmp-sub-head" style="margin-top:1.5rem;">
-            <div class="cmp-sub-head__left">
-              <span class="cmp-sub-head__bar" aria-hidden="true"></span>
-              <h3 class="cmp-sub-head__title">메모 / 이미지 업로드</h3>
-            </div>
-            <span class="cmp-sub-head__meta">패널 1</span>
-          </div>
-          <div class="vit-upload">
-            <div class="vit-upload__col">
-              <label class="vit-upload__label">메모 입력 #1</label>
-              <textarea class="vit-upload__textarea" placeholder="공정 / 설비 관련 메모를 입력하세요…"></textarea>
-            </div>
-            <div class="vit-upload__col">
-              <label class="vit-upload__label">이미지 업로드 #1</label>
-              <div class="vit-upload__dropzone">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                <div class="vit-upload__dz-title">Drag and drop file here</div>
-                <div class="vit-upload__dz-sub">Limit 200MB per file • PNG / JPG / JPEG / BMP</div>
-                <button class="vit-upload__browse" type="button">Browse files</button>
-              </div>
-            </div>
-          </div>
-          <div class="vit-actions-row">
-            <div data-testid="stButton"><button kind="primary">메모 / 이미지 저장 #1</button></div>
-          </div>
-
-          <!-- 패널 actions -->
-          <div class="vit-panel-actions">
-            <span>패널 1</span>
-            <div class="vit-panel-actions__btns">
-              <div data-testid="stButton"><button>이 패널 아래에 추가 #1</button></div>
-              <div data-testid="stButton"><button>이 패널 제거 #1</button></div>
-            </div>
-          </div>
+          <!-- 페이지 footer (panel actions 제거 — 메모/현황 모두 삭제로 인해 단순화) -->
 
         </div>
       </section>
@@ -1587,34 +1534,60 @@
       <!-- =========================================================== -->
       <!--  MTBA Detail — 4_MTBA_Detail_View.py · 패널형 상세           -->
       <!-- =========================================================== -->
-                  <section id="sec-detail" class="sc-page-section">
+                        <section id="sec-detail" class="sc-page-section">
         <div data-testid="stVerticalBlock">
 
           <div class="sc-sec-head">
             <div class="sc-sec-head__bar"></div>
             <div class="sc-sec-head__body">
-              <h2 class="sc-sec-head__title">MTBA Detail View</h2>
+              <h2 class="sc-sec-head__title">MTBA Heatmap</h2>
+            </div>
+            <div class="sc-sec-head__actions">
+              <div data-testid="stButton"><button class="vit-export-btn" data-export="sec-detail">CSV 내보내기</button></div>
             </div>
           </div>
 
           <ul class="vit-note-list">
-            <li>공정 셀 클릭 시 해당 공정/알람 상세 팝업이 열립니다.</li>
+            <li>공정 셀 클릭 시 해당 공정/알람 상세 + 공정 / 호기 Worst 5 알람 팝업이 열립니다.</li>
             <li>p_* = 공정명 / pk_* = 해당 공정의 PK(설비 식별자) — 셀 하단 작은 mono 라벨</li>
-            <li>MTBA가 0/공란인 셀은 회색으로, 알람 누적 셀은 빨강으로 표시됩니다.</li>
+            <li>MTBA가 0/공란인 셀은 회색, 알람 누적 셀은 빨강으로 표시됩니다.</li>
           </ul>
 
-          <!-- 필터 -->
+          <!-- 필터 (MTBA Dashboard 와 동일 구조: 팀 + 모델 + 공정 대분류 + 공정 + 기간) -->
           <div class="cmp-filter">
-            <div class="cmp-filter__row">
+            <div class="cmp-filter__row cmp-filter__row--3">
+              <div data-testid="stSelectbox">
+                <label>팀</label>
+                <div data-baseweb="select"><div>광학 MaxCapa TDR</div></div>
+              </div>
               <div data-testid="stMultiSelect">
                 <label>모델</label>
                 <div data-baseweb="select"><div class="sc-select-tag-wrap">
                   <span data-baseweb="tag" class="sc-tag-primary">CM모델A <span role="button">×</span></span>
                 </div></div>
               </div>
-              <div data-testid="stSelectbox">
-                <label>FOL In-line</label>
-                <div data-baseweb="select"><div>FOL-A</div></div>
+              <div data-testid="stMultiSelect">
+                <label>공정 대분류 (영역)</label>
+                <div data-baseweb="select"><div class="sc-select-tag-wrap">
+                  <span data-baseweb="tag" class="sc-tag-area">FOL <span role="button">×</span></span>
+                </div></div>
+              </div>
+            </div>
+            <div class="cmp-filter__row">
+              <div data-testid="stMultiSelect">
+                <label>공정</label>
+                <div data-baseweb="select"><div class="sc-select-tag-wrap">
+                  <span data-baseweb="tag">전체 <span role="button">×</span></span>
+                </div></div>
+              </div>
+              <div data-testid="stDateInput">
+                <label>기간</label>
+                <div class="cmp-date-wrap">
+                  <div data-baseweb="input"><input type="text" value="2026-04-27 ~ 2026-04-28" readonly></div>
+                  <button type="button" class="cmp-date-icon" aria-label="기간 선택" title="기간 선택">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                  </button>
+                </div>
               </div>
             </div>
             <div class="cmp-filter__actions">
@@ -1623,16 +1596,16 @@
             </div>
           </div>
 
-          <!-- ── §1 그리드 — MTBA Detail Heatmap (호기 × 공정, p_/pk_) ── -->
+          <!-- ── Heatmap (flexible width — 호기 × 공정 풀 매트릭스) ───── -->
           <div class="cmp-sub-head" style="margin-top:1.25rem;">
             <div class="cmp-sub-head__left">
               <span class="cmp-sub-head__bar" aria-hidden="true"></span>
-              <h3 class="cmp-sub-head__title">MTBA Detail Heatmap (FOL In-line #1)</h3>
+              <h3 class="cmp-sub-head__title">MTBA Heatmap (FOL In-line)</h3>
             </div>
-            <span class="cmp-sub-head__meta">grid_kind = "fol" · panel_id = 1 · 셀 클릭 = focusedCell</span>
+            <span class="cmp-sub-head__meta">셀 클릭 = focusedCell · 알람 상세 + 공정/호기 Worst 5</span>
           </div>
-          <div class="vit-heatmap-wrap">
-            <div class="vit-heatmap vit-heatmap--detail" data-mtba-heatmap>
+          <div class="vit-heatmap-wrap vit-heatmap-wrap--flex">
+            <div class="vit-heatmap vit-heatmap--detail vit-heatmap--flex" data-mtba-heatmap>
               <div class="vit-heatmap__row vit-heatmap__row--head">
                 <div class="vit-heatmap__cell vit-heatmap__cell--head">호기</div>
                 <div class="vit-heatmap__cell vit-heatmap__cell--head">Dust Trap<br><small>p_Dust Trap</small></div>
@@ -1717,33 +1690,6 @@
             </div>
           </div>
 
-          <!-- ── §2 디버그 — 패널 메타 (간소) ─────────────────────────── -->
-          <div class="cmp-sub-head" style="margin-top:1.5rem;">
-            <div class="cmp-sub-head__left">
-              <span class="cmp-sub-head__bar" aria-hidden="true"></span>
-              <h3 class="cmp-sub-head__title">디버그 정보 (패널 1)</h3>
-            </div>
-            <span class="cmp-sub-head__meta">streamlit_version 1.55.0 · st_aggrid_version unknown</span>
-          </div>
-          <div class="vit-debug">
-            <dl class="vit-debug__body">
-              <dt>panel_id</dt><dd>1</dd>
-              <dt>grid_kind</dt><dd>"fol"</dd>
-              <dt>focusedCell</dt><dd>{ rowIndex: 1, colId: "p_IRCF Attach" }</dd>
-              <dt>session_open_popup</dt><dd>"popup_fol_1_r1_p_IRCF_Attach"</dd>
-              <dt>marker_rows</dt><dd>[ 1, 3 ]</dd>
-              <dt>work_df_shape</dt><dd>(4, 29)</dd>
-            </dl>
-          </div>
-
-          <div class="vit-panel-actions">
-            <span>패널 1</span>
-            <div class="vit-panel-actions__btns">
-              <div data-testid="stButton"><button>이 패널 아래에 추가 #1</button></div>
-              <div data-testid="stButton"><button>이 패널 제거 #1</button></div>
-            </div>
-          </div>
-
         </div>
       </section>
 
@@ -1760,6 +1706,8 @@
             <div class="sc-sec-head__body">
               <h2 class="sc-sec-head__title">Alarm Action List</h2>
             </div>
+            <div class="sc-sec-head__actions"><div data-testid="stButton"><button class="vit-export-btn" data-export="sec-alarm">CSV 내보내기</button></div></div>
+          
           </div>
 
           <ul class="vit-note-list">
@@ -1913,6 +1861,8 @@
             <div class="sc-sec-head__body">
               <h2 class="sc-sec-head__title">MaxCapa Chat (대화형 생산지표 조회)</h2>
             </div>
+            <div class="sc-sec-head__actions"><div data-testid="stButton"><button class="vit-export-btn" data-export="sec-chat">CSV 내보내기</button></div></div>
+          
           </div>
 
           <!-- 데이터 소스 분기 hint card -->
@@ -2050,6 +2000,13 @@
       <!--  Patch Note — 8_Patch_Note.py (light Vitals)                 -->
       <!-- =========================================================== -->
       <section id="sec-patch" class="sc-page-section">
+          <div class="sc-sec-head">
+            <div class="sc-sec-head__bar"></div>
+            <div class="sc-sec-head__body">
+              <h2 class="sc-sec-head__title">Patch Note</h2>
+            </div>
+            <div class="sc-sec-head__actions"><div data-testid="stButton"><button class="vit-export-btn" data-export="sec-patch">CSV 내보내기</button></div></div>
+          </div>
         <div data-testid="stVerticalBlock">
 
           <div class="sc-top-strip"></div>
@@ -2171,6 +2128,7 @@
           <div class="vit-page-head">
             <h1>관리자 분석 대시보드</h1>
             <p class="sub">사용자 로그인 · 페이지 조회 로그 기반 분석 — User Flow / Heatmap / Errors / Sessions 포함</p>
+            <div class="vit-page-head__actions" style="margin-top:6px;"><div data-testid="stButton"><button class="vit-export-btn" data-export="sec-admin">CSV 내보내기</button></div></div>
           </div>
 
           <!-- filters -->
@@ -2622,13 +2580,84 @@
   </div><!-- /vit-modal -->
 </div><!-- /vit-modal-backdrop -->
 
-<!-- 공정/알람 상세 팝업 — S6-B 양식 (heatmap 셀 클릭 시 열림) -->
+<!-- 공정/알람 상세 팝업 — S6-B 양식 + 공정/호기 Worst 5 알람 -->
 <div class="vit-modal-backdrop" id="alarm-detail-modal" aria-hidden="true" hidden>
-  <div class="vit-modal" role="dialog" aria-modal="true" aria-labelledby="alarm-modal-title">
+  <div class="vit-modal vit-modal--lg" role="dialog" aria-modal="true" aria-labelledby="alarm-modal-title">
     <div class="vit-modal__head">
       <h3 class="vit-modal__title" id="alarm-modal-title">공정/알람 상세 <span class="vit-modal__pill" id="alarm-modal-proc">p_IRCF Attach</span></h3>
       <button type="button" class="vit-modal__close" id="alarm-modal-close" aria-label="닫기">✕</button>
     </div>
+    <div class="vit-modal__body">
+      <dl class="vit-kv">
+        <dt>알람명</dt><dd id="alarm-modal-alarm">IRCF Attach Pickup Vacuum Loss</dd>
+        <dt>호기</dt><dd id="alarm-modal-machine">#1116</dd>
+        <dt>모델명</dt><dd id="alarm-modal-model">CM모델A</dd>
+        <dt>설비세그먼트명</dt><dd id="alarm-modal-seg">SEG-B3</dd>
+        <dt>MTBA</dt><dd id="alarm-modal-mtba" class="high">38</dd>
+        <dt>생산수량</dt><dd id="alarm-modal-qty">7,240</dd>
+      </dl>
+      <div class="vit-modal__sect">
+        <h4>최근 알람 이력 (3건)</h4>
+        <ul class="vit-alm-list">
+          <li class="vit-alm-list__item vit-alm-list__item--high">
+            <span class="vit-alm-list__t">04-28 14:22</span>
+            <span class="vit-alm-list__id">ALM-2031</span>
+            <span class="vit-alm-list__msg">Pickup Vacuum Loss · 3회 반복</span>
+          </li>
+          <li class="vit-alm-list__item vit-alm-list__item--high">
+            <span class="vit-alm-list__t">04-28 11:05</span>
+            <span class="vit-alm-list__id">ALM-2031</span>
+            <span class="vit-alm-list__msg">Pickup Vacuum Loss · 재현</span>
+          </li>
+          <li class="vit-alm-list__item vit-alm-list__item--mid">
+            <span class="vit-alm-list__t">04-27 22:48</span>
+            <span class="vit-alm-list__id">ALM-1042</span>
+            <span class="vit-alm-list__msg">Nozzle Position Drift</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- 2 Worst 5 tables (공정 / 호기) -->
+      <div class="vit-modal__sect-grid">
+        <div class="vit-modal__col">
+          <h4>공정 Worst 5 알람 — <span id="alarm-modal-worst-proc-name">IRCF Attach</span></h4>
+          <div class="sc-aggrid">
+            <table id="alarm-modal-worst-proc">
+              <thead><tr><th>알람명</th><th class="sc-cell-num">횟수</th><th class="sc-cell-num">비중</th></tr></thead>
+              <tbody>
+                <tr><td>ALM-2031 · Pickup Vacuum Loss</td><td class="sc-cell-num sc-cell-bad">42</td><td class="sc-cell-num">38.2%</td></tr>
+                <tr><td>ALM-1042 · Nozzle Position Drift</td><td class="sc-cell-num sc-cell-bad">28</td><td class="sc-cell-num">25.5%</td></tr>
+                <tr><td>ALM-1881 · Force Calibration Fail</td><td class="sc-cell-num sc-cell-warn">18</td><td class="sc-cell-num">16.4%</td></tr>
+                <tr><td>ALM-2014 · Vibration Out-of-spec</td><td class="sc-cell-num sc-cell-warn">12</td><td class="sc-cell-num">10.9%</td></tr>
+                <tr><td>ALM-1117 · Z-axis Drift</td><td class="sc-cell-num">10</td><td class="sc-cell-num">9.0%</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="vit-modal__col">
+          <h4>호기 Worst 5 알람 — <span id="alarm-modal-worst-mc-name">#1116</span></h4>
+          <div class="sc-aggrid">
+            <table id="alarm-modal-worst-mc">
+              <thead><tr><th>알람명</th><th class="sc-cell-num">횟수</th><th class="sc-cell-num">비중</th></tr></thead>
+              <tbody>
+                <tr><td>ALM-2031 · Pickup Vacuum Loss</td><td class="sc-cell-num sc-cell-bad">36</td><td class="sc-cell-num">31.4%</td></tr>
+                <tr><td>ALM-1881 · Force Calibration Fail</td><td class="sc-cell-num sc-cell-bad">24</td><td class="sc-cell-num">20.9%</td></tr>
+                <tr><td>ALM-1042 · Nozzle Position Drift</td><td class="sc-cell-num sc-cell-warn">20</td><td class="sc-cell-num">17.4%</td></tr>
+                <tr><td>ALM-2014 · Vibration Out-of-spec</td><td class="sc-cell-num sc-cell-warn">18</td><td class="sc-cell-num">15.7%</td></tr>
+                <tr><td>ALM-1117 · Z-axis Drift</td><td class="sc-cell-num">17</td><td class="sc-cell-num">14.6%</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="vit-modal__foot">
+      <div data-testid="stButton"><button>메모 추가</button></div>
+      <div data-testid="stButton"><button kind="primary">상세 보고서 열기</button></div>
+    </div>
+  </div>
+</div>
     <div class="vit-modal__body">
       <dl class="vit-kv">
         <dt>알람명</dt><dd id="alarm-modal-alarm">IRCF Attach Pickup Vacuum Loss</dd>
@@ -2925,6 +2954,126 @@
         if (b) b.setAttribute('aria-selected', on ? 'true' : 'false');
         if (p) p.hidden = !on;
       });
+    });
+  });
+
+  // ── MTBA Dashboard: 공정별 요약 체크박스 ↔ 비교 차트 막대 그룹 토글 ──
+  function applyMtbaCheckboxFilter() {
+    var procs = {};
+    Array.prototype.slice.call(document.querySelectorAll('.vit-mtba-cb')).forEach(function (cb) {
+      procs[cb.getAttribute('data-proc')] = cb.checked;
+    });
+    Array.prototype.slice.call(document.querySelectorAll('#mtba-bar-groups .vit-bar-grp')).forEach(function (grp) {
+      var p = grp.getAttribute('data-proc');
+      grp.setAttribute('data-hidden', procs[p] ? '0' : '1');
+    });
+    Array.prototype.slice.call(document.querySelectorAll('#mtba-bar-x text[data-x-proc]')).forEach(function (t) {
+      var p = t.getAttribute('data-x-proc');
+      t.style.display = procs[p] ? '' : 'none';
+    });
+  }
+  Array.prototype.slice.call(document.querySelectorAll('.vit-mtba-cb')).forEach(function (cb) {
+    cb.addEventListener('change', applyMtbaCheckboxFilter);
+  });
+  applyMtbaCheckboxFilter();
+
+  // ── MTBA Dashboard: Target MTBA 입력 → 점선 y 위치 업데이트 ──
+  var mtbaTargetInput = document.getElementById('mtba-target-input');
+  var mtbaTargetLine  = document.getElementById('mtba-target-line');
+  var mtbaTargetText  = document.getElementById('mtba-target-text');
+  function updateMtbaTarget() {
+    if (!mtbaTargetInput || !mtbaTargetLine) return;
+    var v = parseFloat(mtbaTargetInput.value);
+    if (isNaN(v) || v <= 0) return;
+    var capped = Math.min(v, 200);
+    var y = 200 - (capped / 200) * 180;
+    mtbaTargetLine.setAttribute('y1', y);
+    mtbaTargetLine.setAttribute('y2', y);
+    if (mtbaTargetText) {
+      mtbaTargetText.setAttribute('y', y + 4);
+      mtbaTargetText.textContent = 'Target ' + v;
+    }
+  }
+  if (mtbaTargetInput) mtbaTargetInput.addEventListener('input', updateMtbaTarget);
+
+  // ── 팀별 공정 모달 ─────────────────────────────────────────────
+  var teamModal = document.getElementById('team-procs-modal');
+  var teamBtn = document.getElementById('mtba-team-procs-btn');
+  var teamClose = document.getElementById('team-procs-modal-close');
+  var teamCancel = document.getElementById('team-procs-cancel');
+  var teamSave = document.getElementById('team-procs-save');
+  function openTeamModal() {
+    if (!teamModal) return;
+    teamModal.hidden = false;
+    teamModal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeTeamModal() {
+    if (!teamModal) return;
+    teamModal.hidden = true;
+    teamModal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+  if (teamBtn)    teamBtn.addEventListener('click', openTeamModal);
+  if (teamClose)  teamClose.addEventListener('click', closeTeamModal);
+  if (teamCancel) teamCancel.addEventListener('click', closeTeamModal);
+  if (teamSave)   teamSave.addEventListener('click', closeTeamModal);
+  if (teamModal)  teamModal.addEventListener('click', function (e) {
+    if (e.target === teamModal) closeTeamModal();
+  });
+
+  // ── CSV 내보내기 — 페이지 단위 (모든 <table> + .vit-heatmap 데이터 수집) ──
+  function csvEscape(s) {
+    s = (s || '').replace(/\s+/g, ' ').replace(/"/g, '""').trim();
+    return /[",\n]/.test(s) ? '"' + s + '"' : s;
+  }
+  function exportSectionCSV(secId) {
+    var sec = document.getElementById(secId);
+    if (!sec) return;
+    var rows = [];
+    Array.prototype.slice.call(sec.querySelectorAll('table')).forEach(function (tb, idx) {
+      rows.push('# table ' + (idx + 1));
+      Array.prototype.slice.call(tb.querySelectorAll('tr')).forEach(function (tr) {
+        var cells = [];
+        Array.prototype.slice.call(tr.querySelectorAll('th, td')).forEach(function (c) { cells.push(csvEscape(c.textContent)); });
+        if (cells.length) rows.push(cells.join(','));
+      });
+      rows.push('');
+    });
+    Array.prototype.slice.call(sec.querySelectorAll('.vit-heatmap')).forEach(function (hm, idx) {
+      rows.push('# heatmap ' + (idx + 1));
+      Array.prototype.slice.call(hm.querySelectorAll('.vit-heatmap__row')).forEach(function (rw) {
+        var cells = [];
+        Array.prototype.slice.call(rw.querySelectorAll('.vit-heatmap__cell')).forEach(function (c) { cells.push(csvEscape(c.textContent)); });
+        if (cells.length) rows.push(cells.join(','));
+      });
+      rows.push('');
+    });
+    var csv = '﻿' + rows.join('\n');
+    var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'vitals_' + secId + '_' + new Date().toISOString().slice(0, 10) + '.csv';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function () { URL.revokeObjectURL(url); a.remove(); }, 100);
+  }
+  Array.prototype.slice.call(document.querySelectorAll('.vit-export-btn')).forEach(function (btn) {
+    btn.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      exportSectionCSV(btn.getAttribute('data-export'));
+    });
+  });
+
+  // ── alarm-detail-modal: 클릭 시 Worst 5 표 헤더 (공정명/호기명) 동기화 ──
+  var alarmWorstProcName = document.getElementById('alarm-modal-worst-proc-name');
+  var alarmWorstMcName   = document.getElementById('alarm-modal-worst-mc-name');
+  Array.prototype.slice.call(document.querySelectorAll('.vit-heatmap__cell:not(.vit-heatmap__cell--head)')).forEach(function (cell) {
+    cell.addEventListener('click', function () {
+      if (alarmWorstProcName) alarmWorstProcName.textContent = cell.getAttribute('data-process') || '';
+      if (alarmWorstMcName)   alarmWorstMcName.textContent   = cell.getAttribute('data-machine') || '';
     });
   });
 
