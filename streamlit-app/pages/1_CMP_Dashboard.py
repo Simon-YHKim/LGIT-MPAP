@@ -361,8 +361,7 @@ def apply_common_css():
     .section-heading .bar {
         width: 4px;
         height: 18px;
-        border-radius: 2px;
-        background: var(--accent-rose);   /* Vitals 와인 단색 (mockup-S3 정렬) */
+        background: var(--primary, var(--accent-rose));   /* preview cmp-sub-head 와 동일 — wine 단색, radius:0 */
     }
     .section-heading .title {
         font-size: 22px;
@@ -1509,9 +1508,12 @@ def main():
     set_korean_font()
     apply_common_css()
     render_home_button()
+    # preview sec-cmp 와 정렬 — vit-top-strip 6px wine + flat eyebrow + h1.
+    from ui.vitals.components import render_top_strip
+    render_top_strip()
     st.markdown("""
     <div class='page-shell'>
-      <div class='page-eyebrow' style='display:flex;align-items:center;gap:8px;'><span style='display:inline-block;width:4px;height:14px;background:var(--primary);border-radius:2px;'></span>PRODUCTIVITY · CMP</div>
+      <div class='page-eyebrow' style='display:flex;align-items:center;gap:8px;'><span style='display:inline-block;width:4px;height:14px;background:var(--primary);'></span>PRODUCTIVITY · CMP</div>
       <h1 style='margin:0;font-family:var(--font-display, var(--font-body));letter-spacing:-0.02em;'>CMP 달성률 Dashboard</h1>
       <div class='page-subtitle'>CMP대비 Capa/UPH/Effciecny 달성률을 확인 할 수 있는 Dashboard 입니다.</div>
     </div>
