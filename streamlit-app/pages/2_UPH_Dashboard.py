@@ -397,9 +397,21 @@ div[data-testid="stPlotlyChart"]:hover .modebar{opacity:.75;}
 
 
 def render_vitals_page_head():
+    # preview sec-uph 와 정렬 — vit-top-strip 6px wine + flat eyebrow + h1.
+    from ui.vitals.components import render_top_strip
+    render_top_strip()
     st.markdown(
         """
 <div class="vitals-page-head">
+  <div class="vitals-page-head__eyebrow"
+       style="display:flex;align-items:center;gap:8px;
+              font-family:'IBM Plex Mono','SF Mono',Consolas,monospace;
+              font-size:11px;font-weight:700;letter-spacing:.08em;
+              text-transform:uppercase;color:var(--ink-muted,#6B7280);
+              margin-bottom:6px;">
+    <span style="display:inline-block;width:4px;height:14px;background:var(--primary);"></span>
+    PRODUCTIVITY · UPH
+  </div>
   <div>
     <h1>UPH / 동작시간 분석 Dashboard</h1>
     <p class="vitals-sub">조회 조건을 선택하세요.</p>
@@ -2104,7 +2116,9 @@ def render_page(show_global_title: bool = True):
 
     title_col, metric_col = st.columns([2, 5])
     with title_col:
-        st.markdown(f"### 1. UPH 요약 ({'I-TAS' if source_mode == 'ITAS' else 'MES'})")
+        # preview sec-uph 패턴 — left wine bar + h3 (render_sub_head 와 시각 동등).
+        from ui.vitals.components import render_sub_head
+        render_sub_head(f"1. UPH 요약 ({'I-TAS' if source_mode == 'ITAS' else 'MES'})", "8 KPI")
         dev, bw_gap, _, _ = compute_uph_metrics(active_uph_day)
         ref_text = '-' if reference_uph is None else format_float(reference_uph, UPH_DECIMALS)
         st.markdown(
@@ -2221,7 +2235,7 @@ def render_page(show_global_title: bool = True):
         )
 
     st.markdown('---')
-    st.markdown('### 2. Best Worst 동작차이')
+    render_sub_head("2. Best Worst 동작차이", "동작별 평균 vs Best/Worst")
     machine_options = natural_machine_sort(uph_day_itas_summary['호기'].astype(str).tolist()) if not uph_day_itas_summary.empty else []
     if selected_process is None or best_ho is None or worst_ho is None or not machine_options:
         st.info('Best/Worst 동작차이 테이블을 계산할 수 없습니다.')
@@ -2327,7 +2341,7 @@ def render_page(show_global_title: bool = True):
             )
 
     st.markdown('---')
-    st.markdown('### 3. UPH / 편차율 Trend')
+    render_sub_head("3. UPH / 편차율 Trend", "기간별 추이")
     if trend_df.empty:
         st.info('선택 기간의 Trend 데이터가 없습니다.')
     else:
@@ -2344,7 +2358,7 @@ def render_page(show_global_title: bool = True):
     )
 
     st.markdown('---')
-    st.markdown('### 4. 주요 편차동작')
+    render_sub_head("4. 주요 편차동작", "이상치 식별")
     var_col, gap_col = st.columns(2)
     with var_col:
         st.markdown('**편차율 상위 5개 동작**')
@@ -2388,7 +2402,7 @@ def render_page(show_global_title: bool = True):
         )
 
     st.markdown('---')
-    st.markdown('### 5. 동작시간이 증가 추세인 동작')
+    render_sub_head("5. 동작시간이 증가 추세인 동작", "악화 신호")
     if inc_top3.empty:
         st.info('증가 추세를 계산할 수 있는 데이터가 부족합니다.')
     else:
@@ -2419,7 +2433,7 @@ def render_page(show_global_title: bool = True):
                 )
 
     st.markdown('---')
-    st.markdown('### 6. 동작시간이 하락 추세인 동작')
+    render_sub_head("6. 동작시간이 하락 추세인 동작", "개선 신호")
     if dec_top3.empty:
         st.info('하락 추세를 계산할 수 있는 데이터가 부족합니다.')
     else:
