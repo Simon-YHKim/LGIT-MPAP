@@ -4168,6 +4168,10 @@ table[data-mtba-summary] input[type="checkbox"] { accent-color: var(--primary); 
   padding: 12px 1rem 14px;
   border-top: 1px solid var(--border);
   background: var(--soft);
+  /* 사이드바 안에서 항상 하단 sticky — 스크롤 시에도 보임 */
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
 }
 .sc-sidebar-user__avatar {
   width: 36px; height: 36px;
@@ -4289,4 +4293,36 @@ html body .vit-modal-backdrop[hidden] {
   visibility: hidden !important;
   opacity: 0 !important;
   pointer-events: none !important;
+}
+
+/* sidebar user — avatar + name 도 클릭 가능 (settings open) */
+.sc-sidebar-user__body {
+  cursor: pointer;
+  user-select: none;
+}
+.sc-sidebar-user__body:hover .sc-sidebar-user__name { color: var(--primary-dark); }
+
+/* Toast notification — generic button feedback */
+.vit-toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: var(--ink-body);
+  color: #fff;
+  padding: 10px 16px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  border-left: 3px solid var(--primary);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  z-index: 99999;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 180ms, transform 180ms;
+  pointer-events: none;
+  max-width: 320px;
+}
+.vit-toast.is-on {
+  opacity: 1;
+  transform: translateY(0);
 }

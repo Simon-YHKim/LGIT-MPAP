@@ -1955,6 +1955,8 @@
       <!--  Patch Note — 8_Patch_Note.py (light Vitals)                 -->
       <!-- =========================================================== -->
       <section id="sec-patch" class="sc-page-section">
+        <div data-testid="stVerticalBlock">
+
           <div class="sc-sec-head">
             <div class="sc-sec-head__bar"></div>
             <div class="sc-sec-head__body">
@@ -1962,7 +1964,6 @@
             </div>
             <div class="sc-sec-head__actions"><div data-testid="stButton"><button class="vit-export-btn" data-export="sec-patch">CSV 내보내기</button></div></div>
           </div>
-        <div data-testid="stVerticalBlock">
 
           <div data-testid="stHorizontalBlock" style="display:grid;grid-template-columns:1fr 1.4fr;gap:1rem;align-items:start;">
             <!-- 좌측: 목록 -->
@@ -2073,11 +2074,12 @@
       <section id="sec-admin" class="sc-page-section">
         <div data-testid="stVerticalBlock">
 
-          <!-- vit-page-head: card-bg + 4px primary left bar -->
-          <div class="vit-page-head">
-            <h1>관리자 분석 대시보드</h1>
-            <p class="sub">사용자 로그인 · 페이지 조회 로그 기반 분석 — User Flow / Heatmap / Errors / Sessions 포함</p>
-            <div class="vit-page-head__actions" style="margin-top:6px;"><div data-testid="stButton"><button class="vit-export-btn" data-export="sec-admin">CSV 내보내기</button></div></div>
+          <div class="sc-sec-head">
+            <div class="sc-sec-head__bar"></div>
+            <div class="sc-sec-head__body">
+              <h2 class="sc-sec-head__title">Admin Analytics</h2>
+            </div>
+            <div class="sc-sec-head__actions"><div data-testid="stButton"><button class="vit-export-btn" data-export="sec-admin">CSV 내보내기</button></div></div>
           </div>
 
           <!-- filters -->
@@ -2390,7 +2392,7 @@
   </main>
 </div>
 
-<div class="vit-modal-backdrop" id="cmp-proc-modal" aria-hidden="true" hidden style="display:none;">
+<div class="vit-modal-backdrop" id="cmp-proc-modal" aria-hidden="true" hidden style="display:none !important;">
   <div class="vit-modal" role="dialog" aria-modal="true" aria-labelledby="cmp-proc-modal-title">
     <div class="vit-modal__head">
       <h3 class="vit-modal__title" id="cmp-proc-modal-title">공정별 상세 분석</h3>
@@ -2530,7 +2532,7 @@
 </div><!-- /vit-modal-backdrop -->
 
 <!-- 공정/알람 상세 팝업 — S6-B 양식 + 공정/호기 Worst 5 알람 -->
-<div class="vit-modal-backdrop" id="alarm-detail-modal" aria-hidden="true" hidden style="display:none;">
+<div class="vit-modal-backdrop" id="alarm-detail-modal" aria-hidden="true" hidden style="display:none !important;">
   <div class="vit-modal vit-modal--lg" role="dialog" aria-modal="true" aria-labelledby="alarm-modal-title">
     <div class="vit-modal__head">
       <h3 class="vit-modal__title" id="alarm-modal-title">공정/알람 상세 <span class="vit-modal__pill" id="alarm-modal-proc">p_IRCF Attach</span></h3>
@@ -2644,13 +2646,16 @@
   </div>
 </div>
 
-
-
-<!-- dark-mode toggle -->
-<button class="sc-theme-toggle" id="sc-theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">◐</button>
-
 <script>
 (function () {
+  // ── 즉시 실행 — 모든 모달 force-close (페이지 로드 시 leak 방지) ──
+  Array.prototype.slice.call(document.querySelectorAll('.vit-modal-backdrop')).forEach(function (m) {
+    m.hidden = true;
+    m.setAttribute('hidden', '');
+    m.style.cssText = 'display:none !important;';
+    m.setAttribute('aria-hidden', 'true');
+  });
+
   // theme toggle (light <-> dark via [data-theme] on <html>)
   var root = document.documentElement;
   var btn  = document.getElementById('sc-theme-toggle');
@@ -2662,7 +2667,7 @@
     var saved = localStorage.getItem('vitals-clone-theme');
     if (saved === 'dark' || saved === 'light') setTheme(saved);
   } catch (e) {}
-  btn.addEventListener('click', function () {
+  if (btn) btn.addEventListener('click', function () {
     var cur = root.getAttribute('data-theme') || 'light';
     setTheme(cur === 'dark' ? 'light' : 'dark');
   });
@@ -3135,6 +3140,60 @@
     }
   });
 
+  // ── 사이드바 user — avatar / name 영역 클릭 = 설정 모달 ─────────
+  var userBody   = document.querySelector('.sc-sidebar-user__body');
+  var userAvatar = document.querySelector('.sc-sidebar-user__avatar');
+  if (userBody)   userBody.addEventListener('click', openSettingsModal);
+  if (userAvatar) userAvatar.addEventListener('click', openSettingsModal);
+
+  // ── Toast 알림 — 이름이 명시적 handler 없는 모든 버튼에 click feedback ──
+  var toastEl = document.createElement('div');
+  toastEl.className = 'vit-toast';
+  toastEl.setAttribute('role', 'status');
+  toastEl.setAttribute('aria-live', 'polite');
+  document.body.appendChild(toastEl);
+  var toastTimer = null;
+  function showToast(msg) {
+    toastEl.textContent = msg;
+    toastEl.classList.add('is-on');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toastEl.classList.remove('is-on'); }, 1800);
+  }
+
+  // 필터 "초기화" 버튼 — 같은 cmp-filter 안 multi-select tag 모두 비움
+  Array.prototype.slice.call(document.querySelectorAll('[data-testid="stButton"] > button')).forEach(function (b) {
+    var label = (b.textContent || '').trim();
+    // 이미 명시적 handler 가 있는 버튼은 스킵 (id 부여된 것 + 알람 모달 close 등)
+    if (b.id) return;
+    b.addEventListener('click', function (e) {
+      // form 안 submit 막기
+      e.preventDefault();
+      e.stopPropagation();
+      if (label === '초기화' || label === '페이지 상태 초기화' || label === '대화 초기화') {
+        var filter = b.closest('.cmp-filter');
+        if (filter) {
+          Array.prototype.slice.call(filter.querySelectorAll('[data-baseweb="tag"]')).forEach(function (t) { t.remove(); });
+        }
+        showToast('필터를 초기화했습니다.');
+        return;
+      }
+      if (label === '필터 적용' || label === '조회' || label === '필터 적용 ' || label === '조회 패널' || label === '조회 패널 #1') {
+        showToast('조회 결과를 갱신했습니다.');
+        return;
+      }
+      if (label === '수정')           { showToast('수정 모드로 진입합니다.');       return; }
+      if (label === '삭제')           { showToast('삭제했습니다 (실 환경에서 confirm).'); return; }
+      if (label === '메모 추가')      { showToast('메모를 추가했습니다.');          return; }
+      if (label === '상세 보고서 열기') { showToast('상세 보고서를 새 탭으로 엽니다.'); return; }
+      if (label === '메모 / 이미지 저장 #1') { showToast('메모를 저장했습니다.'); return; }
+      if (label === '이 패널 아래에 추가 #1' || label === '이 패널 제거 #1') { showToast('패널 동작을 처리했습니다.'); return; }
+      if (label === 'CSV')            { showToast('CSV 다운로드 시작.'); return; }
+      if (label === '질문 분석 및 실행 ▸') { showToast('질문을 분석합니다…'); return; }
+      // 기본 — 약한 ack
+      showToast(label + ' — 처리됨');
+    });
+  });
+
   // ── CSV 내보내기 — 페이지 단위 (모든 <table> + .vit-heatmap 데이터 수집) ──
   function csvEscape(s) {
     s = (s || '').replace(/\s+/g, ' ').replace(/"/g, '""').trim();
@@ -3289,7 +3348,7 @@
 </script>
 
 <!-- 설정 모달 — 로그아웃 / 언어 / 테마 -->
-<div class="vit-modal-backdrop" id="settings-modal" aria-hidden="true" hidden style="display:none;">
+<div class="vit-modal-backdrop" id="settings-modal" aria-hidden="true" hidden style="display:none !important;">
   <div class="vit-modal" role="dialog" aria-modal="true" aria-labelledby="settings-modal-title" style="width:min(440px,96vw)">
     <div class="vit-modal__head">
       <h3 class="vit-modal__title" id="settings-modal-title">설정</h3>
