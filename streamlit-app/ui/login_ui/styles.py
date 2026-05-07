@@ -131,7 +131,7 @@ def apply_global_styles():
             left: 0;
             width: 100%;
             height: 548px;
-            border-radius: 24px;
+            /* Vitals 'rectangles only' — left-panel-bg 도 직사각형. */
             background: linear-gradient(
                 180deg,
                 rgba(255,255,255,0.075) 0%,
@@ -177,7 +177,7 @@ def apply_global_styles():
             width: 32px;
             height: 3px;
             background: var(--primary);
-            border-radius: 999px;
+            /* Vitals 'rectangles only' — wine accent bar 도 직각. */
             margin-right: 10px;
             vertical-align: middle;
         }
@@ -258,10 +258,10 @@ def apply_global_styles():
             color: rgba(255,255,255,0.88) !important;
         }
 
-        /* 입력 */
+        /* 입력 — Vitals 'rectangles only' */
         div[data-baseweb="input"] > div,
         div[data-baseweb="select"] > div {
-            border-radius: 12px !important;
+            border-radius: 0 !important;
             border: 1px solid rgba(255,255,255,0.08) !important;
             background: rgba(255,255,255,0.94) !important;
             box-shadow: 0 6px 16px rgba(0,0,0,0.12) !important;
@@ -289,10 +289,10 @@ def apply_global_styles():
             color: rgba(255,255,255,0.64) !important;
         }
 
-        /* 버튼 */
+        /* 버튼 — Vitals 'rectangles only' */
         .stButton > button,
         .stFormSubmitButton > button {
-            border-radius: 10px !important;
+            border-radius: 0 !important;
             font-weight: 700 !important;
             min-height: 44px !important;
             transition: all 0.18s ease !important;
@@ -387,9 +387,9 @@ def apply_global_styles():
        
 
 
-        /* 알림 */
+        /* 알림 — Vitals 'rectangles only' */
         [data-testid="stAlert"] {
-            border-radius: 12px;
+            border-radius: 0;
             backdrop-filter: blur(4px);
             -webkit-backdrop-filter: blur(4px);
         }
@@ -450,11 +450,10 @@ def apply_global_styles():
             text-transform: uppercase;
         }
 
-        /* 오른쪽 패널 */
+        /* 오른쪽 패널 — Vitals 'rectangles only' */
         .side-panel {
             background: rgba(10,12,16,0.54);
             border: 1px solid rgba(255,255,255,0.10);
-            border-radius: 14px;
             padding: 15px 16px;
             color: var(--on-dark);
             margin-bottom: 14px;
@@ -559,7 +558,7 @@ def apply_global_styles():
             display:inline-block;
             margin-right: 6px;
             padding: 1px 5px;
-            border-radius: 4px;
+            /* Vitals 'rectangles only' — wine pill 도 직각. */
             background: rgba(165,0,52,0.25);
             border: 1px solid rgba(165,0,52,0.4);
             color: #fff;

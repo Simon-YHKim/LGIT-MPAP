@@ -110,7 +110,7 @@ def render_system_status_panel():
 
             .status-card {
                 width: 100%;
-                border-radius: 14px;
+                /* Vitals 'rectangles only' — radius 제거 (status dot 원은 functional). */
                 background: rgba(10,12,16,0.54);
                 border: 1px solid rgba(255,255,255,0.10);
                 box-shadow:
@@ -310,7 +310,7 @@ def render_patch_notes_panel(patch_posts):
 
             .patch-card {{
                 width: 100%;
-                border-radius: 14px;
+                /* Vitals 'rectangles only' — radius 제거. */
                 background: rgba(10,12,16,0.54);
                 border: 1px solid rgba(255,255,255,0.10);
                 box-shadow:
@@ -385,7 +385,7 @@ def render_patch_notes_panel(patch_posts):
             .patch-tag-pill {{
                 display: inline-block;
                 padding: 2px 6px;
-                border-radius: 5px;
+                /* Vitals 'rectangles only' — radius 제거. */
                 font-size: 10px;
                 font-weight: 700;
                 line-height: 1.1;
