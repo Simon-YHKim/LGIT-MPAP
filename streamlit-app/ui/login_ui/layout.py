@@ -451,7 +451,7 @@ def render_board_link_panel():
             margin-top: 8px;
             margin-bottom: 6px;
         ">
-            ●
+<svg width="6" height="6" viewBox="0 0 8 8" aria-hidden="true" style="display:inline-block;vertical-align:middle;"><circle cx="4" cy="4" r="3" fill="currentColor"/></svg>
         </div>
         <div style="
             text-align: center;
@@ -482,7 +482,7 @@ def render_board_link_panel():
             margin-top: 8px;
             margin-bottom: 6px;
         ">
-            ●
+<svg width="6" height="6" viewBox="0 0 8 8" aria-hidden="true" style="display:inline-block;vertical-align:middle;"><circle cx="4" cy="4" r="3" fill="currentColor"/></svg>
         </div>
         """,
         unsafe_allow_html=True
@@ -514,7 +514,7 @@ def render_status_label_panel():
                 line-height: 1.35;
                 margin-bottom: 6px;
             ">
-                ●
+    <svg width="6" height="6" viewBox="0 0 8 8" aria-hidden="true" style="display:inline-block;vertical-align:middle;"><circle cx="4" cy="4" r="3" fill="currentColor"/></svg>
             </div>
             <div style="
                 color: rgba(255,255,255,0.94);
@@ -539,7 +539,7 @@ def render_status_label_panel():
                 font-weight: 700;
                 line-height: 1.35;
             ">
-                ●
+    <svg width="6" height="6" viewBox="0 0 8 8" aria-hidden="true" style="display:inline-block;vertical-align:middle;"><circle cx="4" cy="4" r="3" fill="currentColor"/></svg>
             </div>
         </div>
         """,

@@ -350,6 +350,10 @@ def _theme_attr_script(theme: str) -> str:
     """매 rerun 시 root/body 에 data-theme 와 .vitals-dark 클래스를 동기화하는
     작은 inline <script>. Streamlit 의 outer document 와 실제 컴포넌트
     iframe 사이의 attribute drift 를 방어.
+
+    Side-effect: render_chat_panel 이 add 한 body.has-vit-chat 클래스를
+    매 페이지 진입 시 일단 제거 (chat 페이지가 다시 add 하면 복원). 이전엔
+    한 번 add 되면 다른 페이지로 넘어가도 phantom 360px right-pad 남는 버그.
     """
     return f"""
 <script>
@@ -365,10 +369,21 @@ def _theme_attr_script(theme: str) -> str:
       body.setAttribute('data-theme', t);
       if (t === 'dark') body.classList.add('vitals-dark');
       else body.classList.remove('vitals-dark');
+      // Chat panel right-pad 누수 방지 — 페이지 진입 시 일단 제거.
+      // 채팅 페이지의 render_chat_panel 이 다시 add 함.
+      body.classList.remove('has-vit-chat');
       var apps = body.querySelectorAll('.stApp');
       apps.forEach(function(a) {{ a.setAttribute('data-theme', t); }});
     }}
-  }} catch (e) {{ /* swallow — best-effort */ }}
+  }} catch (e) {{ /* SecurityError / cross-origin: components.v1.html iframe
+       으로 감싸진 컨텍스트에서는 window.parent 접근이 차단됨. 본 함수는
+       st.markdown 으로 inject 되는 게 정상 사용처이므로 같은 document.
+       fallback 으로 자기 document 에라도 attribute 적용을 시도한 후 무시. */
+    try {{
+      document.documentElement.setAttribute('data-theme', "{theme}");
+      document.body && document.body.setAttribute('data-theme', "{theme}");
+    }} catch (e2) {{ /* swallow */ }}
+  }}
 }})();
 </script>
 """

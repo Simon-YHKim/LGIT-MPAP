@@ -344,7 +344,7 @@ body.has-vit-chat .block-container {{ padding-right: calc(var(--vit-chat-w) + 24
   <div class="vit-chat__resize" id="vit-chat-resize"></div>
   <header class="vit-chat__head">
     <h3 class="vit-chat__title">{title}</h3>
-    <button type="button" class="vit-chat__collapse" aria-label="collapse">▸</button>
+    <button type="button" class="vit-chat__collapse" aria-label="collapse"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg></button>
   </header>
   <div class="vit-chat__body">
     <div class="vit-chat__hint">
@@ -360,7 +360,7 @@ body.has-vit-chat .block-container {{ padding-right: calc(var(--vit-chat-w) + 24
   </div>
   <div class="vit-chat__composer">
     <textarea class="vit-chat__textarea" placeholder="{placeholder}"></textarea>
-    <button type="button" class="vit-chat__send">질문 분석 및 실행 ▸</button>
+    <button type="button" class="vit-chat__send">질문 분석 및 실행 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg></button>
   </div>
 </aside>
 <script>
@@ -416,8 +416,29 @@ body.has-vit-chat .block-container {{ padding-right: calc(var(--vit-chat-w) + 24
     )
 
 
+_GLOBE_SVG = (
+    '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" '
+    'stroke="currentColor" stroke-width="1.7" stroke-linecap="round" '
+    'stroke-linejoin="round" aria-hidden="true">'
+    '<circle cx="12" cy="12" r="10"/>'
+    '<line x1="2" y1="12" x2="22" y2="12"/>'
+    '<path d="M12 2 a15 15 0 0 1 0 20 a15 15 0 0 1 0 -20"/>'
+    '</svg>'
+)
+_CHEVRON_DOWN_SVG = (
+    '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" '
+    'stroke="currentColor" stroke-width="2" stroke-linecap="round" '
+    'stroke-linejoin="round" aria-hidden="true">'
+    '<polyline points="6 9 12 15 18 9"/>'
+    '</svg>'
+)
+
+
 def render_lang_switcher(default: str = "KO") -> None:
-    """톱nav 우측 언어 스위처 (장식용 — 실제 i18n 은 페이지에서 처리)."""
+    """톱nav 우측 언어 스위처 (장식용 — 실제 i18n 은 페이지에서 처리).
+
+    AI-slop 방지: emoji 사용 금지 정책에 따라 stroked SVG 글로브 + chevron 사용.
+    """
     st.markdown(
         f"""
 <style>
@@ -427,8 +448,269 @@ def render_lang_switcher(default: str = "KO") -> None:
     font-family: var(--font-mono); font-size:11px; font-weight:600;
     color: var(--ink-body); cursor:pointer; }}
 .vit-lang:hover {{ border-color: var(--border-strong); background: var(--soft); }}
+.vit-lang svg {{ display:block; }}
 </style>
-<button type="button" class="vit-lang">🌐 {default} ▾</button>
+<button type="button" class="vit-lang">{_GLOBE_SVG} {default} {_CHEVRON_DOWN_SVG}</button>
 """,
         unsafe_allow_html=True,
     )
+
+
+# ============================================================================
+# STAGE 2 primitives — preview HTML 의 시각 구조를 streamlit-app 페이지에서
+# 재사용하기 위한 함수 모음. 모든 함수는 CSS-only injection (st.markdown
+# unsafe_allow_html=True) — 인터랙션이 필요한 모달/필터 적용은 Streamlit
+# native 위젯 (st.dialog / st.button / st.toast / st.download_button) 으로
+# bridge 한다. 인라인 <script> 는 st.markdown 에서 stripped 되므로 절대 의존 X.
+# ============================================================================
+
+# 페이지별 CSS 중복 주입 방지 sentinel.
+_CSS_FLAG_KEY = "_vitals_components_css_injected"
+
+
+def _inject_components_css_once() -> None:
+    """모든 primitive 가 공유하는 CSS 를 페이지당 1회만 주입.
+
+    이전엔 각 render_* 가 자체 <style> 블록을 출력해서 rerun 마다 중복 주입.
+    이 함수는 st.session_state 에 sentinel 을 두고 1회만 emit.
+    """
+    if st.session_state.get(_CSS_FLAG_KEY):
+        return
+    st.session_state[_CSS_FLAG_KEY] = True
+    st.markdown(
+        """
+<style>
+/* === Vitals primitives — 공유 CSS (페이지당 1회) ===================== */
+
+/* render_top_strip: 페이지 상단 6px 와인 가로 (Vitals identity) */
+.vit-top-strip { height:6px; background: var(--primary); margin: 0 -1rem 12px; }
+
+/* render_sub_head: 좌측 4px 와인 세로 + 제목 + 메타 */
+.vit-sub-head { display:flex; align-items:center; gap:10px;
+    padding: 6px 0 8px; margin: 14px 0 12px;
+    border-bottom: 1px solid var(--border); }
+.vit-sub-head__bar { width:4px; height:18px; background: var(--primary);
+    flex: 0 0 auto; }
+.vit-sub-head__title { font-family: var(--font-display);
+    font-size:15px; font-weight:600; color: var(--ink-body); margin:0;
+    line-height:1.2; }
+.vit-sub-head__meta { margin-left:auto; font-size:11px;
+    color: var(--ink-muted); }
+
+/* render_nav_card: 좌측 3px 와인 세로 + 제목/설명 */
+.vit-nav-card-grid { display:grid; grid-template-columns: repeat(3, 1fr);
+    gap: 14px; margin: 12px 0 18px; }
+.vit-nav-card { position:relative; padding: 14px 16px 14px 22px;
+    background: var(--card-bg); border: 1px solid var(--border);
+    text-decoration:none; color: var(--ink-body);
+    transition: border-color 120ms; }
+.vit-nav-card::before { content:""; position:absolute; left:0; top:0;
+    bottom:0; width:3px; background: var(--primary); }
+.vit-nav-card:hover { border-color: var(--primary); }
+.vit-nav-card__title { font-family: var(--font-display);
+    font-size:14px; font-weight:600; color: var(--ink-body);
+    margin: 0 0 4px; }
+.vit-nav-card__desc { font-size:12px; color: var(--ink-muted); margin:0;
+    line-height: 1.45; }
+
+/* render_toast 의 컨테이너 — Streamlit st.toast 가 이미 native 토스트를
+   제공하므로 본 클래스는 fallback / 추가 스타일링용 */
+.vit-toast-host { position:fixed; right:16px; bottom:16px; z-index:9999;
+    display:flex; flex-direction:column; gap:8px; pointer-events:none; }
+
+/* render_sidebar_tree: 사이드바 트리 그룹 헤드 + 자식 링크 */
+.vit-tree-group { padding: 4px 0 8px; }
+.vit-tree-group__head { display:flex; align-items:center; gap:6px;
+    padding: 6px 8px; font-family: var(--font-display);
+    font-size:12px; font-weight:600; color: var(--ink-muted);
+    letter-spacing: 0.04em; text-transform: uppercase; cursor:pointer;
+    user-select:none; }
+.vit-tree-group__caret { width:10px; height:10px; transition: transform 120ms; }
+.vit-tree-group.is-collapsed .vit-tree-group__caret { transform: rotate(-90deg); }
+.vit-tree-group__list { padding: 2px 0 0 6px; }
+.vit-tree-group.is-collapsed .vit-tree-group__list { display:none; }
+.vit-tree-link { display:flex; align-items:center; gap:8px;
+    padding: 6px 10px 6px 14px; position:relative;
+    font-size: 13px; color: var(--ink-body);
+    text-decoration:none; line-height:1.3; }
+.vit-tree-link:hover { background: var(--soft); }
+.vit-tree-link.is-active { font-weight: 600; color: var(--ink-body); }
+.vit-tree-link.is-active::before { content:""; position:absolute;
+    left:0; top:6px; bottom:6px; width:3px; background: var(--primary); }
+</style>
+""",
+        unsafe_allow_html=True,
+    )
+
+
+def render_top_strip() -> None:
+    """페이지 최상단 와인 6px 가로 strip (Vitals identity bar).
+
+    사용: 모든 sc-page-section 도입부에 1회. 매 페이지 진입 시 동일 위치.
+    """
+    _inject_components_css_once()
+    st.markdown('<div class="vit-top-strip" aria-hidden="true"></div>',
+                unsafe_allow_html=True)
+
+
+def render_sub_head(title: str, meta: str = "") -> None:
+    """좌측 4px 와인 세로 + 제목 + 우측 메타 텍스트.
+
+    사용: sc-page-section 안의 sub-head 영역. preview 에선 cmp-sub-head 와 동등.
+    HTML 만 주입 — 인터랙션 없음. Streamlit 의 unsafe_allow_html sanitizer 가
+    title/meta 의 HTML 을 그대로 통과시키므로 호출 측에서 escape 책임.
+    """
+    _inject_components_css_once()
+    from html import escape as _e
+    meta_html = (
+        f'<span class="vit-sub-head__meta">{_e(str(meta))}</span>' if meta else ""
+    )
+    st.markdown(
+        f'<div class="vit-sub-head">'
+        f'  <span class="vit-sub-head__bar" aria-hidden="true"></span>'
+        f'  <h3 class="vit-sub-head__title">{_e(str(title))}</h3>'
+        f'  {meta_html}'
+        f'</div>',
+        unsafe_allow_html=True,
+    )
+
+
+def render_nav_card_grid(cards: Sequence[Mapping[str, str]]) -> None:
+    """3-열 nav 카드 그리드. 각 카드 = {title, desc, page} dict.
+
+    page 는 streamlit-app/pages/ 의 파일명 stem (예: "1_CMP_Dashboard").
+    href 는 ./<page> 로 root-relative — Streamlit 의 default routing 과 일치.
+    """
+    _inject_components_css_once()
+    from html import escape as _e
+    items = "".join(
+        f'<a class="vit-nav-card" href="./{_e(c["page"])}" target="_self">'
+        f'  <p class="vit-nav-card__title">{_e(c["title"])}</p>'
+        f'  <p class="vit-nav-card__desc">{_e(c.get("desc", ""))}</p>'
+        f'</a>'
+        for c in cards
+    )
+    st.markdown(f'<div class="vit-nav-card-grid">{items}</div>',
+                unsafe_allow_html=True)
+
+
+def render_toast(message: str, *, kind: str = "info") -> None:
+    """Streamlit native st.toast 로 사용자 피드백 emit.
+
+    kind: "info" / "success" / "warning" / "error" — Streamlit 1.27+ 의
+    st.toast 는 icon 만 받으므로 kind 별 icon 매핑.
+    """
+    icon_map = {"info": "i", "success": "✓", "warning": "!", "error": "x"}
+    icon = icon_map.get(kind, "i")
+    st.toast(message, icon=icon)
+
+
+def render_csv_export(df, *, label: str = "CSV 내려받기",
+                      filename: str = "export.csv",
+                      key: str | None = None) -> None:
+    """Streamlit native st.download_button 으로 CSV 다운로드.
+
+    UTF-8 BOM 포함 (Excel 한글 호환). df 는 pandas.DataFrame.
+    """
+    csv_bytes = ("﻿" + df.to_csv(index=False)).encode("utf-8")
+    st.download_button(
+        label=label,
+        data=csv_bytes,
+        file_name=filename,
+        mime="text/csv; charset=utf-8",
+        key=key,
+        use_container_width=False,
+    )
+
+
+def render_modal_static(title: str, body_html: str, *,
+                        modal_id: str,
+                        close_label: str = "닫기") -> None:
+    """정적 (display-only) 모달 — preview HTML 의 .vit-modal-backdrop 패턴 재현.
+
+    JS 인터랙션이 필요한 (트리거 버튼 클릭, ESC, backdrop 클릭) 경우엔
+    st.dialog (Streamlit native) 를 쓰는 게 안전함. 본 함수는 단순 표시용.
+
+    body_html 은 호출 측에서 escape 한 안전한 HTML 만 전달할 것.
+    """
+    _inject_components_css_once()
+    from html import escape as _e
+    title_e = _e(str(title))
+    cl_e = _e(str(close_label))
+    mid = _e(str(modal_id))
+    st.markdown(
+        f'<div class="vit-modal-backdrop" id="{mid}" aria-hidden="false">'
+        f'  <div class="vit-modal" role="dialog" aria-modal="true" '
+        f'       aria-labelledby="{mid}-title">'
+        f'    <div class="vit-modal__head">'
+        f'      <h3 class="vit-modal__title" id="{mid}-title">{title_e}</h3>'
+        f'      <button type="button" class="vit-modal__close" '
+        f'              aria-label="{cl_e}">×</button>'
+        f'    </div>'
+        f'    <div class="vit-modal__body">{body_html}</div>'
+        f'  </div>'
+        f'</div>',
+        unsafe_allow_html=True,
+    )
+
+
+def render_sidebar_tree(groups: Sequence[Mapping[str, object]],
+                        active_key: str = "") -> None:
+    """사이드바 트리 그룹 (Home / MTBA 등).
+
+    groups = [{"label": "Home", "items": [{"key":"home","label":"홈","page":"0_Home"}, ...]}]
+    active_key 와 일치하는 자식 링크에 .is-active 와 와인 bar 표시.
+    """
+    _inject_components_css_once()
+    from html import escape as _e
+    parts = []
+    for g in groups:
+        items = g.get("items", []) or []
+        any_active = any(it.get("key") == active_key for it in items)
+        head_label = _e(str(g.get("label", "")))
+        item_html = "".join(
+            f'<a class="vit-tree-link{" is-active" if it.get("key") == active_key else ""}" '
+            f'   href="./{_e(str(it.get("page","")))}" target="_self">'
+            f'  {_e(str(it.get("label","")))}</a>'
+            for it in items
+        )
+        collapsed_cls = "" if any_active else " is-collapsed"
+        parts.append(
+            f'<div class="vit-tree-group{collapsed_cls}">'
+            f'  <div class="vit-tree-group__head">'
+            f'    <span class="vit-tree-group__caret">{_CHEVRON_DOWN_SVG}</span>'
+            f'    <span>{head_label}</span>'
+            f'  </div>'
+            f'  <div class="vit-tree-group__list">{item_html}</div>'
+            f'</div>'
+        )
+    st.markdown("".join(parts), unsafe_allow_html=True)
+
+
+def render_filter_block(*, on_apply: str = "조회",
+                        on_reset: str = "초기화") -> dict:
+    """cmp-filter 의 행 — 모델/공정/기간 필터.
+
+    Streamlit native 위젯 사용 (selectbox / multiselect / date_input) 으로
+    인터랙션 = st.session_state 통한 rerun. 호출자가 with-block 안에서
+    위젯들을 자유 배치하고, 본 함수는 button 두 개만 표준으로 emit.
+
+    Returns: {"apply": bool, "reset": bool} — 클릭 여부.
+
+    예:
+        with st.container():
+            render_sub_head("Filters", "모델·공정·기간")
+            col1, col2, col3, col4 = st.columns([2,2,2,2])
+            with col1: model = st.selectbox(...)
+            ...
+            actions = render_filter_block()
+            if actions["reset"]: ...
+            if actions["apply"]: ...
+    """
+    _inject_components_css_once()
+    cols = st.columns([1, 1, 6])
+    apply_clicked = cols[0].button(on_apply, type="primary", key="_vit_filter_apply",
+                                    use_container_width=True)
+    reset_clicked = cols[1].button(on_reset, key="_vit_filter_reset",
+                                    use_container_width=True)
+    return {"apply": bool(apply_clicked), "reset": bool(reset_clicked)}

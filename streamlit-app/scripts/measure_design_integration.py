@@ -182,6 +182,7 @@ def main():
     print("-" * 90)
     print(f"{'AVERAGE':<48} {avg:>5.1f}/100")
     out = REPO / "streamlit-app" / "docs" / "design_integration_score.json"
+    out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps({"average": round(avg, 1), "pages": results}, indent=2, ensure_ascii=False))
     print(f"\n→ {out.relative_to(REPO)}")
 
