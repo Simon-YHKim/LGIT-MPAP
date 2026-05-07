@@ -95,7 +95,7 @@
       <section id="sec-login" class="sc-page-section sc-login-section">
 
         <!-- 실제 login.py 의 render_video_background() —
-             자체 호스팅 mp4 + 포스터 우선, 로드 실패/없음 시 YouTube iframe 으로 fallback.
+             자체 호스팅 mp4 + 포스터 (폐쇄망 — 외부 iframe fallback 없음).
              자체 mp4 가 로드되면 JS 가 .has-local-video 클래스를 붙여 iframe 을 숨김. -->
         <div class="sc-login-stage">
           <div class="sc-login-video" id="sec-login-video" aria-hidden="true">
@@ -110,13 +110,7 @@
             >
               <source src="./assets/landing-bg.mp4" type="video/mp4" />
             </video>
-            <iframe
-              id="sec-login-video-iframe"
-              src="https://www.youtube.com/embed/lCOjL68zt0U?autoplay=1&mute=1&loop=1&playlist=lCOjL68zt0U&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&playsinline=1&disablekb=1"
-              title="background video"
-              frameborder="0"
-              allow="autoplay; encrypted-media"
-              allowfullscreen></iframe>
+            <!-- (closed-network) YouTube iframe fallback removed; rely on local mp4 only. -->
           </div>
           <div class="sc-login-overlay" aria-hidden="true"></div>
           <div class="sc-login-vignette" aria-hidden="true"></div>
@@ -2632,39 +2626,49 @@
     </div>
   </div>
 </div>
+
+<!-- 팀별 공정 모달 (MTBA Dashboard "팀별 공정" 버튼 트리거) -->
+<div class="vit-modal-backdrop" id="team-procs-modal" aria-hidden="true" hidden style="display:none !important;">
+  <div class="vit-modal" role="dialog" aria-modal="true" aria-labelledby="team-procs-modal-title">
+    <div class="vit-modal__head">
+      <h3 class="vit-modal__title" id="team-procs-modal-title">팀별 공정 — 표시 대상 선택</h3>
+      <button type="button" class="vit-modal__close" id="team-procs-modal-close" aria-label="닫기">✕</button>
+    </div>
     <div class="vit-modal__body">
-      <dl class="vit-kv">
-        <dt>알람명</dt><dd id="alarm-modal-alarm">IRCF Attach Pickup Vacuum Loss</dd>
-        <dt>호기</dt><dd id="alarm-modal-machine">#1116</dd>
-        <dt>모델명</dt><dd id="alarm-modal-model">CM모델A</dd>
-        <dt>설비세그먼트명</dt><dd id="alarm-modal-seg">SEG-B3</dd>
-        <dt>MTBA</dt><dd id="alarm-modal-mtba" class="high">38</dd>
-        <dt>생산수량</dt><dd id="alarm-modal-qty">7,240</dd>
-      </dl>
-      <div class="vit-modal__sect">
-        <h4>최근 알람 이력 (3건)</h4>
-        <ul class="vit-alm-list">
-          <li class="vit-alm-list__item vit-alm-list__item--high">
-            <span class="vit-alm-list__t">04-28 14:22</span>
-            <span class="vit-alm-list__id">ALM-2031</span>
-            <span class="vit-alm-list__msg">Pickup Vacuum Loss · 3회 반복</span>
-          </li>
-          <li class="vit-alm-list__item vit-alm-list__item--high">
-            <span class="vit-alm-list__t">04-28 11:05</span>
-            <span class="vit-alm-list__id">ALM-2031</span>
-            <span class="vit-alm-list__msg">Pickup Vacuum Loss · 재현</span>
-          </li>
-          <li class="vit-alm-list__item vit-alm-list__item--mid">
-            <span class="vit-alm-list__t">04-27 22:48</span>
-            <span class="vit-alm-list__id">ALM-1042</span>
-            <span class="vit-alm-list__msg">Nozzle Position Drift</span>
-          </li>
-        </ul>
-      </div>
+      <p class="vit-team-procs__hint">
+        팀에 속한 공정만 비교 차트 · 요약 표 · 히트맵에 표시합니다.
+        체크한 공정이 cmp-filter 공정 multi-select 와 §1 요약 표 체크박스에 즉시 동기화됩니다.
+      </p>
+      <ul class="vit-team-procs__list">
+        <li class="vit-team-procs__item">
+          <label>
+            <input type="checkbox" data-team-proc="Flip Chip Bonding" checked>
+            <span>Flip Chip Bonding <small>(Flip Chip)</small></span>
+          </label>
+        </li>
+        <li class="vit-team-procs__item">
+          <label>
+            <input type="checkbox" data-team-proc="Sensor Underfill" checked>
+            <span>Sensor Underfill <small>(Sensor UF)</small></span>
+          </label>
+        </li>
+        <li class="vit-team-procs__item">
+          <label>
+            <input type="checkbox" data-team-proc="HTCC Cleaning" checked>
+            <span>HTCC Cleaning <small>(HTCC Clean)</small></span>
+          </label>
+        </li>
+        <li class="vit-team-procs__item">
+          <label>
+            <input type="checkbox" data-team-proc="Plasma Cleaning" checked>
+            <span>Plasma Cleaning <small>(Plasma)</small></span>
+          </label>
+        </li>
+      </ul>
     </div>
     <div class="vit-modal__foot">
-      <div data-testid="stButton"><button>메모 추가</button></div>
-      <div data-testid="stButton"><button kind="primary">상세 보고서 열기</button></div>
+      <div data-testid="stButton"><button id="team-procs-cancel">취소</button></div>
+      <div data-testid="stButton"><button id="team-procs-save" kind="primary">저장</button></div>
     </div>
   </div>
 </div>
@@ -3283,9 +3287,9 @@
     });
   });
 
-  // login section: prefer self-hosted mp4 over YouTube iframe.
-  // landing.html 과 동일 — 자체 mp4 가 metadata 까지 로드되면 has-local-video
-  // 클래스로 iframe 숨김. 폐쇄망/파일 부재 시엔 그대로 iframe 으로 fallback.
+  // login section: self-hosted mp4 only (closed network; iframe fallback removed).
+  // mp4 로드 성공 → has-local-video 클래스. 실패 시엔 stage 만 보이고 video tag 가
+  // 자체적으로 black/empty — 추가 fallback 없음.
   var loginVideoStage = document.getElementById('sec-login-video');
   var loginVideoLocal = document.getElementById('sec-login-video-local');
   if (loginVideoStage && loginVideoLocal) {
@@ -3296,7 +3300,6 @@
     };
     loginVideoLocal.addEventListener('loadedmetadata', markLocal);
     loginVideoLocal.addEventListener('canplay', markLocal);
-    // mp4 자체가 fetch 실패 (404 등) → 이미 iframe 보임. 클래스 안 붙음.
     loginVideoLocal.addEventListener('error', function () {
       loginVideoStage.classList.remove('has-local-video');
     });
