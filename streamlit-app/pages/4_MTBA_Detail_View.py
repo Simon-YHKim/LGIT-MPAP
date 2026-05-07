@@ -1285,7 +1285,9 @@ def render_standard_panel(panel_id, panel, model_name, source_view):
     elif popup_key and click_marker and click_marker != last_marker and popup_key in bundle['popup_map']:
         st.session_state.detail_last_grid_click[panel_key] = click_marker
         request_panel_popup(panel_id, popup_key)
-        st.rerun()
+        # PERF: st.rerun() 제거 — 같은 rerun 안에서 아래 consume_panel_popup_request
+        # 가 즉시 팝업을 띄우므로, 중복 rerun 으로 인한 build_standard_bundle (5-30s)
+        # 재호출이 사라져 팝업 응답 속도 5-30s → <1s.
 
     open_key = consume_panel_popup_request(panel_id)
     if open_key and open_key in bundle['popup_map']:
@@ -1332,7 +1334,8 @@ def render_fol_panel(panel_id, panel, model_name, source_view):
     elif popup_key and click_marker and click_marker != last_marker and popup_key in bundle.get('popup_map', {}):
         st.session_state.detail_last_grid_click[panel_key] = click_marker
         request_panel_popup(panel_id, popup_key)
-        st.rerun()
+        # PERF: FOL 패널도 동일 — st.rerun() 제거. 중복 rerun 으로 인한
+        # build_fol_bundle 재호출 회피.
 
     open_key = consume_panel_popup_request(panel_id)
     if open_key and open_key in bundle.get('popup_map', {}):

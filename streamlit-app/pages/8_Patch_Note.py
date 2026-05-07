@@ -2,7 +2,7 @@ import streamlit as st
 import psycopg2
 from datetime import datetime
 
-st.set_page_config(page_title="게시판", page_icon="📌", layout="wide")
+st.set_page_config(page_title="Patch Note", page_icon="📌", layout="wide")
 
 # === Vitals theme (LG EI fonts + wine palette) ===
 from ui.vitals import apply_vitals_theme
@@ -378,7 +378,7 @@ if query_post_id:
 
 apply_board_styles()
 
-st.markdown('<div class="board-top-title">패치노트 게시판</div>', unsafe_allow_html=True)
+st.markdown('<div class="board-top-title">Patch Note · 패치노트</div>', unsafe_allow_html=True)
 st.markdown(
     '<div class="board-top-sub">최신 변경 이력을 확인하고 상세 내용을 조회할 수 있습니다.</div>',
     unsafe_allow_html=True

@@ -18,17 +18,85 @@ FASTAPI_BASE_URL = "http://localhost:9000"
 
 
 def render_header():
-    st.title("MaxCapa Chat(대화형 생산지표조회)")
-    st.caption("기본 조회는 MES UPH(uph_input_runtime_daily_model), 질문에 ITAS를 명시하면 ITAS UPH(itas_uph_result)로 조회합니다.")
-    st.markdown("""
-지원 예시:
-- 최근 3일 APS Test 공정의 UPH는 얼마인가?
-- 오늘 APS Test 호기별 UPH 보여줘
-- 최근 7일 APS Test 3호기 UPH 추이 보여줘
-- 오늘 APS Test best worst 호기는?
-- 최근 7일 APS Test 공정의 R53A 모델 UPH는?
-- itas uph 기준 최근 3일 APS Test의 UPH는 얼마인가?
-""")
+    """페이지 헤더 — 우리 mockup-S7/S8 톤. eyebrow + Vitals 와인 점 + 데이터소스 분기 안내 + 지원 예시 카드."""
+    st.markdown(
+        """
+        <style>
+        .vit-chat-head {
+            margin: 4px 0 18px; padding: 18px 22px;
+            background: var(--card-bg); border: 1px solid var(--border);
+            border-radius: 12px; border-left: 4px solid var(--primary);
+        }
+        .vit-chat-head__eyebrow {
+            display: flex; align-items: center; gap: 8px;
+            font-family: var(--font-mono);
+            font-size: 11px; font-weight: 700; letter-spacing: .1em;
+            color: var(--ink-subtle); text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+        .vit-chat-head__eyebrow-bar {
+            display:inline-block; width:4px; height:14px;
+            background: var(--primary); border-radius:2px;
+        }
+        .vit-chat-head__title {
+            margin: 0 0 4px;
+            font-family: var(--font-display, var(--font-body));
+            font-size: 26px; font-weight: 700; letter-spacing: -0.025em;
+            color: var(--ink-body);
+        }
+        .vit-chat-head__title::after {
+            content: "."; color: var(--primary); margin-left: 1px; font-weight: 700;
+        }
+        .vit-chat-head__sub {
+            margin: 0; font-size: 13px; color: var(--ink-muted); line-height: 1.55;
+        }
+        .vit-chat-head__sub code {
+            font-family: var(--font-mono);
+            background: var(--soft); padding: 1px 6px; border-radius: 4px;
+            font-size: 11px; color: var(--primary-dark); font-weight: 600;
+        }
+        .vit-chat-examples {
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;
+            margin: 14px 0 20px;
+        }
+        @media (max-width: 980px) { .vit-chat-examples { grid-template-columns: 1fr; } }
+        .vit-chat-example {
+            padding: 10px 12px;
+            background: var(--card-bg); border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 13px; color: var(--ink-body); line-height: 1.45;
+        }
+        .vit-chat-example::before {
+            content: "Q"; display: inline-block;
+            width: 18px; height: 18px;
+            line-height: 18px; text-align: center;
+            background: var(--primary-tint); color: var(--primary-dark);
+            font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+            border-radius: 4px; margin-right: 8px; vertical-align: 1px;
+        }
+        </style>
+        <div class="vit-chat-head">
+          <div class="vit-chat-head__eyebrow">
+            <span class="vit-chat-head__eyebrow-bar"></span>
+            VITALS · MAXCAPA CHAT
+          </div>
+          <h1 class="vit-chat-head__title">대화형 생산지표 조회</h1>
+          <p class="vit-chat-head__sub">
+            기본 조회는 MES UPH(<code>uph_input_runtime_daily_model</code>),
+            질문에 <code>ITAS</code> 키워드 감지 시 ITAS UPH(<code>itas_uph_result</code>)로 자동 분기합니다.
+          </p>
+        </div>
+        <div class="vit-chat-examples">
+          <div class="vit-chat-example">최근 3일 APS Test 공정의 UPH는 얼마인가?</div>
+          <div class="vit-chat-example">오늘 APS Test 호기별 UPH 보여줘</div>
+          <div class="vit-chat-example">최근 7일 APS Test 3호기 UPH 추이 보여줘</div>
+          <div class="vit-chat-example">오늘 APS Test best worst 호기는?</div>
+          <div class="vit-chat-example">최근 7일 APS Test 공정의 R53A 모델 UPH는?</div>
+          <div class="vit-chat-example">itas uph 기준 최근 3일 APS Test의 UPH는 얼마인가?</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
 
 def init_session_state():
