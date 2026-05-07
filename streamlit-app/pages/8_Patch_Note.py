@@ -1,6 +1,7 @@
 import streamlit as st
 import psycopg2
 from datetime import datetime
+from html import escape as _esc
 
 st.set_page_config(page_title="Patch Note", page_icon="📌", layout="wide")
 
@@ -480,7 +481,7 @@ with col1:
 
             with tag_col:
                 st.markdown(
-                    f'<div class="board-list-tag-wrap"><span class="{tag_class(tag)}">{tag}</span></div>',
+                    f'<div class="board-list-tag-wrap"><span class="{tag_class(tag)}">{_esc(str(tag or ""))}</span></div>',
                     unsafe_allow_html=True
                 )
 
@@ -514,15 +515,15 @@ with col2:
                 _, category, tag, title, content, created_by, created_at, updated_at = detail
 
                 st.markdown(
-                    f'<div class="{tag_class(tag)}">{tag}</div>',
+                    f'<div class="{tag_class(tag)}">{_esc(str(tag or ""))}</div>',
                     unsafe_allow_html=True
                 )
                 st.markdown(
-                    f'<div class="board-detail-title">{title}</div>',
+                    f'<div class="board-detail-title">{_esc(str(title or ""))}</div>',
                     unsafe_allow_html=True
                 )
                 st.markdown(
-                    f'<div class="board-meta">작성자: {created_by}<br>작성일: {created_at.strftime("%Y-%m-%d %H:%M")}</div>',
+                    f'<div class="board-meta">작성자: {_esc(str(created_by or ""))}<br>작성일: {created_at.strftime("%Y-%m-%d %H:%M")}</div>',
                     unsafe_allow_html=True
                 )
 
