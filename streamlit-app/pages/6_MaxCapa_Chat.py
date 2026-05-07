@@ -320,7 +320,36 @@ def render_plan():
 
     status = plan.get("status")
 
-    st.markdown("## 분석 결과")
+    # Vitals 톤 — 분석 결과 섹션 헤딩 (좌 4px 와인 bar + LG EI Headline)
+    st.markdown(
+        """
+        <style>
+        .vit-chat-section {
+            display:flex; align-items:center; gap:10px;
+            margin: 22px 0 12px;
+            padding-left: 4px;
+        }
+        .vit-chat-section__bar {
+            width:4px; height:20px; background: var(--primary); border-radius:2px;
+        }
+        .vit-chat-section__title {
+            margin:0; font-family: var(--font-display, var(--font-body));
+            font-size:18px; font-weight:700; letter-spacing:-0.01em;
+            color: var(--ink-body);
+        }
+        .vit-chat-section__sub {
+            font-family: var(--font-mono);
+            font-size:11px; font-weight:600; color: var(--ink-subtle);
+            letter-spacing:.08em; text-transform: uppercase;
+        }
+        </style>
+        <div class="vit-chat-section">
+          <span class="vit-chat-section__bar"></span>
+          <h2 class="vit-chat-section__title">분석 결과<span class="vit-chat-section__sub" style="margin-left:10px;">PARSE · ROUTE · BUILD SQL</span></h2>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
     if status == "unsupported":
         st.error(plan.get("message", "지원하지 않는 질문입니다."))
@@ -540,7 +569,16 @@ def render_result():
     if not result:
         return
 
-    st.markdown("## 실행 결과")
+    # Vitals 톤 — 실행 결과 섹션 헤딩 (좌 4px 와인 bar)
+    st.markdown(
+        """
+        <div class="vit-chat-section">
+          <span class="vit-chat-section__bar"></span>
+          <h2 class="vit-chat-section__title">실행 결과<span class="vit-chat-section__sub" style="margin-left:10px;">EXECUTE · DATA</span></h2>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
     if result.get("status") != "completed":
         st.error(result.get("message", "실행 중 오류가 발생했습니다."))
