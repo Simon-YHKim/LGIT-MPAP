@@ -851,13 +851,19 @@ body.is-login-active .vitals-app section[data-testid="stSidebar"] {
 }
 
 /* ── Vitals 일관성: 모든 일반 페이지 상단에 와인 6px 가로 strip ─────────
-   sec-login (영상 배경) 만 제외. 페이지마다 ::before 한 줄로 통일. */
+   sec-login (영상 배경) 만 제외. 모든 페이지가 동일 위치/크기. */
 .sc-page-section:not(.sc-login-section)::before {
-  content: "";
-  display: block;
-  height: 6px;
-  background: var(--primary);
-  margin: 0 0 1.25rem;
+  content: "" !important;
+  display: block !important;
+  height: 6px !important;
+  width: auto !important;
+  background: var(--primary) !important;
+  margin: 0 0 1.25rem 0 !important;
+}
+/* sc-sec-head — 모든 페이지가 동일 margin/padding 보장 */
+.sc-page-section.is-active > [data-testid="stVerticalBlock"] > .sc-sec-head:first-of-type {
+  margin: 0 0 1.125rem 0 !important;
+  padding: 0 0 0.625rem 0 !important;
 }
 /* sec-mode-card 안에 이미 있는 .vit-top-strip 은 ::before 와 중복되므로 hide */
 .sc-page-section .vit-top-strip { display: none; }
