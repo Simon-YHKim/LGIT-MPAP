@@ -50,19 +50,20 @@ DIM_EQUIPMENT = 'mtba.dim_equipment'
 COMMENT_TABLE = 'mtba.alarm_comment_history'
 WHITELIST_TABLE = 'mtba.alarm_whitelist'
 
-PRIMARY = '#A50034'
-PRIMARY_2 = '#7E0027'
-BG = '#FAF6F8'
-CARD = '#FFFDFE'
-ROSE = '#F7E7EC'
-MIST = '#F6F1F4'
-BORDER = '#E8D8DE'
-TEXT = '#3D2430'
-SUB = '#7A5A67'
-PASTEL_RED = '#F6D9DF'
-PASTEL_RED_STRONG = '#F2C9D1'
-PASTEL_YELLOW = '#FFF0C7'
-PASTEL_GREEN = '#E4F2E0'
+# Vitals 팔레트 정렬 — legacy 상수명 보존, 값만 통일
+PRIMARY            = '#A50034'  # Vitals primary
+PRIMARY_2          = '#7E0027'  # Vitals primary-dark
+BG                 = '#F7F8FA'  # Vitals page-bg
+CARD               = '#FFFFFF'  # Vitals card-bg
+ROSE               = '#F8E5EC'  # Vitals primary-tint
+MIST               = '#F1F3F5'  # Vitals soft
+BORDER             = '#E5E7EB'  # Vitals border
+TEXT               = '#1F2430'  # Vitals ink-body
+SUB                = '#6B7280'  # Vitals ink-muted
+PASTEL_RED         = '#FDECEF'  # Vitals bad-tint
+PASTEL_RED_STRONG  = '#F8D0D8'  # bad-tint 강조
+PASTEL_YELLOW      = '#FAF1DD'  # Vitals warn-tint
+PASTEL_GREEN       = '#E6F4EA'  # Vitals good-tint
 
 st.markdown(f"""
 <style>

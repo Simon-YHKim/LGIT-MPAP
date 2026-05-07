@@ -42,15 +42,16 @@ ensure_team_process_filter_table(engine)
 COMMENT_TABLE = 'mtba.alarm_comment_history'
 TEAM_OPTIONS = ['전체', 'FOL팀', 'MOL팀', 'EOL팀']
 
-PRIMARY = '#A50034'
-PRIMARY_2 = '#7E0027'
-BG = '#FAF6F8'
-ROSE = '#F7E7EC'
-BORDER = '#E8D8DE'
-TEXT = '#3D2430'
-SUB = '#7A5A67'
-MUTED = '#8A7280'
-CARD_BG = '#FFFDFE'
+# Vitals 팔레트 정렬
+PRIMARY   = '#A50034'  # Vitals primary
+PRIMARY_2 = '#7E0027'  # Vitals primary-dark
+BG        = '#F7F8FA'  # Vitals page-bg
+ROSE      = '#F8E5EC'  # Vitals primary-tint
+BORDER    = '#E5E7EB'  # Vitals border
+TEXT      = '#1F2430'  # Vitals ink-body
+SUB       = '#6B7280'  # Vitals ink-muted
+MUTED     = '#9CA3AF'  # Vitals ink-subtle
+CARD_BG   = '#FFFFFF'  # Vitals card-bg
 
 st.markdown(f"""
 <style>
@@ -59,7 +60,7 @@ st.markdown(f"""
 .block-container {{ padding-top: 1rem; padding-bottom: 2rem; }}
 
 .main-title {{
-    background: linear-gradient(135deg, #7B0F2E 0%, #9A163E 100%);
+    background: linear-gradient(135deg, {PRIMARY_2} 0%, {PRIMARY} 100%);
     color: #fff;
     border-radius: 12px;
     padding: 40px 28px 24px 28px;
