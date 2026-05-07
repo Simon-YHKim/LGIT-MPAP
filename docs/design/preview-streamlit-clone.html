@@ -25,12 +25,12 @@
   <section data-testid="stSidebar" aria-label="sidebar">
     <div data-testid="stSidebarHeader">
       <div class="sc-sidebar-brand-cluster">
-        <img class="sc-sidebar-logo sc-sidebar-logo--light" src="./assets/lg-innotek-logo-en-gray.png" alt="LG Innotek" />
-        <img class="sc-sidebar-logo sc-sidebar-logo--dark"  src="./assets/lg-innotek-logo-en-white.png" alt="LG Innotek" />
-        <div class="sc-sidebar-brand-text">
+        <div class="sc-sidebar-brand-row1">
+          <img class="sc-sidebar-logo sc-sidebar-logo--light" src="./assets/lg-innotek-logo-en-gray.png" alt="LG Innotek" />
+          <img class="sc-sidebar-logo sc-sidebar-logo--dark"  src="./assets/lg-innotek-logo-en-white.png" alt="LG Innotek" />
           <div class="sc-sidebar-brand-title">Vitals<span class="vit-dot">.</span></div>
-          <div class="sc-sidebar-brand-sub">광학솔루션 · Max Capa</div>
         </div>
+        <div class="sc-sidebar-brand-sub">광학솔루션 · Max Capa</div>
       </div>
     </div>
     <nav data-testid="stSidebarNav">
@@ -1439,9 +1439,6 @@
                   <rect x="56" y="88.4" width="12" height="111.6" fill="#6B7280" data-period="2달전"></rect>
                   <rect x="70" y="93.8" width="12" height="106.2" fill="#1F2430" data-period="지난해"></rect>
                 </g>
-              <!-- Target 점선 (z-order 위로 올림: 막대 그룹 다음에 그려서 가리지 않음) -->
-              <line id="mtba-target-line" x1="40" y1="110" x2="700" y2="110" stroke="#1F8B4C" stroke-width="3" stroke-dasharray="7 4" opacity="1"/>
-              <text id="mtba-target-text" x="706" y="114" fill="#1F8B4C" font-family="IBM Plex Mono, monospace" font-size="9.5" font-weight="700">Target 120</text>
                 <g class="vit-bar-grp" data-proc="Flip Chip" transform="translate(180,0)">
                   <rect x="0" y="111.8" width="12" height="88.2" fill="#A50034" data-period="선택 기간"></rect>
                   <text x="6" y="107.8" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10" font-weight="700" fill="#1F2430">98</text>
@@ -1488,6 +1485,9 @@
                   <rect x="70" y="81.2" width="12" height="118.8" fill="#1F2430" data-period="지난해"></rect>
                 </g>
               </g>
+              <!-- Target 점선 (전체 막대 그룹 후 — 가장 위 z-order) -->
+              <line id="mtba-target-line" x1="40" y1="110" x2="700" y2="110" stroke="#1F8B4C" stroke-width="3" stroke-dasharray="7 4" opacity="1"/>
+              <text id="mtba-target-text" x="706" y="114" fill="#1F8B4C" font-family="IBM Plex Mono, monospace" font-size="9.5" font-weight="700">Target 120</text>
               <g id="mtba-bar-x" font-size="11" font-family="LG EI Text, sans-serif" fill="#1F2430">
                 <text x="125" y="220" text-anchor="middle" data-x-proc="Lens AA">Lens AA</text>
                 <text x="235" y="220" text-anchor="middle" data-x-proc="Flip Chip">Flip Chip</text>
@@ -2652,7 +2652,7 @@
   Array.prototype.slice.call(document.querySelectorAll('.vit-modal-backdrop')).forEach(function (m) {
     m.hidden = true;
     m.setAttribute('hidden', '');
-    m.style.cssText = 'display:none !important;';
+    m.style.cssText = 'display:none !important;'; m.classList.remove('is-open');
     m.setAttribute('aria-hidden', 'true');
   });
 
@@ -2756,7 +2756,7 @@
     if (!procModal) return;
     procModal.hidden = false;
     procModal.removeAttribute('hidden');
-    procModal.style.display = 'flex';
+    procModal.style.display = 'flex'; procModal.classList.add('is-open');
     procModal.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
   }
@@ -2764,7 +2764,7 @@
     if (!procModal) return;
     procModal.hidden = true;
     procModal.setAttribute('hidden', '');
-    procModal.style.display = 'none';
+    procModal.style.display = 'none'; procModal.classList.remove('is-open');
     procModal.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
   }
@@ -2850,7 +2850,7 @@
     if (!alarmModal) return;
     alarmModal.hidden = false;
     alarmModal.removeAttribute('hidden');
-    alarmModal.style.display = 'flex';
+    alarmModal.style.display = 'flex'; alarmModal.classList.add('is-open');
     alarmModal.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
   }
@@ -2858,7 +2858,7 @@
     if (!alarmModal) return;
     alarmModal.hidden = true;
     alarmModal.setAttribute('hidden', '');
-    alarmModal.style.display = 'none';
+    alarmModal.style.display = 'none'; alarmModal.classList.remove('is-open');
     alarmModal.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
   }
@@ -2968,7 +2968,7 @@
     if (!teamModal) return;
     teamModal.hidden = false;
     teamModal.removeAttribute('hidden');
-    teamModal.style.display = 'flex';
+    teamModal.style.display = 'flex'; teamModal.classList.add('is-open');
     teamModal.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
   }
@@ -2976,7 +2976,7 @@
     if (!teamModal) return;
     teamModal.hidden = true;
     teamModal.setAttribute('hidden', '');
-    teamModal.style.display = 'none';
+    teamModal.style.display = 'none'; teamModal.classList.remove('is-open');
     teamModal.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
   }
@@ -3102,7 +3102,7 @@
     });
     settingsModal.hidden = false;
     settingsModal.removeAttribute('hidden');
-    settingsModal.style.display = 'flex';
+    settingsModal.style.display = 'flex'; settingsModal.classList.add('is-open');
     settingsModal.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
   }
@@ -3110,7 +3110,7 @@
     if (!settingsModal) return;
     settingsModal.hidden = true;
     settingsModal.setAttribute('hidden', '');
-    settingsModal.style.display = 'none';
+    settingsModal.style.display = 'none'; settingsModal.classList.remove('is-open');
     settingsModal.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
   }

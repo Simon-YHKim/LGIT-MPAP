@@ -4115,24 +4115,30 @@ body.is-login-active .vitals-app section[data-testid="stSidebar"] {
 table[data-mtba-summary] input[type="checkbox"] { accent-color: var(--primary); cursor: pointer; }
 
 /* =============================================================================
-   block-container padding 증가 — 페이지 콘텐츠가 사이드바/상단에 너무 붙음
+   block-container padding — 안정감 있는 최소 여백 (이전 1.75/2/3 너무 컸음)
    ============================================================================ */
 .vitals-app > [data-testid="stMain"] > [data-testid="block-container"],
 .vitals-app > .main > .block-container,
 .vitals-app > [data-testid="block-container"],
 .vitals-app > .main {
-  padding: 1.75rem 2rem 3rem !important;
+  padding: 1.25rem 1.5rem 2rem !important;
 }
 
 /* =============================================================================
    Sidebar header 재구성 — LG 로고 옆 Vitals. + 하단 sub
    ============================================================================ */
+/* sidebar header — 2-row: row1 [LG logo + Vitals.] / row2 [광학솔루션 · Max Capa] */
 .sc-sidebar-brand-cluster {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.sc-sidebar-brand-row1 {
   display: flex;
   align-items: center;
   gap: 12px;
 }
-.sc-sidebar-brand-cluster .sc-sidebar-logo { height: 22px; }
+.sc-sidebar-brand-cluster .sc-sidebar-logo { height: 22px; flex: 0 0 auto; }
 .sc-sidebar-brand-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .sc-sidebar-brand-title {
   font-family: 'LG EI Headline', 'LG EI Text', sans-serif;
@@ -4325,4 +4331,21 @@ html body .vit-modal-backdrop[hidden] {
 .vit-toast.is-on {
   opacity: 1;
   transform: translateY(0);
+}
+
+/* =============================================================================
+   Modal class-based 가시성 — `.is-open` 만 표시, 그 외엔 무조건 hidden
+   기존의 hidden attr / inline style / [hidden] selector 보다 더 robust.
+   ============================================================================ */
+.vit-modal-backdrop:not(.is-open) {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+.vit-modal-backdrop.is-open {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
 }
