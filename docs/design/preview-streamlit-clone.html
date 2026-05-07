@@ -230,13 +230,14 @@
           </div>
 
           <!-- ══════════════════════════════════════════════════════════ -->
-          <!--  MODE 2 / 3 — Best · Worst 카드 (case1)                   -->
-          <!--  공정별 Best/Worst 3개 + 기본 메뉴.                       -->
+          <!--  MODE 2 / 3 — Best · Worst (Case 1)                       -->
+          <!--  CMP 요약 상황판의 필터/카드 + 카드 안에 Best/Worst·UPH·MTBA   -->
+          <!--  + 하단부 zip-pre 시안의 분석 도구 네비게이션 카드             -->
           <!-- ══════════════════════════════════════════════════════════ -->
           <div class="sc-mode-banner" style="margin-top:2.25rem;">
             <span class="sc-mode-banner__num">2 / 3</span>
             <span class="sc-mode-banner__label">Best · Worst 카드 (Case 1)</span>
-            <span class="sc-mode-banner__desc">— 상위/하위 3개 공정 신호등 카드 + 메뉴.</span>
+            <span class="sc-mode-banner__desc">— CMP 요약 필터 + Best/Worst 카드 (CMP × UPH × MTBA) + 분석 도구 메뉴.</span>
           </div>
           <div class="sc-mode-card">
             <div class="vit-mode-bar">
@@ -246,85 +247,167 @@
               <div data-testid="stButton"><button>CMP 요약 상황판</button></div>
             </div>
 
-            <div data-testid="stMarkdown" style="margin:1.25rem 0 0.875rem;">
+            <!-- 필터 (CMP 요약 상황판에서 borrowed) -->
+            <div data-testid="stHorizontalBlock" style="display:grid;grid-template-columns:1fr 1fr 1fr auto auto;gap:0.5rem;align-items:end;margin-top:1.25rem;">
+              <div data-testid="stMultiSelect">
+                <label>영역</label>
+                <div data-baseweb="select"><div class="sc-select-tag-wrap"><span data-baseweb="tag" class="sc-tag-area">FOL</span><span data-baseweb="tag" class="sc-tag-area">MOL</span><span data-baseweb="tag" class="sc-tag-area">EOL</span></div></div>
+              </div>
+              <div data-testid="stMultiSelect">
+                <label>모델</label>
+                <div data-baseweb="select"><div class="sc-select-tag-wrap"><span data-baseweb="tag" class="sc-tag-primary">CM모델A</span><span data-baseweb="tag" class="sc-tag-primary">DM모델</span><span data-baseweb="tag" class="sc-tag-primary">R53A</span></div></div>
+              </div>
+              <div data-testid="stDateInput">
+                <label>기간</label>
+                <div data-baseweb="input"><input value="2026-04-30 — 2026-05-07" readonly></div>
+              </div>
+              <div data-testid="stButton"><button kind="primary">필터 적용</button></div>
+              <div data-testid="stButton"><button>초기화</button></div>
+            </div>
+
+            <div data-testid="stMarkdown" style="margin:1.5rem 0 0.875rem;">
               <div style="font-family:var(--font-mono);font-size:10px;font-weight:700;letter-spacing:.12em;color:var(--ink-subtle);text-transform:uppercase;">CMP 달성률 — 최근 7일</div>
               <h2 style="margin:2px 0 0;font-family:'LG EI Headline','LG EI Text',sans-serif;font-size:22px;font-weight:700;letter-spacing:-0.02em;color:var(--ink-body);">CMP 달성률 Best · Worst 공정</h2>
             </div>
 
+            <!-- ── Worst 3 ─────────────────────────────────────────────── -->
             <div class="vit-cat-head"><span class="vit-cat-bar"></span><h3 class="vit-cat-title">Worst 3<span class="vit-cat-sub">개선 우선순위</span></h3></div>
             <div data-testid="stHorizontalBlock" class="vit-best-worst-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.625rem;">
-            <div class="sc-proc-card is-bad">
-              <div class="sc-proc-card__rank">#1</div>
-              <div class="sc-proc-card__title">FOL Adhesion</div>
-              <div class="sc-proc-card__rate">62.4%</div>
-              <div class="sc-proc-card__meta">FOL · CM모델A</div>
-              <div class="sc-proc-card__sec">
-                <span class="lbl">UPH</span><span class="val">—</span>
-                <span style="color:var(--ink-subtle);">·</span>
-                <span class="lbl">MTBA</span><span class="val">—</span>
+              <div class="sc-proc-card is-bad">
+                <div class="sc-proc-card__rank">#1</div>
+                <div class="sc-proc-card__title">FOL Adhesion</div>
+                <div class="sc-proc-card__rate">62.4%</div>
+                <div class="sc-proc-card__meta">FOL · CM모델A · 12 호기</div>
+                <div class="sc-proc-card__sec">
+                  <span class="lbl">UPH</span><span class="val">71.2%</span>
+                  <span style="color:var(--ink-subtle);">·</span>
+                  <span class="lbl">MTBA</span><span class="val">8.4 min</span>
+                </div>
+              </div>
+              <div class="sc-proc-card is-bad">
+                <div class="sc-proc-card__rank">#2</div>
+                <div class="sc-proc-card__title">EOL Aging</div>
+                <div class="sc-proc-card__rate">68.1%</div>
+                <div class="sc-proc-card__meta">EOL · DM모델 · 9 호기</div>
+                <div class="sc-proc-card__sec">
+                  <span class="lbl">UPH</span><span class="val">74.6%</span>
+                  <span style="color:var(--ink-subtle);">·</span>
+                  <span class="lbl">MTBA</span><span class="val">9.7 min</span>
+                </div>
+              </div>
+              <div class="sc-proc-card is-warn">
+                <div class="sc-proc-card__rank">#3</div>
+                <div class="sc-proc-card__title">MOL Bonding</div>
+                <div class="sc-proc-card__rate">79.6%</div>
+                <div class="sc-proc-card__meta">MOL · CM모델B · 10 호기</div>
+                <div class="sc-proc-card__sec">
+                  <span class="lbl">UPH</span><span class="val">82.3%</span>
+                  <span style="color:var(--ink-subtle);">·</span>
+                  <span class="lbl">MTBA</span><span class="val">14.2 min</span>
+                </div>
               </div>
             </div>
-            <div class="sc-proc-card is-bad">
-              <div class="sc-proc-card__rank">#2</div>
-              <div class="sc-proc-card__title">EOL Aging</div>
-              <div class="sc-proc-card__rate">68.1%</div>
-              <div class="sc-proc-card__meta">EOL · DM모델</div>
-              <div class="sc-proc-card__sec">
-                <span class="lbl">UPH</span><span class="val">—</span>
-                <span style="color:var(--ink-subtle);">·</span>
-                <span class="lbl">MTBA</span><span class="val">—</span>
-              </div>
-            </div>
-            <div class="sc-proc-card is-warn">
-              <div class="sc-proc-card__rank">#3</div>
-              <div class="sc-proc-card__title">MOL Bonding</div>
-              <div class="sc-proc-card__rate">79.6%</div>
-              <div class="sc-proc-card__meta">MOL · CM모델B</div>
-              <div class="sc-proc-card__sec">
-                <span class="lbl">UPH</span><span class="val">—</span>
-                <span style="color:var(--ink-subtle);">·</span>
-                <span class="lbl">MTBA</span><span class="val">—</span>
-              </div>
-            </div>
-          </div>
 
-          <!-- ── Best 3 ─────────────────────────────────────────────────── -->
-          <div class="vit-cat-head" style="margin-top:1.125rem;"><span class="vit-cat-bar"></span><h3 class="vit-cat-title">Best 3<span class="vit-cat-sub">달성률 상위</span></h3></div>
-          <div data-testid="stHorizontalBlock" class="vit-best-worst-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.625rem;">
-            <div class="sc-proc-card is-good">
-              <div class="sc-proc-card__rank">#1</div>
-              <div class="sc-proc-card__title">APS Test</div>
-              <div class="sc-proc-card__rate">102.4%</div>
-              <div class="sc-proc-card__meta">FOL · R53A</div>
-              <div class="sc-proc-card__sec">
-                <span class="lbl">UPH</span><span class="val">—</span>
-                <span style="color:var(--ink-subtle);">·</span>
-                <span class="lbl">MTBA</span><span class="val">—</span>
+            <!-- ── Best 3 ──────────────────────────────────────────────── -->
+            <div class="vit-cat-head" style="margin-top:1.125rem;"><span class="vit-cat-bar"></span><h3 class="vit-cat-title">Best 3<span class="vit-cat-sub">달성률 상위</span></h3></div>
+            <div data-testid="stHorizontalBlock" class="vit-best-worst-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.625rem;">
+              <div class="sc-proc-card is-good">
+                <div class="sc-proc-card__rank">#1</div>
+                <div class="sc-proc-card__title">APS Test</div>
+                <div class="sc-proc-card__rate">102.4%</div>
+                <div class="sc-proc-card__meta">FOL · R53A · 8 호기</div>
+                <div class="sc-proc-card__sec">
+                  <span class="lbl">UPH</span><span class="val">96.8%</span>
+                  <span style="color:var(--ink-subtle);">·</span>
+                  <span class="lbl">MTBA</span><span class="val">42.6 min</span>
+                </div>
+              </div>
+              <div class="sc-proc-card is-good">
+                <div class="sc-proc-card__rank">#2</div>
+                <div class="sc-proc-card__title">Wide Final</div>
+                <div class="sc-proc-card__rate">99.8%</div>
+                <div class="sc-proc-card__meta">EOL · CM모델C · 6 호기</div>
+                <div class="sc-proc-card__sec">
+                  <span class="lbl">UPH</span><span class="val">94.2%</span>
+                  <span style="color:var(--ink-subtle);">·</span>
+                  <span class="lbl">MTBA</span><span class="val">38.1 min</span>
+                </div>
+              </div>
+              <div class="sc-proc-card is-good">
+                <div class="sc-proc-card__rank">#3</div>
+                <div class="sc-proc-card__title">DM Final</div>
+                <div class="sc-proc-card__rate">96.2%</div>
+                <div class="sc-proc-card__meta">EOL · 모델E · 7 호기</div>
+                <div class="sc-proc-card__sec">
+                  <span class="lbl">UPH</span><span class="val">92.7%</span>
+                  <span style="color:var(--ink-subtle);">·</span>
+                  <span class="lbl">MTBA</span><span class="val">31.5 min</span>
+                </div>
               </div>
             </div>
-            <div class="sc-proc-card is-good">
-              <div class="sc-proc-card__rank">#2</div>
-              <div class="sc-proc-card__title">Wide Final</div>
-              <div class="sc-proc-card__rate">99.8%</div>
-              <div class="sc-proc-card__meta">EOL · CM모델C</div>
-              <div class="sc-proc-card__sec">
-                <span class="lbl">UPH</span><span class="val">—</span>
-                <span style="color:var(--ink-subtle);">·</span>
-                <span class="lbl">MTBA</span><span class="val">—</span>
-              </div>
+
+            <!-- ── 분석 도구 네비게이션 카드 (zip-pre tools-grid) ─────────── -->
+            <div class="sc-nav-cards__head">
+              <h3 class="sc-nav-cards__title">분석 도구</h3>
+              <span class="sc-nav-cards__sub">PRODUCTION ANALYTICS</span>
             </div>
-            <div class="sc-proc-card is-good">
-              <div class="sc-proc-card__rank">#3</div>
-              <div class="sc-proc-card__title">DM Final</div>
-              <div class="sc-proc-card__rate">96.2%</div>
-              <div class="sc-proc-card__meta">EOL · 모델E</div>
-              <div class="sc-proc-card__sec">
-                <span class="lbl">UPH</span><span class="val">—</span>
-                <span style="color:var(--ink-subtle);">·</span>
-                <span class="lbl">MTBA</span><span class="val">—</span>
-              </div>
+            <div class="sc-nav-cards">
+              <a class="sc-nav-card" href="#sec-cmp">
+                <div class="sc-nav-card__head">
+                  <div class="sc-nav-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div>
+                  <span class="sc-nav-card__badge sc-nav-card__badge--good">정식</span>
+                </div>
+                <div class="sc-nav-card__body">
+                  <h4 class="sc-nav-card__title">CMP Dashboard</h4>
+                  <p class="sc-nav-card__desc">공정별 CMP 달성률 추이 · 영역×모델×기간</p>
+                </div>
+                <div class="sc-nav-card__foot"><span>v4 · 2026-04-28</span><span class="sc-nav-card__arrow">→</span></div>
+              </a>
+              <a class="sc-nav-card" href="#sec-uph">
+                <div class="sc-nav-card__head">
+                  <div class="sc-nav-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg></div>
+                  <span class="sc-nav-card__badge sc-nav-card__badge--warn">가오픈</span>
+                </div>
+                <div class="sc-nav-card__body">
+                  <h4 class="sc-nav-card__title">UPH Dashboard</h4>
+                  <p class="sc-nav-card__desc">UPH · 동작시간 · I-TAS 분기 6 섹션</p>
+                </div>
+                <div class="sc-nav-card__foot"><span>가오픈 4/29~</span><span class="sc-nav-card__arrow">→</span></div>
+              </a>
+              <a class="sc-nav-card" href="#sec-mtba">
+                <div class="sc-nav-card__head">
+                  <div class="sc-nav-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+                  <span class="sc-nav-card__badge sc-nav-card__badge--warn">가오픈</span>
+                </div>
+                <div class="sc-nav-card__body">
+                  <h4 class="sc-nav-card__title">MTBA Dashboard</h4>
+                  <p class="sc-nav-card__desc">공정별 MTBA 통계 · 다중 패널</p>
+                </div>
+                <div class="sc-nav-card__foot"><span>가오픈 4/29~</span><span class="sc-nav-card__arrow">→</span></div>
+              </a>
+              <a class="sc-nav-card" href="#sec-detail">
+                <div class="sc-nav-card__head">
+                  <div class="sc-nav-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 22 8.5 12 15 2 8.5 12 2"/><polyline points="2 15.5 12 22 22 15.5"/><polyline points="2 12 12 18.5 22 12"/></svg></div>
+                  <span class="sc-nav-card__badge sc-nav-card__badge--warn">가오픈</span>
+                </div>
+                <div class="sc-nav-card__body">
+                  <h4 class="sc-nav-card__title">MTBA Detail View</h4>
+                  <p class="sc-nav-card__desc">패널 드릴다운 · 공정×설비 매트릭스</p>
+                </div>
+                <div class="sc-nav-card__foot"><span>가오픈 4/29~</span><span class="sc-nav-card__arrow">→</span></div>
+              </a>
+              <a class="sc-nav-card" href="#sec-chat" aria-disabled="true">
+                <div class="sc-nav-card__head">
+                  <div class="sc-nav-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+                  <span class="sc-nav-card__badge">오픈예정</span>
+                </div>
+                <div class="sc-nav-card__body">
+                  <h4 class="sc-nav-card__title">MaxCapa Chat</h4>
+                  <p class="sc-nav-card__desc">대화형 생산지표 조회 · 자연어 질의</p>
+                </div>
+                <div class="sc-nav-card__foot"><span>오픈 예정</span><span class="sc-nav-card__arrow">→</span></div>
+              </a>
             </div>
-          </div>
 
             <div class="sc-contact-box" style="margin-top:1.5rem;">
               <span>제작 · 광학 Max Capa TDR</span>

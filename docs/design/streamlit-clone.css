@@ -1122,6 +1122,164 @@ body.is-login-active .vitals-app section[data-testid="stSidebar"] {
 }
 
 /* =============================================================================
+   NAV CARDS — zip-pre `tools-grid` pattern, reusable across pages
+   Used at the bottom of: Mode 2 (best/worst), sec-cmp, etc.
+   ========================================================================== */
+.sc-nav-cards__head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding-bottom: 8px;
+  margin-top: 1.5rem;
+  margin-bottom: 0.625rem;
+  border-bottom: 1px solid var(--border);
+}
+.sc-nav-cards__title {
+  font-family: 'LG EI Headline', 'LG EI Text', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--ink-body);
+  margin: 0;
+}
+.sc-nav-cards__sub {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--ink-subtle);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.sc-nav-cards {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.625rem;
+}
+@media (max-width: 1280px) { .sc-nav-cards { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 720px)  { .sc-nav-cards { grid-template-columns: 1fr; } }
+
+.sc-nav-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  position: relative;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  transition: border-color 150ms, box-shadow 150ms;
+  overflow: hidden;
+  min-height: 158px;
+}
+.sc-nav-card::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 0;
+  background: var(--primary);
+  transition: width 150ms;
+}
+.sc-nav-card:hover {
+  border-color: var(--border-strong);
+  box-shadow: 0 8px 22px -4px rgba(15, 17, 21, 0.06);
+}
+.sc-nav-card:hover::before { width: 3px; }
+.sc-nav-card[aria-disabled="true"] { opacity: 0.55; cursor: not-allowed; }
+
+.sc-nav-card__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+}
+.sc-nav-card__icon {
+  width: 30px; height: 30px;
+  border-radius: 7px;
+  background: var(--soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  color: var(--ink-body);
+  transition: background 150ms, color 150ms;
+}
+.sc-nav-card__icon svg { width: 15px; height: 15px; stroke-width: 1.6; }
+.sc-nav-card:hover .sc-nav-card__icon {
+  background: var(--primary-tint);
+  color: var(--primary-dark);
+}
+.sc-nav-card__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  padding: 3px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  color: var(--ink-subtle);
+}
+.sc-nav-card__badge::before {
+  content: "";
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  flex: none;
+}
+.sc-nav-card__badge--good { color: var(--status-good); border-color: rgba(31,139,76,0.3); background: rgba(31,139,76,0.08); }
+.sc-nav-card__badge--warn { color: var(--status-warn); border-color: rgba(181,127,27,0.3); background: rgba(181,127,27,0.08); }
+.sc-nav-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+  min-width: 0;
+  justify-content: flex-end;
+}
+.sc-nav-card__title {
+  margin: 0;
+  font-family: 'LG EI Headline', 'LG EI Text', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--ink-body);
+}
+.sc-nav-card__desc {
+  margin: 0;
+  font-size: 12px;
+  color: var(--ink-muted);
+  line-height: 1.45;
+}
+.sc-nav-card__foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 6px;
+  border-top: 1px dashed var(--border);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--ink-subtle);
+  letter-spacing: .04em;
+}
+.sc-nav-card__arrow {
+  color: var(--primary);
+  font-size: 14px;
+  font-family: var(--font-mono);
+  opacity: 0;
+  transform: translateX(-3px);
+  transition: opacity 150ms, transform 150ms;
+}
+.sc-nav-card:hover .sc-nav-card__arrow {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* =============================================================================
    HIGH-FIDELITY CLONE ADDITIONS — matplotlib-like charts, AgGrid, signal cards
    ============================================================================= */
 
