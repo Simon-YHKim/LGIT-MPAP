@@ -1,0 +1,19 @@
+﻿plant_code,process_code,process_name,alarm_code,alarm_name,model_name,importance_grade
+CM1,CM10986,Module AA,,Menual Machine Pause,Varo,
+CM1,CM11850,Sensor Stiffener Attach,,Adjust points distance check error,R33A/R34A,B
+CM1,CM11850,Sensor Stiffener Attach,,Caution: wafer lift will move upwards,R33A/R34A,B
+CM1,CM11850,Sensor Stiffener Attach,,Error while switching on the transportsystem vacuum,R33A/R34A,B
+CM1,CM11850,Sensor Stiffener Attach,,Place full wafer magazine,R33A/R34A,B
+CM1,CM11850,Sensor Stiffener Attach,,Substrate mapping file error,R33A/R34A,B
+CM1,CM11850,Sensor Stiffener Attach,,UV heating can not be switched on,R33A/R34A,B
+CM1,CM10500,VCM Attach,,component carrier change error,R33A/R34A,B
+CM1,CM10791,Bracket Attach,,Post bond search failed (Pre-dispensing),,
+CM1,CM10791,Bracket Attach,,Adjust points distance check error,,
+CM1,CM10791,Bracket Attach,,Average number of failed pbi searches reached defined limit,,
+CM1,CM10791,Bracket Attach,,Component id reading error,,
+CM1,CM10791,Bracket Attach,,Pre-dispense inspection failed.,,
+CM1,CM10791,Bracket Attach,,Clamping can not be opened,,
+CM1,CM10791,Bracket Attach,,Empty Cassette can not move down,,
+CM1,CM10791,Bracket Attach,,Frame not unlocked,,
+CM1,CM10791,Bracket Attach,,Too many inspection errors,,
+CM1,CM10791,Bracket Attach,,UV curing intensity went outside the limits,,

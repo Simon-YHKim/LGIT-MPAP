@@ -1,0 +1,250 @@
+import json
+import requests
+import streamlit as st
+from access_logger import log_page_access
+
+# -----------------------------
+# 기본 설정
+# -----------------------------
+log_page_access("LLM Chat")
+st.set_page_config(page_title="LLM과 대화하기", layout="wide")
+
+VLLM_BASE_URL = "http://150.150.83.26:8000/v1"
+VLLM_MODEL_NAME = "/home/rgkorea/models/Qwen2.5-3B-Instruct"
+
+SYSTEM_PROMPT = """
+당신은 사내 업무 지원용 AI 비서입니다.
+
+반드시 아래 규칙을 지켜 답변하세요.
+1. 항상 자연스럽고 정중한 한국어로만 답변하세요.
+2. 사용자가 명시적으로 다른 언어를 요청하지 않는 한, 중국어, 영어, 일본어 등 한국어 이외의 언어를 섞지 마세요.
+3. 인사말, 설명, 예시, bullet point, 코드 설명도 모두 한국어로 작성하세요.
+4. 번역 요청이 아닌 경우 외국어 문장을 그대로 출력하지 마세요.
+5. 답변은 명확하고 간결하게 작성하세요.
+6. 업무 지원 상황에 맞게 친절하고 실용적으로 설명하세요.
+7. 사용자의 질문이 모호하면 한국어로 다시 질문하여 의도를 확인하세요.
+8. 숫자, 코드, 파일 경로, 함수명 등은 필요한 경우 원문 그대로 유지해도 됩니다.
+"""
+
+# -----------------------------
+# 세션 상태 초기화
+# -----------------------------
+def init_session_state():
+    """세션 상태 초기화"""
+    if "messages" not in st.session_state:
+        st.session_state.messages = [
+            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "assistant", "content": "안녕하세요. 무엇을 도와드릴까요?"}
+        ]
+
+def reset_chat():
+    """대화 초기화"""
+    st.session_state.messages = [
+        {"role": "system", "content": SYSTEM_PROMPT},
+        {"role": "assistant", "content": "안녕하세요. 무엇을 도와드릴까요?"}
+    ]
+
+# -----------------------------
+# 일반 응답 테스트용 함수
+# -----------------------------
+def request_chat_completion(messages, temperature, max_tokens):
+    """
+    일반 응답 방식
+    서버 연결 테스트 등에 사용
+    """
+    url = f"{VLLM_BASE_URL}/chat/completions"
+
+    payload = {
+        "model": VLLM_MODEL_NAME,
+        "messages": messages,
+        "temperature": temperature,
+        "max_tokens": max_tokens,
+        "stream": False
+    }
+
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer dummy"
+    }
+
+    response = requests.post(
+        url,
+        json=payload,
+        headers=headers,
+        timeout=120
+    )
+    response.raise_for_status()
+
+    result = response.json()
+    return result["choices"][0]["message"]["content"]
+
+# -----------------------------
+# 스트리밍 응답 함수
+# -----------------------------
+def stream_chat_completion(messages, temperature, max_tokens):
+    """
+    vLLM OpenAI 호환 SSE 스트리밍 응답 처리
+    """
+    url = f"{VLLM_BASE_URL}/chat/completions"
+
+    payload = {
+        "model": VLLM_MODEL_NAME,
+        "messages": messages,
+        "temperature": temperature,
+        "max_tokens": max_tokens,
+        "stream": True
+    }
+
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer dummy"
+    }
+
+    with requests.post(
+        url,
+        json=payload,
+        headers=headers,
+        timeout=120,
+        stream=True
+    ) as response:
+        response.raise_for_status()
+
+        full_response = ""
+
+        for line in response.iter_lines(decode_unicode=True):
+            if not line:
+                continue
+
+            if line.startswith("data: "):
+                data = line[len("data: "):].strip()
+
+                if data == "[DONE]":
+                    break
+
+                try:
+                    chunk = json.loads(data)
+                    delta = chunk["choices"][0]["delta"].get("content", "")
+
+                    if delta:
+                        full_response += delta
+                        yield full_response
+
+                except Exception:
+                    continue
+
+# -----------------------------
+# 대화 다운로드 데이터 생성
+# -----------------------------
+def build_chat_export():
+    """
+    다운로드용 대화 이력 생성
+    """
+    return json.dumps(
+        st.session_state.messages,
+        ensure_ascii=False,
+        indent=2
+    )
+
+# -----------------------------
+# UI
+# -----------------------------
+st.title("🤖 LLM과 대화하기")
+st.write("궁금한 내용을 입력하면 LLM과 대화할 수 있습니다.")
+
+init_session_state()
+
+with st.sidebar:
+    st.header("설정")
+
+    temperature = st.slider("Temperature", 0.0, 1.5, 0.3, 0.1)
+    max_tokens = st.slider("Max Tokens", 64, 2048, 512, 64)
+
+    st.markdown("---")
+    st.subheader("도구")
+
+    if st.button("서버 연결 테스트"):
+        try:
+            test_response = request_chat_completion(
+                messages=[
+                    {"role": "system", "content": SYSTEM_PROMPT},
+                    {"role": "user", "content": "안녕?"}
+                ],
+                temperature=temperature,
+                max_tokens=50
+            )
+            st.success("서버 연결 성공")
+            st.caption(f"테스트 응답: {test_response[:100]}...")
+        except Exception as e:
+            st.error(f"서버 연결 실패: {str(e)}")
+
+    if st.button("대화 초기화"):
+        reset_chat()
+        st.rerun()
+
+    chat_export = build_chat_export()
+    st.download_button(
+        label="대화 다운로드",
+        data=chat_export,
+        file_name="llm_chat_history.json",
+        mime="application/json"
+    )
+
+    st.markdown("---")
+    st.caption("응답 언어: 한국어 고정")
+    st.caption("모델: Qwen2.5-3B-Instruct")
+
+# -----------------------------
+# 기존 대화 출력
+# system 메시지는 화면에 표시하지 않음
+# -----------------------------
+for message in st.session_state.messages:
+    if message["role"] == "system":
+        continue
+
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
+
+# -----------------------------
+# 사용자 입력
+# -----------------------------
+user_input = st.chat_input("메시지를 입력하세요...")
+
+if user_input:
+    # 사용자 메시지 저장
+    st.session_state.messages.append({
+        "role": "user",
+        "content": user_input
+    })
+
+    # 사용자 메시지 출력
+    with st.chat_message("user"):
+        st.markdown(user_input)
+
+    # assistant 응답 스트리밍 출력
+    with st.chat_message("assistant"):
+        response_placeholder = st.empty()
+        full_response = ""
+
+        try:
+            for partial_response in stream_chat_completion(
+                messages=st.session_state.messages,
+                temperature=temperature,
+                max_tokens=max_tokens
+            ):
+                full_response = partial_response
+                response_placeholder.markdown(full_response + "▌")
+
+            if not full_response.strip():
+                full_response = "응답이 비어 있습니다."
+
+            response_placeholder.markdown(full_response)
+
+        except Exception as e:
+            full_response = f"오류가 발생했습니다: {str(e)}"
+            response_placeholder.markdown(full_response)
+
+    # assistant 응답 저장
+    st.session_state.messages.append({
+        "role": "assistant",
+        "content": full_response
+    })

@@ -1,0 +1,43 @@
+﻿area_name,process_name,customer_model,공정명,시트명,기준 UPH
+Gumi Campus 1 Area,VCM Sealing,R53A,"01.VCM Sealing(BWI25, 25년 모델)",VS(BWI25),950
+Gumi Campus 1 Area,Z sensor Calibration,R53A,"02.Z Sensor Calibration(BWI25, 25년 모델)",ZCAL(BWI25),668
+Gumi Campus 1 Area,Enclosure Attach,R53A,"03.Enclosure Attach(BWI25, 25년 모델)",EA(BWI25),581
+Gumi Campus 1 Area,Lens AA,R53A,"04.Lens AA(BWI25, 25년 모델)",LA(BWI25),353
+Gumi Campus 1 Area,Up Down Dark,R53A,"05.Up Down Dark Test(BWI25, 25년 모델)",UDT(BWI25),144
+Gumi Campus 1 Area,Top & Bottom Neck,R53A,"06.Top&Bottom Neck(BWI25, 25년 모델)",TBN(BWI25),750
+Gumi Campus 3 Area,DCR Test,R53A,"07.DCR Tester(BWI25, 25년 모델)",DCR(BWI25),1050
+Gumi Campus 1 Area,APS Test,R53A,"08.APS Tester(BWI25, 25년 모델)",APS(BWI25),300
+Gumi Campus 3 Area,6side AVI Cap(Inline),R53B,"09.6Sdie AVI(MEM25, 25년 모델)",6S(MEM25),2300
+Gumi Campus 4 Area,Up Down Dark,R53B,"10.Up Down Dark Test(MEM25, 25년 모델)",UDT(MEM25),122
+Gumi Campus 4 Area,Pismo Flex bending,R53B,"11.Pismo Flex Bending Shuttle#1(MEM25, 25년 모델)",PFB#1(MEM25),115
+Gumi Campus 4 Area,Pismo Flex bending,R53B,"12.Pismo Flex Bending Shuttle#2(MEM25, 25년 모델)",PFB#2(MEM25),115
+Gumi Campus 4 Area,Pismo Flex bending,R53B,"13.Pismo Flex Bending Shuttle#3(MEM25, 25년 모델)",PFB#3(MEM25),115
+Gumi Campus 4 Area,Pismo Flex bending,R53B,"14.Pismo Flex Bending Shuttle#4(MEM25, 25년 모델)",PFB#4(MEM25),115
+Gumi Campus 4 Area,Pismo Flex bending,R53B,"15.Pismo Flex Bending(MEM25, 25년 모델)",PFB(MEM25),470
+Gumi Campus 4 Area,Pismo interconnection,R53B,"16.Pismo Interconnection(MEM25, 25년 모델)",PI(MEM25),380
+Gumi Campus 4 Area,Shield can attach,R53B,"17.Shield Can Attach(MEM25, 25년 모델)",SCA(MEM25),606
+Gumi Campus 4 Area,Shield Can Reinforcement,R53B,"18.Shield Can Reinforcement(MEM25, 25년 모델)",SCR(MEM25),1100
+Gumi Campus 4 Area,Glue Locking,R53B,"19.Glue Locking(MEM25, 25년 모델)",GL(MEM25),1100
+Gumi Campus 4 Area,Driver IC Filling,R53B,"20.Driver IC Filling(MEM25, 25년 모델)",DIF(MEM25),980
+Gumi Campus 4 Area,Lens AA_VR,R53B,"21.Lens AA(MEM25, 25년 모델)",LA(MEM25),458
+Gumi Campus 4 Area,Module AA,R53B,"22.Module AA(MEM25, 25년 모델)",MA(MEM25),447
+Gumi Campus 4 Area,Baffle Attach,R53B,"23.Baffle Attach(MEM25, 25년 모델)",BA(MEM25),498
+Gumi Campus 4 Area,Module Sealing,R53B,"24.Module Sealing(MEM25, 25년 모델)",MS(MEM25),995
+Gumi Campus 4 Area,Stiffener SF,R53B,"25.Baffle Sidefill(MEM25, 25년 모델)",BS(MEM25),480
+Gumi Campus 4 Area,Top & Bottom Neck,R53B,"26.Top&Bottom Neck53(MEM25, 25년 모델)",TBN53(MEM25),1200
+Gumi Campus 4 Area,FPC Bonding,R53B,"27.FPC Bonding(MEM25, 25년 모델)",FPC(MEM25),530
+Gumi Campus 4 Area,iCLT,R53B,"28.iCLT C3(MEM25, 25년 모델)",ICLC3(MEM25),475
+Gumi Campus 4 Area,iCLT,R53B,"28.iCLT C4(MEM25, 25년 모델)",ICLC4(MEM25),475
+Gumi Campus 4 Area,DCR Test,R53B,"29.DCR Tester(MEM25, 25년 모델)",DCR(MEM25),921
+Gumi Campus 1 Area,VCM Sealing,RRR,"30.VCM Sealing(AKC25, 25년 모델)",VS(AKC25),1000
+Gumi Campus 1 Area,Z sensor Calibration,RRR,"31.Z-sensor calibration(AKC25, 25년 모델)",ZCAL(AKC25),668
+Gumi Campus 1 Area,Enclosure Attach,RRR,"32.Enclosure Attach(AKC25, 25년 모델)",EA(AKC25),600
+Gumi Campus 1 Area,Lens AA,RRR,"33.Lens AA(AKC25, 25년 모델)",LA(AKC25),350
+Gumi Campus 1 Area,Laser Marking,RRR,"34.Laser marking(AKC25, 25년 모델)",LM(AKC25),2050
+Gumi Campus 1 Area,Up Down Dark,RRR,"35.Up Down Dark Test C3(AKC25, 25년 모델)",UDTC3(AKC25),113
+Gumi Campus 1 Area,Up Down Dark,RRR,"35.Up Down Dark Test C4(AKC25, 25년 모델)",UDTC4(AKC25),113
+Gumi Campus 4 Area,APS Test,RRR,"36.APS Tester(AKC25, 25년 모델)",APS(AKC25),303
+Gumi Campus 3 Area,DCR Test,RRR,"37.DCR Tester(AKC25, 25년 모델)",DCR(AKC25),1050
+Gumi Campus 1 Area,FPC Bonding,R53A,"38.FPC Bonding(BWI25, 25년 모델)",FPC(BWI25),560
+Gumi Campus 1 Area,Stiffener SF,R53A,"39.Stiffener Sidefill(BWI25, 25년 모델)",SSF(BWI25),610
+Gumi Campus 4 Area,Stiffener SF,R50,"40.Stiffener Sidefill(SEA25, 25년 모델)",SSF(SEA25),450
