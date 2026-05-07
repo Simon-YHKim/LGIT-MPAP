@@ -1,0 +1,774 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Vitals · Current Integrated State — LGIT MPAP</title>
+<link rel="stylesheet" href="./_shared.css">
+<style>
+  /* === preview-current 전용 — _shared.css 위에 페이지별 섹션 + nav === */
+  body { background: var(--page-bg); }
+  .pc-wrap { display: grid; grid-template-columns: 220px 1fr; min-height: 100vh; }
+
+  /* sidebar — 통합 후 Streamlit 사이드바 구조 모방 */
+  .pc-side {
+    background: #fff; border-right: 1px solid var(--border);
+    padding: 20px 0; position: sticky; top: 0; height: 100vh;
+    overflow-y: auto; display: flex; flex-direction: column;
+  }
+  .pc-side h2 {
+    margin: 0 20px 4px; font-size: 16px; font-weight: 700; letter-spacing:-0.01em;
+    color: var(--ink-body);
+  }
+  .pc-side .eyebrow { margin: 0 20px 18px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-subtle); font-family: var(--font-mono); }
+  .pc-nav { display: flex; flex-direction: column; padding: 0 8px; gap: 2px; }
+  .pc-nav a {
+    display: flex; align-items: center; justify-content: space-between;
+    height: 36px; padding: 0 14px;
+    font-size: 13px; font-weight: 600; color: var(--ink-muted); text-decoration: none;
+    border-radius: 6px; position: relative;
+  }
+  .pc-nav a:hover { background: var(--soft); color: var(--ink-body); }
+  .pc-nav a.active { color: var(--ink-body); background: var(--soft); }
+  .pc-nav a.active::before { content:""; position: absolute; left:0; top:6px; bottom:6px; width:4px; background: var(--primary); border-radius: 0 2px 2px 0; }
+  .pc-nav .num { font-family: var(--font-mono); font-size: 10px; color: var(--ink-subtle); }
+  .pc-nav .score { font-family: var(--font-mono); font-size: 10px; color: var(--status-good); font-weight: 700; }
+  .pc-side .foot { margin-top: auto; padding: 14px 20px; font-family: var(--font-mono); font-size: 11px; color: var(--ink-subtle); border-top: 1px solid var(--border); }
+
+  /* main */
+  .pc-main { padding: 0 28px 60px; max-width: 1500px; }
+  .pc-page {
+    background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px;
+    padding: 22px 24px; margin-top: 24px; scroll-margin-top: 12px;
+  }
+  .pc-page-head {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    border-bottom: 1px solid var(--border); padding-bottom: 14px; margin-bottom: 16px;
+  }
+  .pc-page-head .meta {
+    font-family: var(--font-mono); font-size: 10px;
+    text-transform: uppercase; letter-spacing: .1em; color: var(--ink-subtle); margin-bottom: 6px;
+  }
+  .pc-page-head h2 {
+    font-family: 'LG EI Headline','LG EI Text',sans-serif;
+    font-size: 22px; font-weight: 700; letter-spacing:-0.02em; color: var(--ink-body); margin: 0;
+  }
+  .pc-page-head .sub { font-size: 12px; color: var(--ink-muted); margin-top: 4px; max-width: 640px; }
+  .pc-score-pill {
+    background: #E6F4EA; color: var(--status-good);
+    font-family: var(--font-mono); font-size: 12px; font-weight: 700;
+    padding: 4px 10px; border-radius: 999px; white-space: nowrap;
+  }
+  .pc-changes { font-size: 12px; color: var(--ink-muted); margin-top: 12px; padding: 10px 12px; background: var(--soft); border-radius: 8px; border-left: 3px solid var(--primary); }
+  .pc-changes b { color: var(--ink-body); }
+  .pc-changes ul { margin: 6px 0 0; padding-left: 18px; }
+  .pc-changes li { margin-bottom: 2px; }
+
+  /* shared chrome / faux-streamlit components */
+  .pc-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin-bottom: 14px; }
+  .pc-control {
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .pc-control label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-muted); }
+  .pc-control select, .pc-control input {
+    height: 32px; min-width: 140px;
+    background: var(--card-bg); border: 1px solid var(--border); border-radius: 6px;
+    padding: 0 10px; font-size: 13px; color: var(--ink-body); font-family: var(--font-body);
+  }
+  .pc-btn {
+    height: 32px; padding: 0 14px; font-size: 12px; font-weight: 700;
+    background: var(--primary); color: #fff; border: 1px solid var(--primary);
+    border-radius: 6px; cursor: pointer;
+  }
+  .pc-btn--ghost { background: var(--card-bg); color: var(--ink-body); border-color: var(--border); }
+  .pc-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .pc-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  @media (max-width: 1100px){ .pc-grid-3, .pc-grid-4 { grid-template-columns: repeat(2, 1fr); } }
+  .pc-card {
+    background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px;
+    padding: 14px 16px;
+  }
+  .pc-card .label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-muted); }
+  .pc-card .value { font-family: 'LG EI Headline','LG EI Text',sans-serif; font-size: 24px; font-weight: 700; color: var(--ink-body); margin-top: 4px; letter-spacing:-0.02em; }
+  .pc-card .delta { font-family: var(--font-mono); font-size: 11px; margin-top: 2px; }
+  .pc-card .delta.up { color: var(--status-good); }
+  .pc-card .delta.down { color: var(--status-bad); }
+
+  table.pc-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  table.pc-table thead th {
+    background: var(--soft); color: var(--ink-muted);
+    font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .08em;
+    padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--border);
+  }
+  table.pc-table tbody td { padding: 10px; border-bottom: 1px solid var(--border); color: var(--ink-body); }
+  table.pc-table tbody tr:hover { background: var(--soft); }
+
+  .pc-tag {
+    display: inline-block; padding: 2px 8px; border-radius: 999px;
+    font-size: 11px; font-weight: 700;
+  }
+  .pc-tag--good { background: #E6F4EA; color: var(--status-good); border: 1px solid var(--status-good); }
+  .pc-tag--warn { background: #FAF1DD; color: var(--status-warn); border: 1px solid var(--status-warn); }
+  .pc-tag--bad  { background: #F8E5EC; color: var(--primary);     border: 1px solid var(--primary); }
+  .pc-tag--soft { background: var(--soft); color: var(--ink-muted); border: 1px solid var(--border); }
+
+  /* mode selector — 0_Home 의 home_mode */
+  .pc-mode-bar { display: flex; gap: 6px; background: var(--soft); padding: 4px; border-radius: 8px; width: fit-content; margin-bottom: 16px; }
+  .pc-mode-btn { padding: 6px 14px; font-size: 12px; font-weight: 700; border-radius: 6px; border: none; background: transparent; color: var(--ink-muted); cursor: pointer; }
+  .pc-mode-btn.active { background: var(--primary); color: #fff; }
+
+  /* category card grid — Home menu */
+  .pc-cat-head { display: flex; align-items: center; gap: 10px; margin: 18px 0 10px; }
+  .pc-cat-bar { width: 4px; height: 16px; background: var(--primary); border-radius: 2px; }
+  .pc-cat-title { font-family: 'LG EI Headline','LG EI Text',sans-serif; font-size: 14px; font-weight: 700; color: var(--ink-body); margin: 0; }
+  .pc-cat-sub { font-size: 11px; color: var(--ink-muted); margin-left: 4px; }
+
+  /* heatmap fake */
+  .pc-heatmap { display: grid; grid-template-columns: repeat(8, 1fr); gap: 2px; }
+  .pc-heat-cell { height: 24px; border-radius: 3px; }
+
+  /* chart fake */
+  .pc-chart { background: var(--soft); border: 1px solid var(--border); border-radius: 8px; padding: 12px; }
+
+  /* page hero (MTBA Detail / Alarm / MTBA Dash) */
+  .pc-hero {
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+    color: #fff; border-radius: 12px; padding: 28px 24px 22px; margin-bottom: 14px;
+  }
+  .pc-hero h1 { font-family: 'LG EI Headline','LG EI Text',sans-serif; font-size: 28px; font-weight: 700; letter-spacing:-0.02em; margin: 0; }
+  .pc-hero p  { margin: 6px 0 0; font-size: 13px; opacity: .92; }
+
+  /* MaxCapa chat */
+  .pc-chat-bubble { background: var(--soft); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; max-width: 580px; margin-bottom: 8px; font-size: 13px; }
+  .pc-chat-bubble.user { background: var(--primary-tint); border-color: var(--primary); margin-left: auto; }
+  .pc-chat-bubble.bot pre { font-family: var(--font-mono); font-size: 11px; background: var(--card-bg); padding: 8px; border-radius: 6px; overflow-x: auto; margin: 6px 0 0; }
+
+  .pc-disclaimer {
+    background: #FAF1DD; border: 1px solid #B57F1B; color: #6B4A06;
+    padding: 12px 14px; border-radius: 8px; font-size: 12px; margin-bottom: 18px;
+    border-left: 3px solid var(--status-warn);
+  }
+</style>
+</head>
+<body>
+<div class="top-strip"></div>
+<div class="pc-wrap">
+  <aside class="pc-side">
+    <h2>Vitals</h2>
+    <div class="eyebrow">LGIT MPAP · Current State</div>
+    <nav class="pc-nav">
+      <a href="#login"   data-id="login"><span><span class="num">·</span>&nbsp;Login</span><span class="score">92.5</span></a>
+      <a href="#home"    data-id="home" class="active"><span><span class="num">0</span>&nbsp;Home</span><span class="score">95.9</span></a>
+      <a href="#cmp"     data-id="cmp"><span><span class="num">1</span>&nbsp;CMP Dashboard</span><span class="score">86.2</span></a>
+      <a href="#uph"     data-id="uph"><span><span class="num">2</span>&nbsp;UPH Dashboard</span><span class="score">98.5</span></a>
+      <a href="#mtba"    data-id="mtba"><span><span class="num">3</span>&nbsp;MTBA Dashboard</span><span class="score">94.1</span></a>
+      <a href="#detail"  data-id="detail"><span><span class="num">4</span>&nbsp;MTBA Detail</span><span class="score">81.1</span></a>
+      <a href="#alarm"   data-id="alarm"><span><span class="num">5</span>&nbsp;Alarm Action</span><span class="score">97.4</span></a>
+      <a href="#chat"    data-id="chat"><span><span class="num">6</span>&nbsp;MaxCapa Chat</span><span class="score">97.0</span></a>
+      <a href="#patch"   data-id="patch"><span><span class="num">8</span>&nbsp;Patch Note</span><span class="score">95.0</span></a>
+      <a href="#admin"   data-id="admin"><span><span class="num">9</span>&nbsp;Admin Analytics</span><span class="score">97.0</span></a>
+    </nav>
+    <div class="foot">avg 93.5 / 100<br>backend ✓ 100%</div>
+  </aside>
+
+  <main class="pc-main">
+
+  <div class="pc-disclaimer">
+    <b>이 페이지는 Streamlit 통합 후 현재 상태를 정적 HTML 로 재현한 미리보기입니다.</b><br>
+    실제 Streamlit 페이지는 데이터 연결 + 위젯 인터랙션이 추가되지만, <strong>레이아웃 / 색 / 폰트 / 헤더 / 필터 구조</strong> 는 아래와 동일합니다.
+    이전 mockup-S*-B 들은 통합 <em>이전</em> 디자인 시안 (target) 이므로 이 파일이 더 정확한 현재 상태입니다.
+  </div>
+
+  <!-- =========== Login =========== -->
+  <section class="pc-page" id="login">
+    <div class="pc-page-head">
+      <div>
+        <div class="meta">login.py · 92.5 / 100</div>
+        <h2>Login</h2>
+        <p class="sub">다크 비디오 배경 + 우측 light Vitals 카드. 6개국 언어 selector. apply_global_styles → apply_vitals_theme 체인.</p>
+      </div>
+      <span class="pc-score-pill">92.5</span>
+    </div>
+    <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:16px;">
+      <div style="background: linear-gradient(135deg, #0A0C10 0%, #1a1f2b 100%); border-radius: 10px; padding: 24px; color: #fff; min-height: 320px;">
+        <div style="font-family: var(--font-mono); font-size: 11px; letter-spacing: .08em; opacity: .72; text-transform: uppercase;">VITALS · LGIT MPAP</div>
+        <h3 style="font-family: 'LG EI Headline','LG EI Text',sans-serif; font-size: 32px; font-weight: 700; letter-spacing:-0.025em; margin: 8px 0 6px;">공정의 호흡을 데이터로 듣다</h3>
+        <p style="font-size: 13px; opacity: .82; max-width: 420px;">LG Innotek 광학솔루션 사업부 · 생산혁신센터 Max Capa 팀</p>
+        <div style="display:flex;gap:6px;margin-top:24px;font-family:var(--font-mono);font-size:11px;opacity:.72;">
+          <span>한국어</span><span>·</span><span>English</span><span>·</span><span>Tiếng Việt</span><span>·</span><span>中文</span><span>·</span><span>Polski</span><span>·</span><span>Bahasa</span>
+        </div>
+      </div>
+      <div style="background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 22px; color: var(--ink-body);">
+        <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-muted);">SIGN IN</div>
+        <h4 style="margin: 4px 0 18px; font-size: 18px; font-weight: 700;">로그인</h4>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <input placeholder="사번" style="height:36px;background:var(--soft);border:1px solid var(--border);border-radius:6px;padding:0 12px;font-family:var(--font-body);font-size:13px;">
+          <input type="password" placeholder="비밀번호" style="height:36px;background:var(--soft);border:1px solid var(--border);border-radius:6px;padding:0 12px;font-family:var(--font-body);font-size:13px;">
+          <button class="pc-btn" style="height:36px;margin-top:6px;">로그인</button>
+          <button class="pc-btn pc-btn--ghost" style="height:32px;font-weight:600;">회원가입 · 비밀번호 찾기</button>
+        </div>
+      </div>
+    </div>
+    <div class="pc-changes">
+      <b>적용된 변경:</b>
+      <ul>
+        <li>login_ui/styles.py — Vitals 토큰 alias (--card-bg, --border, --soft, --ink-body, status-*) 추가</li>
+        <li>auth-card / login-card 가 var(--card-bg) 사용</li>
+        <li>회원가입 검증 메시지에 status-good/warn/bad 시맨틱</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- =========== Home =========== -->
+  <section class="pc-page" id="home">
+    <div class="pc-page-head">
+      <div>
+        <div class="meta">0_Home.py · 95.9 / 100 · UNCHANGED (이미 완성)</div>
+        <h2>Home</h2>
+        <p class="sub">3-mode selector (Current · Case 1 Best/Worst · Case 2 CMP summary). 가장 완성도 높은 페이지.</p>
+      </div>
+      <span class="pc-score-pill">95.9</span>
+    </div>
+
+    <div class="pc-mode-bar">
+      <button class="pc-mode-btn">Current</button>
+      <button class="pc-mode-btn active">Case 1 · Best/Worst</button>
+      <button class="pc-mode-btn">Case 2 · CMP Summary</button>
+    </div>
+
+    <div class="pc-cat-head"><div class="pc-cat-bar"></div><h3 class="pc-cat-title">Worst 3<span class="pc-cat-sub">개선 우선순위</span></h3></div>
+    <div class="pc-grid-3">
+      <div class="pc-card" style="border-left: 4px solid var(--status-bad); background: linear-gradient(180deg, #FDECEF 0%, var(--card-bg) 60%);">
+        <div class="label">#1</div>
+        <div style="font-family:'LG EI Headline','LG EI Text',sans-serif;font-size:16px;font-weight:700;">FOL Adhesion</div>
+        <div style="font-family:var(--font-mono);font-size:28px;font-weight:700;color:var(--status-bad);margin-top:4px;">62.4%</div>
+        <div style="font-size:11px;color:var(--ink-muted);font-family:var(--font-mono);">FOL · CM모델A</div>
+      </div>
+      <div class="pc-card" style="border-left: 4px solid var(--status-bad); background: linear-gradient(180deg, #FDECEF 0%, var(--card-bg) 60%);">
+        <div class="label">#2</div>
+        <div style="font-family:'LG EI Headline','LG EI Text',sans-serif;font-size:16px;font-weight:700;">EOL Aging</div>
+        <div style="font-family:var(--font-mono);font-size:28px;font-weight:700;color:var(--status-bad);margin-top:4px;">68.1%</div>
+        <div style="font-size:11px;color:var(--ink-muted);font-family:var(--font-mono);">EOL · DM모델</div>
+      </div>
+      <div class="pc-card" style="border-left: 4px solid var(--status-warn); background: linear-gradient(180deg, #FAF1DD 0%, var(--card-bg) 60%);">
+        <div class="label">#3</div>
+        <div style="font-family:'LG EI Headline','LG EI Text',sans-serif;font-size:16px;font-weight:700;">MOL Bonding</div>
+        <div style="font-family:var(--font-mono);font-size:28px;font-weight:700;color:var(--status-warn);margin-top:4px;">79.6%</div>
+        <div style="font-size:11px;color:var(--ink-muted);font-family:var(--font-mono);">MOL · CM모델B</div>
+      </div>
+    </div>
+
+    <div class="pc-cat-head"><div class="pc-cat-bar"></div><h3 class="pc-cat-title">Best 3<span class="pc-cat-sub">달성률 상위</span></h3></div>
+    <div class="pc-grid-3">
+      <div class="pc-card" style="border-left: 4px solid var(--status-good); background: linear-gradient(180deg, #E6F4EA 0%, var(--card-bg) 60%);">
+        <div class="label">#1</div>
+        <div style="font-family:'LG EI Headline','LG EI Text',sans-serif;font-size:16px;font-weight:700;">Tele Inspection</div>
+        <div style="font-family:var(--font-mono);font-size:28px;font-weight:700;color:var(--status-good);margin-top:4px;">102.4%</div>
+        <div style="font-size:11px;color:var(--ink-muted);font-family:var(--font-mono);">Tele · 신모델</div>
+      </div>
+      <div class="pc-card" style="border-left: 4px solid var(--status-good); background: linear-gradient(180deg, #E6F4EA 0%, var(--card-bg) 60%);">
+        <div class="label">#2</div>
+        <div style="font-family:'LG EI Headline','LG EI Text',sans-serif;font-size:16px;font-weight:700;">Wide Final</div>
+        <div style="font-family:var(--font-mono);font-size:28px;font-weight:700;color:var(--status-good);margin-top:4px;">99.8%</div>
+        <div style="font-size:11px;color:var(--ink-muted);font-family:var(--font-mono);">Wide · CM모델C</div>
+      </div>
+      <div class="pc-card" style="border-left: 4px solid var(--status-good); background: linear-gradient(180deg, #E6F4EA 0%, var(--card-bg) 60%);">
+        <div class="label">#3</div>
+        <div style="font-family:'LG EI Headline','LG EI Text',sans-serif;font-size:16px;font-weight:700;">DM Final</div>
+        <div style="font-family:var(--font-mono);font-size:28px;font-weight:700;color:var(--status-good);margin-top:4px;">96.2%</div>
+        <div style="font-size:11px;color:var(--ink-muted);font-family:var(--font-mono);">DM · 모델E</div>
+      </div>
+    </div>
+
+    <h3 style="margin:24px 0 8px;font-family:'LG EI Headline','LG EI Text',sans-serif;font-size:18px;font-weight:700;">분석 도구</h3>
+    <p style="margin:0 0 12px;color:var(--ink-muted);font-size:13px;">상단 요약에서 이상 공정/모델을 확인한 후, 아래 카테고리 별 도구에서 상세 분석 화면으로 이동하세요.</p>
+
+    <div class="pc-cat-head"><div class="pc-cat-bar"></div><h3 class="pc-cat-title">생산성 분석<span class="pc-cat-sub">Performance</span></h3></div>
+    <div class="pc-grid-3">
+      <div class="pc-card"><b style="font-size:14px;">CMP Dashboard</b><p style="font-size:12px;color:var(--ink-muted);margin:6px 0 0;">모델별 일자별 CMP / UPH / Efficiency 라인 차트</p></div>
+      <div class="pc-card"><b style="font-size:14px;">UPH Dashboard</b><p style="font-size:12px;color:var(--ink-muted);margin:6px 0 0;">설비별 UPH / 동작시간 분석 (PostgreSQL v4)</p></div>
+      <div class="pc-card"><b style="font-size:14px;">MTBA Dashboard</b><p style="font-size:12px;color:var(--ink-muted);margin:6px 0 0;">공정×호기 매트릭스 + Best/Worst Alarm 차이 분석</p></div>
+    </div>
+    <div class="pc-cat-head"><div class="pc-cat-bar"></div><h3 class="pc-cat-title">알람 분석<span class="pc-cat-sub">Alarm</span></h3></div>
+    <div class="pc-grid-3">
+      <div class="pc-card"><b style="font-size:14px;">MTBA Detail View</b><p style="font-size:12px;color:var(--ink-muted);margin:6px 0 0;">패널형 상세 + heatmap + 댓글</p></div>
+      <div class="pc-card"><b style="font-size:14px;">Alarm Action List</b><p style="font-size:12px;color:var(--ink-muted);margin:6px 0 0;">팀별 알람 처리 액션 + 댓글 타임라인</p></div>
+    </div>
+    <div class="pc-cat-head"><div class="pc-cat-bar"></div><h3 class="pc-cat-title">AI · Tools<span class="pc-cat-sub">AI</span></h3></div>
+    <div class="pc-grid-3">
+      <div class="pc-card"><b style="font-size:14px;">MaxCapa Chat</b><p style="font-size:12px;color:var(--ink-muted);margin:6px 0 0;">vLLM 자연어 → SQL 조회</p></div>
+      <div class="pc-card"><b style="font-size:14px;">Patch Note</b><p style="font-size:12px;color:var(--ink-muted);margin:6px 0 0;">변경 이력 게시판 (Light Vitals)</p></div>
+      <div class="pc-card"><b style="font-size:14px;">Admin Analytics</b><p style="font-size:12px;color:var(--ink-muted);margin:6px 0 0;">사용 로그 분석 (관리자)</p></div>
+    </div>
+    <div class="pc-changes"><b>적용된 변경:</b><ul>
+      <li>render_home_mode_selector 3-mode 토글 추가 (current / case1 / case2)</li>
+      <li>_compute_best_worst_processes — empty/NaN 가드</li>
+      <li>#EF4444 → var(--status-bad, #B23A48)</li>
+      <li>render_case1_best_worst_cards — 모든 데이터 NaN 일 때 안내 메시지</li>
+    </ul></div>
+  </section>
+
+  <!-- =========== CMP =========== -->
+  <section class="pc-page" id="cmp">
+    <div class="pc-page-head">
+      <div>
+        <div class="meta">1_CMP_Dashboard.py · 86.2 / 100</div>
+        <h2>CMP Dashboard</h2>
+        <p class="sub">모델별 일자별 CMP / UPH / Efficiency 라인 차트. Best/Worst 5개 표 + Summary 패널.</p>
+      </div>
+      <span class="pc-score-pill">86.2</span>
+    </div>
+    <div class="pc-row">
+      <div class="pc-control"><label>영역</label><select><option>전체</option><option>FOL</option><option>MOL</option></select></div>
+      <div class="pc-control"><label>모델</label><select><option>전체</option><option>CM모델A</option></select></div>
+      <div class="pc-control"><label>기간 시작</label><input type="date" value="2026-04-07"></div>
+      <div class="pc-control"><label>기간 종료</label><input type="date" value="2026-05-07"></div>
+      <button class="pc-btn" style="margin-top:14px;">필터 적용</button>
+    </div>
+
+    <div style="display:grid;grid-template-columns:0.4fr 2.8fr 4fr;gap:14px;margin-top:14px;align-items:start;">
+      <div class="pc-card" style="text-align:center;">
+        <div class="label">MODEL</div>
+        <div style="font-family:'LG EI Headline','LG EI Text',sans-serif;font-size:18px;font-weight:700;margin-top:6px;">CM모델A</div>
+      </div>
+      <div>
+        <div class="pc-chart" style="margin-bottom:8px;">
+          <b style="font-size:12px;">CMP 달성률 — Wine</b>
+          <svg viewBox="0 0 400 80" style="width:100%;height:60px;display:block;margin-top:4px;">
+            <polyline fill="none" stroke="#A50034" stroke-width="2" points="0,60 50,52 100,40 150,48 200,30 250,38 300,22 350,28 400,14"/>
+          </svg>
+        </div>
+        <div class="pc-chart" style="margin-bottom:8px;">
+          <b style="font-size:12px;">UPH 달성률 — Warn</b>
+          <svg viewBox="0 0 400 80" style="width:100%;height:60px;display:block;margin-top:4px;">
+            <polyline fill="none" stroke="#B57F1B" stroke-width="2" points="0,40 50,48 100,42 150,50 200,46 250,44 300,42 350,38 400,32"/>
+          </svg>
+        </div>
+        <div class="pc-chart">
+          <b style="font-size:12px;">Efficiency — Status Good</b>
+          <svg viewBox="0 0 400 80" style="width:100%;height:60px;display:block;margin-top:4px;">
+            <polyline fill="none" stroke="#1F8B4C" stroke-width="2" points="0,30 50,28 100,32 150,24 200,26 250,18 300,22 350,14 400,18"/>
+          </svg>
+        </div>
+      </div>
+      <div>
+        <div class="pc-card" style="margin-bottom:8px;"><div class="label">Summary</div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:8px;font-size:13px;">
+            <div><div class="label">CMP</div><div style="font-family:var(--font-mono);font-size:18px;font-weight:700;">94.2%</div></div>
+            <div><div class="label">UPH</div><div style="font-family:var(--font-mono);font-size:18px;font-weight:700;">88.6%</div></div>
+            <div><div class="label">Eff</div><div style="font-family:var(--font-mono);font-size:18px;font-weight:700;">91.0%</div></div>
+          </div>
+        </div>
+        <table class="pc-table">
+          <thead><tr><th>주차</th><th>공정</th><th style="text-align:right;">CMP</th></tr></thead>
+          <tbody>
+            <tr><td>W18</td><td>FOL Adhesion</td><td style="text-align:right;color:var(--status-bad);font-family:var(--font-mono);">62.4%</td></tr>
+            <tr><td>W18</td><td>EOL Aging</td><td style="text-align:right;color:var(--status-bad);font-family:var(--font-mono);">68.1%</td></tr>
+            <tr><td>W18</td><td>MOL Bonding</td><td style="text-align:right;color:var(--status-warn);font-family:var(--font-mono);">79.6%</td></tr>
+            <tr><td>W18</td><td>EOL Test</td><td style="text-align:right;color:var(--status-warn);font-family:var(--font-mono);">82.3%</td></tr>
+            <tr><td>W18</td><td>Tele Insp</td><td style="text-align:right;color:var(--status-good);font-family:var(--font-mono);">96.8%</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="pc-changes"><b>적용된 변경:</b><ul>
+      <li>:root tokens — Vitals --page-bg, --card-bg, --soft, --border, --ink-body alias 추가</li>
+      <li>차트 색상 #3776e8 / #d9534f / #2ca25f → Vitals primary / status-warn / status-good</li>
+      <li>Malgun Gothic !important 2개 블록 제거 (LG EI 스택 사용)</li>
+    </ul></div>
+  </section>
+
+  <!-- =========== UPH =========== -->
+  <section class="pc-page" id="uph">
+    <div class="pc-page-head">
+      <div>
+        <div class="meta">2_UPH_Dashboard.py · 98.5 / 100 · 최고점</div>
+        <h2>UPH / 동작시간 분석 Dashboard</h2>
+        <p class="sub">설비별 UPH / 동작시간 분석 (PostgreSQL SQL 집계형 v4). 일별·주별·BW 트렌드 + Anomaly Detection.</p>
+      </div>
+      <span class="pc-score-pill">98.5</span>
+    </div>
+    <div class="pc-row">
+      <div class="pc-control"><label>모델</label><select><option>CM모델A</option></select></div>
+      <div class="pc-control"><label>공정</label><select><option>FOL Adhesion</option></select></div>
+      <div class="pc-control"><label>기간</label><select><option>최근 30일</option></select></div>
+      <button class="pc-btn">조회</button>
+    </div>
+    <div class="pc-grid-4" style="margin-bottom:14px;">
+      <div class="pc-card"><div class="label">평균 UPH</div><div class="value">324</div><div class="delta up">▲ 4.2% vs 이전</div></div>
+      <div class="pc-card"><div class="label">평균 동작시간</div><div class="value">14.2 h</div><div class="delta down">▼ 2.1%</div></div>
+      <div class="pc-card"><div class="label">UPH 편차</div><div class="value">8.4%</div><div class="delta up">▼ 1.2%</div></div>
+      <div class="pc-card"><div class="label">호기 수</div><div class="value">42</div><div class="delta up">─ 0</div></div>
+    </div>
+    <div class="pc-chart">
+      <b style="font-size:12px;">호기별 UPH 트렌드 (최근 30일)</b>
+      <svg viewBox="0 0 600 120" style="width:100%;height:140px;display:block;margin-top:6px;">
+        <polyline fill="none" stroke="#A50034" stroke-width="2" points="0,80 50,72 100,75 150,60 200,68 250,50 300,55 350,40 400,48 450,30 500,38 550,22 600,28"/>
+        <polyline fill="none" stroke="#B57F1B" stroke-width="1.5" stroke-dasharray="4 4" points="0,90 50,84 100,90 150,78 200,84 250,68 300,72 350,56 400,62 450,44 500,52 550,36 600,42"/>
+        <polyline fill="none" stroke="#1F8B4C" stroke-width="1.5" stroke-dasharray="2 3" points="0,100 50,98 100,100 150,96 200,100 250,90 300,94 350,84 400,88 450,76 500,82 550,72 600,78"/>
+      </svg>
+    </div>
+    <div class="pc-changes"><b>적용된 변경:</b><ul>
+      <li>:root —  Vitals --page-bg / --card-bg / --soft / --border / --ink-body / status-* 토큰 alias</li>
+      <li>Malgun Gothic !important 3개 블록 제거</li>
+      <li>chart 차트 색 Vitals 시맨틱화</li>
+    </ul></div>
+  </section>
+
+  <!-- =========== MTBA Dashboard =========== -->
+  <section class="pc-page" id="mtba">
+    <div class="pc-page-head">
+      <div>
+        <div class="meta">3_MTBA_Dashboard.py · 94.1 / 100</div>
+        <h2>MTBA Dashboard</h2>
+        <p class="sub">선택한 기간 기준으로 기간별 MTBA · 공정 통계 · 클릭 Drill-down · Best vs Worst Alarm 차이 분석.</p>
+      </div>
+      <span class="pc-score-pill">94.1</span>
+    </div>
+    <div class="pc-hero" style="background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);">
+      <h1>MTBA Dashboard</h1>
+      <p>선택한 기간 기준으로 기간별 MTBA / 공정 통계 / 클릭 Drill-down 기반 MTBA 현황 / Alarm 차이 분석</p>
+    </div>
+    <div class="pc-grid-3" style="margin-bottom:12px;">
+      <div class="pc-card" style="border-left:4px solid var(--status-good);">
+        <div class="label">FOL Adhesion · 공정</div>
+        <div style="font-family:'LG EI Headline','LG EI Text',sans-serif;font-size:16px;font-weight:700;margin-top:4px;">Total 가동 설비 : 12대</div>
+        <div style="display:flex;flex-direction:column;gap:2px;font-size:13px;color:var(--ink-body);margin-top:8px;">
+          <div><span style="display:inline-block;width:10px;height:10px;background:var(--status-good);border-radius:50%;margin-right:6px;"></span>120min↑ : 7대</div>
+          <div><span style="display:inline-block;width:10px;height:10px;background:var(--status-warn);border-radius:50%;margin-right:6px;"></span>60~120min : 3대</div>
+          <div><span style="display:inline-block;width:10px;height:10px;background:var(--status-bad);border-radius:50%;margin-right:6px;"></span>60min↓ : 2대</div>
+        </div>
+        <div style="margin-top:10px;border-top:1px dashed var(--border);padding-top:8px;font-size:13px;line-height:1.7;">
+          <div style="color:var(--status-good);font-weight:700;">Best : 248 min (FOL-12)</div>
+          <div style="color:var(--primary);font-weight:700;">Worst : 28 min (FOL-03)</div>
+          <div>평균 : 142 min</div>
+        </div>
+      </div>
+      <div class="pc-card" style="border-left:4px solid var(--status-warn);">
+        <div class="label">MOL Bonding · 공정</div>
+        <div style="font-family:'LG EI Headline','LG EI Text',sans-serif;font-size:16px;font-weight:700;margin-top:4px;">Total 가동 설비 : 10대</div>
+        <div style="font-size:12px;color:var(--ink-muted);margin-top:8px;">3 / 5 / 2 (정상/주의/위험)</div>
+      </div>
+      <div class="pc-card" style="border-left:4px solid var(--status-bad);">
+        <div class="label">EOL Aging · 공정</div>
+        <div style="font-family:'LG EI Headline','LG EI Text',sans-serif;font-size:16px;font-weight:700;margin-top:4px;">Total 가동 설비 : 8대</div>
+        <div style="font-size:12px;color:var(--ink-muted);margin-top:8px;">2 / 3 / 3 (정상/주의/위험)</div>
+      </div>
+    </div>
+
+    <div class="pc-card" style="border-left:4px solid var(--primary);">
+      <div class="label">Best vs Worst 호기 Alarm 차이 분석</div>
+      <table class="pc-table" style="margin-top:8px;">
+        <thead><tr><th>구분</th><th>호기</th><th>알람코드</th><th>알람명</th><th style="text-align:right;">발생수</th></tr></thead>
+        <tbody>
+          <tr style="background:#FDECEF;"><td><span class="pc-tag pc-tag--bad">Worst</span></td><td>FOL-03</td><td>A1042</td><td>Cell Defect</td><td style="text-align:right;font-family:var(--font-mono);">86</td></tr>
+          <tr style="background:#FDECEF;"><td><span class="pc-tag pc-tag--bad">Worst</span></td><td>FOL-03</td><td>A1078</td><td>Vacuum Loss</td><td style="text-align:right;font-family:var(--font-mono);">42</td></tr>
+          <tr style="background:#F7F8FA;"><td><span class="pc-tag pc-tag--good">Best</span></td><td>FOL-12</td><td>—</td><td>(알람 없음)</td><td style="text-align:right;font-family:var(--font-mono);">0</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="pc-changes"><b>적용된 변경:</b><ul>
+      <li>page-banner: maroon → var(--primary-dark) → var(--primary)</li>
+      <li>AgGrid 구 분홍/파랑 팔레트 → Vitals 단색 wine + status</li>
+      <li>signal card #16a34a/#facc15/#dc2626 → status-good/warn/bad</li>
+      <li>Best/Worst row 색 #1d4ed8/#b91c1c → status-good / primary</li>
+      <li>Arial → 'LG EI Text' 스택</li>
+    </ul></div>
+  </section>
+
+  <!-- =========== MTBA Detail =========== -->
+  <section class="pc-page" id="detail">
+    <div class="pc-page-head">
+      <div>
+        <div class="meta">4_MTBA_Detail_View.py · 81.1 / 100</div>
+        <h2>MTBA Detail View</h2>
+        <p class="sub">패널형 상세 분석 + heatmap + 댓글 히스토리. <b>팝업 응답 5–30s → &lt;1s</b> (st.rerun 제거 + DB index).</p>
+      </div>
+      <span class="pc-score-pill">81.1</span>
+    </div>
+    <div class="pc-hero">
+      <h1>MTBA Detail View</h1>
+      <p>공정·기간·기준값 선택 → 셀 클릭으로 알람 상세 / 댓글 / 호기별 추이 확인</p>
+    </div>
+
+    <div class="pc-row">
+      <div class="pc-control"><label>모델</label><select><option>CM모델A</option></select></div>
+      <div class="pc-control"><label>공정</label><select><option>FOL Adhesion</option></select></div>
+      <div class="pc-control"><label>기간</label><input type="date" value="2026-05-07"></div>
+      <div class="pc-control"><label>MTBA 기준 (분)</label><input value="120" style="width:90px;"></div>
+      <button class="pc-btn">조회</button>
+      <button class="pc-btn pc-btn--ghost">+ 패널 추가</button>
+    </div>
+
+    <div class="pc-card" style="border-left:4px solid var(--primary);margin-top:8px;">
+      <b style="font-size:14px;color:var(--primary);">MTBA 분석 Reporting #1</b>
+      <span style="margin-left:8px;font-size:11px;color:var(--ink-muted);">FOL Adhesion · CM모델A · 2026-05-07</span>
+      <div style="display:flex;gap:8px;margin:10px 0;">
+        <span class="pc-tag pc-tag--good">120min↑ 7</span>
+        <span class="pc-tag pc-tag--warn">60-120min 3</span>
+        <span class="pc-tag pc-tag--bad">60min↓ 2</span>
+      </div>
+      <b style="font-size:12px;">Heatmap (호기 × 시간)</b>
+      <div class="pc-heatmap" style="margin-top:6px;">
+        <div class="pc-heat-cell" style="background:#1F8B4C;"></div><div class="pc-heat-cell" style="background:#1F8B4C;"></div><div class="pc-heat-cell" style="background:#3A9B5E;"></div><div class="pc-heat-cell" style="background:#67AC78;"></div><div class="pc-heat-cell" style="background:#B57F1B;"></div><div class="pc-heat-cell" style="background:#C49B4B;"></div><div class="pc-heat-cell" style="background:#1F8B4C;"></div><div class="pc-heat-cell" style="background:#1F8B4C;"></div>
+        <div class="pc-heat-cell" style="background:#1F8B4C;"></div><div class="pc-heat-cell" style="background:#3A9B5E;"></div><div class="pc-heat-cell" style="background:#B57F1B;"></div><div class="pc-heat-cell" style="background:#B23A48;"></div><div class="pc-heat-cell" style="background:#B23A48;"></div><div class="pc-heat-cell" style="background:#B57F1B;"></div><div class="pc-heat-cell" style="background:#1F8B4C;"></div><div class="pc-heat-cell" style="background:#1F8B4C;"></div>
+        <div class="pc-heat-cell" style="background:#1F8B4C;"></div><div class="pc-heat-cell" style="background:#1F8B4C;"></div><div class="pc-heat-cell" style="background:#1F8B4C;"></div><div class="pc-heat-cell" style="background:#3A9B5E;"></div><div class="pc-heat-cell" style="background:#67AC78;"></div><div class="pc-heat-cell" style="background:#1F8B4C;"></div><div class="pc-heat-cell" style="background:#1F8B4C;"></div><div class="pc-heat-cell" style="background:#1F8B4C;"></div>
+      </div>
+    </div>
+
+    <div class="pc-card" style="margin-top:14px;">
+      <b style="font-size:14px;color:var(--primary);">Comment 입력 / 이력</b>
+      <p style="font-size:12px;color:var(--ink-muted);margin:4px 0 10px;">알람 [A1042] Cell Defect — 저장 시 수정이 아니라 이력으로 누적됩니다.</p>
+      <textarea placeholder="알람 원인, 조치 내용, 재발 방지 대책 등을 입력하세요." style="width:100%;height:80px;background:var(--soft);border:1px solid var(--border);border-radius:6px;padding:10px;font-family:var(--font-body);font-size:13px;"></textarea>
+      <div style="display:flex;gap:8px;margin-top:8px;"><button class="pc-btn">Comment 저장</button></div>
+
+      <h5 style="margin:14px 0 6px;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-muted);">Comment 이력</h5>
+      <table class="pc-table">
+        <thead><tr><th>저장일시</th><th>작성자</th><th>알람코드</th><th>Comment</th></tr></thead>
+        <tbody>
+          <tr><td style="font-family:var(--font-mono);font-size:11px;">2026-05-07 14:22:08</td><td>김시몬</td><td>A1042</td><td>FOL-03 흡착 노즐 청소 후 정상화. 7일 모니터링 필요.</td></tr>
+          <tr><td style="font-family:var(--font-mono);font-size:11px;">2026-05-06 09:15:42</td><td>이엔지</td><td>A1042</td><td>Cell Defect 발생 — 진공 압력 변동 확인</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="pc-changes"><b>적용된 변경:</b><ul>
+      <li>page-hero — maroon #7B0F2E/#9A163E → {PRIMARY_2}/{PRIMARY}</li>
+      <li>모든 .soft-card / .filter-wrap / .legend-chip / .badge-chip 가 var(--card-bg) / var(--border) 사용</li>
+      <li>legend-red/yellow/green → status-bad-tint / status-warn-tint / status-good-tint</li>
+      <li>st.rerun 2개 제거 (line 1289, 1339) — 팝업 응답 5-30s → &lt;1s</li>
+      <li>댓글 캐시 (TTL 60s) + base_date 정규화 — 동일 날짜 cache miss 제거</li>
+    </ul></div>
+  </section>
+
+  <!-- =========== Alarm Action List =========== -->
+  <section class="pc-page" id="alarm">
+    <div class="pc-page-head">
+      <div>
+        <div class="meta">5_Alarm_Action_List.py · 97.4 / 100</div>
+        <h2>Alarm Action List</h2>
+        <p class="sub">팀별 알람 처리 액션 리스트 + 댓글 타임라인. 처리 상태 라벨에 status-good/warn/bad 시맨틱.</p>
+      </div>
+      <span class="pc-score-pill">97.4</span>
+    </div>
+    <div class="pc-hero"><h1>Alarm Action List</h1><p>팀별 공정 선택 → 저장된 공정에 누적된 알람 / 조치 / 댓글 검토</p></div>
+
+    <div class="pc-card" style="margin-bottom:10px;">
+      <b style="font-size:14px;color:var(--primary);">사용 방법</b>
+      <p style="font-size:12px;color:var(--ink-muted);margin:6px 0 0;">선택한 팀에 따라 공정 선택 카드 제목과 저장 버튼 문구가 동적으로 바뀌며, 팀별 저장 공정 수 배지가 함께 표시됩니다.</p>
+    </div>
+    <div class="pc-row">
+      <div class="pc-control"><label>팀 선택</label><select><option>CM FOL생산기술팀</option></select></div>
+      <span class="pc-tag pc-tag--bad" style="margin-top:14px;">저장 12개</span>
+    </div>
+
+    <table class="pc-table" style="margin-top:12px;">
+      <thead><tr><th>발생일시</th><th>호기</th><th>알람</th><th>처리 상태</th><th>담당</th><th>최근 코멘트</th></tr></thead>
+      <tbody>
+        <tr><td style="font-family:var(--font-mono);font-size:11px;">2026-05-07 14:22</td><td>FOL-03</td><td>[A1042] Cell Defect</td><td><span class="pc-tag pc-tag--good action-status-good">완료</span></td><td>김시몬</td><td>흡착 노즐 청소 후 정상화</td></tr>
+        <tr><td style="font-family:var(--font-mono);font-size:11px;">2026-05-07 11:08</td><td>FOL-08</td><td>[A1078] Vacuum Loss</td><td><span class="pc-tag pc-tag--warn action-status-warn">진행</span></td><td>이엔지</td><td>진공 펌프 점검 중</td></tr>
+        <tr><td style="font-family:var(--font-mono);font-size:11px;">2026-05-07 09:32</td><td>FOL-03</td><td>[A1042] Cell Defect</td><td><span class="pc-tag pc-tag--bad action-status-bad">대기</span></td><td>—</td><td>—</td></tr>
+      </tbody>
+    </table>
+    <div class="pc-changes"><b>적용된 변경:</b><ul>
+      <li>:root — Vitals 정식 토큰 alias 추가 (--page-bg / --card-bg / --soft / --ink-body 등)</li>
+      <li>action-status-good/warn/bad 시맨틱 클래스 추가</li>
+      <li>main-title gradient {PRIMARY_2} → {PRIMARY}</li>
+    </ul></div>
+  </section>
+
+  <!-- =========== MaxCapa Chat =========== -->
+  <section class="pc-page" id="chat">
+    <div class="pc-page-head">
+      <div>
+        <div class="meta">6_MaxCapa_Chat.py · 97.0 / 100</div>
+        <h2>MaxCapa Chat</h2>
+        <p class="sub">vLLM 자연어 쿼리 → SQL → 결과. intent_parser + planner. chat-status 시맨틱으로 응답 검증 라벨.</p>
+      </div>
+      <span class="pc-score-pill">97.0</span>
+    </div>
+    <div class="pc-card" style="border-left:4px solid var(--primary);">
+      <div style="display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--primary);">
+        <span style="display:inline-block;width:4px;height:14px;background:var(--primary);border-radius:2px;"></span>
+        VITALS · MAXCAPA · AI ASSISTANT
+      </div>
+      <h3 style="font-family:'LG EI Headline','LG EI Text',sans-serif;font-size:22px;font-weight:700;letter-spacing:-0.02em;margin:6px 0 0;">대화형 생산지표 조회</h3>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:8px;margin:18px 0;">
+      <div class="pc-chat-bubble user">최근 일주일간 FOL 공정 중 CMP 달성률이 가장 낮은 호기 5개 알려줘</div>
+      <div class="pc-chat-bubble bot">
+        <div style="display:flex;gap:6px;align-items:center;font-size:11px;color:var(--ink-muted);margin-bottom:6px;">
+          <span class="pc-tag pc-tag--good chat-status-good" style="font-size:10px;">검증됨</span>
+          <span style="font-family:var(--font-mono);">intent_parser → planner → SQL · 1.2s</span>
+        </div>
+        <pre>SELECT machine_no, AVG(cmp_rate) AS avg_cmp
+FROM mtba.cmp_daily
+WHERE process_l1 = 'FOL'
+  AND base_date BETWEEN '2026-04-30' AND '2026-05-07'
+GROUP BY machine_no
+ORDER BY avg_cmp ASC
+LIMIT 5;</pre>
+        <table class="pc-table" style="margin-top:8px;">
+          <thead><tr><th>호기</th><th style="text-align:right;">평균 CMP</th></tr></thead>
+          <tbody>
+            <tr><td>FOL-03</td><td style="text-align:right;color:var(--status-bad);font-family:var(--font-mono);">62.4%</td></tr>
+            <tr><td>FOL-07</td><td style="text-align:right;color:var(--status-bad);font-family:var(--font-mono);">71.2%</td></tr>
+            <tr><td>FOL-12</td><td style="text-align:right;color:var(--status-warn);font-family:var(--font-mono);">79.6%</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <textarea placeholder="자연어로 질문해 보세요." style="width:100%;height:60px;background:var(--soft);border:1px solid var(--border);border-radius:8px;padding:12px;font-family:var(--font-body);font-size:13px;"></textarea>
+      <div style="display:flex;justify-content:flex-end;"><button class="pc-btn">질문하기</button></div>
+    </div>
+    <div class="pc-changes"><b>적용된 변경:</b><ul>
+      <li>chat-status-good/warn/bad — LLM 응답 검증 라벨용 시맨틱 클래스 추가</li>
+      <li>vit-chat-head — Vitals var(--card-bg) / var(--border) / var(--primary) 적용 (이미 존재)</li>
+    </ul></div>
+  </section>
+
+  <!-- =========== Patch Note (light Vitals — 기존 dark mode 와의 핵심 차이) =========== -->
+  <section class="pc-page" id="patch">
+    <div class="pc-page-head">
+      <div>
+        <div class="meta">8_Patch_Note.py · 95.0 / 100 · DARK → LIGHT 전환</div>
+        <h2>Patch Note · 패치노트</h2>
+        <p class="sub">Board → Patch Note 리네임 + dark → light Vitals 전환 (mockup-S8-B 일치). 핵심 가시 변경.</p>
+      </div>
+      <span class="pc-score-pill">95.0</span>
+    </div>
+    <div style="height:6px;background:var(--primary);border-radius:3px;margin-bottom:16px;"></div>
+    <h1 style="font-family:'LG EI Headline','LG EI Text',sans-serif;font-size:28px;font-weight:700;letter-spacing:-0.02em;color:var(--ink-body);margin:0;">Patch Note · 패치노트</h1>
+    <p style="color:var(--ink-muted);font-size:13px;margin:6px 0 24px;">최신 변경 이력을 확인하고 상세 내용을 조회할 수 있습니다.</p>
+
+    <div style="display:grid;grid-template-columns:1fr 1.4fr;gap:14px;">
+      <div class="pc-card">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-muted);margin-bottom:12px;">목록</div>
+        <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;">
+          <div style="display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--border);">
+            <span class="pc-tag pc-tag--good" style="font-size:10px;">NEW</span>
+            <span style="flex:1;color:var(--ink-body);font-weight:600;">디자인 통합도 71.5% → 93.5% 향상</span>
+            <span style="font-family:var(--font-mono);font-size:11px;color:var(--ink-muted);">05-07</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--border);">
+            <span class="pc-tag pc-tag--warn" style="font-size:10px;">UPD</span>
+            <span style="flex:1;color:var(--ink-body);font-weight:600;">Patch Note dark → light Vitals 전환</span>
+            <span style="font-family:var(--font-mono);font-size:11px;color:var(--ink-muted);">05-07</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--border);">
+            <span class="pc-tag pc-tag--bad" style="font-size:10px;">FIX</span>
+            <span style="flex:1;color:var(--ink-body);font-weight:600;">팝업 응답 5-30s → &lt;1s (st.rerun 제거)</span>
+            <span style="font-family:var(--font-mono);font-size:11px;color:var(--ink-muted);">05-07</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--border);">
+            <span class="pc-tag pc-tag--bad" style="font-size:10px;">FIX</span>
+            <span style="flex:1;color:var(--ink-body);font-weight:600;">댓글 캐시 base_date 타입 정규화</span>
+            <span style="font-family:var(--font-mono);font-size:11px;color:var(--ink-muted);">05-07</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:6px 0;">
+            <span class="pc-tag pc-tag--good" style="font-size:10px;">NEW</span>
+            <span style="flex:1;color:var(--ink-body);font-weight:600;">Home 3-mode selector (Current·Case1·Case2)</span>
+            <span style="font-family:var(--font-mono);font-size:11px;color:var(--ink-muted);">05-06</span>
+          </div>
+        </div>
+      </div>
+      <div class="pc-card">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-muted);margin-bottom:6px;">상세</div>
+        <h3 style="font-family:'LG EI Headline','LG EI Text',sans-serif;font-size:22px;font-weight:700;letter-spacing:-0.01em;margin:0 0 4px;color:var(--ink-body);">디자인 통합도 71.5% → 93.5% 향상</h3>
+        <div style="font-size:11px;color:var(--ink-muted);margin-bottom:12px;font-family:var(--font-mono);">2026-05-07 · 김시몬 · NEW</div>
+        <p style="font-size:13px;line-height:1.7;color:var(--ink-body);">
+          모든 Streamlit 페이지가 canonical Vitals var() 토큰 (--page-bg, --card-bg, --soft, --border, --ink-body, --status-good/warn/bad) 을 사용하도록 정렬했습니다.
+          백엔드 호출 (function signature, SQL, session_state key) 은 100% 보존되었으며, AST diff 로 검증되었습니다.
+        </p>
+        <ul style="font-size:13px;line-height:1.7;padding-left:18px;color:var(--ink-body);">
+          <li>변경 파일: 9 페이지 + login_ui</li>
+          <li>측정 스크립트: streamlit-app/scripts/measure_design_integration.py</li>
+          <li>Patch Note: dark → light Vitals 전환 (mockup-S8-B 일치)</li>
+          <li>9_Admin_Analytics: vit-page-head 신규 + S9-B mockup 작성</li>
+        </ul>
+      </div>
+    </div>
+    <div class="pc-changes"><b>적용된 변경 (이 페이지 자체):</b><ul>
+      <li>linear-gradient(#0A0C10 → #11151b) 다크 배경 → var(--page-bg) light 전환</li>
+      <li>모든 dark rgba(255,255,255,0.x) → var(--ink-body) / var(--ink-muted)</li>
+      <li>board-panel-bg backdrop-filter blur 제거 → 흰 카드 + Vitals shadow</li>
+      <li>NEW/UPD/FIX 태그 — Tailwind text 색 → status-good / status-warn / primary 시맨틱</li>
+      <li>board-top-strip — wine-red 6px 띠 추가 (mockup-S8-B 패턴)</li>
+    </ul></div>
+  </section>
+
+  <!-- =========== Admin Analytics =========== -->
+  <section class="pc-page" id="admin">
+    <div class="pc-page-head">
+      <div>
+        <div class="meta">9_Admin_Analytics.py · 97.0 / 100 · 신규 vit-page-head</div>
+        <h2>관리자 분석 대시보드</h2>
+        <p class="sub">사용자 로그인 / 페이지 조회 로그 기반 분석. vit-page-head 헤더 + 메트릭 카드 + 라인 차트 + 부서 사용 테이블.</p>
+      </div>
+      <span class="pc-score-pill">97.0</span>
+    </div>
+
+    <!-- vit-page-head — 9_Admin_Analytics.py 가 새로 도입한 패턴 -->
+    <div style="background:var(--card-bg);border:1px solid var(--border);border-left:4px solid var(--primary);border-radius:12px;padding:18px 22px;margin-bottom:14px;">
+      <h2 style="font-family:'LG EI Headline','LG EI Text',sans-serif;font-size:22px;font-weight:700;letter-spacing:-0.01em;color:var(--ink-body);margin:0;">관리자 분석 대시보드</h2>
+      <p style="margin:4px 0 0;font-size:12px;color:var(--ink-muted);">사용자 로그인 · 페이지 조회 로그 기반 분석</p>
+    </div>
+
+    <div class="pc-row">
+      <div class="pc-control"><label>기간 시작</label><input type="date" value="2026-04-07"></div>
+      <div class="pc-control"><label>기간 종료</label><input type="date" value="2026-05-07"></div>
+      <div class="pc-control"><label>부서</label><select><option>전체</option></select></div>
+      <button class="pc-btn">적용</button>
+    </div>
+    <div class="pc-grid-4">
+      <div class="pc-card"><div class="label">총 로그인 (30d)</div><div class="value">2,148</div><div class="delta up">▲ 18.4%</div></div>
+      <div class="pc-card"><div class="label">고유 사용자</div><div class="value">312</div><div class="delta up">▲ 6.1%</div></div>
+      <div class="pc-card"><div class="label">평균 세션</div><div class="value">14.6 min</div><div class="delta up">─ 0.2%</div></div>
+      <div class="pc-card"><div class="label">팝업 P95</div><div class="value">0.84 s</div><div class="delta up">▼ 96.4% (perf)</div></div>
+    </div>
+    <div class="pc-chart" style="margin-top:14px;">
+      <b style="font-size:12px;">일자별 로그인 추이</b>
+      <svg viewBox="0 0 600 120" style="width:100%;height:140px;display:block;margin-top:6px;">
+        <path d="M0,90 L50,80 L100,85 L150,70 L200,75 L250,55 L300,62 L350,48 L400,52 L450,32 L500,42 L550,22 L600,30 L600,120 L0,120 Z" fill="rgba(165,0,52,0.08)"/>
+        <polyline fill="none" stroke="#A50034" stroke-width="2" points="0,90 50,80 100,85 150,70 200,75 250,55 300,62 350,48 400,52 450,32 500,42 550,22 600,30"/>
+      </svg>
+    </div>
+    <table class="pc-table" style="margin-top:14px;">
+      <thead><tr><th>부서</th><th style="text-align:right;">활성</th><th style="text-align:right;">평균 세션</th><th style="text-align:right;">7일 추세</th><th>상태</th></tr></thead>
+      <tbody>
+        <tr><td>CM FOL생산기술팀</td><td style="text-align:right;font-family:var(--font-mono);">42</td><td style="text-align:right;font-family:var(--font-mono);">18.2 min</td><td style="text-align:right;color:var(--status-good);font-family:var(--font-mono);">▲ 12%</td><td><span class="pc-tag pc-tag--good">정상</span></td></tr>
+        <tr><td>DM 생산기술팀</td><td style="text-align:right;font-family:var(--font-mono);">28</td><td style="text-align:right;font-family:var(--font-mono);">12.4 min</td><td style="text-align:right;color:var(--status-warn);font-family:var(--font-mono);">▼ 8%</td><td><span class="pc-tag pc-tag--warn">관찰</span></td></tr>
+        <tr><td>Actuator생산팀</td><td style="text-align:right;font-family:var(--font-mono);">14</td><td style="text-align:right;font-family:var(--font-mono);">9.2 min</td><td style="text-align:right;color:var(--status-bad);font-family:var(--font-mono);">▼ 22%</td><td><span class="pc-tag pc-tag--bad">위험</span></td></tr>
+      </tbody>
+    </table>
+    <div class="pc-changes"><b>적용된 변경:</b><ul>
+      <li>st.title("📊 ...") + st.caption(...) → vit-page-head HTML 블록 (mockup-S9-B 일치)</li>
+      <li>div[data-testid="stMetric"] — Vitals 토큰 적용 (var(--card-bg) / var(--border))</li>
+      <li>div[data-testid="stDataFrame"] — soft 배경</li>
+      <li>vit-status-good/warn/bad 시맨틱 클래스 추가</li>
+    </ul></div>
+  </section>
+
+  <p style="margin:36px 0 18px;padding-top:18px;border-top:1px solid var(--border);font-size:11px;color:var(--ink-subtle);font-family:var(--font-mono);letter-spacing:.04em;">
+    © LG Innotek 광학솔루션 사업부 · 생산혁신센터 Max Capa 팀 · Vitals · 공정의 호흡을 데이터로 듣다 · 통합 후 현재 상태 (claude/streamlit-vitals-Sry57)
+  </p>
+  </main>
+</div>
+
+<script>
+  // 스크롤 위치에 따른 nav active 표시
+  const items = document.querySelectorAll('.pc-nav a');
+  const sections = [...items].map(a => document.getElementById(a.getAttribute('href').slice(1)));
+  function updateActive(){
+    const y = window.scrollY + 120;
+    let active = sections[0];
+    for (const sec of sections){
+      if (sec && sec.offsetTop <= y) active = sec;
+    }
+    items.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + active.id));
+  }
+  window.addEventListener('scroll', updateActive, { passive: true });
+  updateActive();
+</script>
+</body>
+</html>

@@ -97,6 +97,11 @@
       <span>BACKEND · 100% PRESERVED</span>
       <span>INTEGRATION · 93.5%</span>
     </div>
+    <div style="margin-top:18px;">
+      <a href="./preview-current.html" style="display:inline-flex;align-items:center;gap:8px;height:38px;padding:0 18px;background:#fff;color:var(--primary);font-weight:700;font-size:13px;border-radius:8px;text-decoration:none;border:1px solid #fff;">
+        통합 후 현재 상태 (preview-current) 열기 →
+      </a>
+    </div>
   </div>
 
   <div class="pi-summary">
@@ -123,10 +128,11 @@
   </div>
 
   <div class="pi-note">
-    이 페이지는 <strong>정적 디자인 시안 (mockup HTML)</strong> 모음입니다.
-    실제 데이터 연동된 Streamlit 화면은 사내 PC 에서 <code>streamlit run login.py</code> 로 확인하세요.
-    각 mockup 의 디자인 토큰 (와인 #A50034, LG EI Text/Headline 폰트, F7F8FA 배경) 은
-    그대로 Streamlit 페이지에도 적용되어 있습니다.
+    <strong>이 페이지는 두 가지를 모두 담고 있습니다 — 어떤 걸 볼지 골라주세요:</strong><br><br>
+    ① <a href="./preview-current.html" style="color:var(--primary);font-weight:700;text-decoration:underline;">preview-current.html</a> — <strong>통합 후 현재 상태</strong>.
+    각 페이지의 .py 코드 헤더 / 필터 / 컨텐츠 구조를 그대로 정적 HTML 로 재현. <em>이 파일이 가장 정확한 현재 모습입니다.</em><br>
+    ② 아래 카드의 mockup-S*-B 들 — <strong>zip 업로드 이전 디자인 시안 (target)</strong>. Streamlit 통합 작업의 디자인 기준이었지만, 통합 이후 일부 구조 변경 (Home 3-mode selector, Patch Note dark→light 등) 은 반영되지 않은 정적 시안입니다.<br><br>
+    실제 데이터 연동된 화면은 사내 PC 에서 <code>streamlit run login.py</code> 로만 확인 가능합니다.
   </div>
 
   <!-- =============== Hero / Identity =============== -->
