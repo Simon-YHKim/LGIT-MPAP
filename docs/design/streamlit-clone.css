@@ -674,22 +674,26 @@ body.is-login-active .vitals-app section[data-testid="stSidebar"] {
 }
 
 /* ------------------------------------------------------------------ Vitals page-head + page-hero (project-specific) */
+/* 페이지 타이틀 — 카드 형태 X, 하단 검정 선만으로 구분.
+   '이것이 타이틀이다' 정도의 최소한의 표시 */
 .vit-page-head {
-  background: var(--card-bg);
-  border: 1px solid var(--border);
-  border-left: 4px solid var(--primary);
-  border-radius: var(--sc-radius-lg);
-  padding: 1.125rem 1.375rem;
-  margin-bottom: 0.875rem;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--ink-body);
+  border-radius: 0;
+  padding: 0 0 0.625rem;
+  margin: 0 0 1.125rem;
 }
 .vit-page-head h1 {
   font-family: 'LG EI Headline', 'LG EI Text', sans-serif;
-  font-size: 1.5rem;
+  font-size: 1.375rem;
   font-weight: 700;
   letter-spacing: -0.015em;
   color: var(--ink-body);
   margin: 0;
+  line-height: 1.25;
 }
+.vit-page-head h1 .vit-dot { color: var(--primary); }
 .vit-page-head .sub {
   margin: 0.25rem 0 0;
   font-size: 12px;
@@ -1281,33 +1285,39 @@ body.is-login-active .vitals-app section[data-testid="stSidebar"] {
   border-radius: 0;
 }
 .sc-mode-card .vit-top-strip {
-  /* mode-card 안쪽에선 카드 외곽선과 어긋나지 않도록 살짝 마이너스 마진 */
   margin: -1.25rem -1.25rem 1.25rem;
 }
+/* (override prior `.vit-page-head` def — flat, bottom black underline only) */
 .vit-page-head {
-  margin: 0 0 1.5rem;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--ink-body);
+  border-radius: 0;
+  padding: 0 0 0.625rem;
+  margin: 0 0 1.125rem;
 }
 .vit-page-head .eyebrow {
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: .08em;
+  letter-spacing: .12em;
   color: var(--ink-subtle);
-  margin-bottom: 8px;
+  margin-bottom: 4px;
 }
 .vit-page-head h1 {
-  margin: 0 0 6px;
+  margin: 0;
   font-family: 'LG EI Headline', 'LG EI Text', sans-serif;
-  font-size: 28px;
+  font-size: 22px;
   font-weight: 700;
   letter-spacing: -0.015em;
-  line-height: 1.2;
+  line-height: 1.25;
   color: var(--ink-body);
 }
+.vit-page-head h1 .vit-dot { color: var(--primary); }
 .vit-page-head p {
-  margin: 0;
-  font-size: 13px;
+  margin: 4px 0 0;
+  font-size: 12.5px;
   color: var(--ink-muted);
 }
 
@@ -1689,19 +1699,14 @@ body.is-login-active .vitals-app section[data-testid="stSidebar"] {
    HIGH-FIDELITY CLONE ADDITIONS — matplotlib-like charts, AgGrid, signal cards
    ============================================================================= */
 
-/* ---- Section heading: 4px wine bar + eyebrow + h2 ------------------- */
+/* ---- Section heading: flat with bottom black underline (no card chrome) ---- */
 .sc-sec-head {
-  display: grid;
-  grid-template-columns: 4px 1fr;
-  gap: 0.875rem;
-  align-items: stretch;
-  margin: 1.25rem 0 0.875rem;
+  display: block;
+  border-bottom: 1px solid var(--ink-body);
+  padding: 0 0 0.625rem;
+  margin: 0 0 1.125rem;
 }
-.sc-sec-head__bar {
-  background: var(--primary);
-  border-radius: 2px;
-  min-height: 36px;
-}
+.sc-sec-head__bar { display: none; } /* legacy 4px wine bar 제거 — 검정 하단선으로 대체 */
 .sc-sec-head__body { display: flex; flex-direction: column; gap: 2px; }
 .sc-sec-head__eyebrow {
   font-family: var(--font-mono);
@@ -1719,6 +1724,7 @@ body.is-login-active .vitals-app section[data-testid="stSidebar"] {
   letter-spacing: -0.018em;
   color: var(--ink-body);
 }
+.sc-sec-head__title .vit-dot { color: var(--primary); }
 .sc-sec-head__sub {
   margin: 4px 0 0;
   font-size: 12.5px;
@@ -2109,15 +2115,16 @@ body.is-login-active .vitals-app section[data-testid="stSidebar"] {
 .sc-bar-axis text { font-family: var(--font-mono); fill: var(--ink-muted); font-size: 9px; }
 .sc-bar-axis line { stroke: var(--border); stroke-width: 0.6; }
 
-/* ---- Contact box (Home footer) ------------------------------------ */
+/* ---- Contact box (페이지 footer) — 도형 없이 회색 하단선만 -------- */
 .sc-contact-box {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  padding: 0.75rem 1rem;
-  background: var(--soft);
-  border: 1px solid var(--border);
-  border-radius: 10px;
+  padding: 0.625rem 0;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  border-radius: 0;
   margin-top: 1.5rem;
   font-size: 12px;
   color: var(--ink-muted);
@@ -2125,14 +2132,17 @@ body.is-login-active .vitals-app section[data-testid="stSidebar"] {
 .sc-contact-box .sep { color: var(--ink-subtle); }
 .sc-contact-box a {
   margin-left: auto;
-  background: var(--primary);
-  color: #fff;
+  background: var(--soft);
+  color: var(--ink-body);
   padding: 6px 14px;
-  border-radius: 8px;
+  border: 1px solid var(--border);
+  border-radius: 0;
   text-decoration: none;
   font-weight: 700;
   font-size: 12px;
+  transition: background 120ms;
 }
+.sc-contact-box a:hover { background: var(--border); }
 
 /* ---- Worst/Best best card (Home Case 1) — proc card layout -------- */
 .sc-proc-card {
@@ -2864,4 +2874,62 @@ body.is-login-active .vitals-app section[data-testid="stSidebar"] {
 .sc-login-section .foot-row a:hover {
   color: var(--on-dark);
   border-color: var(--on-dark);
+}
+
+/* =============================================================================
+   Vitals 디자인 가이드: 직사각형만 (둥근 모서리 X)
+   사용자 지시: "지금 디자인들이 너무 둥글둥글해. 라운드 사각형 쓰지 말고
+   직사각형을 쓰자. 와인색 선들도 마찬가지야."
+   .vitals-app 내부 모든 요소의 border-radius 를 0 으로. 사이드바 / 카드 /
+   필터 / 입력 / 버튼 / 패널 / 표 등 모두 적용.
+   ============================================================================ */
+.vitals-app,
+.vitals-app *,
+.sc-page-section,
+.sc-page-section *,
+.sc-theme-toggle {
+  border-radius: 0 !important;
+}
+
+/* =============================================================================
+   sec-home 시안 1 — Hero grid: 큰 카드 1 (왼쪽 세로 길게) + 작은 카드 4 (2x2)
+   가장 큰 카드 = MaxCapa Chat. 가운데로 모아서 시각 무게중심을 만든다.
+   ============================================================================ */
+.sc-nav-cards--hero {
+  display: grid;
+  grid-template-columns: 1.25fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 0.75rem;
+  max-width: 1080px;
+  margin: 0 auto;
+}
+/* 첫 카드 (MaxCapa Chat) = 좌측 풀높이 (2 행 차지) */
+.sc-nav-cards--hero > .sc-nav-card:first-child {
+  grid-column: 1 / 2;
+  grid-row: 1 / 3;
+  min-height: 280px;
+  padding: 24px 24px 24px 28px;
+}
+.sc-nav-cards--hero > .sc-nav-card:first-child .sc-nav-card__title {
+  font-size: 22px;
+}
+.sc-nav-cards--hero > .sc-nav-card:first-child .sc-nav-card__desc {
+  font-size: 14px;
+}
+.sc-nav-cards--hero > .sc-nav-card:first-child .sc-nav-card__icon {
+  width: 44px; height: 44px;
+}
+.sc-nav-cards--hero > .sc-nav-card:first-child .sc-nav-card__icon svg {
+  width: 22px; height: 22px;
+}
+@media (max-width: 880px) {
+  .sc-nav-cards--hero {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto auto;
+  }
+  .sc-nav-cards--hero > .sc-nav-card:first-child {
+    grid-column: 1 / 3;
+    grid-row: 1 / 2;
+    min-height: 200px;
+  }
 }

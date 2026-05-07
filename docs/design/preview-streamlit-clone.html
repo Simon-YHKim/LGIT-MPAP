@@ -329,7 +329,7 @@
       <div class="sc-preview-divider"></div>
 
       <!-- =========================================================== -->
-      <!--  HOME — 0_Home.py · 설비생산성 분석 플랫폼                    -->
+      <!--  HOME — 0_Home.py · Vitals. + 공정의 호흡을 데이터로 듣다     -->
       <!-- =========================================================== -->
       <section id="sec-home" class="sc-page-section">
         <div class="sc-section-meta">0_Home.py · 시안 비교 보드 — 시안 1 (S2-B Home) / 시안 2 (CMP 달성 현황 · Best·Worst) / 시안 3 (CMP 달성 현황 · S3-B 모델별 공정)</div>
@@ -350,18 +350,29 @@
 
             <header class="vit-page-head">
               <div class="eyebrow">PLATFORM</div>
-              <h1>설비생산성 분석 플랫폼</h1>
-              <p>분석 항목을 선택하세요.</p>
+              <h1>Vitals<span class="vit-dot">.</span></h1>
+              <p>공정의 호흡을 데이터로 듣다.</p>
             </header>
 
-            <div class="sc-nav-cards">
+            <!-- Hero grid: 큰 카드 1 (MaxCapa) 좌측 세로 + 작은 카드 4 (2x2) 우측 -->
+            <div class="sc-nav-cards sc-nav-cards--hero">
+              <a class="sc-nav-card" href="#sec-chat" aria-disabled="true">
+                <div class="sc-nav-card__head">
+                  <div class="sc-nav-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+                  <span class="sc-nav-card__badge">오픈예정</span>
+                </div>
+                <div class="sc-nav-card__body">
+                  <h2 class="sc-nav-card__title">MaxCapa Chat</h2>
+                  <p class="sc-nav-card__desc">대화형 생산지표 조회 · 자연어 질의로 MES UPH / ITAS UPH / MTBA / 알람 모두 한 번에.</p>
+                </div>
+              </a>
               <a class="sc-nav-card" href="#sec-cmp">
                 <div class="sc-nav-card__head">
                   <div class="sc-nav-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div>
                   <span class="sc-nav-card__badge sc-nav-card__badge--good">정식</span>
                 </div>
                 <div class="sc-nav-card__body">
-                  <h2 class="sc-nav-card__title">CMP Dashboard (정식 5/22E)</h2>
+                  <h2 class="sc-nav-card__title">CMP Dashboard</h2>
                   <p class="sc-nav-card__desc">공정별 CMP 달성률 추이</p>
                 </div>
               </a>
@@ -371,7 +382,7 @@
                   <span class="sc-nav-card__badge sc-nav-card__badge--warn">가오픈</span>
                 </div>
                 <div class="sc-nav-card__body">
-                  <h2 class="sc-nav-card__title">UPH Dashboard (가오픈 4/29~, 정식 5/22E)</h2>
+                  <h2 class="sc-nav-card__title">UPH Dashboard</h2>
                   <p class="sc-nav-card__desc">UPH / 동작시간 분석</p>
                 </div>
               </a>
@@ -381,7 +392,7 @@
                   <span class="sc-nav-card__badge sc-nav-card__badge--warn">가오픈</span>
                 </div>
                 <div class="sc-nav-card__body">
-                  <h2 class="sc-nav-card__title">MTBA Dashboard (가오픈 4/29~, 정식 5/15E)</h2>
+                  <h2 class="sc-nav-card__title">MTBA Dashboard</h2>
                   <p class="sc-nav-card__desc">공정별 MTBA 통계</p>
                 </div>
               </a>
@@ -391,18 +402,8 @@
                   <span class="sc-nav-card__badge sc-nav-card__badge--warn">가오픈</span>
                 </div>
                 <div class="sc-nav-card__body">
-                  <h2 class="sc-nav-card__title">MTBA Detail View (가오픈 4/29~, 정식 5/15E)</h2>
+                  <h2 class="sc-nav-card__title">MTBA Detail View</h2>
                   <p class="sc-nav-card__desc">패널 기반 드릴다운 분석</p>
-                </div>
-              </a>
-              <a class="sc-nav-card" href="#sec-chat" aria-disabled="true">
-                <div class="sc-nav-card__head">
-                  <div class="sc-nav-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
-                  <span class="sc-nav-card__badge">오픈예정</span>
-                </div>
-                <div class="sc-nav-card__body">
-                  <h2 class="sc-nav-card__title">MaxCapa Chat (대화형 생산지표 조회, 오픈 예정)</h2>
-                  <p class="sc-nav-card__desc">대화형 생산지표 조회</p>
                 </div>
               </a>
             </div>
