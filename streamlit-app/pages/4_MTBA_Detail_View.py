@@ -1488,6 +1488,9 @@ def render_panel(panel, source_view, min_date, max_date, model_options):
 ensure_state()
 ensure_alarm_comment_history_table()
 
+# preview sec-detail 와 정렬 — vit-top-strip 6px wine + flat title.
+from ui.vitals.components import render_top_strip
+render_top_strip()
 st.markdown("""
 <div class='page-hero'>
     <div class='page-hero-title'>MTBA Detail View</div>
