@@ -351,9 +351,9 @@ def _theme_attr_script(theme: str) -> str:
     작은 inline <script>. Streamlit 의 outer document 와 실제 컴포넌트
     iframe 사이의 attribute drift 를 방어.
 
-    Side-effect: render_chat_panel 이 add 한 body.has-vit-chat 클래스를
-    매 페이지 진입 시 일단 제거 (chat 페이지가 다시 add 하면 복원). 이전엔
-    한 번 add 되면 다른 페이지로 넘어가도 phantom 360px right-pad 남는 버그.
+    NOTE: components.py:render_chat_panel 의 chat right-pad 는 더 이상
+    body 클래스 의존이 아니라 :has(#vit-chat) CSS 셀렉터 기반이므로 본
+    스크립트에서 has-vit-chat 정리 로직 불필요 (제거됨).
     """
     return f"""
 <script>
@@ -369,9 +369,6 @@ def _theme_attr_script(theme: str) -> str:
       body.setAttribute('data-theme', t);
       if (t === 'dark') body.classList.add('vitals-dark');
       else body.classList.remove('vitals-dark');
-      // Chat panel right-pad 누수 방지 — 페이지 진입 시 일단 제거.
-      // 채팅 페이지의 render_chat_panel 이 다시 add 함.
-      body.classList.remove('has-vit-chat');
       var apps = body.querySelectorAll('.stApp');
       apps.forEach(function(a) {{ a.setAttribute('data-theme', t); }});
     }}

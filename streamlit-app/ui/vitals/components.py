@@ -337,11 +337,14 @@ def render_chat_panel(
 }}
 .vit-chat__send:hover {{ background: var(--primary-dark); }}
 
-/* 본문이 채팅 패널 만큼 우측 여백 가지도록 호출자에서 .has-vit-chat 부여 */
-body.has-vit-chat .block-container {{ padding-right: calc(var(--vit-chat-w) + 24px) !important; }}
+/* 본문이 채팅 패널 만큼 우측 여백 가지도록 — :has() 셀렉터 (Chrome 105+ /
+   Safari 15.4+ / Firefox 121+) 로 JS 의존 없이 처리. Streamlit 의 st.markdown
+   이 inline <script> 를 sanitize 하는 버전에서도 안전. */
+body:has(#vit-chat) .block-container {{
+    padding-right: calc(var(--vit-chat-w) + 24px) !important;
+}}
 </style>
 <aside class="vit-chat" id="vit-chat" aria-label="MaxCapa Chat">
-  <div class="vit-chat__resize" id="vit-chat-resize"></div>
   <header class="vit-chat__head">
     <h3 class="vit-chat__title">{title}</h3>
     <button type="button" class="vit-chat__collapse" aria-label="collapse"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg></button>
@@ -363,54 +366,15 @@ body.has-vit-chat .block-container {{ padding-right: calc(var(--vit-chat-w) + 24
     <button type="button" class="vit-chat__send">질문 분석 및 실행 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg></button>
   </div>
 </aside>
-<script>
-(function() {{
-    document.body.classList.add('has-vit-chat');
-    var panel = document.getElementById('vit-chat');
-    var handle = document.getElementById('vit-chat-resize');
-    if (!panel || !handle) return;
-
-    // localStorage 에서 폭 복원
-    var saved = parseInt(localStorage.getItem('vitals.chat.w'), 10);
-    if (saved && saved >= 280 && saved <= 720) {{
-        document.documentElement.style.setProperty('--vit-chat-w', saved + 'px');
-    }}
-
-    // drag resize
-    var dragging = false, startX = 0, startW = 0;
-    function onMove(e) {{
-        if (!dragging) return;
-        var x = e.touches ? e.touches[0].clientX : e.clientX;
-        var w = startW - (x - startX);
-        if (w < 280) w = 280;
-        if (w > 720) w = 720;
-        document.documentElement.style.setProperty('--vit-chat-w', w + 'px');
-    }}
-    function onUp() {{
-        if (!dragging) return;
-        dragging = false;
-        document.body.style.userSelect = '';
-        var w = parseInt(getComputedStyle(document.documentElement)
-                .getPropertyValue('--vit-chat-w'), 10);
-        if (w) localStorage.setItem('vitals.chat.w', String(w));
-    }}
-    handle.addEventListener('mousedown', function(e) {{
-        dragging = true;
-        startX = e.clientX;
-        startW = panel.offsetWidth;
-        document.body.style.userSelect = 'none';
-    }});
-    document.addEventListener('mousemove', onMove);
-    document.addEventListener('mouseup', onUp);
-    handle.addEventListener('touchstart', function(e) {{
-        dragging = true;
-        startX = e.touches[0].clientX;
-        startW = panel.offsetWidth;
-    }}, {{passive: true}});
-    document.addEventListener('touchmove', onMove, {{passive: true}});
-    document.addEventListener('touchend', onUp);
-}})();
-</script>
+<!--
+  이전 버전엔 inline <script> 로 (1) body.has-vit-chat 클래스 부여 (2) drag
+  resize (3) localStorage 폭 복원 — 총 ~50줄. 그러나 Streamlit 의 일부
+  버전이 st.markdown 의 <script> 를 sanitize 해서 dead code 였음.
+  - (1) 본문 padding 은 위 :has() 로 대체.
+  - (2) drag resize 는 핵심 기능 아님 — 제거. 원할 시 streamlit_extras 의
+        custom Component 또는 components.v1.html iframe 로 재도입.
+  - (3) localStorage 폭은 사용자가 모르는 기능이라 제거 무영향.
+-->
 """,
         unsafe_allow_html=True,
     )
