@@ -1927,7 +1927,7 @@
                 <div class="chat-composer__icon" aria-hidden="true">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
                 </div>
-                <textarea class="chat-composer__input" placeholder="질문 입력 — 예) CM모델A 어제 UPH 평균 알려줘 / ITAS UPH 기준 CM모델A vs CM모델B 4월 비교"></textarea>
+                <textarea id="chat-composer-input" class="chat-composer__input" placeholder="질문 입력 — 예) CM모델A 어제 UPH 평균 알려줘 / ITAS UPH 기준 CM모델A vs CM모델B 4월 비교"></textarea>
               </div>
               <div class="chat-composer__bot">
                 <div class="chat-composer__chips">
@@ -1937,14 +1937,15 @@
                 </div>
                 <div class="chat-composer__actions">
                   <span class="chat-composer__hint"><span class="kbd">⏎</span>전송 · <span class="kbd">⇧⏎</span>줄바꿈</span>
-                  <div data-testid="stButton"><button>초기화</button></div>
-                  <div data-testid="stButton"><button kind="primary">질문 분석 및 실행 ▸</button></div>
+                  <div data-testid="stButton"><button id="chat-composer-clear">초기화</button></div>
+                  <div data-testid="stButton"><button id="chat-composer-send" kind="primary">질문 분석 및 실행 ▸</button></div>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- 채팅 진행 미리보기 (S8-B 패턴): 사용자 첫 질문 → MaxCapa 응답 trace + 결과 -->
+          <!-- 채팅 history: 사용자 질문 + MaxCapa 응답 누적 (preview demo). -->
+          <div id="chat-history" class="chat-history" aria-live="polite"></div>
           </div>
 
         </div>
@@ -2043,9 +2044,10 @@
                   <li>Patch Note: dark → light Vitals 전환 (mockup-S8-B 일치)</li>
                   <li>9_Admin_Analytics: <code class="sc-mono" style="background:var(--soft);padding:1px 5px;border-radius:3px;font-size:11px;">vit-page-head</code> 신규 + S9-B mockup 작성</li>
                 </ul>
+                <div id="patch-detail-body" class="patch-detail-body" hidden style="font-size:13px;line-height:1.75;color:var(--ink-body);margin:0 0 0.875rem;white-space:pre-wrap;"></div>
                 <div data-testid="stHorizontalBlock" style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-top:0.875rem;">
-                  <div data-testid="stButton" class="sc-full"><button>수정</button></div>
-                  <div data-testid="stButton" class="sc-full"><button>삭제</button></div>
+                  <div data-testid="stButton" class="sc-full"><button id="patch-edit-btn">수정</button></div>
+                  <div data-testid="stButton" class="sc-full"><button id="patch-delete-btn">삭제</button></div>
                 </div>
               </div>
             </div>
@@ -2683,21 +2685,56 @@
     m.setAttribute('aria-hidden', 'true');
   });
 
-  // theme toggle (light <-> dark via [data-theme] on <html>)
+  // ── 글로벌 modal focus trap — Tab 키가 active 모달 안에서만 순환 ──
+  // (이전엔 Tab 으로 모달을 빠져나와 underlying 페이지로 포커스 이탈.)
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Tab') return;
+    var open = document.querySelector('.vit-modal-backdrop.is-open');
+    if (!open) return;
+    var focusables = open.querySelectorAll(
+      'button, [href], input, textarea, select, [tabindex]:not([tabindex="-1"])'
+    );
+    var arr = [];
+    for (var i = 0; i < focusables.length; i++) {
+      var el = focusables[i];
+      if (!el.disabled && el.offsetParent !== null) arr.push(el);
+    }
+    if (arr.length === 0) return;
+    var first = arr[0], last = arr[arr.length - 1];
+    var active = document.activeElement;
+    if (e.shiftKey) {
+      if (active === first || !open.contains(active)) {
+        e.preventDefault(); last.focus();
+      }
+    } else {
+      if (active === last || !open.contains(active)) {
+        e.preventDefault(); first.focus();
+      }
+    }
+  });
+
+  // theme — light/dark via [data-theme] on <html>. 토글 버튼은 이미 sidebar
+  // 우하단에서 제거됐고 (대신 settings-modal 이 변경), 본 블록은 첫 로드 시
+  // (1) localStorage 의 저장 값, (2) 그게 없으면 prefers-color-scheme 시스템
+  // 기본을 따른다.
   var root = document.documentElement;
-  var btn  = document.getElementById('sc-theme-toggle');
   function setTheme(t) {
     root.setAttribute('data-theme', t);
     try { localStorage.setItem('vitals-clone-theme', t); } catch (e) {}
   }
-  try {
-    var saved = localStorage.getItem('vitals-clone-theme');
-    if (saved === 'dark' || saved === 'light') setTheme(saved);
-  } catch (e) {}
-  if (btn) btn.addEventListener('click', function () {
-    var cur = root.getAttribute('data-theme') || 'light';
-    setTheme(cur === 'dark' ? 'light' : 'dark');
-  });
+  (function _initTheme() {
+    var saved = null;
+    try { saved = localStorage.getItem('vitals-clone-theme'); } catch (e) {}
+    if (saved === 'dark' || saved === 'light') {
+      setTheme(saved);
+      return;
+    }
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      setTheme('dark');
+    } else {
+      setTheme('light');
+    }
+  })();
 
   // ── 단일 페이지 라우팅 ──────────────────────────────────────────
   // 모든 .sc-page-section 은 CSS 로 기본 hidden, .is-active 만 노출.
@@ -3054,13 +3091,18 @@
     if (e.target === teamModal) closeTeamModal();
   });
 
-  // ── sec-patch: 게시글 등록 + 목록 클릭 → 상세 갱신 ──
+  // ── sec-patch: 게시글 등록 + 목록 클릭 → 상세 갱신 + 수정/삭제 ──
   var patchListCard    = document.getElementById('patch-list-card');
   var patchSubmit      = document.getElementById('patch-form-submit');
   var patchTitle       = document.getElementById('patch-form-title');
   var patchBody        = document.getElementById('patch-form-body');
   var patchTagDisp     = document.getElementById('patch-form-tag-display');
   var patchDetailTitle = document.getElementById('patch-detail-title');
+  var patchDetailBody  = document.getElementById('patch-detail-body');
+  var patchEditBtn     = document.getElementById('patch-edit-btn');
+  var patchDeleteBtn   = document.getElementById('patch-delete-btn');
+  var patchActiveRow   = null; // 현재 선택된 sc-board-row (수정/삭제 대상)
+
   function pillClassFor(tag) {
     if (tag === 'NEW') return 'sc-pill sc-pill--good';
     if (tag === 'UPD') return 'sc-pill sc-pill--warn';
@@ -3070,22 +3112,37 @@
     var d = new Date();
     return ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2);
   }
-  function selectPatchRow(row, title) {
+  function selectPatchRow(row, title, body) {
     if (!patchListCard) return;
     Array.prototype.slice.call(patchListCard.querySelectorAll('.sc-board-row')).forEach(function (r) {
       r.classList.remove('is-active');
     });
     row.classList.add('is-active');
+    patchActiveRow = row;
     if (patchDetailTitle && title) patchDetailTitle.textContent = title;
+    // body 렌더 — 입력된 내용이 있으면 표시, 없으면 hidden (preview 의 기본
+    // 하드코딩 본문 유지). data-body 가 비어있으면 body 영역 hide.
+    if (patchDetailBody) {
+      var b = body != null ? body : (row.dataset && row.dataset.body) || '';
+      if (b) {
+        patchDetailBody.textContent = b;
+        patchDetailBody.hidden = false;
+      } else {
+        patchDetailBody.hidden = true;
+        patchDetailBody.textContent = '';
+      }
+    }
   }
   if (patchSubmit && patchListCard) {
     patchSubmit.addEventListener('click', function (e) {
       e.preventDefault();
       var title = (patchTitle && patchTitle.value || '').trim();
+      var bodyV = (patchBody  && patchBody.value  || '').trim();
       var tag   = (patchTagDisp && patchTagDisp.textContent || 'NEW').trim();
       if (!title) { if (patchTitle) patchTitle.focus(); return; }
       var row = document.createElement('div');
       row.className = 'sc-board-row';
+      row.dataset.body = bodyV;
       row.innerHTML = '<span class="' + pillClassFor(tag) + '">' + tag + '</span>'
                     + '<span class="title"></span>'
                     + '<span class="date">' + todayMMDD() + '</span>';
@@ -3096,22 +3153,63 @@
       } else {
         patchListCard.appendChild(row);
       }
-      row.addEventListener('click', function () { selectPatchRow(row, title); });
-      selectPatchRow(row, title);
+      row.addEventListener('click', function () {
+        selectPatchRow(row, title, row.dataset.body || '');
+      });
+      selectPatchRow(row, title, bodyV);
       if (patchTitle) patchTitle.value = '';
       if (patchBody)  patchBody.value  = '';
       var details = document.querySelector('#patch-form-expander details');
       if (details) details.open = false;
+      if (typeof showToast === 'function') showToast('패치노트가 등록됐습니다.');
     });
   }
   if (patchListCard) {
     Array.prototype.slice.call(patchListCard.querySelectorAll('.sc-board-row')).forEach(function (r) {
       r.addEventListener('click', function () {
         var t = r.querySelector('.title');
-        selectPatchRow(r, t ? t.textContent : '');
+        selectPatchRow(r, t ? t.textContent : '', r.dataset.body || '');
       });
     });
   }
+  // 수정 — 활성 row 의 title 을 expander 폼에 다시 채워서 expander 펼침.
+  if (patchEditBtn) patchEditBtn.addEventListener('click', function (e) {
+    e.preventDefault();
+    if (!patchActiveRow) {
+      if (typeof showToast === 'function') showToast('수정할 게시글을 선택하세요.');
+      return;
+    }
+    var t = patchActiveRow.querySelector('.title');
+    if (patchTitle && t) patchTitle.value = t.textContent;
+    if (patchBody)  patchBody.value = patchActiveRow.dataset.body || '';
+    var details = document.querySelector('#patch-form-expander details');
+    if (details) details.open = true;
+    if (patchTitle) patchTitle.focus();
+    if (typeof showToast === 'function') showToast('수정 모드로 진입했습니다. 등록을 누르면 새 항목으로 추가됩니다 (preview demo).');
+  });
+  // 삭제 — 활성 row 제거 + detail 영역 reset.
+  if (patchDeleteBtn) patchDeleteBtn.addEventListener('click', function (e) {
+    e.preventDefault();
+    if (!patchActiveRow) {
+      if (typeof showToast === 'function') showToast('삭제할 게시글을 선택하세요.');
+      return;
+    }
+    if (!confirm('정말 삭제하시겠습니까?')) return;
+    var rows = patchListCard ? Array.prototype.slice.call(
+      patchListCard.querySelectorAll('.sc-board-row')) : [];
+    var idx = rows.indexOf(patchActiveRow);
+    patchActiveRow.remove();
+    patchActiveRow = null;
+    var next = rows[idx + 1] || rows[idx - 1];
+    if (next) {
+      var t = next.querySelector('.title');
+      selectPatchRow(next, t ? t.textContent : '', next.dataset.body || '');
+    } else if (patchDetailBody) {
+      patchDetailBody.hidden = true;
+      patchDetailBody.textContent = '';
+    }
+    if (typeof showToast === 'function') showToast('삭제됐습니다.');
+  });
 
   // ── 설정 모달 (sidebar 하단 ⚙ 버튼) ─────────────────────────────
   var settingsBtn    = document.getElementById('settings-btn');
@@ -3277,13 +3375,103 @@
   });
 
   // ── sec-chat: 예시 카드 클릭 → composer 입력에 자동 채움 ──────
-  var composer = document.querySelector('.chat-composer__input');
+  var composer = document.getElementById('chat-composer-input')
+                || document.querySelector('.chat-composer__input');
   Array.prototype.slice.call(document.querySelectorAll('.chat-example')).forEach(function (ex) {
     ex.addEventListener('click', function () {
       if (!composer) return;
       var q = ex.querySelector('.chat-example__q');
       if (q) composer.value = q.textContent.trim();
       composer.focus();
+    });
+  });
+
+  // ── sec-chat: send (button click + Enter) + 초기화 ──────────────
+  // preview demo mode — 실 LLM 호출 없음, history 에 user message + canned
+  // ack 만 추가. 실제 환경에서는 routing rules (MES/ITAS 분기) 적용.
+  var chatHistory = document.getElementById('chat-history');
+  var chatSendBtn = document.getElementById('chat-composer-send');
+  var chatClearBtn = document.getElementById('chat-composer-clear');
+
+  function _chatAppend(role, text) {
+    if (!chatHistory) return;
+    var row = document.createElement('div');
+    row.className = 'chat-history__row chat-history__row--' + role;
+    var bubble = document.createElement('div');
+    bubble.className = 'chat-history__bubble';
+    bubble.textContent = text;
+    row.appendChild(bubble);
+    chatHistory.appendChild(row);
+    chatHistory.scrollTop = chatHistory.scrollHeight;
+  }
+
+  function _chatSend() {
+    if (!composer) return;
+    var msg = (composer.value || '').trim();
+    if (!msg) {
+      if (typeof showToast === 'function') showToast('질문을 입력하세요.');
+      return;
+    }
+    _chatAppend('user', msg);
+    composer.value = '';
+    composer.focus();
+    if (typeof showToast === 'function') showToast('질문을 분석합니다…');
+    // demo: routing 결과 가짜 응답
+    setTimeout(function () {
+      var routed = /\bITAS\b/i.test(msg) ? 'ITAS UPH' : 'MES UPH';
+      _chatAppend('bot', '[' + routed + ' 기준] 분석 결과는 본 미리보기에선 표시되지 않습니다. (demo)');
+    }, 350);
+  }
+
+  if (chatSendBtn) chatSendBtn.addEventListener('click', _chatSend);
+  if (composer) composer.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      _chatSend();
+    }
+  });
+  if (chatClearBtn) chatClearBtn.addEventListener('click', function (e) {
+    e.preventDefault(); e.stopPropagation();
+    if (composer) { composer.value = ''; composer.focus(); }
+    if (chatHistory) chatHistory.innerHTML = '';
+    if (typeof showToast === 'function') showToast('대화를 초기화했습니다.');
+  });
+
+  // ── sec-alarm: timeline row 클릭 → alarm-detail-modal 열기 ──────
+  // (이전엔 .vit-alarm-list__item 에 click 핸들러 부재 — sec-alarm 에서
+  // 상세 모달로 진입할 경로가 없었음.)
+  var openAlarmModalFromCell = (function () {
+    // alarm 모달 open 함수는 위에서 정의됐을 수도, 그렇지 않을 수도 있어
+    // 안전하게 ID 기반 직접 토글 (cmp-proc-modal 패턴과 동일).
+    return function (rowDataset) {
+      var modal = document.getElementById('alarm-detail-modal');
+      if (!modal) return;
+      function _set(id, v) {
+        var el = document.getElementById(id);
+        if (el) el.textContent = v == null ? '' : String(v);
+      }
+      _set('alarm-modal-alarm',   rowDataset.alarm   || '');
+      _set('alarm-modal-machine', rowDataset.machine || '');
+      _set('alarm-modal-model',   rowDataset.model   || '');
+      _set('alarm-modal-seg',     rowDataset.seg     || '');
+      _set('alarm-modal-mtba',    rowDataset.mtba    || '');
+      _set('alarm-modal-qty',     rowDataset.qty     || '');
+      modal.hidden = false;
+      modal.removeAttribute('hidden');
+      modal.style.display = 'flex'; modal.classList.add('is-open');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    };
+  })();
+  Array.prototype.slice.call(
+    document.querySelectorAll('#sec-alarm .vit-alarm-list__item')
+  ).forEach(function (row) {
+    row.setAttribute('role', 'button');
+    row.setAttribute('tabindex', '0');
+    function _go() { openAlarmModalFromCell(row.dataset || {}); }
+    row.addEventListener('click', _go);
+    row.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); _go(); }
     });
   });
 
@@ -3358,17 +3546,104 @@
   if (tabSignin) tabSignin.addEventListener('click', function () { activate('signin'); });
   if (tabSignup) tabSignup.addEventListener('click', function () { activate('signup'); });
 
-  // login section: form submit (로그인 / 회원가입 / 인증) → sec-home 으로
-  // 빠져나옴. 사이드바가 sec-login 진입 시 숨겨지므로, form submit 이 유일한
-  // 정상 escape 경로. (preview demo mode — 실 백엔드 호출 없음)
-  Array.prototype.slice.call(document.querySelectorAll(
-    '#form-login, #form-signup-step1, #form-signup-step2'
-  )).forEach(function (f) {
-    f.addEventListener('submit', function (e) {
-      e.preventDefault();
-      navigateTo('sec-home-1');
-      history.pushState(null, '', '#sec-home-1');
-    });
+  // login section: validation 포함 form submit + signup step 전이 + timer.
+  // (preview demo mode — 실 백엔드 호출 없음. 단, 빈 필드 / 도메인 / 코드 길이
+  // 같은 client-side validation 은 실제와 동일하게 검증해야 사용자가 흐름을
+  // 신뢰함.)
+  function _setError(slotId, msg) {
+    var slot = document.getElementById(slotId);
+    if (!slot) return;
+    if (msg) { slot.textContent = msg; slot.hidden = false; }
+    else { slot.textContent = ''; slot.hidden = true; }
+  }
+  function _trim(v) { return (v || '').trim(); }
+
+  // (1) 로그인 — 빈 필드 검증.
+  var formLogin = document.getElementById('form-login');
+  if (formLogin) formLogin.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var u = _trim(document.getElementById('user-id') && document.getElementById('user-id').value);
+    var p = _trim(document.getElementById('user-pw') && document.getElementById('user-pw').value);
+    if (!u) { _setError('login-error', '아이디를 입력하세요.'); return; }
+    if (!p) { _setError('login-error', '비밀번호를 입력하세요.'); return; }
+    _setError('login-error', '');
+    navigateTo('sec-home-1');
+    history.pushState(null, '', '#sec-home-1');
+  });
+
+  // (2) Signup step 1 → step 2 전이 (이메일 검증 + step2 노출 + timer 시작).
+  var formSignup1 = document.getElementById('form-signup-step1');
+  var formSignup2 = document.getElementById('form-signup-step2');
+  var signupEmail = document.getElementById('signup-email');
+  var signupEmailHidden = document.getElementById('signup-email-hidden');
+  var signupTimerEl = document.getElementById('signup-timer');
+  var _signupTimerHandle = null;
+
+  function _startSignupTimer(seconds) {
+    if (!signupTimerEl) return;
+    var remain = seconds;
+    function _tick() {
+      var m = Math.floor(remain / 60);
+      var s = remain % 60;
+      signupTimerEl.textContent = m + ':' + (s < 10 ? '0' + s : s);
+      if (remain <= 0) {
+        clearInterval(_signupTimerHandle);
+        _signupTimerHandle = null;
+        _setError('verify-error', '인증코드 유효시간이 만료됐습니다. 재발송 해주세요.');
+      }
+      remain -= 1;
+    }
+    if (_signupTimerHandle) clearInterval(_signupTimerHandle);
+    _tick();
+    _signupTimerHandle = setInterval(_tick, 1000);
+  }
+
+  if (formSignup1) formSignup1.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var em = _trim(signupEmail && signupEmail.value);
+    if (!em) { _setError('signup-error', '회사 이메일을 입력하세요.'); return; }
+    if (!/.+@lginnotek\.com$/i.test(em)) {
+      _setError('signup-error', '@lginnotek.com 도메인만 사용 가능합니다.');
+      return;
+    }
+    _setError('signup-error', '');
+    if (signupEmailHidden) signupEmailHidden.value = em;
+    if (formSignup1) formSignup1.hidden = true;
+    if (formSignup2) formSignup2.hidden = false;
+    _startSignupTimer(300); // 5:00
+  });
+
+  // (3) Signup step 2 — 코드 6자리 검증 후 진입.
+  if (formSignup2) formSignup2.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var codeEl = document.getElementById('signup-code');
+    var c = _trim(codeEl && codeEl.value);
+    if (!/^\d{6}$/.test(c)) {
+      _setError('verify-error', '6자리 숫자 코드를 입력하세요.');
+      return;
+    }
+    _setError('verify-error', '');
+    if (_signupTimerHandle) { clearInterval(_signupTimerHandle); _signupTimerHandle = null; }
+    navigateTo('sec-home-1');
+    history.pushState(null, '', '#sec-home-1');
+  });
+
+  // (4) Step 2 의 "← 이메일 수정" → step 1 으로 복귀 (timer 정지).
+  var btnEditEmail = document.getElementById('btn-edit-email');
+  if (btnEditEmail) btnEditEmail.addEventListener('click', function () {
+    if (_signupTimerHandle) { clearInterval(_signupTimerHandle); _signupTimerHandle = null; }
+    if (formSignup2) formSignup2.hidden = true;
+    if (formSignup1) formSignup1.hidden = false;
+    _setError('verify-error', '');
+    if (signupEmail) signupEmail.focus();
+  });
+
+  // (5) "인증코드 재발송" — timer 5:00 으로 reset.
+  var btnResend = document.getElementById('btn-resend-code');
+  if (btnResend) btnResend.addEventListener('click', function () {
+    _setError('verify-error', '');
+    _startSignupTimer(300);
+    if (typeof showToast === 'function') showToast('인증코드를 다시 발송했습니다.');
   });
 })();
 </script>

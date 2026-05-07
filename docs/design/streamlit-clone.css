@@ -4362,3 +4362,25 @@ html body .vit-modal-backdrop[hidden] {
   opacity: 1 !important;
   pointer-events: auto !important;
 }
+
+/* ─── Chat history (Commit 9: P3 chat send wiring) ─────────────── */
+.chat-history { display:flex; flex-direction:column; gap:10px;
+  margin-top: 12px; max-height: 360px; overflow-y: auto;
+  padding: 4px 0; }
+.chat-history__row { display:flex; }
+.chat-history__row--user { justify-content: flex-end; }
+.chat-history__row--bot  { justify-content: flex-start; }
+.chat-history__bubble { max-width: 70%; padding: 8px 12px;
+  font-size: 13px; line-height: 1.55; white-space: pre-wrap;
+  background: var(--card-bg); border: 1px solid var(--border);
+  color: var(--ink-body); }
+.chat-history__row--user .chat-history__bubble {
+  background: var(--primary); border-color: var(--primary);
+  color: #FFFFFF; }
+
+/* ─── Patch detail body (Commit 9: P3 patch body wiring) ───────── */
+.patch-detail-body[hidden] { display:none; }
+
+/* ─── Focus trap visual hint for modals ────────────────────────── */
+.vit-modal-backdrop:focus-within .vit-modal { box-shadow:
+  0 0 0 2px var(--primary), 0 30px 80px -20px rgba(0,0,0,0.55); }
