@@ -89,10 +89,10 @@ CONTACT_MAIL_BODY = """안녕하세요.
 
 
 def inject_css() -> None:
+    # 폐쇄망: 외부 CDN @import 제거. Pretendard / IBM Plex Mono 는 시스템 폰트
+    # 스택으로 fallback (font-stack 의 Apple SD Gothic Neo / Malgun Gothic /
+    # SF Mono / Consolas 가 한·영 모두 커버).
     st.markdown("""<style>
-        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css');
-        @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap');
-
         @font-face{font-family:'LG EI Text';font-weight:300;font-style:normal;font-display:swap;src:url('./fonts/lg-ei-text-300.woff2') format('woff2')}
         @font-face{font-family:'LG EI Text';font-weight:400;font-style:normal;font-display:swap;src:url('./fonts/lg-ei-text-400.woff2') format('woff2')}
         @font-face{font-family:'LG EI Text';font-weight:600;font-style:normal;font-display:swap;src:url('./fonts/lg-ei-text-600.woff2') format('woff2')}
