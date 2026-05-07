@@ -254,24 +254,27 @@ def apply_common_css():
         font-display: swap;
     }
 
+    /* PERF: 페이지 토큰을 Vitals 팔레트와 정렬 — 클래스 이름은 그대로 두되 값만 교체.
+       모든 .section-heading / .block-wrap / .filter-box / .summary-table 등이
+       자동으로 와인 + Vitals status 색으로 통일. 함수 시그니처·DOM 구조 0 변경. */
     :root {
-        --bg: #fcfdff;
-        --surface: #ffffff;
-        --surface-soft: #f8f9fb;
-        --surface-muted: #eff2f6;
-        --line: #d7dbe2;
-        --line-strong: #b8bec8;
-        --ink: #1f2430;
-        --muted: #6b7280;
-        --accent-rose: #d98aa2;
-        --accent-blue: #6f8fbd;
-        --accent-violet: #8c84b8;
-        --accent-navy: #384455;
-        --good: #dfe8f6;
-        --mid: #efe5cc;
-        --bad: #f2d7df;
-        --shadow: 0 8px 24px rgba(31, 36, 48, 0.05);
-        --radius: 14px;
+        --bg: #F7F8FA;              /* Vitals page-bg */
+        --surface: #FFFFFF;         /* Vitals card-bg */
+        --surface-soft: #F1F3F5;    /* Vitals soft */
+        --surface-muted: #EFF1F4;
+        --line: #E5E7EB;            /* Vitals border */
+        --line-strong: #CBD0D6;     /* Vitals border-strong */
+        --ink: #1F2430;             /* Vitals ink-body */
+        --muted: #6B7280;           /* Vitals ink-muted */
+        --accent-rose: #A50034;     /* Vitals primary 와인 (legacy 핑크 → 와인) */
+        --accent-blue: #7E0027;     /* Vitals primary-dark (legacy 블루 → 와인-dark) */
+        --accent-violet: #7E0027;   /* legacy 보라 → 와인-dark */
+        --accent-navy: #A50034;     /* legacy 네이비 top-border → 와인 */
+        --good: #E6F4EA;            /* Vitals status-good-tint */
+        --mid:  #FAF1DD;            /* Vitals status-warn-tint */
+        --bad:  #FDECEF;            /* Vitals bad-tint */
+        --shadow: 0 8px 22px -4px rgba(15,17,21,0.06);
+        --radius: 12px;
     }
 
     /* 전체 UI 글꼴
@@ -341,11 +344,10 @@ def apply_common_css():
         margin-bottom: 10px;
     }
     .section-heading .bar {
-        width: 6px;
+        width: 4px;
         height: 18px;
-        border-radius: 4px;
-        background: linear-gradient(180deg, var(--accent-rose), var(--accent-violet));
-        box-shadow: 0 0 0 1px rgba(217,138,162,0.12);
+        border-radius: 2px;
+        background: var(--accent-rose);   /* Vitals 와인 단색 (mockup-S3 정렬) */
     }
     .section-heading .title {
         font-size: 22px;
