@@ -3094,6 +3094,378 @@ body.is-login-active .vitals-app section[data-testid="stSidebar"] {
 }
 @media (max-width: 980px) { .uph-row-2 { grid-template-columns: 1fr; } }
 
+/* =============================================================================
+   sec-mtba / sec-detail / sec-admin — Heatmap (호기 × 공정 / 페이지 × 시간대)
+   각 칸에 수치 표기, 클릭 시 알람 팝업 (vit-modal-backdrop 재활용)
+   ============================================================================ */
+.vit-heatmap-wrap {
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  overflow: auto;
+}
+.vit-heatmap {
+  display: flex;
+  flex-direction: column;
+  min-width: 720px;
+}
+.vit-heatmap__row {
+  display: grid;
+  grid-template-columns: 96px repeat(8, minmax(72px, 1fr));
+  border-bottom: 1px solid var(--border);
+}
+.vit-heatmap__row:last-child { border-bottom: 0; }
+.vit-heatmap--detail .vit-heatmap__row {
+  grid-template-columns: 80px repeat(12, minmax(64px, 1fr));
+}
+.vit-heatmap--admin .vit-heatmap__row {
+  grid-template-columns: 96px repeat(7, minmax(64px, 1fr));
+}
+.vit-heatmap__row--head { background: var(--soft); }
+.vit-heatmap__cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  border-right: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 12.5px;
+  color: var(--ink-body);
+  cursor: pointer;
+  user-select: none;
+  transition: filter 120ms;
+}
+.vit-heatmap__cell:last-child { border-right: 0; }
+.vit-heatmap__cell--head {
+  background: var(--soft);
+  font-family: var(--font-body);
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--ink-muted);
+  cursor: default;
+  letter-spacing: -0.01em;
+}
+.vit-heatmap__row--head .vit-heatmap__cell--head {
+  font-family: var(--font-body);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  font-size: 10.5px;
+}
+.vit-heatmap__cell--good { background: rgba(31, 139, 76, 0.22); color: var(--status-good); }
+.vit-heatmap__cell--ok   { background: rgba(31, 139, 76, 0.06); color: var(--ink-body); }
+.vit-heatmap__cell--warn { background: rgba(181, 127, 27, 0.22); color: var(--status-warn); }
+.vit-heatmap__cell--bad  { background: rgba(178, 58, 72, 0.28);  color: var(--status-bad); }
+.vit-heatmap__cell:not(.vit-heatmap__cell--head):hover {
+  filter: brightness(0.92);
+  outline: 2px solid var(--primary);
+  outline-offset: -2px;
+}
+.vit-heatmap__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  padding: 10px 14px;
+  border-top: 1px dashed var(--border);
+  font-size: 11px;
+  color: var(--ink-muted);
+}
+.vit-heatmap__legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* =============================================================================
+   sec-chat — MaxCapa Chat (S7-B + S8-B 패턴)
+   ============================================================================ */
+.chat-hint {
+  border: 1px solid var(--border);
+  background: var(--soft);
+  padding: 10px 14px;
+  margin: 0 0 1rem;
+}
+.chat-hint__title {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--ink-subtle);
+}
+.chat-hint__title strong {
+  color: var(--primary-dark);
+  margin-right: 8px;
+}
+.chat-hint__body {
+  margin-top: 4px;
+  font-size: 12.5px;
+  color: var(--ink-body);
+}
+.chat-hint__body code,
+.chat-hint code {
+  font-family: var(--font-mono);
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  padding: 1px 6px;
+  font-size: 11px;
+  color: var(--primary-dark);
+}
+
+.chat-hero {
+  text-align: center;
+  padding: 1.75rem 1rem 1rem;
+  border-bottom: 1px dashed var(--border);
+  margin-bottom: 1.25rem;
+}
+.chat-hero__mark {
+  display: inline-flex;
+  width: 48px; height: 48px;
+  align-items: center;
+  justify-content: center;
+  background: var(--primary);
+  color: #fff;
+  margin-bottom: 14px;
+}
+.chat-hero__mark svg { width: 24px; height: 24px; }
+.chat-hero__title {
+  margin: 0;
+  font-family: 'LG EI Headline', 'LG EI Text', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--ink-body);
+}
+.chat-hero__title em {
+  font-style: normal;
+  color: var(--primary);
+}
+.chat-hero__sub {
+  margin: 6px 0 0;
+  color: var(--ink-muted);
+  font-size: 13px;
+}
+
+.chat-examples {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+@media (max-width: 760px) { .chat-examples { grid-template-columns: 1fr; } }
+.chat-example {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  cursor: pointer;
+  text-align: left;
+  font-family: var(--font-body);
+  transition: border-color 120ms, background 120ms;
+}
+.chat-example:hover {
+  border-color: var(--primary);
+  background: var(--primary-tint);
+}
+.chat-example__icon {
+  width: 28px; height: 28px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--soft);
+  border: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: 11px; font-weight: 700;
+  color: var(--ink-muted);
+  flex: 0 0 auto;
+}
+.chat-example__copy { flex: 1; min-width: 0; }
+.chat-example__src {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: .04em;
+  color: var(--ink-subtle);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.chat-example__q {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-body);
+  line-height: 1.5;
+}
+.chat-example__q em {
+  font-style: normal;
+  color: var(--primary);
+  background: var(--primary-tint);
+  padding: 0 4px;
+}
+
+.chat-composer-wrap { margin-top: 1.25rem; }
+.chat-composer {
+  border: 1px solid var(--border-strong);
+  background: var(--card-bg);
+}
+.chat-composer__top {
+  display: flex;
+  gap: 12px;
+  padding: 14px;
+}
+.chat-composer__icon {
+  width: 28px; height: 28px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--primary);
+  color: #fff;
+  flex: 0 0 auto;
+}
+.chat-composer__icon svg { width: 16px; height: 16px; }
+.chat-composer__input {
+  flex: 1;
+  border: 0;
+  outline: none;
+  resize: none;
+  background: transparent;
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--ink-body);
+  min-height: 80px;
+}
+.chat-composer__bot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-top: 1px solid var(--border);
+  background: var(--soft);
+  flex-wrap: wrap;
+}
+.chat-composer__chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.chat-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 10px;
+  font-family: var(--font-mono);
+  font-size: 11px; font-weight: 700;
+  letter-spacing: .04em;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  color: var(--ink-muted);
+}
+.chat-chip--on { background: var(--primary); color: #fff; border-color: var(--primary); }
+.chat-chip--on .chat-chip__dot { background: #fff; }
+.chat-chip__dot {
+  width: 6px; height: 6px; border-radius: 50%; background: var(--ink-muted);
+}
+.chat-chip--dashed { background: transparent; border-style: dashed; }
+.chat-composer__actions {
+  display: flex; gap: 8px; align-items: center;
+}
+.chat-composer__hint {
+  font-size: 11px;
+  color: var(--ink-subtle);
+}
+.chat-composer__hint .kbd {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  padding: 1px 5px;
+  margin: 0 2px;
+  color: var(--ink-muted);
+}
+
+.chat-thread { display: flex; flex-direction: column; gap: 14px; }
+.chat-msg { display: grid; grid-template-columns: 36px 1fr; gap: 12px; align-items: flex-start; }
+.chat-msg--user { background: var(--soft); padding: 12px; }
+.chat-avatar {
+  width: 36px; height: 36px;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+}
+.chat-avatar--user { background: var(--ink-body); color: #fff; }
+.chat-avatar--ai   { background: var(--primary);  color: #fff; }
+.chat-avatar--ai svg { width: 18px; height: 18px; }
+.chat-msg__body { min-width: 0; }
+.chat-msg__meta {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-muted);
+  margin-bottom: 6px;
+}
+.chat-msg__meta strong { color: var(--ink-body); margin-right: 6px; }
+.chat-msg__bubble {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--ink-body);
+}
+.chat-msg__bubble code {
+  font-family: var(--font-mono);
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  padding: 1px 6px;
+  font-size: 12px;
+  color: var(--primary-dark);
+}
+
+.chat-trace, .chat-result {
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  margin-top: 8px;
+}
+.chat-trace__head, .chat-result__head {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  font-size: 12.5px;
+  background: var(--soft);
+}
+.chat-trace__head strong { color: var(--primary-dark); margin-right: 6px; }
+.chat-trace__steps { padding: 8px 14px; display: flex; flex-direction: column; gap: 4px; }
+.chat-trace__step {
+  display: grid;
+  grid-template-columns: 32px 110px 1fr 32px;
+  gap: 8px;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  padding: 4px 0;
+  border-bottom: 1px dashed var(--border);
+}
+.chat-trace__step:last-child { border-bottom: 0; }
+.chat-trace__num { color: var(--ink-subtle); }
+.chat-trace__label { color: var(--primary-dark); font-weight: 700; }
+.chat-trace__detail { color: var(--ink-body); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.chat-trace__status {
+  font-weight: 700;
+  color: var(--status-good);
+  background: rgba(31,139,76,0.08);
+  border: 1px solid rgba(31,139,76,0.3);
+  padding: 1px 6px;
+  text-align: center;
+}
+.chat-result__title {
+  font-family: 'LG EI Headline', 'LG EI Text', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink-body);
+}
+.chat-result__sub {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-subtle);
+  margin-top: 2px;
+}
+
+/* sec-admin tab panes (10 panels — 모든 탭 활성화) */
+.adm-pane[hidden] { display: none; }
+.adm-row-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  align-items: stretch;
+}
+@media (max-width: 980px) { .adm-row-2 { grid-template-columns: 1fr; } }
+
 /* 호기별 탭 — 좌측 차트 2개 stacked + 우측 호기 picker (높이 매칭) */
 .uph-trend-grid {
   display: grid;
