@@ -24,11 +24,14 @@
   <!-- ===================== Sidebar (real Streamlit selectors) ===================== -->
   <section data-testid="stSidebar" aria-label="sidebar">
     <div data-testid="stSidebarHeader">
-      <img class="sc-sidebar-logo sc-sidebar-logo--light" src="./assets/lg-innotek-logo-en-gray.png" alt="LG Innotek" />
-      <img class="sc-sidebar-logo sc-sidebar-logo--dark"  src="./assets/lg-innotek-logo-en-white.png" alt="LG Innotek" />
-      <div class="sc-sidebar-divider sc-sidebar-divider--brand" aria-hidden="true"></div>
-      <div style="font-family:'LG EI Headline','LG EI Text',sans-serif;font-size:18px;font-weight:700;letter-spacing:-0.01em;color:var(--ink-body);line-height:1;">Vitals<span style="color:var(--primary);">.</span></div>
-      <div style="margin-top:4px;font-family:var(--font-mono);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-subtle);">광학솔루션 · Max Capa</div>
+      <div class="sc-sidebar-brand-cluster">
+        <img class="sc-sidebar-logo sc-sidebar-logo--light" src="./assets/lg-innotek-logo-en-gray.png" alt="LG Innotek" />
+        <img class="sc-sidebar-logo sc-sidebar-logo--dark"  src="./assets/lg-innotek-logo-en-white.png" alt="LG Innotek" />
+        <div class="sc-sidebar-brand-text">
+          <div class="sc-sidebar-brand-title">Vitals<span class="vit-dot">.</span></div>
+          <div class="sc-sidebar-brand-sub">광학솔루션 · Max Capa</div>
+        </div>
+      </div>
     </div>
     <nav data-testid="stSidebarNav">
       <a data-testid="stSidebarNavLink" href="#sec-login">Login</a>
@@ -63,23 +66,18 @@
       <a data-testid="stSidebarNavLink" href="#sec-chat">MaxCapa Chat</a>
       <a data-testid="stSidebarNavLink" href="#sec-patch">Patch Note</a>
       <a data-testid="stSidebarNavLink" href="#sec-admin">Admin Analytics</a>
-
       <div class="sc-sidebar-divider"></div>
-      <div class="sc-sidebar-eyebrow">zip 이전 시안</div>
-      <a class="sc-sidebar-mocklink" href="./landing.html" target="_blank">· landing</a>
-      <a class="sc-sidebar-mocklink" href="./home.html" target="_blank">· home (vitals)</a>
-      <a class="sc-sidebar-mocklink" href="./mockup-S1-B.html" target="_blank">· S1-B login</a>
-      <a class="sc-sidebar-mocklink" href="./mockup-S2-A.html" target="_blank">· S2-A home</a>
-      <a class="sc-sidebar-mocklink" href="./mockup-S2-B.html" target="_blank">· S2-B home</a>
-      <a class="sc-sidebar-mocklink" href="./mockup-S2-C.html" target="_blank">· S2-C home</a>
-      <a class="sc-sidebar-mocklink" href="./mockup-S3-B.html" target="_blank">· S3-B CMP</a>
-      <a class="sc-sidebar-mocklink" href="./mockup-S4-B.html" target="_blank">· S4-B UPH</a>
-      <a class="sc-sidebar-mocklink" href="./mockup-S5-B.html" target="_blank">· S5-B MTBA</a>
-      <a class="sc-sidebar-mocklink" href="./mockup-S6-B.html" target="_blank">· S6-B Detail</a>
-      <a class="sc-sidebar-mocklink" href="./mockup-S7-B.html" target="_blank">· S7-B Chat</a>
-      <a class="sc-sidebar-mocklink" href="./mockup-S8-B.html" target="_blank">· S8-B Patch</a>
-      <a class="sc-sidebar-mocklink" href="./mockup-S9-B.html" target="_blank">· S9-B Admin</a>
-    </nav>
+      <div class="sc-sidebar-user">
+        <div class="sc-sidebar-user__avatar">SK</div>
+        <div class="sc-sidebar-user__body">
+          <div class="sc-sidebar-user__name">김시몬</div>
+          <div class="sc-sidebar-user__email">simon.kim@lginnotek.com</div>
+        </div>
+        <button type="button" class="sc-sidebar-user__settings" id="settings-btn" aria-label="설정">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        </button>
+      </div>
+</nav>
     <div class="sc-sidebar-foot">
       © LG Innotek<br>
       Max Capa 팀<br>
@@ -1413,7 +1411,7 @@
                 <input type="number" id="mtba-target-input" value="120" min="1" step="1">
               </label>
             </div>
-            <svg id="mtba-bar-chart" class="vit-bar-chart-svg" viewBox="0 0 800 240" preserveAspectRatio="none">
+            <svg id="mtba-bar-chart" class="vit-bar-chart-svg" viewBox="0 0 740 240" preserveAspectRatio="none">
               <g class="vit-bar-grid">
                 <line x1="40" y1="20"  x2="700" y2="20"/>
                 <line x1="40" y1="65"  x2="700" y2="65"/>
@@ -1442,8 +1440,8 @@
                   <rect x="70" y="93.8" width="12" height="106.2" fill="#1F2430" data-period="지난해"></rect>
                 </g>
               <!-- Target 점선 (z-order 위로 올림: 막대 그룹 다음에 그려서 가리지 않음) -->
-              <line id="mtba-target-line" x1="40" y1="110" x2="700" y2="110" stroke="#1F8B4C" stroke-width="2.5" stroke-dasharray="6 4"/>
-              <text id="mtba-target-text" x="704" y="114" fill="#1F8B4C" font-family="IBM Plex Mono, monospace" font-size="11" font-weight="700">Target 120</text>
+              <line id="mtba-target-line" x1="40" y1="110" x2="700" y2="110" stroke="#1F8B4C" stroke-width="3" stroke-dasharray="7 4" opacity="1"/>
+              <text id="mtba-target-text" x="706" y="114" fill="#1F8B4C" font-family="IBM Plex Mono, monospace" font-size="9.5" font-weight="700">Target 120</text>
                 <g class="vit-bar-grp" data-proc="Flip Chip" transform="translate(180,0)">
                   <rect x="0" y="111.8" width="12" height="88.2" fill="#A50034" data-period="선택 기간"></rect>
                   <text x="6" y="107.8" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10" font-weight="700" fill="#1F2430">98</text>
@@ -2392,7 +2390,7 @@
   </main>
 </div>
 
-<div class="vit-modal-backdrop" id="cmp-proc-modal" aria-hidden="true" hidden>
+<div class="vit-modal-backdrop" id="cmp-proc-modal" aria-hidden="true" hidden style="display:none;">
   <div class="vit-modal" role="dialog" aria-modal="true" aria-labelledby="cmp-proc-modal-title">
     <div class="vit-modal__head">
       <h3 class="vit-modal__title" id="cmp-proc-modal-title">공정별 상세 분석</h3>
@@ -2532,7 +2530,7 @@
 </div><!-- /vit-modal-backdrop -->
 
 <!-- 공정/알람 상세 팝업 — S6-B 양식 + 공정/호기 Worst 5 알람 -->
-<div class="vit-modal-backdrop" id="alarm-detail-modal" aria-hidden="true" hidden>
+<div class="vit-modal-backdrop" id="alarm-detail-modal" aria-hidden="true" hidden style="display:none;">
   <div class="vit-modal vit-modal--lg" role="dialog" aria-modal="true" aria-labelledby="alarm-modal-title">
     <div class="vit-modal__head">
       <h3 class="vit-modal__title" id="alarm-modal-title">공정/알람 상세 <span class="vit-modal__pill" id="alarm-modal-proc">p_IRCF Attach</span></h3>
@@ -2752,12 +2750,16 @@
   function openProcModal() {
     if (!procModal) return;
     procModal.hidden = false;
+    procModal.removeAttribute('hidden');
+    procModal.style.display = 'flex';
     procModal.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
   }
   function closeProcModal() {
     if (!procModal) return;
     procModal.hidden = true;
+    procModal.setAttribute('hidden', '');
+    procModal.style.display = 'none';
     procModal.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
   }
@@ -2842,12 +2844,16 @@
   function openAlarmModal() {
     if (!alarmModal) return;
     alarmModal.hidden = false;
+    alarmModal.removeAttribute('hidden');
+    alarmModal.style.display = 'flex';
     alarmModal.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
   }
   function closeAlarmModal() {
     if (!alarmModal) return;
     alarmModal.hidden = true;
+    alarmModal.setAttribute('hidden', '');
+    alarmModal.style.display = 'none';
     alarmModal.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
   }
@@ -2956,12 +2962,16 @@
   function openTeamModal() {
     if (!teamModal) return;
     teamModal.hidden = false;
+    teamModal.removeAttribute('hidden');
+    teamModal.style.display = 'flex';
     teamModal.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
   }
   function closeTeamModal() {
     if (!teamModal) return;
     teamModal.hidden = true;
+    teamModal.setAttribute('hidden', '');
+    teamModal.style.display = 'none';
     teamModal.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
   }
@@ -3070,6 +3080,60 @@
       });
     });
   }
+
+  // ── 설정 모달 (sidebar 하단 ⚙ 버튼) ─────────────────────────────
+  var settingsBtn    = document.getElementById('settings-btn');
+  var settingsModal  = document.getElementById('settings-modal');
+  var settingsClose  = document.getElementById('settings-modal-close');
+  var settingsCancel = document.getElementById('settings-cancel');
+  var settingsSave   = document.getElementById('settings-save');
+  var settingsLogout = document.getElementById('settings-logout');
+  function openSettingsModal() {
+    if (!settingsModal) return;
+    // 현재 테마 동기화
+    var cur = document.documentElement.getAttribute('data-theme') || 'light';
+    Array.prototype.slice.call(settingsModal.querySelectorAll('.vit-settings__theme-btn')).forEach(function (b) {
+      b.classList.toggle('is-active', b.getAttribute('data-theme') === cur);
+    });
+    settingsModal.hidden = false;
+    settingsModal.removeAttribute('hidden');
+    settingsModal.style.display = 'flex';
+    settingsModal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeSettingsModal() {
+    if (!settingsModal) return;
+    settingsModal.hidden = true;
+    settingsModal.setAttribute('hidden', '');
+    settingsModal.style.display = 'none';
+    settingsModal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+  if (settingsBtn)    settingsBtn.addEventListener('click', openSettingsModal);
+  if (settingsClose)  settingsClose.addEventListener('click', closeSettingsModal);
+  if (settingsCancel) settingsCancel.addEventListener('click', closeSettingsModal);
+  if (settingsModal)  settingsModal.addEventListener('click', function (e) {
+    if (e.target === settingsModal) closeSettingsModal();
+  });
+  // 테마 버튼 — 즉시 적용 + active 토글
+  Array.prototype.slice.call((settingsModal || document).querySelectorAll('.vit-settings__theme-btn')).forEach(function (b) {
+    b.addEventListener('click', function () {
+      var t = b.getAttribute('data-theme');
+      Array.prototype.slice.call(b.parentNode.querySelectorAll('.vit-settings__theme-btn')).forEach(function (bb) {
+        bb.classList.toggle('is-active', bb === b);
+      });
+      document.documentElement.setAttribute('data-theme', t);
+      try { localStorage.setItem('vitals-clone-theme', t); } catch (e) {}
+    });
+  });
+  if (settingsSave) settingsSave.addEventListener('click', closeSettingsModal);
+  if (settingsLogout) settingsLogout.addEventListener('click', function () {
+    closeSettingsModal();
+    if (typeof navigateTo === 'function') {
+      navigateTo('sec-login');
+      try { history.pushState(null, '', '#sec-login'); } catch (e) {}
+    }
+  });
 
   // ── CSV 내보내기 — 페이지 단위 (모든 <table> + .vit-heatmap 데이터 수집) ──
   function csvEscape(s) {
@@ -3223,5 +3287,44 @@
   });
 })();
 </script>
+
+<!-- 설정 모달 — 로그아웃 / 언어 / 테마 -->
+<div class="vit-modal-backdrop" id="settings-modal" aria-hidden="true" hidden style="display:none;">
+  <div class="vit-modal" role="dialog" aria-modal="true" aria-labelledby="settings-modal-title" style="width:min(440px,96vw)">
+    <div class="vit-modal__head">
+      <h3 class="vit-modal__title" id="settings-modal-title">설정</h3>
+      <button type="button" class="vit-modal__close" id="settings-modal-close" aria-label="닫기">✕</button>
+    </div>
+    <div class="vit-modal__body">
+      <div class="vit-settings__row">
+        <div class="vit-settings__label">언어</div>
+        <div class="vit-settings__control">
+          <select id="settings-lang" class="vit-settings__select">
+            <option value="ko" selected>한국어</option>
+            <option value="en">English</option>
+            <option value="vi">Tiếng Việt</option>
+            <option value="pl">Polski</option>
+            <option value="id">Bahasa Indonesia</option>
+            <option value="es">Español</option>
+            <option value="zh">中文</option>
+          </select>
+        </div>
+      </div>
+      <div class="vit-settings__row">
+        <div class="vit-settings__label">테마</div>
+        <div class="vit-settings__control vit-settings__theme">
+          <button type="button" class="vit-settings__theme-btn is-active" data-theme="light">Light</button>
+          <button type="button" class="vit-settings__theme-btn" data-theme="dark">Dark</button>
+        </div>
+      </div>
+    </div>
+    <div class="vit-modal__foot vit-settings__foot">
+      <div data-testid="stButton"><button id="settings-logout" class="vit-settings__logout">로그아웃</button></div>
+      <div class="vit-settings__foot-spacer"></div>
+      <div data-testid="stButton"><button id="settings-cancel">취소</button></div>
+      <div data-testid="stButton"><button id="settings-save" kind="primary">저장</button></div>
+    </div>
+  </div>
+</div>
 </body>
 </html>

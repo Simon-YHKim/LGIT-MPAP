@@ -4113,3 +4113,180 @@ body.is-login-active .vitals-app section[data-testid="stSidebar"] {
 
 /* MTBA summary table checkbox - 한 줄 */
 table[data-mtba-summary] input[type="checkbox"] { accent-color: var(--primary); cursor: pointer; }
+
+/* =============================================================================
+   block-container padding 증가 — 페이지 콘텐츠가 사이드바/상단에 너무 붙음
+   ============================================================================ */
+.vitals-app > [data-testid="stMain"] > [data-testid="block-container"],
+.vitals-app > .main > .block-container,
+.vitals-app > [data-testid="block-container"],
+.vitals-app > .main {
+  padding: 1.75rem 2rem 3rem !important;
+}
+
+/* =============================================================================
+   Sidebar header 재구성 — LG 로고 옆 Vitals. + 하단 sub
+   ============================================================================ */
+.sc-sidebar-brand-cluster {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.sc-sidebar-brand-cluster .sc-sidebar-logo { height: 22px; }
+.sc-sidebar-brand-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.sc-sidebar-brand-title {
+  font-family: 'LG EI Headline', 'LG EI Text', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--ink-body);
+  line-height: 1;
+}
+.sc-sidebar-brand-title .vit-dot { color: var(--primary); }
+.sc-sidebar-brand-sub {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--ink-subtle);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* 기존 brand divider 제거 (스코프 안에서) */
+.sc-sidebar-divider--brand { display: none !important; }
+
+/* =============================================================================
+   Sidebar user profile + 설정 버튼 (footer)
+   ============================================================================ */
+.sc-sidebar-user {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 1rem 14px;
+  border-top: 1px solid var(--border);
+  background: var(--soft);
+}
+.sc-sidebar-user__avatar {
+  width: 36px; height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  background: var(--primary);
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .04em;
+}
+.sc-sidebar-user__body {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.sc-sidebar-user__name {
+  font-family: 'LG EI Headline', 'LG EI Text', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink-body);
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sc-sidebar-user__email {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--ink-subtle);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sc-sidebar-user__settings {
+  width: 32px; height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--ink-muted);
+  cursor: pointer;
+  transition: background 120ms, color 120ms;
+}
+.sc-sidebar-user__settings:hover {
+  background: var(--card-bg);
+  color: var(--primary-dark);
+  border-color: var(--primary);
+}
+.sc-sidebar-user__settings svg { width: 16px; height: 16px; }
+
+/* =============================================================================
+   Settings modal (로그아웃 / 언어 / 테마)
+   ============================================================================ */
+.vit-settings__row {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  gap: 14px;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.vit-settings__row:last-child { border-bottom: 0; }
+.vit-settings__label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink-body);
+}
+.vit-settings__select {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--border-strong);
+  background: var(--card-bg);
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--ink-body);
+}
+.vit-settings__theme {
+  display: flex;
+  gap: 6px;
+}
+.vit-settings__theme-btn {
+  flex: 1;
+  padding: 8px 12px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  color: var(--ink-muted);
+}
+.vit-settings__theme-btn.is-active {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+.vit-settings__foot { justify-content: flex-start; gap: 8px; }
+.vit-settings__foot-spacer { flex: 1; }
+.vit-settings__logout {
+  background: transparent !important;
+  color: var(--status-bad) !important;
+  border-color: rgba(178, 58, 72, 0.4) !important;
+}
+.vit-settings__logout:hover {
+  background: rgba(178, 58, 72, 0.08) !important;
+}
+
+/* 모달 hidden — 더 강력한 selector + visibility/opacity 추가 */
+html body .vit-modal-backdrop[hidden] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
