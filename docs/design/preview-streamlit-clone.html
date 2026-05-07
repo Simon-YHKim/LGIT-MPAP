@@ -75,11 +75,24 @@
       <section id="sec-login" class="sc-page-section sc-login-section">
         <div class="sc-section-meta">login.py · 로그인 (zip 이전 landing.html 시안 적용 — 3-col: 카드+identity / spacer / 시스템상태+패치노트)</div>
 
-        <!-- 실제 login.py 의 render_video_background() — 사내에선 img/bgi.mp4
-             를 base64 임베드. preview 에서는 YouTube iframe 으로 fallback. -->
+        <!-- 실제 login.py 의 render_video_background() —
+             자체 호스팅 mp4 + 포스터 우선, 로드 실패/없음 시 YouTube iframe 으로 fallback.
+             자체 mp4 가 로드되면 JS 가 .has-local-video 클래스를 붙여 iframe 을 숨김. -->
         <div class="sc-login-stage">
-          <div class="sc-login-video" aria-hidden="true">
+          <div class="sc-login-video" id="sec-login-video" aria-hidden="true">
+            <video
+              id="sec-login-video-local"
+              autoplay
+              muted
+              loop
+              playsinline
+              preload="auto"
+              poster="./assets/landing-bg-poster.jpg"
+            >
+              <source src="./assets/landing-bg.mp4" type="video/mp4" />
+            </video>
             <iframe
+              id="sec-login-video-iframe"
               src="https://www.youtube.com/embed/lCOjL68zt0U?autoplay=1&mute=1&loop=1&playlist=lCOjL68zt0U&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&playsinline=1&disablekb=1"
               title="background video"
               frameborder="0"
@@ -282,14 +295,6 @@
                           <div class="patch">
                             <div class="patch__date">04-28</div>
                             <div class="patch__body"><em>NEW</em>MaxCapa Chat 활성 — 자연어 → MES UPH/ITAS UPH 자동 분기 실행.</div>
-                          </div>
-                          <div class="patch">
-                            <div class="patch__date">04-22</div>
-                            <div class="patch__body"><em>UPD</em>UPH 분석 v4 — 동작시간 증가/하락 추세 섹션 분리.</div>
-                          </div>
-                          <div class="patch">
-                            <div class="patch__date">04-19</div>
-                            <div class="patch__body"><em>UPD</em>MTBA Dashboard 다중 패널 — 패널 추가/제거 + 메모/이미지 업로드.</div>
                           </div>
                         </div>
                       </div>
@@ -2394,6 +2399,25 @@ LIMIT 5;</pre>
   }
   window.addEventListener('scroll', update, { passive: true });
   update();
+
+  // login section: prefer self-hosted mp4 over YouTube iframe.
+  // landing.html 과 동일 — 자체 mp4 가 metadata 까지 로드되면 has-local-video
+  // 클래스로 iframe 숨김. 폐쇄망/파일 부재 시엔 그대로 iframe 으로 fallback.
+  var loginVideoStage = document.getElementById('sec-login-video');
+  var loginVideoLocal = document.getElementById('sec-login-video-local');
+  if (loginVideoStage && loginVideoLocal) {
+    var markLocal = function () {
+      if (loginVideoLocal.readyState >= 1 && loginVideoLocal.videoWidth > 0) {
+        loginVideoStage.classList.add('has-local-video');
+      }
+    };
+    loginVideoLocal.addEventListener('loadedmetadata', markLocal);
+    loginVideoLocal.addEventListener('canplay', markLocal);
+    // mp4 자체가 fetch 실패 (404 등) → 이미 iframe 보임. 클래스 안 붙음.
+    loginVideoLocal.addEventListener('error', function () {
+      loginVideoStage.classList.remove('has-local-video');
+    });
+  }
 
   // login section: lang dropdown toggle (KO ▾ → 7-language menu)
   var langWrap = document.getElementById('login-lang');

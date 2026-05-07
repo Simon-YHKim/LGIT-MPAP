@@ -917,13 +917,17 @@ body.is-login-active .vitals-app section[data-testid="stSidebar"] {
   overflow: hidden; background: #0A0C10;
   z-index: 0; pointer-events: none;
 }
-.sc-login-video iframe {
+.sc-login-video iframe,
+.sc-login-video video {
   position: absolute; top: 50%; left: 50%;
   width: 100vw; height: 56.25vw;
   min-width: 177.78%; min-height: 100%;
   transform: translate(-50%, -50%);
   border: 0; pointer-events: none;
+  object-fit: cover;
 }
+/* 자체 mp4 가 로드되면 iframe 숨김 (JS 토글) — landing.html 동일 패턴 */
+.sc-login-video.has-local-video iframe { display: none; }
 .sc-login-overlay {
   position: absolute; inset: 0;
   background: rgba(0,0,0,.62);
