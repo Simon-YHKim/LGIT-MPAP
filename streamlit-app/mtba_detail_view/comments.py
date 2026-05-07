@@ -31,11 +31,25 @@ def insert_alarm_comment(payload: dict) -> None:
         conn.execute(sql, payload)
 
 
-def load_alarm_comment_history(popup_payload: dict, alarm_name: str, alarm_code: str | None = None, limit: int = 100):
-    popup_scope = str(popup_payload.get('popup_scope', 'standard'))
+# PERF #2 — 댓글 히스토리 조회 캐싱.
+# popup_payload(dict) 는 hashable 하지 않아 직접 @st.cache_data 불가.
+# 해결: hashable scalar 인자만 받는 내부 캐시 함수를 분리. public 함수는
+# popup_payload 에서 필요한 키를 추출해 내부 함수로 위임. → 호출 인터페이스
+# 동일 (popup_payload dict 그대로 받음), 하지만 캐시 가능.
+@st.cache_data(ttl=60, show_spinner=False)
+def _load_alarm_comment_history_cached(
+    popup_scope: str,
+    base_date,
+    alarm_name: str,
+    alarm_code: str | None,
+    equipment_id: int | None,
+    segment_name: str | None,
+    process_name: str | None,
+    limit: int,
+):
     params = {
         'popup_scope': popup_scope,
-        'base_date': popup_payload.get('base_date'),
+        'base_date': base_date,
         'alarm_name': alarm_name,
         'alarm_code': alarm_code,
         'limit': int(limit),
@@ -50,11 +64,11 @@ def load_alarm_comment_history(popup_payload: dict, alarm_name: str, alarm_code:
             "COALESCE(segment_name,'') = COALESCE(:segment_name,'')",
             "COALESCE(process_name,'') = COALESCE(:process_name,'')",
         ]
-        params['segment_name'] = popup_payload.get('segment_name')
-        params['process_name'] = popup_payload.get('process_name')
+        params['segment_name'] = segment_name
+        params['process_name'] = process_name
     else:
         where_sql += ["COALESCE(equipment_id,-1) = COALESCE(:equipment_id,-1)"]
-        params['equipment_id'] = popup_payload.get('equipment_id')
+        params['equipment_id'] = equipment_id
 
     if alarm_code:
         where_sql.append("COALESCE(alarm_code,'') = COALESCE(:alarm_code,'')")
@@ -67,6 +81,29 @@ def load_alarm_comment_history(popup_payload: dict, alarm_name: str, alarm_code:
         LIMIT :limit
     """)
     return pd.read_sql(sql, engine, params=params)
+
+
+def load_alarm_comment_history(popup_payload: dict, alarm_name: str, alarm_code: str | None = None, limit: int = 100):
+    """공개 인터페이스 — 시그니처 100% 보존. 내부적으로 캐시된 헬퍼로 위임."""
+    popup_scope = str(popup_payload.get('popup_scope', 'standard'))
+    return _load_alarm_comment_history_cached(
+        popup_scope=popup_scope,
+        base_date=popup_payload.get('base_date'),
+        alarm_name=alarm_name,
+        alarm_code=alarm_code,
+        equipment_id=popup_payload.get('equipment_id'),
+        segment_name=popup_payload.get('segment_name'),
+        process_name=popup_payload.get('process_name'),
+        limit=limit,
+    )
+
+
+def invalidate_alarm_comment_history_cache() -> None:
+    """댓글 추가/수정/삭제 후 호출 — 캐시 무효화."""
+    try:
+        _load_alarm_comment_history_cached.clear()
+    except Exception:
+        pass
 
 
 def render_comment_section(popup_payload: dict, panel_id: int):
@@ -132,6 +169,7 @@ def render_comment_section(popup_payload: dict, panel_id: int):
                 'created_by': st.session_state.get('user_name', None),
             }
             insert_alarm_comment(payload)
+            invalidate_alarm_comment_history_cache()  # PERF #2 — 새 댓글 즉시 반영
             if popup_payload.get('popup_key'):
                 request_panel_popup(panel_id, popup_payload.get('popup_key'))
             st.success('Comment가 저장되었습니다.')

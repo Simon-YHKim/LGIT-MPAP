@@ -28,12 +28,15 @@ log_page_access("Home")
 # =========================================================
 # DB Config
 # =========================================================
-DB_HOST = "localhost"
-DB_PORT = 5432
-DB_NAME = "CMP"
-DB_USER = "postgres"
-DB_PASSWORD = "!Q2w3e4r5t"
-DB_SCHEMA = "public"
+# R4 — env var override 지원 (기본값 보존: 폐쇄망 운영 시 그대로 작동).
+# 운영 환경에선 DB_HOST / DB_PASSWORD 등 환경변수로 주입 권장 (secrets 노출 회피).
+import os as _os
+DB_HOST = _os.getenv("CMP_DB_HOST", "localhost")
+DB_PORT = int(_os.getenv("CMP_DB_PORT", "5432"))
+DB_NAME = _os.getenv("CMP_DB_NAME", "CMP")
+DB_USER = _os.getenv("CMP_DB_USER", "postgres")
+DB_PASSWORD = _os.getenv("CMP_DB_PASSWORD", "!Q2w3e4r5t")
+DB_SCHEMA = _os.getenv("CMP_DB_SCHEMA", "public")
 DB_TABLE = "mart_cmp_dashboard_daily"
 DASHBOARD_DB_LOOKBACK_MONTHS = 3
 MAX_VALID_ACHIEVEMENT = 5.0
