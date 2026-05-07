@@ -35,7 +35,7 @@ DEFAULT_DB_HOST = 'localhost'
 DEFAULT_DB_PORT = 5432
 DEFAULT_DB_NAME = 'I-TAS_Data'
 DEFAULT_DB_USER = 'postgres'
-DEFAULT_DB_PASSWORD = '!Q2w3e4r5t'
+DEFAULT_DB_PASSWORD = None  # Resolved at runtime from env / secrets only.
 DEFAULT_DB_SCHEMA = 'public'
 
 UPH_TABLE = 'itas_uph_result'
@@ -468,6 +468,17 @@ def quote_ident(name: str) -> str:
     return '"' + str(name).replace('"', '""') + '"'
 
 
+def _resolve_required_password(secrets: dict) -> str:
+    pw = secrets.get('password') or os.getenv('ITAS_DB_PASSWORD')
+    if not pw:
+        raise RuntimeError(
+            "ITAS_DB_PASSWORD not configured. Set the env var or "
+            "[postgres].password in .streamlit/secrets.toml. "
+            "Hardcoded fallback removed."
+        )
+    return str(pw)
+
+
 def load_db_config() -> DbConfig:
     secrets = {}
     if hasattr(st, 'secrets'):
@@ -481,7 +492,7 @@ def load_db_config() -> DbConfig:
         port=int(secrets.get('port', os.getenv('ITAS_DB_PORT', DEFAULT_DB_PORT))),
         dbname=str(secrets.get('dbname', os.getenv('ITAS_DB_NAME', DEFAULT_DB_NAME))),
         user=str(secrets.get('user', os.getenv('ITAS_DB_USER', DEFAULT_DB_USER))),
-        password=str(secrets.get('password', os.getenv('ITAS_DB_PASSWORD', DEFAULT_DB_PASSWORD))),
+        password=_resolve_required_password(secrets),
         schema=str(secrets.get('schema', os.getenv('ITAS_DB_SCHEMA', DEFAULT_DB_SCHEMA))),
     )
 

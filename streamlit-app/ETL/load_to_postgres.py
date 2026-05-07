@@ -41,8 +41,15 @@ def load_config() -> Dict[str, str]:
     def get_value(key: str, default: str) -> str:
         return os.getenv(key, str(secrets.get(key, default)))
 
+    db_url = os.getenv("DB_URL") or secrets.get("DB_URL")
+    if not db_url:
+        raise RuntimeError(
+            "DB_URL not configured. Set DB_URL env or add it to "
+            ".streamlit/secrets.toml. Hardcoded fallback removed."
+        )
+
     return {
-        "DB_URL": get_value("DB_URL", "postgresql+psycopg2://postgres:!Q2w3e4r5t@localhost:5432/MTBA"),
+        "DB_URL": db_url,
         "RUNTIME_XLSX": get_value("RUNTIME_XLSX", str(BASE_DIR / "Data" / "Runtime_summary_by_date.xlsx")),
         "ALARM_DAILY_XLSX": get_value("ALARM_DAILY_XLSX", str(BASE_DIR / "Data" / "alarm_count_filter_sum.xlsx")),
         "ALARM_DETAIL_XLSX": get_value("ALARM_DETAIL_XLSX", str(BASE_DIR / "Data" / "alarm_count_filter.xlsx")),

@@ -28,10 +28,13 @@ def load_db_url():
         with open(SECRETS_PATH, "rb") as f:
             secrets = tomllib.load(f)
 
-    return os.getenv(
-        "DB_URL",
-        secrets.get("DB_URL", "postgresql+psycopg2://postgres:!Q2w3e4r5t@localhost:5432/MTBA")
-    )
+    url = os.getenv("DB_URL") or secrets.get("DB_URL")
+    if not url:
+        raise RuntimeError(
+            "DB_URL not configured. Set DB_URL env or add it to "
+            ".streamlit/secrets.toml. Hardcoded fallback removed for security."
+        )
+    return url
 
 
 def _build_engine():
