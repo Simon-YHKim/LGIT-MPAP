@@ -24,8 +24,11 @@
   <!-- ===================== Sidebar (real Streamlit selectors) ===================== -->
   <section data-testid="stSidebar" aria-label="sidebar">
     <div data-testid="stSidebarHeader">
-      <div style="font-size:16px;font-weight:700;letter-spacing:-0.01em;color:var(--ink-body);">Vitals</div>
-      <div style="margin-top:2px;font-family:var(--font-mono);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-subtle);">LGIT MPAP</div>
+      <img class="sc-sidebar-logo sc-sidebar-logo--light" src="./assets/lg-innotek-logo-en-gray.png" alt="LG Innotek" />
+      <img class="sc-sidebar-logo sc-sidebar-logo--dark"  src="./assets/lg-innotek-logo-en-white.png" alt="LG Innotek" />
+      <div class="sc-sidebar-divider sc-sidebar-divider--brand" aria-hidden="true"></div>
+      <div style="font-family:'LG EI Headline','LG EI Text',sans-serif;font-size:18px;font-weight:700;letter-spacing:-0.01em;color:var(--ink-body);line-height:1;">Vitals<span style="color:var(--primary);">.</span></div>
+      <div style="margin-top:4px;font-family:var(--font-mono);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-subtle);">광학솔루션 · Max Capa</div>
     </div>
     <nav data-testid="stSidebarNav">
       <a data-testid="stSidebarNavLink" href="#sec-login">Login</a>
@@ -1877,6 +1880,24 @@ LIMIT 5;</pre>
   }
   window.addEventListener('scroll', update, { passive: true });
   update();
+
+  // login section: hide sidebar when login is in viewport (matches login.py
+  // which sets `[data-testid="stSidebar"] { display: none !important; }`).
+  // Trigger as soon as login is visible by even 1px so layout shift happens
+  // BEFORE login enters view, not after — prevents flicker on initial paint.
+  var loginSec = document.getElementById('sec-login');
+  if (loginSec && 'IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        document.body.classList.toggle('is-login-active', e.isIntersecting);
+      });
+    }, { rootMargin: '0px 0px -40% 0px', threshold: 0 });
+    io.observe(loginSec);
+    // initial: at top of page → login is active
+    if (window.scrollY < loginSec.offsetTop + loginSec.offsetHeight * 0.6) {
+      document.body.classList.add('is-login-active');
+    }
+  }
 })();
 </script>
 </body>

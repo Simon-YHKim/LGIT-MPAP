@@ -81,9 +81,38 @@
 
 [data-testid="stSidebar"] .stSidebarHeader,
 [data-testid="stSidebar"] [data-testid="stSidebarHeader"] {
-  padding: 0 1.25rem 0.75rem;
+  padding: 0 1.25rem 0.875rem;
   border-bottom: 1px solid var(--border);
   margin-bottom: 0.75rem;
+}
+
+/* sidebar — LG Innotek logo (light/dark swap) */
+.sc-sidebar-logo {
+  display: block;
+  height: 18px;
+  width: auto;
+  image-rendering: -webkit-optimize-contrast;
+}
+.sc-sidebar-logo--dark { display: none; }
+[data-theme="dark"] .sc-sidebar-logo--light { display: none; }
+[data-theme="dark"] .sc-sidebar-logo--dark  { display: block; }
+.sc-sidebar-divider--brand {
+  height: 1px;
+  background: var(--border);
+  margin: 12px 0 10px;
+}
+
+/* ============================================================
+   LOGIN ACTIVE — hide global sidebar when login section in view
+   Matches real login.py: [data-testid="stSidebar"]{display:none}
+   Triggered by IntersectionObserver in inline <script>.
+   ============================================================ */
+body.is-login-active .vitals-app[data-testid="stApp"] {
+  grid-template-columns: 1fr;
+}
+body.is-login-active .vitals-app > [data-testid="stSidebar"],
+body.is-login-active .vitals-app section[data-testid="stSidebar"] {
+  display: none !important;
 }
 
 [data-testid="stSidebar"] [data-testid="stSidebarNav"] {
