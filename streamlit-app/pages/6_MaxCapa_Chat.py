@@ -30,9 +30,10 @@ def render_header():
         .chat-status-warn { color: var(--status-warn, #B57F1B); font-weight: 700; }
         .chat-status-bad  { color: var(--status-bad,  #B23A48); font-weight: 700; }
         .vit-chat-head {
+            /* Vitals 'rectangles only' — radius 제거, left wine bar 만 유지. */
             margin: 4px 0 18px; padding: 18px 22px;
             background: var(--card-bg); border: 1px solid var(--border);
-            border-radius: 12px; border-left: 4px solid var(--primary);
+            border-left: 4px solid var(--primary);
         }
         .vit-chat-head__eyebrow {
             display: flex; align-items: center; gap: 8px;
@@ -43,7 +44,7 @@ def render_header():
         }
         .vit-chat-head__eyebrow-bar {
             display:inline-block; width:4px; height:14px;
-            background: var(--primary); border-radius:2px;
+            background: var(--primary);
         }
         .vit-chat-head__title {
             margin: 0 0 4px;
@@ -59,7 +60,7 @@ def render_header():
         }
         .vit-chat-head__sub code {
             font-family: var(--font-mono);
-            background: var(--soft); padding: 1px 6px; border-radius: 4px;
+            background: var(--soft); padding: 1px 6px;
             font-size: 11px; color: var(--primary-dark); font-weight: 600;
         }
         .vit-chat-examples {
@@ -70,7 +71,6 @@ def render_header():
         .vit-chat-example {
             padding: 10px 12px;
             background: var(--card-bg); border: 1px solid var(--border);
-            border-radius: 8px;
             font-size: 13px; color: var(--ink-body); line-height: 1.45;
         }
         .vit-chat-example::before {
@@ -79,7 +79,7 @@ def render_header():
             line-height: 18px; text-align: center;
             background: var(--primary-tint); color: var(--primary-dark);
             font-family: var(--font-mono); font-size: 10px; font-weight: 700;
-            border-radius: 4px; margin-right: 8px; vertical-align: 1px;
+            margin-right: 8px; vertical-align: 1px;
         }
         </style>
         <div class="vit-chat-head">
@@ -617,6 +617,9 @@ def render_result():
 
 def main():
     init_session_state()
+    # preview sec-chat 와 정렬 — vit-top-strip 6px wine bar in 페이지 상단.
+    from ui.vitals.components import render_top_strip
+    render_top_strip()
     render_header()
     render_question_input()
 
