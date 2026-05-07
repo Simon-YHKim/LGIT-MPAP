@@ -32,17 +32,37 @@
     </div>
     <nav data-testid="stSidebarNav">
       <a data-testid="stSidebarNavLink" href="#sec-login">Login</a>
-      <a data-testid="stSidebarNavLink" href="#sec-home-1" aria-current="page">0 · Home_1 (S2-B)</a>
-      <a data-testid="stSidebarNavLink" href="#sec-home-2">0 · Home_2 (Best/Worst)</a>
-      <a data-testid="stSidebarNavLink" href="#sec-home-3">0 · Home_3 (S3-B)</a>
-      <a data-testid="stSidebarNavLink" href="#sec-cmp">1 · CMP Dashboard</a>
-      <a data-testid="stSidebarNavLink" href="#sec-uph">2 · UPH Dashboard</a>
-      <a data-testid="stSidebarNavLink" href="#sec-mtba">3 · MTBA Dashboard</a>
-      <a data-testid="stSidebarNavLink" href="#sec-detail">4 · MTBA Detail</a>
-      <a data-testid="stSidebarNavLink" href="#sec-alarm">5 · Alarm Action</a>
-      <a data-testid="stSidebarNavLink" href="#sec-chat">6 · MaxCapa Chat</a>
-      <a data-testid="stSidebarNavLink" href="#sec-patch">8 · Patch Note</a>
-      <a data-testid="stSidebarNavLink" href="#sec-admin">9 · Admin Analytics</a>
+
+      <div class="sc-nav-group" data-group="home">
+        <button type="button" class="sc-nav-group__head" aria-expanded="true">
+          <span>Home</span>
+          <svg class="sc-nav-group__caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="sc-nav-group__list">
+          <a data-testid="stSidebarNavLink" href="#sec-home-1" aria-current="page">Home_1 (S2-B)</a>
+          <a data-testid="stSidebarNavLink" href="#sec-home-2">Home_2 (Best/Worst)</a>
+          <a data-testid="stSidebarNavLink" href="#sec-home-3">Home_3 (S3-B)</a>
+        </div>
+      </div>
+
+      <a data-testid="stSidebarNavLink" href="#sec-cmp">CMP Dashboard</a>
+      <a data-testid="stSidebarNavLink" href="#sec-uph">UPH Dashboard</a>
+
+      <div class="sc-nav-group" data-group="mtba">
+        <button type="button" class="sc-nav-group__head" aria-expanded="true">
+          <span>MTBA</span>
+          <svg class="sc-nav-group__caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="sc-nav-group__list">
+          <a data-testid="stSidebarNavLink" href="#sec-mtba">MTBA Dashboard</a>
+          <a data-testid="stSidebarNavLink" href="#sec-detail">MTBA Detail</a>
+          <a data-testid="stSidebarNavLink" href="#sec-alarm">Alarm Action</a>
+        </div>
+      </div>
+
+      <a data-testid="stSidebarNavLink" href="#sec-chat">MaxCapa Chat</a>
+      <a data-testid="stSidebarNavLink" href="#sec-patch">Patch Note</a>
+      <a data-testid="stSidebarNavLink" href="#sec-admin">Admin Analytics</a>
 
       <div class="sc-sidebar-divider"></div>
       <div class="sc-sidebar-eyebrow">zip 이전 시안</div>
@@ -75,7 +95,6 @@
       <!--  LOGIN — login.py (video bg + glass card, mockup-S1-B 일치)   -->
       <!-- =========================================================== -->
       <section id="sec-login" class="sc-page-section sc-login-section">
-        <div class="sc-section-meta">login.py · 로그인 (zip 이전 landing.html 시안 적용 — 3-col: 카드+identity / spacer / 시스템상태+패치노트)</div>
 
         <!-- 실제 login.py 의 render_video_background() —
              자체 호스팅 mp4 + 포스터 우선, 로드 실패/없음 시 YouTube iframe 으로 fallback.
@@ -334,7 +353,6 @@
       <!--  HOME — 0_Home.py · Vitals. + 공정의 호흡을 데이터로 듣다     -->
       <!-- =========================================================== -->
       <section id="sec-home-1" class="sc-page-section">
-        <div class="sc-section-meta">0_Home.py · Home_1 — 기존 S2-B Home (Hero grid: MaxCapa Chat 큰 카드 1 + 작은 카드 4)</div>
         <div data-testid="stVerticalBlock">
 
           <div class="sc-mode-card">
@@ -412,7 +430,6 @@
       </section>
 
       <section id="sec-home-2" class="sc-page-section">
-        <div class="sc-section-meta">0_Home.py · Home_2 — CMP 달성 현황 · Best/Worst 카드 (순서 교체) + 분석 도구</div>
         <div data-testid="stVerticalBlock">
 
           <div class="sc-mode-card">
@@ -588,7 +605,6 @@
       </section>
 
       <section id="sec-home-3" class="sc-page-section">
-        <div class="sc-section-meta">0_Home.py · Home_3 — CMP 달성 현황 · S3-B 모델별 공정 grid + 분석 도구</div>
         <div data-testid="stVerticalBlock">
 
           <div class="sc-mode-card">
@@ -779,7 +795,6 @@
       <!--  CMP — 1_CMP_Dashboard.py · CMP 달성률 Dashboard            -->
       <!-- =========================================================== -->
       <section id="sec-cmp" class="sc-page-section">
-        <div class="sc-section-meta">1_CMP_Dashboard.py · 화면 구성: 타이틀 / 필터 / 달성률 카드 / 공정별 달성률 / 공정 요약표 — 공정 카드 클릭 시 [공정별 상세 분석] 팝업</div>
         <div data-testid="stVerticalBlock">
 
           <!-- ── 타이틀 (검정 하단선) ─────────────────────────────────── -->
@@ -960,8 +975,6 @@
             </table>
           </div>
 
-          <div data-testid="stCaptionContainer" style="margin:0 0 0.5rem;">위의 [모델별 공정 달성률] 영역에서 공정 카드를 클릭하면 [공정별 상세 분석] 팝업이 열립니다.</div>
-
           <!-- ════════════════════════════════════════════════════════════
                공정별 상세 분석 — 모달 (cmp-proc 카드 클릭 시 열림)
                양식: 공정 정보 카드(가로) + 좌측 [달성률카드 | 그래프] 3행
@@ -982,8 +995,7 @@
                     </div>
                     <div class="cmp-detail__model-meta">
                       <span><strong>모델</strong> · <span id="cmp-proc-modal-model">CM모델A</span></span>
-                      <span><strong>영역</strong> · FOL</span>
-                      <span><strong>호기</strong> · 12</span>
+                      <span><strong>대분류</strong> · FOL</span>
                       <span><strong>갱신</strong> · 2026-05-07 23:50</span>
                     </div>
                     <div data-testid="stButton"><button>CSV 내려받기</button></div>
@@ -1117,7 +1129,6 @@
       <!--  UPH — 2_UPH_Dashboard.py · UPH / 동작시간 분석 Dashboard   -->
       <!-- =========================================================== -->
       <section id="sec-uph" class="sc-page-section">
-        <div class="sc-section-meta">2_UPH_Dashboard.py · APP_TITLE='UPH / 동작시간 분석 Dashboard' (PostgreSQL SQL 집계형 v4)</div>
         <div data-testid="stVerticalBlock">
 
           <div class="sc-sec-head">
@@ -1310,7 +1321,6 @@
       <!--  MTBA — 3_MTBA_Dashboard.py · MTBA Dashboard                -->
       <!-- =========================================================== -->
       <section id="sec-mtba" class="sc-page-section">
-        <div class="sc-section-meta">3_MTBA_Dashboard.py · 기간별 MTBA / 공정 통계 / Alarm 차이 분석</div>
         <div data-testid="stVerticalBlock">
 
           <!-- page banner: wine gradient hero -->
@@ -1488,7 +1498,6 @@
       <!--  MTBA Detail — 4_MTBA_Detail_View.py · 패널형 상세           -->
       <!-- =========================================================== -->
       <section id="sec-detail" class="sc-page-section">
-        <div class="sc-section-meta">4_MTBA_Detail_View.py · 다중 패널 + 호기×시간 heatmap + 알람 댓글 이력</div>
         <div data-testid="stVerticalBlock">
 
           <div class="sc-page-banner">
@@ -1600,7 +1609,6 @@
               </div>
             </div>
 
-            <div data-testid="stCaptionContainer" style="margin-top:0.75rem;">날짜 셀 클릭 시 해당 호기 / 시간 알람 상세 팝업이 열립니다 (st.dialog).</div>
 
             <!-- Comment 입력 / 이력 (팝업 inline) -->
             <div class="sc-dashed-div" style="margin-top:0.75rem;"></div>
@@ -1659,7 +1667,6 @@
       <!--  Alarm Action — 5_Alarm_Action_List.py · Alarm Action List   -->
       <!-- =========================================================== -->
       <section id="sec-alarm" class="sc-page-section">
-        <div class="sc-section-meta">5_Alarm_Action_List.py · main-title 와인 그라디언트 + 날짜별 timeline-day 카드</div>
         <div data-testid="stVerticalBlock">
 
           <!-- main-title: 와인 그라디언트 hero -->
@@ -1808,7 +1815,6 @@
       <!--  Chat — 6_MaxCapa_Chat.py · 대화형 생산지표 조회             -->
       <!-- =========================================================== -->
       <section id="sec-chat" class="sc-page-section">
-        <div class="sc-section-meta">6_MaxCapa_Chat.py · render_header() + render_question_input() + analyze_and_maybe_execute()</div>
         <div data-testid="stVerticalBlock">
 
           <!-- vit-chat-head -->
@@ -1940,7 +1946,6 @@ LIMIT 5;</pre>
       <!--  Patch Note — 8_Patch_Note.py (light Vitals)                 -->
       <!-- =========================================================== -->
       <section id="sec-patch" class="sc-page-section">
-        <div class="sc-section-meta">8_Patch_Note.py · board-top-strip + 좌우 2-column 게시판 (목록 / 상세)</div>
         <div data-testid="stVerticalBlock">
 
           <div class="sc-top-strip"></div>
@@ -2056,7 +2061,6 @@ LIMIT 5;</pre>
       <!--  Admin — 9_Admin_Analytics.py · 관리자 분석 대시보드          -->
       <!-- =========================================================== -->
       <section id="sec-admin" class="sc-page-section">
-        <div class="sc-section-meta">9_Admin_Analytics.py · 10 tabs (개요 / 일주월 / 페이지 / 팀 / 사용자 / 원본 로그 / User Flow / Heatmap / Errors / Sessions)</div>
         <div data-testid="stVerticalBlock">
 
           <!-- vit-page-head: card-bg + 4px primary left bar -->
@@ -2331,10 +2335,29 @@ LIMIT 5;</pre>
       if (match) a.setAttribute('aria-current', 'page');
       else a.removeAttribute('aria-current');
     });
+    // active link 의 부모 nav-group 이 collapsed 면 자동 펼침
+    var activeLink = document.querySelector('[data-testid="stSidebarNavLink"][aria-current="page"]');
+    if (activeLink) {
+      var group = activeLink.closest('.sc-nav-group');
+      if (group) {
+        group.classList.remove('is-collapsed');
+        var head = group.querySelector('.sc-nav-group__head');
+        if (head) head.setAttribute('aria-expanded', 'true');
+      }
+    }
     // sec-login 진입 시 글로벌 사이드바 숨김 (zip-pre login.py 동일 패턴)
     document.body.classList.toggle('is-login-active', id === 'sec-login');
     window.scrollTo(0, 0);
   }
+  // 사이드바 그룹 (Home / MTBA) 토글
+  Array.prototype.slice.call(document.querySelectorAll('.sc-nav-group__head')).forEach(function (h) {
+    h.addEventListener('click', function () {
+      var g = h.closest('.sc-nav-group');
+      if (!g) return;
+      var collapsed = g.classList.toggle('is-collapsed');
+      h.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+    });
+  });
   navLinks.forEach(function (a) {
     a.addEventListener('click', function (e) {
       var href = a.getAttribute('href') || '';
