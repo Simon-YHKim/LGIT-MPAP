@@ -19,6 +19,10 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 require_login(page_name="home", page_path="pages/0_Home.py")
+
+# === Vitals theme (LG EI fonts + wine palette) ===
+from ui.vitals import apply_vitals_theme
+apply_vitals_theme()
 log_page_access("Home")
 
 # =========================================================

@@ -10,6 +10,10 @@ require_login(
     page_path="pages/5_MaxCapa_Chat.py"
 )
 
+# === Vitals theme (LG EI fonts + wine palette) ===
+from ui.vitals import apply_vitals_theme
+apply_vitals_theme()
+
 FASTAPI_BASE_URL = "http://localhost:9000"
 
 

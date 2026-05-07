@@ -4,6 +4,10 @@ from datetime import datetime
 
 st.set_page_config(page_title="게시판", page_icon="📌", layout="wide")
 
+# === Vitals theme (LG EI fonts + wine palette) ===
+from ui.vitals import apply_vitals_theme
+apply_vitals_theme()
+
 
 def get_conn():
     return psycopg2.connect(

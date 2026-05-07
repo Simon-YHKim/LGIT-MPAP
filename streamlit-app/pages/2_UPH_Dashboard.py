@@ -22,6 +22,10 @@ require_login(
     page_path="pages/2_UPH_Dashboard.py"
 )
 
+# === Vitals theme (LG EI fonts + wine palette) ===
+from ui.vitals import apply_vitals_theme
+apply_vitals_theme()
+
 log_page_access("2_UPH_Dashboard")
 
 DEFAULT_DB_HOST = 'localhost'

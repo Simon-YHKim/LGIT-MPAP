@@ -42,6 +42,10 @@ require_login(
     page_path="pages/9_Admin_Analytics.py"
 )
 
+# === Vitals theme (LG EI fonts + wine palette) ===
+from ui.vitals import apply_vitals_theme
+apply_vitals_theme()
+
 user_email = st.session_state.get("user_email")
 
 if not user_email:
