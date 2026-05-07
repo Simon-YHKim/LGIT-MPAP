@@ -36,22 +36,27 @@
   --primary-tint: rgba(165, 0, 52, 0.18);
 }
 
-html, body {
-  background: var(--page-bg);
-  color: var(--ink-body);
-  font-family: var(--font-body);
+/* preview 페이지 전체 — _shared.css 의 html,body 와 충돌 회피 (동일 값) */
+
+/* 섹션 사이 시각 구분선 */
+.sc-preview-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 36px 0;
 }
 
-/* Streamlit root container */
-[data-testid="stApp"] {
+/* Streamlit root container — .vitals-app 으로 한정해서 nested
+   data-testid="stApp" (예: login section 내부) 가 글로벌 layout 을
+   상속하지 않도록 차단. */
+.vitals-app[data-testid="stApp"] {
   display: grid;
   grid-template-columns: var(--sc-sidebar-w) 1fr;
   min-height: 100vh;
   background: var(--page-bg);
 }
 
-/* Top header — Streamlit 은 layout=wide 에서 거의 투명 */
-[data-testid="stHeader"] {
+/* Top header — 페이지 루트만 (nested 제외) */
+.vitals-app > [data-testid="stHeader"] {
   position: fixed;
   top: 0; left: 0; right: 0;
   height: 36px;
@@ -61,8 +66,8 @@ html, body {
 }
 
 /* ------------------------------------------------------------------ Sidebar */
-[data-testid="stSidebar"],
-section[data-testid="stSidebar"] {
+.vitals-app > [data-testid="stSidebar"],
+.vitals-app section[data-testid="stSidebar"] {
   background: var(--card-bg);
   border-right: 1px solid var(--border);
   position: sticky;
@@ -135,18 +140,24 @@ section[data-testid="stSidebar"] {
   border-top: 1px solid var(--border);
 }
 
-/* ------------------------------------------------------------------ Main */
-[data-testid="stMain"], .main {
+/* ------------------------------------------------------------------ Main
+   .vitals-app 으로 한정 — login section 등 nested stMain / block-container
+   는 sc-login-* 에서 자체 스타일 부여. */
+.vitals-app > [data-testid="stMain"],
+.vitals-app > .main {
   min-width: 0;
 }
 
-[data-testid="block-container"], .block-container {
+.vitals-app > [data-testid="stMain"] > [data-testid="block-container"],
+.vitals-app > .main > .block-container,
+.vitals-app > [data-testid="block-container"],
+.vitals-app > .block-container {
   padding: var(--sc-pad-y) var(--sc-pad-x) calc(var(--sc-pad-y) * 2);
   max-width: 100%;
   margin: 0 auto;
 }
 
-[data-testid="block-container"][data-layout="centered"] {
+.vitals-app > [data-testid="block-container"][data-layout="centered"] {
   max-width: 736px;
 }
 
@@ -898,7 +909,12 @@ section[data-testid="stSidebar"] {
   background: transparent !important;
   min-height: 720px;
   color: #fff;
+  /* nested data-testid="stApp" — 글로벌 .vitals-app[data-testid="stApp"]
+     셀렉터는 .vitals-app 클래스가 있는 root 만 매칭하므로 여기는 안전.
+     자체 단일 컬럼 레이아웃으로 sidebar grid 영향 받지 않음. */
+  display: block;
 }
+.sc-login-app > [data-testid="stMain"] { display: block; min-width: 0; }
 .sc-login-header { background: transparent !important; height: 0 !important; }
 .sc-login-block {
   padding: 28px 36px 36px !important;
