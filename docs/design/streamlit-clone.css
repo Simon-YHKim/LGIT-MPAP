@@ -3094,6 +3094,128 @@ body.is-login-active .vitals-app section[data-testid="stSidebar"] {
 }
 @media (max-width: 980px) { .uph-row-2 { grid-template-columns: 1fr; } }
 
+/* 호기별 탭 — 좌측 차트 2개 stacked + 우측 호기 picker (높이 매칭) */
+.uph-trend-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 280px;
+  gap: 0.875rem;
+  align-items: stretch;
+}
+@media (max-width: 1100px) {
+  .uph-trend-grid { grid-template-columns: 1fr; }
+}
+.uph-trend-charts {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  min-width: 0;
+}
+.uph-machine-picker {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  padding: 12px 12px 14px;
+  min-height: 0;
+}
+.uph-machine-picker__head {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 0 0 8px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 10px;
+}
+.uph-machine-picker__title {
+  font-family: 'LG EI Headline', 'LG EI Text', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink-body);
+}
+.uph-machine-picker__sub {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--ink-subtle);
+  letter-spacing: .04em;
+}
+.uph-machine-picker__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  flex: 1 1 auto;
+  align-content: start;
+}
+.uph-mc {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 10px;
+  background: var(--soft);
+  border: 1px solid var(--border);
+  color: var(--ink-muted);
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: .03em;
+  cursor: pointer;
+  text-align: left;
+  transition: background 120ms, color 120ms, border-color 120ms;
+}
+.uph-mc:hover { border-color: var(--border-strong); }
+.uph-mc.is-active {
+  background: rgba(31, 139, 76, 0.12);
+  border-color: rgba(31, 139, 76, 0.55);
+  color: var(--status-good);
+}
+.uph-mc.is-active .uph-mc__val { color: var(--status-good); }
+.uph-mc__val {
+  font-family: 'LG EI Headline', 'LG EI Text', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink-body);
+}
+
+/* 동작 분석 — 3 표 grid (편차 / 증가 / 감소) */
+.uph-action-tables {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  gap: 0.75rem;
+  align-items: stretch;
+}
+@media (max-width: 1100px) { .uph-action-tables { grid-template-columns: 1fr; } }
+.uph-action-table {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  overflow: hidden;
+}
+.uph-action-table__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  background: var(--soft);
+}
+.uph-action-table__title {
+  font-family: 'LG EI Headline', 'LG EI Text', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink-body);
+}
+.uph-action-table__sub {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--ink-subtle);
+  letter-spacing: .04em;
+}
+.uph-action-table .sc-aggrid {
+  border: 0;
+  flex: 1;
+}
+
 /* =============================================================================
    sec-home 시안 1 — Hero grid: 큰 카드 1 (왼쪽 세로 길게) + 작은 카드 4 (2x2)
    가장 큰 카드 = MaxCapa Chat. 가운데로 모아서 시각 무게중심을 만든다.

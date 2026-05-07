@@ -992,206 +992,212 @@
           <div class="sc-sec-head">
             <div class="sc-sec-head__bar"></div>
             <div class="sc-sec-head__body">
-              <h2 class="sc-sec-head__title">UPH / 동작시간 분석 Dashboard</h2>
-              <p class="sc-sec-head__sub">설비별 UPH · 동작시간 · 편차 분석 — I-TAS 분기 + 6 섹션 추적</p>
+              <h2 class="sc-sec-head__title">UPH / 동작시간 분석</h2>
             </div>
           </div>
 
-          <!-- filter row — 4 selectboxes + 조회 button -->
-          <div data-testid="stHorizontalBlock" style="display:grid;grid-template-columns:1fr 1.2fr 1.2fr 1fr 0.6fr;gap:0.5rem;align-items:end;">
-            <div data-testid="column">
-              <div data-testid="stSelectbox"><label>공장 선택</label><div data-baseweb="select"><div>전체</div></div></div>
+          <!-- ── 필터 (CMP-style: 모델 / 공정 대분류 / 공정 / 날짜) ─── -->
+          <div class="cmp-filter">
+            <div class="cmp-filter__row">
+              <div data-testid="stMultiSelect">
+                <label>모델</label>
+                <div data-baseweb="select"><div class="sc-select-tag-wrap">
+                  <span data-baseweb="tag" class="sc-tag-primary">CM모델A <span role="button">×</span></span>
+                </div></div>
+              </div>
+              <div data-testid="stMultiSelect">
+                <label>공정 대분류 (영역)</label>
+                <div data-baseweb="select"><div class="sc-select-tag-wrap">
+                  <span data-baseweb="tag" class="sc-tag-area">FOL <span role="button">×</span></span>
+                </div></div>
+              </div>
             </div>
-            <div data-testid="column">
-              <div data-testid="stSelectbox"><label>공정 선택</label><div data-baseweb="select"><div>FOL Adhesion</div></div></div>
+            <div class="cmp-filter__row">
+              <div data-testid="stMultiSelect">
+                <label>공정</label>
+                <div data-baseweb="select"><div class="sc-select-tag-wrap">
+                  <span data-baseweb="tag">FOL Adhesion <span role="button">×</span></span>
+                </div></div>
+              </div>
+              <div data-testid="stDateInput">
+                <label>날짜 선택</label>
+                <div class="cmp-date-wrap">
+                  <div data-baseweb="input"><input type="text" value="2026-05-07" readonly></div>
+                  <button type="button" class="cmp-date-icon" aria-label="날짜 선택" title="날짜 선택">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                  </button>
+                </div>
+              </div>
             </div>
-            <div data-testid="column">
-              <div data-testid="stSelectbox"><label>모델 선택</label><div data-baseweb="select"><div>CM모델A</div></div></div>
-            </div>
-            <div data-testid="column">
-              <div data-testid="stDateInput"><label>날짜 선택</label><div data-baseweb="input"><input type="text" value="2026-05-07"></div></div>
-            </div>
-            <div data-testid="column">
-              <label style="visibility:hidden;display:block;">_</label>
-              <div data-testid="stButton" class="sc-full"><button kind="primary">조회</button></div>
+            <div class="cmp-filter__actions">
+              <div data-testid="stButton"><button>초기화</button></div>
+              <div data-testid="stButton"><button kind="primary">필터 적용</button></div>
             </div>
           </div>
 
-          <div data-testid="stCaptionContainer" style="margin:0.5rem 0;">선택 날짜: 2026-05-07 · 선택 공장 / 공정 / 모델: 전체 / FOL Adhesion / CM모델A</div>
-
-          <div data-testid="stMarkdown">
-            <h3 style="font-size:16px;font-weight:700;letter-spacing:-0.015em;margin:0.875rem 0 0.625rem;color:var(--ink-body);">분석 결과 2026-05-07 · 전체 / FOL Adhesion / CM모델A</h3>
+          <!-- ── 분석 결과 sub-head + 8 KPI 2-row ─────────────────────── -->
+          <div class="cmp-sub-head">
+            <div class="cmp-sub-head__left">
+              <span class="cmp-sub-head__bar" aria-hidden="true"></span>
+              <h3 class="cmp-sub-head__title">분석 결과</h3>
+            </div>
+            <span class="cmp-sub-head__meta">2026-05-07 · 전체 / FOL Adhesion / CM모델A</span>
           </div>
-
-          <!-- 4 KPI metrics -->
           <div data-testid="stHorizontalBlock" style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.5rem;">
             <div data-testid="stMetric"><div data-testid="stMetricLabel">평균 UPH</div><div data-testid="stMetricValue">324</div><div data-testid="stMetricDelta" data-direction="up">▲ 4.2% vs 이전</div></div>
-            <div data-testid="stMetric"><div data-testid="stMetricLabel">동작시간</div><div data-testid="stMetricValue">14.2 h</div><div data-testid="stMetricDelta" data-direction="down">▼ 2.1%</div></div>
-            <div data-testid="stMetric"><div data-testid="stMetricLabel">편차</div><div data-testid="stMetricValue">8.4%</div><div data-testid="stMetricDelta" data-direction="up">▼ 1.2%</div></div>
-            <div data-testid="stMetric"><div data-testid="stMetricLabel">호기수</div><div data-testid="stMetricValue">42</div><div data-testid="stMetricDelta" data-direction="off">─ 0</div></div>
+            <div data-testid="stMetric"><div data-testid="stMetricLabel">동작시간</div><div data-testid="stMetricValue">2.81 sec</div><div data-testid="stMetricDelta" data-direction="down">▼ 0.07 sec</div></div>
+            <div data-testid="stMetric"><div data-testid="stMetricLabel">편차</div><div data-testid="stMetricValue">8.4%</div><div data-testid="stMetricDelta" data-direction="down">▼ 1.2%</div></div>
+            <div data-testid="stMetric"><div data-testid="stMetricLabel">호기 수</div><div data-testid="stMetricValue">42</div><div data-testid="stMetricDelta" data-direction="off">─ 0</div></div>
+          </div>
+          <div data-testid="stHorizontalBlock" style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.5rem;margin-top:0.5rem;">
+            <div data-testid="stMetric"><div data-testid="stMetricLabel">Best3 호기</div><div data-testid="stMetricValue">FOL-12 / 08 / 05</div><div data-testid="stMetricDelta" data-direction="up">▲ +27% / +19% / +12%</div></div>
+            <div data-testid="stMetric"><div data-testid="stMetricLabel">Worst3 호기</div><div data-testid="stMetricValue">FOL-03 / 04 / 07</div><div data-testid="stMetricDelta" data-direction="down">▼ -33% / -26% / -14%</div></div>
+            <div data-testid="stMetric"><div data-testid="stMetricLabel">관찰 호기 수</div><div data-testid="stMetricValue">7</div><div data-testid="stMetricDelta" data-direction="off">─ 0</div></div>
+            <div data-testid="stMetric"><div data-testid="stMetricLabel">이상 호기 수</div><div data-testid="stMetricValue">3</div><div data-testid="stMetricDelta" data-direction="up">▲ 1</div></div>
           </div>
 
-          <!-- tabs (개요 / 호기별 / 모델별) — 각 패널은 .uph-pane 으로 분리 -->
-          <div data-testid="stTabs" style="margin-top:0.75rem;">
+          <!-- ══════════════════════════════════════════════════════════
+               Trend 구역
+               ══════════════════════════════════════════════════════════ -->
+          <div class="cmp-sub-head" style="margin-top:1.5rem;">
+            <div class="cmp-sub-head__left">
+              <span class="cmp-sub-head__bar" aria-hidden="true"></span>
+              <h3 class="cmp-sub-head__title">Trend</h3>
+            </div>
+            <span class="cmp-sub-head__meta">호기별 / 모델별 추이 분석</span>
+          </div>
+
+          <!-- 탭 (호기별 / 모델별) -->
+          <div data-testid="stTabs">
             <div data-baseweb="tab-list" role="tablist">
-              <button data-baseweb="tab" role="tab" id="uph-tab-overview" aria-selected="true" aria-controls="uph-pane-overview">개요</button>
-              <button data-baseweb="tab" role="tab" id="uph-tab-machine"  aria-selected="false" aria-controls="uph-pane-machine">호기별</button>
-              <button data-baseweb="tab" role="tab" id="uph-tab-model"    aria-selected="false" aria-controls="uph-pane-model">모델별</button>
+              <button data-baseweb="tab" role="tab" id="uph-tab-machine" aria-selected="true" aria-controls="uph-pane-machine">호기별</button>
+              <button data-baseweb="tab" role="tab" id="uph-tab-model"   aria-selected="false" aria-controls="uph-pane-model">모델별</button>
             </div>
           </div>
 
-          <!-- ── PANE: 개요 — 트렌드 + 편차 같은 줄 + expander ───────── -->
-          <div data-testid="stTabsContent" id="uph-pane-overview" class="uph-pane">
-            <div class="uph-row-2" style="margin-top:0.5rem;">
-              <!-- machine trend multi-line chart -->
-              <div class="sc-mpl">
-                <div class="sc-mpl-head">
-                  <span class="sc-mpl-title">호기별 UPH 트렌드 (최근 30일)</span>
-                  <span class="sc-mpl-legend">
-                    <span style="color:#A50034;"><i></i>FOL-12</span>
-                    <span style="color:#B57F1B;"><i></i>FOL-08</span>
-                    <span style="color:#1F8B4C;"><i></i>FOL-05</span>
-                    <span style="color:#3B82F6;"><i></i>FOL-09</span>
-                    <span style="color:#7E0027;"><i></i>FOL-03</span>
-                  </span>
-                </div>
-                <svg viewBox="0 0 700 200" style="height:200px;" preserveAspectRatio="none">
-                  <g class="sc-mpl-grid">
-                    <line x1="40" y1="20"  x2="690" y2="20"/>
-                    <line x1="40" y1="60"  x2="690" y2="60"/>
-                    <line x1="40" y1="100" x2="690" y2="100"/>
-                    <line x1="40" y1="140" x2="690" y2="140"/>
-                    <line x1="40" y1="180" x2="690" y2="180"/>
-                  </g>
-                  <g class="sc-mpl-axis">
-                    <line x1="40" y1="20" x2="40" y2="180"/>
-                    <line x1="40" y1="180" x2="690" y2="180"/>
-                  </g>
-                  <text x="38" y="24" text-anchor="end">450</text>
-                  <text x="38" y="64" text-anchor="end">375</text>
-                  <text x="38" y="104" text-anchor="end">300</text>
-                  <text x="38" y="144" text-anchor="end">225</text>
-                  <text x="38" y="184" text-anchor="end">150</text>
-                  <text x="60" y="194">04/08</text><text x="200" y="194">04/15</text>
-                  <text x="350" y="194">04/22</text><text x="500" y="194">04/29</text><text x="660" y="194">05/07</text>
-                  <polyline class="sc-mpl-line" stroke="#A50034" points="50,80 100,72 150,68 200,60 250,55 300,50 350,42 400,38 450,32 500,30 550,28 600,24 650,22 690,20"/>
-                  <polyline class="sc-mpl-line" stroke="#B57F1B" stroke-dasharray="4 4" points="50,100 100,98 150,92 200,90 250,84 300,86 350,78 400,76 450,72 500,70 550,68 600,64 650,60 690,58"/>
-                  <polyline class="sc-mpl-line" stroke="#1F8B4C" points="50,120 100,116 150,114 200,108 250,110 300,104 350,100 400,96 450,92 500,90 550,88 600,86 650,82 690,80"/>
-                  <polyline class="sc-mpl-line" stroke="#3B82F6" stroke-dasharray="2 3" points="50,140 100,138 150,132 200,134 250,128 300,126 350,120 400,118 450,114 500,116 550,110 600,108 650,104 690,100"/>
-                  <polyline class="sc-mpl-line" stroke="#7E0027" stroke-dasharray="6 3" points="50,168 100,170 150,162 200,164 250,158 300,160 350,156 400,152 450,148 500,150 550,144 600,146 650,140 690,138"/>
-                  <circle cx="690" cy="20"  r="3" fill="#A50034" class="sc-mpl-dot"/>
-                  <circle cx="690" cy="58"  r="3" fill="#B57F1B" class="sc-mpl-dot"/>
-                  <circle cx="690" cy="80"  r="3" fill="#1F8B4C" class="sc-mpl-dot"/>
-                  <circle cx="690" cy="100" r="3" fill="#3B82F6" class="sc-mpl-dot"/>
-                  <circle cx="690" cy="138" r="3" fill="#7E0027" class="sc-mpl-dot"/>
-                </svg>
-              </div>
-
-              <!-- deviation bar chart -->
-              <div class="sc-mpl">
-                <div class="sc-mpl-head">
-                  <span class="sc-mpl-title">호기별 UPH 편차 (평균 대비 %)</span>
-                  <span class="sc-mpl-legend">
-                    <span style="color:#1F8B4C;"><i></i>+ deviation</span>
-                    <span style="color:#B23A48;"><i></i>− deviation</span>
-                  </span>
-                </div>
-                <svg viewBox="0 0 700 200" style="height:200px;" preserveAspectRatio="none">
-                  <g class="sc-mpl-grid">
-                    <line x1="40" y1="20"  x2="690" y2="20"/>
-                    <line x1="40" y1="65"  x2="690" y2="65"/>
-                    <line x1="40" y1="105" x2="690" y2="105" stroke="#1F2430" stroke-width="0.8"/>
-                    <line x1="40" y1="145" x2="690" y2="145"/>
-                    <line x1="40" y1="180" x2="690" y2="180"/>
-                  </g>
-                  <text x="38" y="24"  text-anchor="end">+30%</text>
-                  <text x="38" y="69"  text-anchor="end">+10%</text>
-                  <text x="38" y="109" text-anchor="end">0</text>
-                  <text x="38" y="149" text-anchor="end">−10%</text>
-                  <text x="38" y="184" text-anchor="end">−30%</text>
-                  <!-- positive bars (above 0 line at y=105) -->
-                  <rect x="60"  y="46"  width="36" height="59" fill="#1F8B4C" opacity="0.85"/>
-                  <rect x="110" y="63"  width="36" height="42" fill="#1F8B4C" opacity="0.85"/>
-                  <rect x="160" y="74"  width="36" height="31" fill="#1F8B4C" opacity="0.85"/>
-                  <rect x="210" y="80"  width="36" height="25" fill="#1F8B4C" opacity="0.7"/>
-                  <rect x="260" y="90"  width="36" height="15" fill="#B57F1B" opacity="0.85"/>
-                  <rect x="310" y="95"  width="36" height="10" fill="#B57F1B" opacity="0.85"/>
-                  <!-- negative bars (below 0 line) -->
-                  <rect x="360" y="105" width="36" height="18" fill="#B57F1B" opacity="0.85"/>
-                  <rect x="410" y="105" width="36" height="26" fill="#B57F1B" opacity="0.85"/>
-                  <rect x="460" y="105" width="36" height="36" fill="#B23A48" opacity="0.85"/>
-                  <rect x="510" y="105" width="36" height="48" fill="#B23A48" opacity="0.85"/>
-                  <rect x="560" y="105" width="36" height="62" fill="#B23A48" opacity="0.9"/>
-                  <rect x="610" y="105" width="36" height="73" fill="#7E0027" opacity="0.9"/>
-                  <!-- machine labels -->
-                  <text x="78"  y="194" text-anchor="middle">FOL-12</text>
-                  <text x="128" y="194" text-anchor="middle">FOL-08</text>
-                  <text x="178" y="194" text-anchor="middle">FOL-05</text>
-                  <text x="228" y="194" text-anchor="middle">FOL-15</text>
-                  <text x="278" y="194" text-anchor="middle">FOL-09</text>
-                  <text x="328" y="194" text-anchor="middle">FOL-11</text>
-                  <text x="378" y="194" text-anchor="middle">FOL-02</text>
-                  <text x="428" y="194" text-anchor="middle">FOL-06</text>
-                  <text x="478" y="194" text-anchor="middle">FOL-10</text>
-                  <text x="528" y="194" text-anchor="middle">FOL-07</text>
-                  <text x="578" y="194" text-anchor="middle">FOL-04</text>
-                  <text x="628" y="194" text-anchor="middle">FOL-03</text>
-                </svg>
-              </div>
-            </div><!-- /uph-row-2 -->
-
-            <!-- Best vs Worst expander -->
-            <div data-testid="stExpander" style="margin-top:0.75rem;">
-              <details open>
-                <summary>Best / Worst 호기 요약 보기</summary>
-                <div class="sc-expander-body">
-                  <div data-testid="stHorizontalBlock" style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;">
-                    <div data-testid="column">
-                      <div data-testid="stSelectbox"><label>Best 호기</label><div data-baseweb="select"><div>FOL-12 (UPH 412 · +27%)</div></div></div>
-                    </div>
-                    <div data-testid="column">
-                      <div data-testid="stSelectbox"><label>Worst 호기</label><div data-baseweb="select"><div>FOL-03 (UPH 218 · −33%)</div></div></div>
-                    </div>
+          <!-- ── PANE: 호기별 — 좌측 두 차트 stacked + 우측 호기 카드 picker ── -->
+          <div data-testid="stTabsContent" id="uph-pane-machine" class="uph-pane">
+            <div class="uph-trend-grid" style="margin-top:0.5rem;">
+              <!-- LEFT: 차트 두 개 (위: 트렌드, 아래: 편차) -->
+              <div class="uph-trend-charts">
+                <div class="sc-mpl">
+                  <div class="sc-mpl-head">
+                    <span class="sc-mpl-title">호기별 UPH 트렌드 (최근 30일)</span>
+                    <span class="sc-mpl-legend">
+                      <span style="color:#A50034;"><i></i>FOL-12</span>
+                      <span style="color:#B57F1B;"><i></i>FOL-08</span>
+                      <span style="color:#1F8B4C;"><i></i>FOL-05</span>
+                      <span style="color:#3B82F6;"><i></i>FOL-09</span>
+                      <span style="color:#7E0027;"><i></i>FOL-03</span>
+                    </span>
                   </div>
-                  <div data-testid="stCaptionContainer" style="margin-top:0.5rem;">자동선정 Best: FOL-12 (+27%) / Worst: FOL-03 (−33%) — 평균 UPH 324 기준</div>
+                  <svg viewBox="0 0 700 200" style="height:200px;" preserveAspectRatio="none">
+                    <g class="sc-mpl-grid">
+                      <line x1="40" y1="20"  x2="690" y2="20"/>
+                      <line x1="40" y1="60"  x2="690" y2="60"/>
+                      <line x1="40" y1="100" x2="690" y2="100"/>
+                      <line x1="40" y1="140" x2="690" y2="140"/>
+                      <line x1="40" y1="180" x2="690" y2="180"/>
+                    </g>
+                    <g class="sc-mpl-axis"><line x1="40" y1="20" x2="40" y2="180"/><line x1="40" y1="180" x2="690" y2="180"/></g>
+                    <text x="38" y="24" text-anchor="end">450</text>
+                    <text x="38" y="64" text-anchor="end">375</text>
+                    <text x="38" y="104" text-anchor="end">300</text>
+                    <text x="38" y="144" text-anchor="end">225</text>
+                    <text x="38" y="184" text-anchor="end">150</text>
+                    <text x="60" y="194">04/08</text><text x="200" y="194">04/15</text>
+                    <text x="350" y="194">04/22</text><text x="500" y="194">04/29</text><text x="660" y="194">05/07</text>
+                    <polyline class="sc-mpl-line" stroke="#A50034" points="50,80 100,72 150,68 200,60 250,55 300,50 350,42 400,38 450,32 500,30 550,28 600,24 650,22 690,20"/>
+                    <polyline class="sc-mpl-line" stroke="#B57F1B" stroke-dasharray="4 4" points="50,100 100,98 150,92 200,90 250,84 300,86 350,78 400,76 450,72 500,70 550,68 600,64 650,60 690,58"/>
+                    <polyline class="sc-mpl-line" stroke="#1F8B4C" points="50,120 100,116 150,114 200,108 250,110 300,104 350,100 400,96 450,92 500,90 550,88 600,86 650,82 690,80"/>
+                    <polyline class="sc-mpl-line" stroke="#3B82F6" stroke-dasharray="2 3" points="50,140 100,138 150,132 200,134 250,128 300,126 350,120 400,118 450,114 500,116 550,110 600,108 650,104 690,100"/>
+                    <polyline class="sc-mpl-line" stroke="#7E0027" stroke-dasharray="6 3" points="50,168 100,170 150,162 200,164 250,158 300,160 350,156 400,152 450,148 500,150 550,144 600,146 650,140 690,138"/>
+                  </svg>
                 </div>
-              </details>
-            </div>
-          </div><!-- /pane: overview -->
 
-          <!-- ── PANE: 호기별 — 호기 KPI + 이상치 탐지 표 ─────────────── -->
-          <div data-testid="stTabsContent" id="uph-pane-machine" class="uph-pane" hidden>
-            <div data-testid="stHorizontalBlock" style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.5rem;margin-top:0.5rem;">
-              <div data-testid="stMetric"><div data-testid="stMetricLabel">Best 호기</div><div data-testid="stMetricValue">FOL-12</div><div data-testid="stMetricDelta" data-direction="up">UPH 412 · ▲ +27%</div></div>
-              <div data-testid="stMetric"><div data-testid="stMetricLabel">Worst 호기</div><div data-testid="stMetricValue">FOL-03</div><div data-testid="stMetricDelta" data-direction="down">UPH 218 · ▼ −33%</div></div>
-              <div data-testid="stMetric"><div data-testid="stMetricLabel">관찰 호기 수</div><div data-testid="stMetricValue">7</div><div data-testid="stMetricDelta" data-direction="off">─ 0</div></div>
-              <div data-testid="stMetric"><div data-testid="stMetricLabel">이상 호기 수</div><div data-testid="stMetricValue">3</div><div data-testid="stMetricDelta" data-direction="up">▲ 1</div></div>
-            </div>
+                <!-- 호기별 UPH 편차 — 색상 반전 (+ → 빨강, − → 녹색) -->
+                <div class="sc-mpl">
+                  <div class="sc-mpl-head">
+                    <span class="sc-mpl-title">호기별 UPH 편차 (평균 대비 %)</span>
+                    <span class="sc-mpl-legend">
+                      <span style="color:#B23A48;"><i></i>+ deviation</span>
+                      <span style="color:#1F8B4C;"><i></i>− deviation</span>
+                    </span>
+                  </div>
+                  <svg viewBox="0 0 700 200" style="height:200px;" preserveAspectRatio="none">
+                    <g class="sc-mpl-grid">
+                      <line x1="40" y1="20"  x2="690" y2="20"/>
+                      <line x1="40" y1="65"  x2="690" y2="65"/>
+                      <line x1="40" y1="105" x2="690" y2="105" stroke="#1F2430" stroke-width="0.8"/>
+                      <line x1="40" y1="145" x2="690" y2="145"/>
+                      <line x1="40" y1="180" x2="690" y2="180"/>
+                    </g>
+                    <text x="38" y="24"  text-anchor="end">+30%</text>
+                    <text x="38" y="69"  text-anchor="end">+10%</text>
+                    <text x="38" y="109" text-anchor="end">0</text>
+                    <text x="38" y="149" text-anchor="end">−10%</text>
+                    <text x="38" y="184" text-anchor="end">−30%</text>
+                    <!-- positive bars (above 0) — 색상 반전: 빨간 계열 -->
+                    <rect x="60"  y="46"  width="36" height="59" fill="#7E0027" opacity="0.9"/>
+                    <rect x="110" y="63"  width="36" height="42" fill="#B23A48" opacity="0.85"/>
+                    <rect x="160" y="74"  width="36" height="31" fill="#B23A48" opacity="0.85"/>
+                    <rect x="210" y="80"  width="36" height="25" fill="#B57F1B" opacity="0.85"/>
+                    <rect x="260" y="90"  width="36" height="15" fill="#B57F1B" opacity="0.85"/>
+                    <rect x="310" y="95"  width="36" height="10" fill="#B57F1B" opacity="0.7"/>
+                    <!-- negative bars (below 0) — 색상 반전: 녹색 계열 -->
+                    <rect x="360" y="105" width="36" height="18" fill="#B57F1B" opacity="0.7"/>
+                    <rect x="410" y="105" width="36" height="26" fill="#B57F1B" opacity="0.85"/>
+                    <rect x="460" y="105" width="36" height="36" fill="#1F8B4C" opacity="0.7"/>
+                    <rect x="510" y="105" width="36" height="48" fill="#1F8B4C" opacity="0.85"/>
+                    <rect x="560" y="105" width="36" height="62" fill="#1F8B4C" opacity="0.9"/>
+                    <rect x="610" y="105" width="36" height="73" fill="#1F8B4C" opacity="0.95"/>
+                    <text x="78"  y="194" text-anchor="middle">FOL-12</text>
+                    <text x="128" y="194" text-anchor="middle">FOL-08</text>
+                    <text x="178" y="194" text-anchor="middle">FOL-05</text>
+                    <text x="228" y="194" text-anchor="middle">FOL-15</text>
+                    <text x="278" y="194" text-anchor="middle">FOL-09</text>
+                    <text x="328" y="194" text-anchor="middle">FOL-11</text>
+                    <text x="378" y="194" text-anchor="middle">FOL-02</text>
+                    <text x="428" y="194" text-anchor="middle">FOL-06</text>
+                    <text x="478" y="194" text-anchor="middle">FOL-10</text>
+                    <text x="528" y="194" text-anchor="middle">FOL-07</text>
+                    <text x="578" y="194" text-anchor="middle">FOL-04</text>
+                    <text x="628" y="194" text-anchor="middle">FOL-03</text>
+                  </svg>
+                </div>
+              </div>
 
-            <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-muted);margin:0.875rem 0 0.375rem;">이상치 탐지 — 동작시간 / UPH 편차</div>
-            <div class="sc-aggrid">
-              <table>
-                <thead><tr><th style="width:80px;">호기</th><th class="sc-cell-num" style="width:80px;">UPH</th><th class="sc-cell-num" style="width:90px;">동작시간</th><th class="sc-cell-num" style="width:100px;">평균 편차</th><th>상태</th></tr></thead>
-                <tbody>
-                  <tr><td>FOL-12</td><td class="sc-cell-num sc-cell-good">412</td><td class="sc-cell-num">15.6 h</td><td class="sc-cell-num sc-cell-good">+27%</td><td><span class="sc-pill sc-pill--good">정상</span></td></tr>
-                  <tr><td>FOL-08</td><td class="sc-cell-num sc-cell-good">388</td><td class="sc-cell-num">15.0 h</td><td class="sc-cell-num sc-cell-good">+19%</td><td><span class="sc-pill sc-pill--good">정상</span></td></tr>
-                  <tr><td>FOL-05</td><td class="sc-cell-num sc-cell-good">364</td><td class="sc-cell-num">14.4 h</td><td class="sc-cell-num sc-cell-good">+12%</td><td><span class="sc-pill sc-pill--good">정상</span></td></tr>
-                  <tr><td>FOL-07</td><td class="sc-cell-num sc-cell-warn">280</td><td class="sc-cell-num">12.4 h</td><td class="sc-cell-num sc-cell-warn">−14%</td><td><span class="sc-pill sc-pill--warn">관찰</span></td></tr>
-                  <tr><td>FOL-04</td><td class="sc-cell-num sc-cell-bad">240</td><td class="sc-cell-num">10.1 h</td><td class="sc-cell-num sc-cell-bad">−26%</td><td><span class="sc-pill sc-pill--bad">이상</span></td></tr>
-                  <tr><td>FOL-03</td><td class="sc-cell-num sc-cell-bad">218</td><td class="sc-cell-num">8.4 h</td><td class="sc-cell-num sc-cell-bad">−33%</td><td><span class="sc-pill sc-pill--bad">이상</span></td></tr>
-                </tbody>
-              </table>
+              <!-- RIGHT: 호기 picker (토글: 활성=녹색 / 비활성=회색) -->
+              <div class="uph-machine-picker">
+                <div class="uph-machine-picker__head">
+                  <span class="uph-machine-picker__title">호기 필터</span>
+                  <span class="uph-machine-picker__sub">클릭하여 차트에 포함</span>
+                </div>
+                <div class="uph-machine-picker__grid">
+                  <button class="uph-mc is-active" type="button" data-machine="FOL-12" aria-pressed="true">FOL-12<span class="uph-mc__val">412</span></button>
+                  <button class="uph-mc is-active" type="button" data-machine="FOL-08" aria-pressed="true">FOL-08<span class="uph-mc__val">388</span></button>
+                  <button class="uph-mc is-active" type="button" data-machine="FOL-05" aria-pressed="true">FOL-05<span class="uph-mc__val">364</span></button>
+                  <button class="uph-mc" type="button" data-machine="FOL-15" aria-pressed="false">FOL-15<span class="uph-mc__val">340</span></button>
+                  <button class="uph-mc" type="button" data-machine="FOL-09" aria-pressed="false">FOL-09<span class="uph-mc__val">328</span></button>
+                  <button class="uph-mc" type="button" data-machine="FOL-11" aria-pressed="false">FOL-11<span class="uph-mc__val">320</span></button>
+                  <button class="uph-mc" type="button" data-machine="FOL-02" aria-pressed="false">FOL-02<span class="uph-mc__val">316</span></button>
+                  <button class="uph-mc" type="button" data-machine="FOL-06" aria-pressed="false">FOL-06<span class="uph-mc__val">308</span></button>
+                  <button class="uph-mc" type="button" data-machine="FOL-10" aria-pressed="false">FOL-10<span class="uph-mc__val">298</span></button>
+                  <button class="uph-mc" type="button" data-machine="FOL-07" aria-pressed="false">FOL-07<span class="uph-mc__val">280</span></button>
+                  <button class="uph-mc" type="button" data-machine="FOL-04" aria-pressed="false">FOL-04<span class="uph-mc__val">240</span></button>
+                  <button class="uph-mc is-active" type="button" data-machine="FOL-03" aria-pressed="true">FOL-03<span class="uph-mc__val">218</span></button>
+                </div>
+              </div>
             </div>
           </div><!-- /pane: machine -->
 
-          <!-- ── PANE: 모델별 — 모델 비교 KPI + 모델 평균 UPH 표 ──────── -->
+          <!-- ── PANE: 모델별 ──────────────────────────────────────── -->
           <div data-testid="stTabsContent" id="uph-pane-model" class="uph-pane" hidden>
             <div data-testid="stHorizontalBlock" style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.5rem;margin-top:0.5rem;">
               <div data-testid="stMetric"><div data-testid="stMetricLabel">CM모델A 평균 UPH</div><div data-testid="stMetricValue">324</div><div data-testid="stMetricDelta" data-direction="up">▲ +4.2%</div></div>
               <div data-testid="stMetric"><div data-testid="stMetricLabel">CM모델B 평균 UPH</div><div data-testid="stMetricValue">352</div><div data-testid="stMetricDelta" data-direction="up">▲ +6.1%</div></div>
               <div data-testid="stMetric"><div data-testid="stMetricLabel">CM모델C 평균 UPH</div><div data-testid="stMetricValue">298</div><div data-testid="stMetricDelta" data-direction="down">▼ −1.3%</div></div>
             </div>
-
             <div class="sc-mpl" style="margin-top:0.75rem;">
               <div class="sc-mpl-head">
                 <span class="sc-mpl-title">모델별 UPH 추이 (최근 30일)</span>
@@ -1217,19 +1223,91 @@
                 <polyline class="sc-mpl-line" stroke="#1F8B4C" points="50,108 110,108 170,106 230,104 290,102 350,100 410,98 470,96 530,96 590,94 650,92 690,90"/>
               </svg>
             </div>
-
             <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-muted);margin:0.75rem 0 0.375rem;">모델별 평균 UPH 요약</div>
             <div class="sc-aggrid">
               <table>
-                <thead><tr><th>모델</th><th class="sc-cell-num">평균 UPH</th><th class="sc-cell-num">동작시간</th><th class="sc-cell-num">편차 (σ/μ)</th><th class="sc-cell-num">호기 수</th></tr></thead>
+                <thead><tr><th>모델</th><th class="sc-cell-num">평균 UPH</th><th class="sc-cell-num">동작시간 (sec)</th><th class="sc-cell-num">편차 (σ/μ)</th><th class="sc-cell-num">호기 수</th></tr></thead>
                 <tbody>
-                  <tr><td>CM모델A</td><td class="sc-cell-num">324</td><td class="sc-cell-num">14.2 h</td><td class="sc-cell-num">8.4%</td><td class="sc-cell-num">14</td></tr>
-                  <tr><td>CM모델B</td><td class="sc-cell-num sc-cell-good">352</td><td class="sc-cell-num">15.0 h</td><td class="sc-cell-num">6.7%</td><td class="sc-cell-num">16</td></tr>
-                  <tr><td>CM모델C</td><td class="sc-cell-num sc-cell-warn">298</td><td class="sc-cell-num">13.5 h</td><td class="sc-cell-num">10.2%</td><td class="sc-cell-num">12</td></tr>
+                  <tr><td>CM모델A</td><td class="sc-cell-num">324</td><td class="sc-cell-num">2.81</td><td class="sc-cell-num">8.4%</td><td class="sc-cell-num">14</td></tr>
+                  <tr><td>CM모델B</td><td class="sc-cell-num sc-cell-good">352</td><td class="sc-cell-num">2.74</td><td class="sc-cell-num">6.7%</td><td class="sc-cell-num">16</td></tr>
+                  <tr><td>CM모델C</td><td class="sc-cell-num sc-cell-warn">298</td><td class="sc-cell-num">2.95</td><td class="sc-cell-num">10.2%</td><td class="sc-cell-num">12</td></tr>
                 </tbody>
               </table>
             </div>
           </div><!-- /pane: model -->
+
+          <!-- ══════════════════════════════════════════════════════════
+               동작 분석 구역 (S4-B 참고)
+               ══════════════════════════════════════════════════════════ -->
+          <div class="cmp-sub-head" style="margin-top:1.75rem;">
+            <div class="cmp-sub-head__left">
+              <span class="cmp-sub-head__bar" aria-hidden="true"></span>
+              <h3 class="cmp-sub-head__title">동작 분석</h3>
+            </div>
+            <span class="cmp-sub-head__meta">편차 / 증가 / 감소 추세 Top 5</span>
+          </div>
+
+          <div class="uph-action-tables">
+            <!-- 1) 주요 편차동작 Top 5 -->
+            <div class="uph-action-table">
+              <div class="uph-action-table__head">
+                <span class="uph-action-table__title">주요 편차동작 Top 5</span>
+                <span class="uph-action-table__sub">σ ≥ 0.10 sec</span>
+              </div>
+              <div class="sc-aggrid">
+                <table>
+                  <thead><tr><th>설비</th><th>동작 단계</th><th class="sc-cell-num">평균(sec)</th><th class="sc-cell-num">σ(sec)</th><th class="sc-cell-num">편차율</th><th class="sc-cell-num">발생 빈도</th></tr></thead>
+                  <tbody>
+                    <tr><td>FOL-16</td><td>Probe Down → Touch</td><td class="sc-cell-num">2.97</td><td class="sc-cell-num">0.18</td><td class="sc-cell-num sc-cell-bad">6.1%</td><td class="sc-cell-num">124</td></tr>
+                    <tr><td>FOL-08</td><td>Index → Probe Down</td><td class="sc-cell-num">2.91</td><td class="sc-cell-num">0.14</td><td class="sc-cell-num sc-cell-bad">4.8%</td><td class="sc-cell-num">124</td></tr>
+                    <tr><td>FOL-12</td><td>Test → Index</td><td class="sc-cell-num">2.86</td><td class="sc-cell-num">0.12</td><td class="sc-cell-num sc-cell-warn">4.2%</td><td class="sc-cell-num">124</td></tr>
+                    <tr><td>FOL-01</td><td>Probe Down → Touch</td><td class="sc-cell-num">2.83</td><td class="sc-cell-num">0.11</td><td class="sc-cell-num sc-cell-warn">3.9%</td><td class="sc-cell-num">124</td></tr>
+                    <tr><td>FOL-04</td><td>Wafer Load</td><td class="sc-cell-num">2.79</td><td class="sc-cell-num">0.10</td><td class="sc-cell-num">3.6%</td><td class="sc-cell-num">124</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- 2) 증가 추세 동작 Top 5 -->
+            <div class="uph-action-table">
+              <div class="uph-action-table__head">
+                <span class="uph-action-table__title">증가 추세 동작 Top 5</span>
+                <span class="uph-action-table__sub">동작시간 + 추세</span>
+              </div>
+              <div class="sc-aggrid">
+                <table>
+                  <thead><tr><th>설비</th><th>동작</th><th class="sc-cell-num">기울기/일</th><th class="sc-cell-num">현재(sec)</th></tr></thead>
+                  <tbody>
+                    <tr><td>FOL-16</td><td>Probe Down</td><td class="sc-cell-num sc-cell-bad">+0.012</td><td class="sc-cell-num">2.97</td></tr>
+                    <tr><td>FOL-08</td><td>Index</td><td class="sc-cell-num sc-cell-bad">+0.008</td><td class="sc-cell-num">2.91</td></tr>
+                    <tr><td>FOL-04</td><td>Test</td><td class="sc-cell-num sc-cell-bad">+0.005</td><td class="sc-cell-num">2.84</td></tr>
+                    <tr><td>FOL-19</td><td>Touch</td><td class="sc-cell-num sc-cell-warn">+0.004</td><td class="sc-cell-num">2.79</td></tr>
+                    <tr><td>FOL-11</td><td>Wafer Load</td><td class="sc-cell-num sc-cell-warn">+0.003</td><td class="sc-cell-num">2.76</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- 3) 감소 추세 동작 Top 5 -->
+            <div class="uph-action-table">
+              <div class="uph-action-table__head">
+                <span class="uph-action-table__title">감소 추세 동작 Top 5</span>
+                <span class="uph-action-table__sub">동작시간 − 추세</span>
+              </div>
+              <div class="sc-aggrid">
+                <table>
+                  <thead><tr><th>설비</th><th>동작</th><th class="sc-cell-num">기울기/일</th><th class="sc-cell-num">현재(sec)</th></tr></thead>
+                  <tbody>
+                    <tr><td>FOL-03</td><td>Probe Down</td><td class="sc-cell-num sc-cell-good">-0.009</td><td class="sc-cell-num">2.68</td></tr>
+                    <tr><td>FOL-11</td><td>Index</td><td class="sc-cell-num sc-cell-good">-0.007</td><td class="sc-cell-num">2.71</td></tr>
+                    <tr><td>FOL-24</td><td>Test</td><td class="sc-cell-num sc-cell-good">-0.005</td><td class="sc-cell-num">2.74</td></tr>
+                    <tr><td>FOL-09</td><td>Touch</td><td class="sc-cell-num sc-cell-good">-0.003</td><td class="sc-cell-num">2.76</td></tr>
+                    <tr><td>FOL-05</td><td>Wafer Load</td><td class="sc-cell-num sc-cell-good">-0.002</td><td class="sc-cell-num">2.78</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
 
         </div>
       </section>
@@ -2499,8 +2577,8 @@ LIMIT 5;</pre>
     });
   });
 
-  // ── sec-uph 탭 (개요 / 호기별 / 모델별) ─────────────────────────
-  var uphTabs = ['overview', 'machine', 'model'];
+  // ── sec-uph 탭 (호기별 / 모델별) ─────────────────────────────
+  var uphTabs = ['machine', 'model'];
   uphTabs.forEach(function (k) {
     var btn = document.getElementById('uph-tab-' + k);
     if (!btn) return;
@@ -2512,6 +2590,14 @@ LIMIT 5;</pre>
         if (b) b.setAttribute('aria-selected', on ? 'true' : 'false');
         if (p) p.hidden = !on;
       });
+    });
+  });
+
+  // ── sec-uph 호기 picker — 활성/비활성 토글 (좌측 2 그래프의 필터) ──
+  Array.prototype.slice.call(document.querySelectorAll('.uph-mc')).forEach(function (mc) {
+    mc.addEventListener('click', function () {
+      var on = mc.classList.toggle('is-active');
+      mc.setAttribute('aria-pressed', on ? 'true' : 'false');
     });
   });
 
