@@ -494,7 +494,9 @@ def render_board_link_panel():
         use_container_width=True,
         type="secondary"
     ):
-        st.switch_page("pages/8_Board.py")
+        # 8_Board.py 는 8_Patch_Note.py 로 rename 됨 (커밋 a01... 부근).
+        # st.switch_page 가 정확한 파일 경로를 요구하므로 새 이름 반영.
+        st.switch_page("pages/8_Patch_Note.py")
 
 def render_status_label_panel():
     st.markdown(
