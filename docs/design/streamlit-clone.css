@@ -3049,6 +3049,7 @@ body.is-login-active .vitals-app section[data-testid="stSidebar"] {
   padding: 5vh 24px 24px;
   overflow-y: auto;
 }
+.vit-modal-backdrop[hidden] { display: none !important; }
 .vit-modal-backdrop:not([hidden]) { display: flex; }
 .vit-modal {
   background: var(--card-bg);

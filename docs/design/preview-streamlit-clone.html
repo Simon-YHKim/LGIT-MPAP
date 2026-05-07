@@ -1366,7 +1366,7 @@
             <div class="cmp-filter__row">
               <div data-testid="stMultiSelect">
                 <label>공정</label>
-                <div data-baseweb="select"><div class="sc-select-tag-wrap">
+                <div data-baseweb="select"><div class="sc-select-tag-wrap" id="mtba-proc-tags">
                   <span data-baseweb="tag">Lens AA <span role="button">×</span></span>
                   <span data-baseweb="tag">Flip Chip <span role="button">×</span></span>
                   <span data-baseweb="tag">IRCF Attach <span role="button">×</span></span>
@@ -1387,28 +1387,6 @@
               <div data-testid="stButton"><button>초기화</button></div>
               <div data-testid="stButton"><button kind="primary">필터 적용</button></div>
             </div>
-          </div>
-
-          <!-- ── §1 공정별 요약 — 체크박스 = 비교 차트 필터 ───────────── -->
-          <div class="cmp-sub-head" style="margin-top:1.5rem;">
-            <div class="cmp-sub-head__left">
-              <span class="cmp-sub-head__bar" aria-hidden="true"></span>
-              <h3 class="cmp-sub-head__title">2026-04-27 ~ 2026-04-28 공정별 요약</h3>
-            </div>
-            <span class="cmp-sub-head__meta">체크 = 비교 차트 표시 / 해제 = 제외</span>
-          </div>
-          <div class="sc-aggrid">
-            <table data-mtba-summary>
-              <thead><tr><th style="width:40px;"></th><th>공정명</th><th class="sc-cell-num">선택 기간</th><th class="sc-cell-num">1주전</th><th class="sc-cell-num">2주전</th><th class="sc-cell-num">지난달</th><th class="sc-cell-num">2달전</th><th class="sc-cell-num">지난해</th><th class="sc-cell-num">설비수</th></tr></thead>
-              <tbody>
-                <tr data-mtba-proc="Lens AA"><td><input type="checkbox" class="vit-mtba-cb" data-proc="Lens AA" checked></td><td>Lens AA</td><td class="sc-cell-num sc-cell-good">142</td><td class="sc-cell-num">138</td><td class="sc-cell-num">135</td><td class="sc-cell-num">128</td><td class="sc-cell-num">124</td><td class="sc-cell-num">118</td><td class="sc-cell-num">8</td></tr>
-                <tr data-mtba-proc="Flip Chip"><td><input type="checkbox" class="vit-mtba-cb" data-proc="Flip Chip" checked></td><td>Flip Chip Bonding</td><td class="sc-cell-num">98</td><td class="sc-cell-num">102</td><td class="sc-cell-num">95</td><td class="sc-cell-num">88</td><td class="sc-cell-num">82</td><td class="sc-cell-num">76</td><td class="sc-cell-num">6</td></tr>
-                <tr data-mtba-proc="IRCF Attach"><td><input type="checkbox" class="vit-mtba-cb" data-proc="IRCF Attach" checked></td><td>IRCF Attach</td><td class="sc-cell-num sc-cell-bad">62</td><td class="sc-cell-num">68</td><td class="sc-cell-num">71</td><td class="sc-cell-num">74</td><td class="sc-cell-num">78</td><td class="sc-cell-num">82</td><td class="sc-cell-num">4</td></tr>
-                <tr data-mtba-proc="Module AA"><td><input type="checkbox" class="vit-mtba-cb" data-proc="Module AA" checked></td><td>Module AA</td><td class="sc-cell-num">124</td><td class="sc-cell-num">122</td><td class="sc-cell-num">119</td><td class="sc-cell-num">115</td><td class="sc-cell-num">112</td><td class="sc-cell-num">108</td><td class="sc-cell-num">5</td></tr>
-                <tr data-mtba-proc="Pre Focus"><td><input type="checkbox" class="vit-mtba-cb" data-proc="Pre Focus" checked></td><td>Pre Focus</td><td class="sc-cell-num">88</td><td class="sc-cell-num">90</td><td class="sc-cell-num">87</td><td class="sc-cell-num">84</td><td class="sc-cell-num">81</td><td class="sc-cell-num">78</td><td class="sc-cell-num">5</td></tr>
-                <tr data-mtba-proc="APS Test"><td><input type="checkbox" class="vit-mtba-cb" data-proc="APS Test" checked></td><td>APS Test</td><td class="sc-cell-num sc-cell-good">156</td><td class="sc-cell-num">152</td><td class="sc-cell-num">148</td><td class="sc-cell-num">142</td><td class="sc-cell-num">138</td><td class="sc-cell-num">132</td><td class="sc-cell-num">8</td></tr>
-              </tbody>
-            </table>
           </div>
 
           <!-- ── §2 공정별 MTBA 기간 비교 — 6 기간 막대 + Target 점선 ─── -->
@@ -1435,26 +1413,23 @@
                 <input type="number" id="mtba-target-input" value="120" min="1" step="1">
               </label>
             </div>
-            <svg id="mtba-bar-chart" class="vit-bar-chart-svg" viewBox="0 0 720 240" preserveAspectRatio="none">
+            <svg id="mtba-bar-chart" class="vit-bar-chart-svg" viewBox="0 0 800 240" preserveAspectRatio="none">
               <g class="vit-bar-grid">
-                <line x1="40" y1="20"  x2="710" y2="20"/>
-                <line x1="40" y1="65"  x2="710" y2="65"/>
-                <line x1="40" y1="110" x2="710" y2="110"/>
-                <line x1="40" y1="155" x2="710" y2="155"/>
-                <line x1="40" y1="200" x2="710" y2="200"/>
+                <line x1="40" y1="20"  x2="700" y2="20"/>
+                <line x1="40" y1="65"  x2="700" y2="65"/>
+                <line x1="40" y1="110" x2="700" y2="110"/>
+                <line x1="40" y1="155" x2="700" y2="155"/>
+                <line x1="40" y1="200" x2="700" y2="200"/>
               </g>
               <g class="vit-bar-axis">
                 <line x1="40" y1="20" x2="40" y2="200"/>
-                <line x1="40" y1="200" x2="710" y2="200"/>
+                <line x1="40" y1="200" x2="700" y2="200"/>
               </g>
               <text x="38" y="24"  text-anchor="end">200</text>
               <text x="38" y="69"  text-anchor="end">160</text>
               <text x="38" y="114" text-anchor="end">120</text>
               <text x="38" y="159" text-anchor="end">80</text>
               <text x="38" y="204" text-anchor="end">40</text>
-              <!-- Target 점선 (초기 120 → y=110) -->
-              <line id="mtba-target-line" x1="40" y1="110" x2="710" y2="110" stroke="#1F8B4C" stroke-width="2" stroke-dasharray="6 4"/>
-              <text id="mtba-target-text" x="715" y="114" fill="#1F8B4C" font-family="IBM Plex Mono, monospace" font-size="10" font-weight="700">Target 120</text>
               <!-- 6 공정 그룹 (group_x = 40 + 30 + i*110 = 70, 180, 290, 400, 510, 620) -->
               <g id="mtba-bar-groups">
                 <g class="vit-bar-grp" data-proc="Lens AA" transform="translate(70,0)">
@@ -1466,6 +1441,9 @@
                   <rect x="56" y="88.4" width="12" height="111.6" fill="#6B7280" data-period="2달전"></rect>
                   <rect x="70" y="93.8" width="12" height="106.2" fill="#1F2430" data-period="지난해"></rect>
                 </g>
+              <!-- Target 점선 (z-order 위로 올림: 막대 그룹 다음에 그려서 가리지 않음) -->
+              <line id="mtba-target-line" x1="40" y1="110" x2="700" y2="110" stroke="#1F8B4C" stroke-width="2.5" stroke-dasharray="6 4"/>
+              <text id="mtba-target-text" x="704" y="114" fill="#1F8B4C" font-family="IBM Plex Mono, monospace" font-size="11" font-weight="700">Target 120</text>
                 <g class="vit-bar-grp" data-proc="Flip Chip" transform="translate(180,0)">
                   <rect x="0" y="111.8" width="12" height="88.2" fill="#A50034" data-period="선택 기간"></rect>
                   <text x="6" y="107.8" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10" font-weight="700" fill="#1F2430">98</text>
@@ -1526,7 +1504,29 @@
 
           <!-- 페이지 footer (panel actions 제거 — 메모/현황 모두 삭제로 인해 단순화) -->
 
-        </div>
+<!-- ── §1 공정별 요약 — 체크박스 = 비교 차트 필터 ───────────── -->
+          <div class="cmp-sub-head" style="margin-top:1.5rem;">
+            <div class="cmp-sub-head__left">
+              <span class="cmp-sub-head__bar" aria-hidden="true"></span>
+              <h3 class="cmp-sub-head__title">2026-04-27 ~ 2026-04-28 공정별 요약</h3>
+            </div>
+            <span class="cmp-sub-head__meta">체크 = 비교 차트 표시 / 해제 = 제외</span>
+          </div>
+          <div class="sc-aggrid">
+            <table data-mtba-summary>
+              <thead><tr><th style="width:40px;"></th><th>공정명</th><th class="sc-cell-num">선택 기간</th><th class="sc-cell-num">1주전</th><th class="sc-cell-num">2주전</th><th class="sc-cell-num">지난달</th><th class="sc-cell-num">2달전</th><th class="sc-cell-num">지난해</th><th class="sc-cell-num">설비수</th></tr></thead>
+              <tbody>
+                <tr data-mtba-proc="Lens AA"><td><input type="checkbox" class="vit-mtba-cb" data-proc="Lens AA" checked></td><td>Lens AA</td><td class="sc-cell-num sc-cell-good">142</td><td class="sc-cell-num">138</td><td class="sc-cell-num">135</td><td class="sc-cell-num">128</td><td class="sc-cell-num">124</td><td class="sc-cell-num">118</td><td class="sc-cell-num">8</td></tr>
+                <tr data-mtba-proc="Flip Chip"><td><input type="checkbox" class="vit-mtba-cb" data-proc="Flip Chip" checked></td><td>Flip Chip Bonding</td><td class="sc-cell-num">98</td><td class="sc-cell-num">102</td><td class="sc-cell-num">95</td><td class="sc-cell-num">88</td><td class="sc-cell-num">82</td><td class="sc-cell-num">76</td><td class="sc-cell-num">6</td></tr>
+                <tr data-mtba-proc="IRCF Attach"><td><input type="checkbox" class="vit-mtba-cb" data-proc="IRCF Attach" checked></td><td>IRCF Attach</td><td class="sc-cell-num sc-cell-bad">62</td><td class="sc-cell-num">68</td><td class="sc-cell-num">71</td><td class="sc-cell-num">74</td><td class="sc-cell-num">78</td><td class="sc-cell-num">82</td><td class="sc-cell-num">4</td></tr>
+                <tr data-mtba-proc="Module AA"><td><input type="checkbox" class="vit-mtba-cb" data-proc="Module AA" checked></td><td>Module AA</td><td class="sc-cell-num">124</td><td class="sc-cell-num">122</td><td class="sc-cell-num">119</td><td class="sc-cell-num">115</td><td class="sc-cell-num">112</td><td class="sc-cell-num">108</td><td class="sc-cell-num">5</td></tr>
+                <tr data-mtba-proc="Pre Focus"><td><input type="checkbox" class="vit-mtba-cb" data-proc="Pre Focus" checked></td><td>Pre Focus</td><td class="sc-cell-num">88</td><td class="sc-cell-num">90</td><td class="sc-cell-num">87</td><td class="sc-cell-num">84</td><td class="sc-cell-num">81</td><td class="sc-cell-num">78</td><td class="sc-cell-num">5</td></tr>
+                <tr data-mtba-proc="APS Test"><td><input type="checkbox" class="vit-mtba-cb" data-proc="APS Test" checked></td><td>APS Test</td><td class="sc-cell-num sc-cell-good">156</td><td class="sc-cell-num">152</td><td class="sc-cell-num">148</td><td class="sc-cell-num">142</td><td class="sc-cell-num">138</td><td class="sc-cell-num">132</td><td class="sc-cell-num">8</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+                  </div>
       </section>
 
       <div class="sc-preview-divider"></div>
@@ -1946,49 +1946,6 @@
           </div>
 
           <!-- 채팅 진행 미리보기 (S8-B 패턴): 사용자 첫 질문 → MaxCapa 응답 trace + 결과 -->
-          <div class="cmp-sub-head" style="margin-top:1.5rem;">
-            <div class="cmp-sub-head__left">
-              <span class="cmp-sub-head__bar" aria-hidden="true"></span>
-              <h3 class="cmp-sub-head__title">대화 미리보기 (질문 시 자동 노출)</h3>
-            </div>
-            <span class="cmp-sub-head__meta">질문 분석 → SQL 생성 → 실행 → 결과 카드</span>
-          </div>
-          <div class="chat-thread">
-            <div class="chat-msg chat-msg--user">
-              <div class="chat-avatar chat-avatar--user">YOU</div>
-              <div class="chat-msg__body">
-                <div class="chat-msg__meta"><strong>나</strong><span> · 2026-05-07 16:42</span></div>
-                <div class="chat-msg__bubble">FOL-A 라인의 CM모델A, 최근 1주일 일별 <code>ITAS</code> UPH 추이와 평균 보여줘.</div>
-              </div>
-            </div>
-            <div class="chat-msg chat-msg--ai">
-              <div class="chat-avatar chat-avatar--ai">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-              </div>
-              <div class="chat-msg__body">
-                <div class="chat-msg__meta"><strong>MaxCapa</strong><span> · 1.4s · ITAS 모드</span></div>
-                <div class="chat-trace">
-                  <div class="chat-trace__head"><strong>질문 분석 및 실행</strong> · 4단계 완료</div>
-                  <div class="chat-trace__steps">
-                    <div class="chat-trace__step"><span class="chat-trace__num">01</span><span class="chat-trace__label">parse intent</span><span class="chat-trace__detail">model=CM모델A · line=FOL-A · range=last_7d · metric=UPH · source=ITAS</span><span class="chat-trace__status">OK</span></div>
-                    <div class="chat-trace__step"><span class="chat-trace__num">02</span><span class="chat-trace__label">route source</span><span class="chat-trace__detail">"ITAS" 감지 → itas_uph_result</span><span class="chat-trace__status">OK</span></div>
-                    <div class="chat-trace__step"><span class="chat-trace__num">03</span><span class="chat-trace__label">build sql</span><span class="chat-trace__detail">SELECT ymd, AVG(uph) … GROUP BY ymd</span><span class="chat-trace__status">OK</span></div>
-                    <div class="chat-trace__step"><span class="chat-trace__num">04</span><span class="chat-trace__label">execute</span><span class="chat-trace__detail">7 rows · 18ms · cached=false</span><span class="chat-trace__status">OK</span></div>
-                  </div>
-                </div>
-                <div class="chat-result">
-                  <div class="chat-result__head">
-                    <div><div class="chat-result__title">결과 · FOL-A · CM모델A · ITAS UPH (7d)</div><div class="chat-result__sub">rows=7 · ymd / avg_uph / qty</div></div>
-                  </div>
-                  <div data-testid="stHorizontalBlock" style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.5rem;margin-top:0.5rem;">
-                    <div data-testid="stMetric"><div data-testid="stMetricLabel">평균 UPH (7d)</div><div data-testid="stMetricValue">412.8</div><div data-testid="stMetricDelta" data-direction="up">▲ 3.4% vs 전주</div></div>
-                    <div data-testid="stMetric"><div data-testid="stMetricLabel">최고일</div><div data-testid="stMetricValue">438.1</div><div data-testid="stMetricDelta" data-direction="up">04-26 (토)</div></div>
-                    <div data-testid="stMetric"><div data-testid="stMetricLabel">최저일</div><div data-testid="stMetricValue">381.5</div><div data-testid="stMetricDelta" data-direction="down">04-23 (수)</div></div>
-                    <div data-testid="stMetric"><div data-testid="stMetricLabel">총 생산수량</div><div data-testid="stMetricValue">68,420</div><div data-testid="stMetricDelta" data-direction="off">qty sum</div></div>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
 
         </div>
@@ -2009,38 +1966,10 @@
           </div>
         <div data-testid="stVerticalBlock">
 
-          <div class="sc-top-strip"></div>
-          <div data-testid="stMarkdown">
-            <h1 style="font-family:'LG EI Headline','LG EI Text',sans-serif;font-size:28px;font-weight:700;letter-spacing:-0.02em;margin:0;color:var(--ink-body);">Patch Note · 패치노트</h1>
-            <p style="color:var(--ink-muted);font-size:13px;margin:0.375rem 0 0;line-height:1.55;">최신 변경 이력을 확인하고 상세 내용을 조회할 수 있습니다.</p>
-          </div>
-
-          <!-- expander: 게시글 등록 -->
-          <div data-testid="stExpander">
-            <details>
-              <summary>게시글 등록</summary>
-              <div class="sc-expander-body">
-                <div data-testid="stHorizontalBlock">
-                  <div data-testid="column">
-                    <div data-testid="stSelectbox"><label>태그</label><div data-baseweb="select"><div>NEW</div></div></div>
-                  </div>
-                  <div data-testid="column" style="flex: 3;">
-                    <div data-testid="stTextInput"><label>제목</label><div data-baseweb="input"><input type="text"></div></div>
-                  </div>
-                </div>
-                <div data-testid="stTextArea">
-                  <label>내용</label>
-                  <div data-baseweb="textarea"><textarea style="min-height:140px;"></textarea></div>
-                </div>
-                <div data-testid="stButton"><button kind="primary">등록</button></div>
-              </div>
-            </details>
-          </div>
-
           <div data-testid="stHorizontalBlock" style="display:grid;grid-template-columns:1fr 1.4fr;gap:1rem;align-items:start;">
             <!-- 좌측: 목록 -->
             <div data-testid="column">
-              <div class="sc-soft-card" style="margin-bottom:0;">
+              <div class="sc-soft-card" id="patch-list-card" style="margin-bottom:0;">
                 <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-muted);margin-bottom:0.5rem;">목록</div>
 
                 <div class="sc-board-row is-active">
@@ -2091,7 +2020,7 @@
               <div class="sc-soft-card" style="margin-bottom:0;">
                 <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-muted);margin-bottom:0.5rem;">상세</div>
 
-                <h3 class="board-detail-title" style="font-family:'LG EI Headline','LG EI Text',sans-serif;font-size:22px;font-weight:700;letter-spacing:-0.018em;margin:0 0 0.375rem;color:var(--ink-body);">디자인 통합도 71.5% → 93.5% 향상</h3>
+                <h3 class="board-detail-title" id="patch-detail-title" style="font-family:'LG EI Headline','LG EI Text',sans-serif;font-size:22px;font-weight:700;letter-spacing:-0.018em;margin:0 0 0.375rem;color:var(--ink-body);">디자인 통합도 71.5% → 93.5% 향상</h3>
                 <div class="sc-mono" style="font-size:11px;color:var(--ink-muted);margin-bottom:0.875rem;">2026-05-07 · 김시몬 · <span class="sc-pill sc-pill--good" style="margin-left:4px;">NEW</span></div>
 
                 <p style="font-size:13px;line-height:1.75;color:var(--ink-body);margin:0 0 0.75rem;">
@@ -2112,6 +2041,28 @@
                 </div>
               </div>
             </div>
+          </div>
+        
+<!-- expander: 게시글 등록 -->
+          <div data-testid="stExpander" id="patch-form-expander" style="margin-top:1.25rem;">
+            <details>
+              <summary>게시글 등록</summary>
+              <div class="sc-expander-body">
+                <div data-testid="stHorizontalBlock">
+                  <div data-testid="column">
+                    <div data-testid="stSelectbox"><label>태그</label><div data-baseweb="select"><div id="patch-form-tag-display">NEW</div></div></div>
+                  </div>
+                  <div data-testid="column" style="flex: 3;">
+                    <div data-testid="stTextInput"><label>제목</label><div data-baseweb="input"><input id="patch-form-title" type="text" placeholder="패치노트 제목"></div></div>
+                  </div>
+                </div>
+                <div data-testid="stTextArea">
+                  <label>내용</label>
+                  <div data-baseweb="textarea"><textarea id="patch-form-body" style="min-height:140px;" placeholder="변경 사항 / 영향 / 참고 링크"></textarea></div>
+                </div>
+                <div data-testid="stButton"><button id="patch-form-submit" kind="primary">등록</button></div>
+              </div>
+            </details>
           </div>
         </div>
       </section>
@@ -3017,10 +2968,108 @@
   if (teamBtn)    teamBtn.addEventListener('click', openTeamModal);
   if (teamClose)  teamClose.addEventListener('click', closeTeamModal);
   if (teamCancel) teamCancel.addEventListener('click', closeTeamModal);
-  if (teamSave)   teamSave.addEventListener('click', closeTeamModal);
+  if (teamSave)   teamSave.addEventListener('click', function () {
+    // 저장 = 모달의 체크된 공정 → cmp-filter 공정 multi-select tag 갱신
+    // + §1 공정별 요약 표 체크박스 동기화 + 차트 즉시 토글
+    if (!teamModal) return;
+    var checked = Array.prototype.slice.call(teamModal.querySelectorAll('input[data-team-proc]:checked'))
+      .map(function (i) { return i.getAttribute('data-team-proc'); });
+    var toShort = function (n) {
+      return n === 'Flip Chip Bonding' ? 'Flip Chip'
+           : n === 'Sensor Underfill' ? 'Sensor UF'
+           : n === 'HTCC Cleaning'    ? 'HTCC Clean'
+           : n === 'Plasma Cleaning'  ? 'Plasma'
+           : n;
+    };
+
+    // 1) cmp-filter 공정 multi-select tag list 갱신
+    var procWrap = document.getElementById('mtba-proc-tags');
+    if (procWrap) {
+      procWrap.innerHTML = '';
+      checked.forEach(function (name) {
+        var tag = document.createElement('span');
+        tag.setAttribute('data-baseweb', 'tag');
+        tag.appendChild(document.createTextNode(toShort(name) + ' '));
+        var x = document.createElement('span');
+        x.setAttribute('role', 'button');
+        x.textContent = '×';
+        tag.appendChild(x);
+        procWrap.appendChild(tag);
+      });
+    }
+
+    // 2) 공정별 요약 표 체크박스 동기화
+    var shortSet = {};
+    checked.forEach(function (n) { shortSet[toShort(n)] = true; });
+    Array.prototype.slice.call(document.querySelectorAll('.vit-mtba-cb')).forEach(function (cb) {
+      cb.checked = !!shortSet[cb.getAttribute('data-proc')];
+    });
+    if (typeof applyMtbaCheckboxFilter === 'function') applyMtbaCheckboxFilter();
+
+    closeTeamModal();
+  });
   if (teamModal)  teamModal.addEventListener('click', function (e) {
     if (e.target === teamModal) closeTeamModal();
   });
+
+  // ── sec-patch: 게시글 등록 + 목록 클릭 → 상세 갱신 ──
+  var patchListCard    = document.getElementById('patch-list-card');
+  var patchSubmit      = document.getElementById('patch-form-submit');
+  var patchTitle       = document.getElementById('patch-form-title');
+  var patchBody        = document.getElementById('patch-form-body');
+  var patchTagDisp     = document.getElementById('patch-form-tag-display');
+  var patchDetailTitle = document.getElementById('patch-detail-title');
+  function pillClassFor(tag) {
+    if (tag === 'NEW') return 'sc-pill sc-pill--good';
+    if (tag === 'UPD') return 'sc-pill sc-pill--warn';
+    return 'sc-pill sc-pill--bad';
+  }
+  function todayMMDD() {
+    var d = new Date();
+    return ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2);
+  }
+  function selectPatchRow(row, title) {
+    if (!patchListCard) return;
+    Array.prototype.slice.call(patchListCard.querySelectorAll('.sc-board-row')).forEach(function (r) {
+      r.classList.remove('is-active');
+    });
+    row.classList.add('is-active');
+    if (patchDetailTitle && title) patchDetailTitle.textContent = title;
+  }
+  if (patchSubmit && patchListCard) {
+    patchSubmit.addEventListener('click', function (e) {
+      e.preventDefault();
+      var title = (patchTitle && patchTitle.value || '').trim();
+      var tag   = (patchTagDisp && patchTagDisp.textContent || 'NEW').trim();
+      if (!title) { if (patchTitle) patchTitle.focus(); return; }
+      var row = document.createElement('div');
+      row.className = 'sc-board-row';
+      row.innerHTML = '<span class="' + pillClassFor(tag) + '">' + tag + '</span>'
+                    + '<span class="title"></span>'
+                    + '<span class="date">' + todayMMDD() + '</span>';
+      row.querySelector('.title').textContent = title;
+      var headerLabel = patchListCard.firstElementChild;
+      if (headerLabel && headerLabel.nextSibling) {
+        patchListCard.insertBefore(row, headerLabel.nextSibling);
+      } else {
+        patchListCard.appendChild(row);
+      }
+      row.addEventListener('click', function () { selectPatchRow(row, title); });
+      selectPatchRow(row, title);
+      if (patchTitle) patchTitle.value = '';
+      if (patchBody)  patchBody.value  = '';
+      var details = document.querySelector('#patch-form-expander details');
+      if (details) details.open = false;
+    });
+  }
+  if (patchListCard) {
+    Array.prototype.slice.call(patchListCard.querySelectorAll('.sc-board-row')).forEach(function (r) {
+      r.addEventListener('click', function () {
+        var t = r.querySelector('.title');
+        selectPatchRow(r, t ? t.textContent : '');
+      });
+    });
+  }
 
   // ── CSV 내보내기 — 페이지 단위 (모든 <table> + .vit-heatmap 데이터 수집) ──
   function csvEscape(s) {
