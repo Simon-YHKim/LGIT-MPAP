@@ -229,6 +229,22 @@ h1, h2, h3, h4, h5, h6 {{
 
 def apply_vitals_theme() -> None:
     """모든 페이지의 첫 줄에서 호출 — 와인 팔레트 + LG EI 폰트 + Streamlit 기본 hide.
-    한 페이지에서 여러 번 호출돼도 부작용 없음 (Streamlit이 markdown을 캐시).
+
+    PERF #8 — 한 페이지의 매 rerun 마다 ~1.7MB CSS 재방출하는 비용 회피:
+    페이지 단위 session_state key (`_vitals_theme_applied__{file}`) 로 첫 진입에만
+    st.markdown 호출. 이후 rerun 에선 no-op (브라우저 캐시된 <style> 그대로 유지).
+    페이지 전환 시엔 새 페이지 키로 다시 발화 → 항상 적용 보장.
     """
+    # Streamlit 의 script run context 에서 현재 페이지 식별 (없으면 그냥 발화)
+    try:
+        from streamlit.runtime.scriptrunner import get_script_run_ctx
+        ctx = get_script_run_ctx()
+        page_key = (ctx.page_script_hash if ctx else None) or "default"
+    except Exception:
+        page_key = "default"
+
+    flag_key = f"_vitals_theme_applied__{page_key}"
+    if st.session_state.get(flag_key):
+        return  # 이미 이번 페이지에서 발화함 — 중복 방출 회피
     st.markdown(f"<style>\n{_build_css()}\n</style>", unsafe_allow_html=True)
+    st.session_state[flag_key] = True

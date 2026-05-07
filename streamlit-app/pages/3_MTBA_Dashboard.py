@@ -137,7 +137,10 @@ with engine.begin() as conn:
     for stmt in [s.strip() for s in _ensure_alarm_comment_history_table_sql.split(";") if s.strip()]:
         conn.execute(text(stmt))
 
-st.markdown(PAGE_STYLE, unsafe_allow_html=True)
+# PERF #7 — PAGE_STYLE 매 rerun 재방출 회피
+if not st.session_state.get("_mtba_dashboard_page_style_applied"):
+    st.markdown(PAGE_STYLE, unsafe_allow_html=True)
+    st.session_state["_mtba_dashboard_page_style_applied"] = True
 st.markdown("<div class='page-banner'>MTBA Dashboard</div>", unsafe_allow_html=True)
 st.markdown(
     "<div class='page-subtitle'>선택한 기간 기준으로 기간별 MTBA / 공정 통계 / 클릭 Drill-down 기반 MTBA 현황 / Alarm 차이 분석</div>",

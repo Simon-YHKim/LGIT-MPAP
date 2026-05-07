@@ -315,7 +315,11 @@ def render_panel(panel: dict, source_view: str, min_date, max_date, model_option
 
 
 def main():
-    st.markdown(PAGE_STYLE, unsafe_allow_html=True)
+    # PERF #7 — PAGE_STYLE 매 rerun 재방출 회피 (8KB CSS × N rerun 의 WebSocket 부하 절감).
+    # 페이지 단일 진입 후엔 브라우저에 <style> 그대로 유지되므로 다시 emit 불필요.
+    if not st.session_state.get("_mtba_detail_page_style_applied"):
+        st.markdown(PAGE_STYLE, unsafe_allow_html=True)
+        st.session_state["_mtba_detail_page_style_applied"] = True
     ensure_state()
     ensure_comment_history_table()
 
