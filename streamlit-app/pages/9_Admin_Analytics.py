@@ -100,19 +100,21 @@ def download_df_button(df: pd.DataFrame, filename: str, label: str):
 
 
 # ==================================================
-# 페이지 헤더 — Vitals page-head 스타일
+# 페이지 헤더 — preview sec-admin 와 정렬: vit-top-strip + flat page-head
+# (이전 rounded card-style 헤더 제거, 'rectangles only' 원칙 준수)
 # ==================================================
+from ui.vitals.components import render_top_strip, render_sub_head
+render_top_strip()
 st.markdown(
     """
     <style>
     .vit-page-head {
+        /* Vitals 'rectangles only' — radius / shadow 제거. left wine bar 만 유지. */
         background: var(--card-bg, #FFFFFF);
         border: 1px solid var(--border, #E5E7EB);
         border-left: 4px solid var(--primary, #A50034);
-        border-radius: 12px;
         padding: 18px 22px;
         margin-bottom: 14px;
-        box-shadow: 0 1px 2px rgba(17,24,39,.04), 0 8px 24px rgba(17,24,39,.035);
     }
     .vit-page-head h1 {
         margin: 0;
@@ -124,11 +126,10 @@ st.markdown(
         margin-top: 4px;
         font-size: 12px; color: var(--ink-muted, #6B7280);
     }
-    /* Admin 카드 / 메트릭 컨테이너 — Vitals 토큰 정렬 */
+    /* Admin 카드 / 메트릭 컨테이너 — Vitals 토큰 정렬 (radius 제거) */
     div[data-testid="stMetric"] {
         background: var(--card-bg, #FFFFFF);
         border: 1px solid var(--border, #E5E7EB);
-        border-radius: 8px;
         padding: 12px 14px;
         color: var(--ink-body, #1F2430);
     }
@@ -137,8 +138,8 @@ st.markdown(
     .vit-status-good { color: var(--status-good, #1F8B4C); font-weight: 700; }
     .vit-status-warn { color: var(--status-warn, #B57F1B); font-weight: 700; }
     .vit-status-bad  { color: var(--status-bad,  #B23A48); font-weight: 700; }
-    /* DataFrame / Table — soft 토큰 */
-    div[data-testid="stDataFrame"] { background: var(--soft, #F1F3F5); border-radius: 8px; }
+    /* DataFrame / Table — soft 토큰 (radius 제거) */
+    div[data-testid="stDataFrame"] { background: var(--soft, #F1F3F5); }
     </style>
     <div class="vit-page-head">
         <h1>관리자 분석 대시보드</h1>
@@ -290,7 +291,7 @@ with tab1:
     else:
         st.info("해당 기간 데이터가 없습니다.")
 
-    st.markdown("### TOP 10 페이지")
+    render_sub_head("TOP 10 페이지", "조회 빈도")
     top_page_query = f"""
     SELECT
         page_name,
@@ -314,7 +315,7 @@ with tab1:
         )
         st.plotly_chart(fig, use_container_width=True)
 
-    st.markdown("### TOP 10 사용자")
+    render_sub_head("TOP 10 사용자", "활성도")
     top_user_query = f"""
     SELECT
         user_email,
@@ -494,7 +495,7 @@ with tab4:
         st.dataframe(show_df, use_container_width=True)
         download_df_button(show_df, "team_page_stats.csv", "팀별 페이지 조회 다운로드")
 
-        st.markdown("### 팀 × 페이지 조회 매트릭스")
+        render_sub_head("팀 × 페이지 조회 매트릭스", "팀별 페이지 활용도")
         pivot_df = team_page_df.pivot_table(
             index="department",
             columns="page_name",
@@ -562,7 +563,7 @@ with tab5:
         st.dataframe(show_df, use_container_width=True)
         download_df_button(show_df, "user_page_stats.csv", "사용자별 조회 다운로드")
 
-        st.markdown("### 사용자별 총 조회 TOP 20")
+        render_sub_head("사용자별 총 조회 TOP 20", "전체 기간")
         user_total_df = (
             user_page_df.groupby(["user_email", "department"], as_index=False)["total_views"]
             .sum()
