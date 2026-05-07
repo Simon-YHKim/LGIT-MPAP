@@ -32,7 +32,9 @@
     </div>
     <nav data-testid="stSidebarNav">
       <a data-testid="stSidebarNavLink" href="#sec-login">Login</a>
-      <a data-testid="stSidebarNavLink" href="#sec-home" aria-current="page">0 · Home</a>
+      <a data-testid="stSidebarNavLink" href="#sec-home-1" aria-current="page">0 · Home_1 (S2-B)</a>
+      <a data-testid="stSidebarNavLink" href="#sec-home-2">0 · Home_2 (Best/Worst)</a>
+      <a data-testid="stSidebarNavLink" href="#sec-home-3">0 · Home_3 (S3-B)</a>
       <a data-testid="stSidebarNavLink" href="#sec-cmp">1 · CMP Dashboard</a>
       <a data-testid="stSidebarNavLink" href="#sec-uph">2 · UPH Dashboard</a>
       <a data-testid="stSidebarNavLink" href="#sec-mtba">3 · MTBA Dashboard</a>
@@ -331,19 +333,10 @@
       <!-- =========================================================== -->
       <!--  HOME — 0_Home.py · Vitals. + 공정의 호흡을 데이터로 듣다     -->
       <!-- =========================================================== -->
-      <section id="sec-home" class="sc-page-section">
-        <div class="sc-section-meta">0_Home.py · 시안 비교 보드 — 시안 1 (S2-B Home) / 시안 2 (CMP 달성 현황 · Best·Worst) / 시안 3 (CMP 달성 현황 · S3-B 모델별 공정)</div>
+      <section id="sec-home-1" class="sc-page-section">
+        <div class="sc-section-meta">0_Home.py · Home_1 — 기존 S2-B Home (Hero grid: MaxCapa Chat 큰 카드 1 + 작은 카드 4)</div>
         <div data-testid="stVerticalBlock">
 
-          <!-- ══════════════════════════════════════════════════════════ -->
-          <!--  시안 1 / 3 — 기존 S2-B Home (view 선택 버튼 없음)            -->
-          <!--  page-head + 5 분석도구 카드 (S2-B `.tool-card` 패턴)        -->
-          <!-- ══════════════════════════════════════════════════════════ -->
-          <div class="sc-mode-banner">
-            <span class="sc-mode-banner__num">시안 1 / 3</span>
-            <span class="sc-mode-banner__label">기존 S2-B Home</span>
-            <span class="sc-mode-banner__desc">— 진입 즉시 분석 도구 메뉴만. view 선택 없음.</span>
-          </div>
           <div class="sc-mode-card">
             <!-- ▣ Vitals 아이덴티티: 와인 6px 가로 strip (page top) -->
             <div class="vit-top-strip" aria-hidden="true"></div>
@@ -415,16 +408,13 @@
             </div>
           </div>
 
-          <!-- ══════════════════════════════════════════════════════════ -->
-          <!--  시안 2 / 3 — CMP 달성 현황 · Best/Worst (순서: Best 먼저)     -->
-          <!--  타이틀 + 한 줄 필터 (모델/영역/기간/적용/초기화) + Best→Worst   -->
-          <!--  카드 + 분석 도구 네비카드 (S2-B 스타일).                     -->
-          <!-- ══════════════════════════════════════════════════════════ -->
-          <div class="sc-mode-banner" style="margin-top:2.25rem;">
-            <span class="sc-mode-banner__num">시안 2 / 3</span>
-            <span class="sc-mode-banner__label">CMP 달성 현황 · Best/Worst 카드</span>
-            <span class="sc-mode-banner__desc">— 한 줄 필터 + Best/Worst 카드(순서 교체) + 분석 도구 메뉴.</span>
-          </div>
+        </div><!-- /stVerticalBlock (sec-home-1) -->
+      </section>
+
+      <section id="sec-home-2" class="sc-page-section">
+        <div class="sc-section-meta">0_Home.py · Home_2 — CMP 달성 현황 · Best/Worst 카드 (순서 교체) + 분석 도구</div>
+        <div data-testid="stVerticalBlock">
+
           <div class="sc-mode-card">
             <!-- ▣ Vitals 아이덴티티 와인 가로 strip -->
             <div class="vit-top-strip" aria-hidden="true"></div>
@@ -594,16 +584,13 @@
             </div>
           </div><!-- /sc-mode-card (시안 2) -->
 
-          <!-- ══════════════════════════════════════════════════════════ -->
-          <!--  시안 3 / 3 — CMP 달성 현황 · S3-B 모델별 공정 grid          -->
-          <!--  타이틀 + 한 줄 필터 + KPI + 모델별 공정 달성률 (S3-B)         -->
-          <!--  · 공정 요약표 제외 + 분석 도구 네비카드 (시안 2와 동일).      -->
-          <!-- ══════════════════════════════════════════════════════════ -->
-          <div class="sc-mode-banner" style="margin-top:2.25rem;">
-            <span class="sc-mode-banner__num">시안 3 / 3</span>
-            <span class="sc-mode-banner__label">CMP 달성 현황 · S3-B 모델별 공정</span>
-            <span class="sc-mode-banner__desc">— 한 줄 필터 + KPI + 모델별 공정 달성률 grid (공정 요약표 제외) + 분석 도구 메뉴.</span>
-          </div>
+        </div><!-- /stVerticalBlock (sec-home-2) -->
+      </section>
+
+      <section id="sec-home-3" class="sc-page-section">
+        <div class="sc-section-meta">0_Home.py · Home_3 — CMP 달성 현황 · S3-B 모델별 공정 grid + 분석 도구</div>
+        <div data-testid="stVerticalBlock">
+
           <div class="sc-mode-card">
             <!-- ▣ Vitals 아이덴티티 와인 가로 strip -->
             <div class="vit-top-strip" aria-hidden="true"></div>
@@ -792,20 +779,19 @@
       <!--  CMP — 1_CMP_Dashboard.py · CMP 달성률 Dashboard            -->
       <!-- =========================================================== -->
       <section id="sec-cmp" class="sc-page-section">
-        <div class="sc-section-meta">1_CMP_Dashboard.py · render_filter_block + render_per_model_block (S3-B 시안 적용 · 공정 요약표 제외)</div>
+        <div class="sc-section-meta">1_CMP_Dashboard.py · 화면 구성: 타이틀 / 필터 / 달성률 카드 / 공정별 달성률 / 공정 요약표 — 공정 카드 클릭 시 [공정별 상세 분석] 팝업</div>
         <div data-testid="stVerticalBlock">
 
-          <!-- ── section heading: 4px wine bar + eyebrow + h2 ───────── -->
+          <!-- ── 타이틀 (검정 하단선) ─────────────────────────────────── -->
           <div class="sc-sec-head">
             <div class="sc-sec-head__bar"></div>
             <div class="sc-sec-head__body">
               <div class="sc-sec-head__eyebrow">Productivity · Performance</div>
               <h2 class="sc-sec-head__title">CMP 달성률 Dashboard</h2>
-              <p class="sc-sec-head__sub">모델별 일자별 CMP / UPH / Efficiency 추이 — 모델·영역·공정·기간 필터로 조회</p>
             </div>
           </div>
 
-          <!-- ── 요약 필터 (2행 grid: 모델/영역, 공정/기간+달력) ────────── -->
+          <!-- ── 필터 (모델 / 공정 대분류 / 공정 / 기간 / 적용 / 초기화) ─── -->
           <div class="cmp-filter">
             <div class="cmp-filter__row">
               <div data-testid="stMultiSelect">
@@ -817,7 +803,7 @@
                 </div></div>
               </div>
               <div data-testid="stMultiSelect">
-                <label>영역</label>
+                <label>공정 대분류 (영역)</label>
                 <div data-baseweb="select"><div class="sc-select-tag-wrap">
                   <span data-baseweb="tag" class="sc-tag-area">FOL <span role="button">×</span></span>
                   <span data-baseweb="tag" class="sc-tag-area">MOL <span role="button">×</span></span>
@@ -937,370 +923,190 @@
             </div>
           </div>
 
-          <!-- ── 모델별 상세 분석 (sub-head) ──────────────────────────── -->
+          <!-- ── 공정 요약표 ───────────────────────────────────────────── -->
           <div class="cmp-sub-head">
             <div class="cmp-sub-head__left">
               <span class="cmp-sub-head__bar" aria-hidden="true"></span>
-              <h3 class="cmp-sub-head__title">모델별 상세 분석</h3>
+              <h3 class="cmp-sub-head__title">공정 요약표</h3>
             </div>
-            <span class="cmp-sub-head__meta">CMP × UPH × Efficiency · 30일 추이</span>
+            <span class="cmp-sub-head__meta">모델 × 공정 × 호기 × 기간 매트릭스 · 마지막 갱신 2026-05-07 23:50</span>
+          </div>
+          <div class="sc-aggrid" style="margin-bottom: 1.25rem;">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width:70px;">모델</th>
+                  <th style="width:120px;">공장</th>
+                  <th>공정명</th>
+                  <th style="width:140px;">기간</th>
+                  <th class="sc-cell-num" style="width:70px;">CMP</th>
+                  <th class="sc-cell-num" style="width:70px;">UPH</th>
+                  <th class="sc-cell-num" style="width:70px;">Eff.</th>
+                  <th class="sc-cell-num" style="width:60px;">Δ</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>CM모델A</td><td>Gumi Campus 1</td><td>Lens AA</td><td>2026-04-22 ~ 28</td><td class="sc-cell-num">96.4%</td><td class="sc-cell-num">94.2%</td><td class="sc-cell-num">95.0%</td><td class="sc-cell-num sc-cell-good">+1.1</td></tr>
+                <tr><td>CM모델A</td><td>Gumi Campus 1</td><td>Flip Chip Bonding</td><td>2026-04-22 ~ 28</td><td class="sc-cell-num">93.8%</td><td class="sc-cell-num">91.6%</td><td class="sc-cell-num">92.7%</td><td class="sc-cell-num sc-cell-good">+0.6</td></tr>
+                <tr><td>CM모델A</td><td>Gumi Campus 3</td><td>FOL Adhesion</td><td>2026-04-22 ~ 28</td><td class="sc-cell-num sc-cell-bad">62.4%</td><td class="sc-cell-num">71.2%</td><td class="sc-cell-num">76.8%</td><td class="sc-cell-num sc-cell-bad">-1.4</td></tr>
+                <tr><td>CM모델A</td><td>Gumi Campus 4</td><td>Module AA</td><td>2026-04-22 ~ 28</td><td class="sc-cell-num">95.7%</td><td class="sc-cell-num">93.8%</td><td class="sc-cell-num">94.6%</td><td class="sc-cell-num sc-cell-good">+0.9</td></tr>
+                <tr><td>CM모델B</td><td>Gumi Campus 1</td><td>Lens AA</td><td>2026-04-22 ~ 28</td><td class="sc-cell-num">97.1%</td><td class="sc-cell-num">94.8%</td><td class="sc-cell-num">95.7%</td><td class="sc-cell-num sc-cell-good">+1.4</td></tr>
+                <tr><td>CM모델B</td><td>Gumi Campus 3</td><td>MOL Bonding</td><td>2026-04-22 ~ 28</td><td class="sc-cell-num sc-cell-warn">79.6%</td><td class="sc-cell-num">82.3%</td><td class="sc-cell-num">85.1%</td><td class="sc-cell-num sc-cell-bad">-0.8</td></tr>
+                <tr><td>CM모델B</td><td>Gumi Campus 4</td><td>FPC Bonding</td><td>2026-04-22 ~ 28</td><td class="sc-cell-num">95.1%</td><td class="sc-cell-num">93.0%</td><td class="sc-cell-num">94.2%</td><td class="sc-cell-num sc-cell-good">+0.7</td></tr>
+                <tr><td>CM모델C</td><td>Gumi Campus 1</td><td>Lens AA</td><td>2026-04-22 ~ 28</td><td class="sc-cell-num">96.8%</td><td class="sc-cell-num">94.0%</td><td class="sc-cell-num">95.2%</td><td class="sc-cell-num sc-cell-good">+1.0</td></tr>
+                <tr><td>CM모델C</td><td>Gumi Campus 3</td><td>Sensor Underfill</td><td>2026-04-22 ~ 28</td><td class="sc-cell-num sc-cell-bad">89.7%</td><td class="sc-cell-num">87.2%</td><td class="sc-cell-num">88.4%</td><td class="sc-cell-num sc-cell-bad">-0.8</td></tr>
+                <tr><td>CM모델C</td><td>Gumi Campus 4</td><td>Bracket Attach</td><td>2026-04-22 ~ 28</td><td class="sc-cell-num">95.0%</td><td class="sc-cell-num">93.4%</td><td class="sc-cell-num">94.0%</td><td class="sc-cell-num sc-cell-good">+0.5</td></tr>
+              </tbody>
+            </table>
           </div>
 
-          <div data-testid="stCaptionContainer" style="margin:0 0 0.5rem;">모델 카드(가로) 아래에 [달성률 카드 + 그래프] 3행과 우측 [Best 5 / Worst 5] 표가 한 모델 단위로 묶입니다. 다중 모델은 위→아래 순서로 점선으로 구분합니다.</div>
+          <div data-testid="stCaptionContainer" style="margin:0 0 0.5rem;">위의 [모델별 공정 달성률] 영역에서 공정 카드를 클릭하면 [공정별 상세 분석] 팝업이 열립니다.</div>
 
-          <!-- ══════════════════════════════════════════════════════════ -->
-          <!--  detail block 1 — CM모델A                                    -->
-          <!--  ┌ model-card (horizontal) ───────────────────────────────┐ -->
-          <!--  │ MODEL · CM모델A  ·  FOL Adhesion · 12 호기 · 갱신 …      │ -->
-          <!--  └─────────────────────────────────────────────────────────┘ -->
-          <!--  ┌─ charts (5fr) ─────────────────┬─ tables (3fr) ───────┐ -->
-          <!--  │ [CMP card][CMP graph]          │ Best 5  (top half)   │ -->
-          <!--  │ [UPH card][UPH graph]          │ ───────────          │ -->
-          <!--  │ [Eff card][Eff graph]          │ Worst 5 (bottom half)│ -->
-          <!--  └────────────────────────────────┴──────────────────────┘ -->
-          <!-- ══════════════════════════════════════════════════════════ -->
-          <div class="cmp-detail">
-            <div class="cmp-detail__model">
-              <div>
-                <div class="cmp-detail__model-eyebrow">MODEL</div>
-                <div class="cmp-detail__model-name">CM모델A</div>
+          <!-- ════════════════════════════════════════════════════════════
+               공정별 상세 분석 — 모달 (cmp-proc 카드 클릭 시 열림)
+               양식: 공정 정보 카드(가로) + 좌측 [달성률카드 | 그래프] 3행
+               + 우측 [Best 5(상) / Worst 5(하)] 표 (그래프 총합 = 표 총합 높이)
+               ════════════════════════════════════════════════════════════ -->
+          <div class="vit-modal-backdrop" id="cmp-proc-modal" aria-hidden="true" hidden>
+            <div class="vit-modal" role="dialog" aria-modal="true" aria-labelledby="cmp-proc-modal-title">
+              <div class="vit-modal__head">
+                <h3 class="vit-modal__title" id="cmp-proc-modal-title">공정별 상세 분석</h3>
+                <button type="button" class="vit-modal__close" id="cmp-proc-modal-close" aria-label="닫기">✕</button>
               </div>
-              <div class="cmp-detail__model-meta">
-                <span><strong>주력 공정</strong> · FOL Adhesion</span>
-                <span><strong>호기</strong> · 12</span>
-                <span><strong>영역</strong> · FOL</span>
-                <span><strong>갱신</strong> · 2026-05-07 23:50</span>
-              </div>
-              <div data-testid="stButton"><button>상세 ↗</button></div>
-            </div>
-
-            <div class="cmp-detail__body">
-              <!-- LEFT: 3 rows of [metric-card | chart] -->
-              <div class="cmp-detail__charts">
-
-                <!-- CMP row -->
-                <div class="cmp-detail__row">
-                  <div class="cmp-detail__metric cmp-detail__metric--cmp">
-                    <div class="cmp-detail__metric-label">CMP 평균</div>
-                    <div class="cmp-detail__metric-value">94.2%</div>
-                    <div class="cmp-detail__metric-delta cmp-detail__metric-delta--good">▲ 2.1% vs 이전</div>
-                  </div>
-                  <div class="sc-mpl">
-                    <div class="sc-mpl-head">
-                      <span class="sc-mpl-title">CMP 달성률 (%) — 30일</span>
-                      <span class="sc-mpl-legend"><span style="color:#A50034;"><i></i>CMP</span></span>
+              <div class="vit-modal__body">
+                <div class="cmp-detail">
+                  <div class="cmp-detail__model">
+                    <div>
+                      <div class="cmp-detail__model-eyebrow">PROCESS</div>
+                      <div class="cmp-detail__model-name" id="cmp-proc-modal-name">FOL Adhesion</div>
                     </div>
-                    <svg viewBox="0 0 400 90" style="height:80px;" preserveAspectRatio="none">
-                      <g class="sc-mpl-grid">
-                        <line x1="34" y1="14" x2="392" y2="14"/><line x1="34" y1="34" x2="392" y2="34"/>
-                        <line x1="34" y1="54" x2="392" y2="54"/><line x1="34" y1="74" x2="392" y2="74"/>
-                      </g>
-                      <g class="sc-mpl-axis">
-                        <line x1="34" y1="14" x2="34" y2="74"/><line x1="34" y1="74" x2="392" y2="74"/>
-                      </g>
-                      <text x="32" y="18" text-anchor="end">100</text>
-                      <text x="32" y="38" text-anchor="end">85</text>
-                      <text x="32" y="58" text-anchor="end">70</text>
-                      <text x="32" y="78" text-anchor="end">55</text>
-                      <path d="M40,60 L80,54 L120,48 L160,42 L200,38 L240,34 L280,28 L320,22 L360,20 L390,18 L390,74 L40,74 Z" fill="#A50034" class="sc-mpl-area"/>
-                      <polyline class="sc-mpl-line" stroke="#A50034" points="40,60 80,54 120,48 160,42 200,38 240,34 280,28 320,22 360,20 390,18"/>
-                      <circle cx="390" cy="18" r="2.6" fill="#A50034" class="sc-mpl-dot"/>
-                    </svg>
-                  </div>
-                </div>
-
-                <!-- UPH row -->
-                <div class="cmp-detail__row">
-                  <div class="cmp-detail__metric cmp-detail__metric--uph">
-                    <div class="cmp-detail__metric-label">UPH 평균</div>
-                    <div class="cmp-detail__metric-value">88.6%</div>
-                    <div class="cmp-detail__metric-delta cmp-detail__metric-delta--bad">▼ 0.8% vs 이전</div>
-                  </div>
-                  <div class="sc-mpl">
-                    <div class="sc-mpl-head">
-                      <span class="sc-mpl-title">UPH 달성률 (%) — 30일</span>
-                      <span class="sc-mpl-legend"><span style="color:#B57F1B;"><i></i>UPH</span></span>
+                    <div class="cmp-detail__model-meta">
+                      <span><strong>모델</strong> · <span id="cmp-proc-modal-model">CM모델A</span></span>
+                      <span><strong>영역</strong> · FOL</span>
+                      <span><strong>호기</strong> · 12</span>
+                      <span><strong>갱신</strong> · 2026-05-07 23:50</span>
                     </div>
-                    <svg viewBox="0 0 400 90" style="height:80px;" preserveAspectRatio="none">
-                      <g class="sc-mpl-grid">
-                        <line x1="34" y1="14" x2="392" y2="14"/><line x1="34" y1="34" x2="392" y2="34"/>
-                        <line x1="34" y1="54" x2="392" y2="54"/><line x1="34" y1="74" x2="392" y2="74"/>
-                      </g>
-                      <g class="sc-mpl-axis">
-                        <line x1="34" y1="14" x2="34" y2="74"/><line x1="34" y1="74" x2="392" y2="74"/>
-                      </g>
-                      <text x="32" y="18" text-anchor="end">100</text>
-                      <text x="32" y="38" text-anchor="end">85</text>
-                      <text x="32" y="58" text-anchor="end">70</text>
-                      <text x="32" y="78" text-anchor="end">55</text>
-                      <path d="M40,42 L80,46 L120,40 L160,48 L200,44 L240,42 L280,40 L320,36 L360,34 L390,32 L390,74 L40,74 Z" fill="#B57F1B" class="sc-mpl-area"/>
-                      <polyline class="sc-mpl-line" stroke="#B57F1B" points="40,42 80,46 120,40 160,48 200,44 240,42 280,40 320,36 360,34 390,32"/>
-                      <circle cx="390" cy="32" r="2.6" fill="#B57F1B" class="sc-mpl-dot"/>
-                    </svg>
+                    <div data-testid="stButton"><button>CSV 내려받기</button></div>
                   </div>
-                </div>
 
-                <!-- Efficiency row -->
-                <div class="cmp-detail__row">
-                  <div class="cmp-detail__metric cmp-detail__metric--eff">
-                    <div class="cmp-detail__metric-label">EFFICIENCY 평균</div>
-                    <div class="cmp-detail__metric-value">91.0%</div>
-                    <div class="cmp-detail__metric-delta cmp-detail__metric-delta--good">▲ 1.4% vs 이전</div>
-                  </div>
-                  <div class="sc-mpl">
-                    <div class="sc-mpl-head">
-                      <span class="sc-mpl-title">Efficiency (%) — 30일</span>
-                      <span class="sc-mpl-legend"><span style="color:#1F8B4C;"><i></i>Eff</span></span>
+                  <div class="cmp-detail__body">
+                    <!-- LEFT: 3 rows of [metric-card | chart] -->
+                    <div class="cmp-detail__charts">
+
+                      <div class="cmp-detail__row">
+                        <div class="cmp-detail__metric cmp-detail__metric--cmp">
+                          <div class="cmp-detail__metric-label">CMP 평균</div>
+                          <div class="cmp-detail__metric-value">62.4%</div>
+                          <div class="cmp-detail__metric-delta cmp-detail__metric-delta--bad">▼ 1.4% vs 이전</div>
+                        </div>
+                        <div class="sc-mpl">
+                          <div class="sc-mpl-head">
+                            <span class="sc-mpl-title">CMP 달성률 (%) — 30일</span>
+                            <span class="sc-mpl-legend"><span style="color:#A50034;"><i></i>CMP</span></span>
+                          </div>
+                          <svg viewBox="0 0 400 90" preserveAspectRatio="none">
+                            <g class="sc-mpl-grid"><line x1="34" y1="14" x2="392" y2="14"/><line x1="34" y1="34" x2="392" y2="34"/><line x1="34" y1="54" x2="392" y2="54"/><line x1="34" y1="74" x2="392" y2="74"/></g>
+                            <g class="sc-mpl-axis"><line x1="34" y1="14" x2="34" y2="74"/><line x1="34" y1="74" x2="392" y2="74"/></g>
+                            <text x="32" y="18" text-anchor="end">100</text><text x="32" y="38" text-anchor="end">85</text><text x="32" y="58" text-anchor="end">70</text><text x="32" y="78" text-anchor="end">55</text>
+                            <path d="M40,72 L80,68 L120,64 L160,62 L200,60 L240,62 L280,64 L320,66 L360,70 L390,72 L390,74 L40,74 Z" fill="#A50034" class="sc-mpl-area"/>
+                            <polyline class="sc-mpl-line" stroke="#A50034" points="40,72 80,68 120,64 160,62 200,60 240,62 280,64 320,66 360,70 390,72"/>
+                            <circle cx="390" cy="72" r="2.6" fill="#A50034" class="sc-mpl-dot"/>
+                          </svg>
+                        </div>
+                      </div>
+
+                      <div class="cmp-detail__row">
+                        <div class="cmp-detail__metric cmp-detail__metric--uph">
+                          <div class="cmp-detail__metric-label">UPH 평균</div>
+                          <div class="cmp-detail__metric-value">71.2%</div>
+                          <div class="cmp-detail__metric-delta cmp-detail__metric-delta--bad">▼ 0.6% vs 이전</div>
+                        </div>
+                        <div class="sc-mpl">
+                          <div class="sc-mpl-head">
+                            <span class="sc-mpl-title">UPH 달성률 (%) — 30일</span>
+                            <span class="sc-mpl-legend"><span style="color:#B57F1B;"><i></i>UPH</span></span>
+                          </div>
+                          <svg viewBox="0 0 400 90" preserveAspectRatio="none">
+                            <g class="sc-mpl-grid"><line x1="34" y1="14" x2="392" y2="14"/><line x1="34" y1="34" x2="392" y2="34"/><line x1="34" y1="54" x2="392" y2="54"/><line x1="34" y1="74" x2="392" y2="74"/></g>
+                            <g class="sc-mpl-axis"><line x1="34" y1="14" x2="34" y2="74"/><line x1="34" y1="74" x2="392" y2="74"/></g>
+                            <text x="32" y="18" text-anchor="end">100</text><text x="32" y="38" text-anchor="end">85</text><text x="32" y="58" text-anchor="end">70</text><text x="32" y="78" text-anchor="end">55</text>
+                            <path d="M40,62 L80,58 L120,60 L160,56 L200,58 L240,60 L280,62 L320,64 L360,66 L390,68 L390,74 L40,74 Z" fill="#B57F1B" class="sc-mpl-area"/>
+                            <polyline class="sc-mpl-line" stroke="#B57F1B" points="40,62 80,58 120,60 160,56 200,58 240,60 280,62 320,64 360,66 390,68"/>
+                            <circle cx="390" cy="68" r="2.6" fill="#B57F1B" class="sc-mpl-dot"/>
+                          </svg>
+                        </div>
+                      </div>
+
+                      <div class="cmp-detail__row">
+                        <div class="cmp-detail__metric cmp-detail__metric--eff">
+                          <div class="cmp-detail__metric-label">EFFICIENCY 평균</div>
+                          <div class="cmp-detail__metric-value">76.8%</div>
+                          <div class="cmp-detail__metric-delta cmp-detail__metric-delta--bad">▼ 0.4% vs 이전</div>
+                        </div>
+                        <div class="sc-mpl">
+                          <div class="sc-mpl-head">
+                            <span class="sc-mpl-title">Efficiency (%) — 30일</span>
+                            <span class="sc-mpl-legend"><span style="color:#1F8B4C;"><i></i>Eff</span></span>
+                          </div>
+                          <svg viewBox="0 0 400 90" preserveAspectRatio="none">
+                            <g class="sc-mpl-grid"><line x1="34" y1="14" x2="392" y2="14"/><line x1="34" y1="34" x2="392" y2="34"/><line x1="34" y1="54" x2="392" y2="54"/><line x1="34" y1="74" x2="392" y2="74"/></g>
+                            <g class="sc-mpl-axis"><line x1="34" y1="14" x2="34" y2="74"/><line x1="34" y1="74" x2="392" y2="74"/></g>
+                            <text x="32" y="18" text-anchor="end">100</text><text x="32" y="38" text-anchor="end">90</text><text x="32" y="58" text-anchor="end">80</text><text x="32" y="78" text-anchor="end">70</text>
+                            <path d="M40,58 L80,56 L120,54 L160,50 L200,52 L240,48 L280,46 L320,42 L360,40 L390,42 L390,74 L40,74 Z" fill="#1F8B4C" class="sc-mpl-area"/>
+                            <polyline class="sc-mpl-line" stroke="#1F8B4C" points="40,58 80,56 120,54 160,50 200,52 240,48 280,46 320,42 360,40 390,42"/>
+                            <circle cx="390" cy="42" r="2.6" fill="#1F8B4C" class="sc-mpl-dot"/>
+                          </svg>
+                        </div>
+                      </div>
+
+                    </div><!-- /charts -->
+
+                    <!-- RIGHT: Best 5 (top) + Worst 5 (bottom). 좌측 charts 와 동일 높이로 stretch -->
+                    <div class="cmp-detail__tables">
+                      <div class="cmp-detail__table">
+                        <div class="cmp-detail__table-head cmp-detail__table-head--good">
+                          <span class="cmp-detail__table-title cmp-detail__table-title--good">Best 5 호기</span>
+                          <span class="cmp-detail__table-sub">달성률 상위</span>
+                        </div>
+                        <div class="sc-aggrid">
+                          <table>
+                            <thead><tr><th style="width:42px;">#</th><th>호기</th><th class="sc-cell-num" style="width:64px;">CMP</th><th class="sc-cell-num" style="width:64px;">UPH</th><th class="sc-cell-num" style="width:60px;">Eff</th></tr></thead>
+                            <tbody>
+                              <tr><td>1</td><td>EQ-12</td><td class="sc-cell-num sc-cell-good">71.4%</td><td class="sc-cell-num">78.6%</td><td class="sc-cell-num">82.3%</td></tr>
+                              <tr><td>2</td><td>EQ-08</td><td class="sc-cell-num sc-cell-good">69.8%</td><td class="sc-cell-num">76.4%</td><td class="sc-cell-num">81.1%</td></tr>
+                              <tr><td>3</td><td>EQ-03</td><td class="sc-cell-num sc-cell-warn">66.5%</td><td class="sc-cell-num">73.8%</td><td class="sc-cell-num">78.9%</td></tr>
+                              <tr><td>4</td><td>EQ-15</td><td class="sc-cell-num sc-cell-warn">64.1%</td><td class="sc-cell-num">72.0%</td><td class="sc-cell-num">77.6%</td></tr>
+                              <tr><td>5</td><td>EQ-07</td><td class="sc-cell-num sc-cell-warn">63.2%</td><td class="sc-cell-num">71.4%</td><td class="sc-cell-num">76.4%</td></tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                      <div class="cmp-detail__table">
+                        <div class="cmp-detail__table-head cmp-detail__table-head--bad">
+                          <span class="cmp-detail__table-title cmp-detail__table-title--bad">Worst 5 호기</span>
+                          <span class="cmp-detail__table-sub">개선 우선순위</span>
+                        </div>
+                        <div class="sc-aggrid">
+                          <table>
+                            <thead><tr><th style="width:42px;">#</th><th>호기</th><th class="sc-cell-num" style="width:64px;">CMP</th><th class="sc-cell-num" style="width:64px;">UPH</th><th class="sc-cell-num" style="width:60px;">Eff</th></tr></thead>
+                            <tbody>
+                              <tr><td>1</td><td>EQ-22</td><td class="sc-cell-num sc-cell-bad">54.6%</td><td class="sc-cell-num">63.8%</td><td class="sc-cell-num">68.4%</td></tr>
+                              <tr><td>2</td><td>EQ-19</td><td class="sc-cell-num sc-cell-bad">56.2%</td><td class="sc-cell-num">65.4%</td><td class="sc-cell-num">70.1%</td></tr>
+                              <tr><td>3</td><td>EQ-25</td><td class="sc-cell-num sc-cell-bad">58.8%</td><td class="sc-cell-num">67.2%</td><td class="sc-cell-num">72.0%</td></tr>
+                              <tr><td>4</td><td>EQ-17</td><td class="sc-cell-num sc-cell-bad">60.4%</td><td class="sc-cell-num">68.6%</td><td class="sc-cell-num">73.8%</td></tr>
+                              <tr><td>5</td><td>EQ-21</td><td class="sc-cell-num sc-cell-bad">61.7%</td><td class="sc-cell-num">70.0%</td><td class="sc-cell-num">75.2%</td></tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
                     </div>
-                    <svg viewBox="0 0 400 90" style="height:80px;" preserveAspectRatio="none">
-                      <g class="sc-mpl-grid">
-                        <line x1="34" y1="14" x2="392" y2="14"/><line x1="34" y1="34" x2="392" y2="34"/>
-                        <line x1="34" y1="54" x2="392" y2="54"/><line x1="34" y1="74" x2="392" y2="74"/>
-                      </g>
-                      <g class="sc-mpl-axis">
-                        <line x1="34" y1="14" x2="34" y2="74"/><line x1="34" y1="74" x2="392" y2="74"/>
-                      </g>
-                      <text x="32" y="18" text-anchor="end">100</text>
-                      <text x="32" y="38" text-anchor="end">90</text>
-                      <text x="32" y="58" text-anchor="end">80</text>
-                      <text x="32" y="78" text-anchor="end">70</text>
-                      <path d="M40,38 L80,34 L120,36 L160,30 L200,32 L240,24 L280,26 L320,20 L360,16 L390,14 L390,74 L40,74 Z" fill="#1F8B4C" class="sc-mpl-area"/>
-                      <polyline class="sc-mpl-line" stroke="#1F8B4C" points="40,38 80,34 120,36 160,30 200,32 240,24 280,26 320,20 360,16 390,14"/>
-                      <circle cx="390" cy="14" r="2.6" fill="#1F8B4C" class="sc-mpl-dot"/>
-                    </svg>
-                  </div>
-                </div>
-              </div>
 
-              <!-- RIGHT: Best 5 (top) + Worst 5 (bottom) -->
-              <div class="cmp-detail__tables">
-                <div class="cmp-detail__table">
-                  <div class="cmp-detail__table-head cmp-detail__table-head--good">
-                    <span class="cmp-detail__table-title cmp-detail__table-title--good">Best 5 공정</span>
-                    <span class="cmp-detail__table-sub">달성률 상위</span>
-                  </div>
-                  <div class="sc-aggrid">
-                    <table>
-                      <thead><tr><th style="width:42px;">#</th><th>공정</th><th class="sc-cell-num" style="width:64px;">CMP</th><th class="sc-cell-num" style="width:64px;">UPH</th><th class="sc-cell-num" style="width:60px;">Eff</th></tr></thead>
-                      <tbody>
-                        <tr><td>1</td><td>Laser Mark</td><td class="sc-cell-num sc-cell-good">97.2%</td><td class="sc-cell-num">95.8%</td><td class="sc-cell-num">96.4%</td></tr>
-                        <tr><td>2</td><td>Lens AA</td><td class="sc-cell-num sc-cell-good">96.4%</td><td class="sc-cell-num">94.2%</td><td class="sc-cell-num">95.0%</td></tr>
-                        <tr><td>3</td><td>Module AA</td><td class="sc-cell-num sc-cell-good">95.7%</td><td class="sc-cell-num">93.8%</td><td class="sc-cell-num">94.6%</td></tr>
-                        <tr><td>4</td><td>APS Test</td><td class="sc-cell-num sc-cell-good">95.3%</td><td class="sc-cell-num">94.1%</td><td class="sc-cell-num">95.6%</td></tr>
-                        <tr><td>5</td><td>Pre Focus</td><td class="sc-cell-num sc-cell-good">94.6%</td><td class="sc-cell-num">92.0%</td><td class="sc-cell-num">93.4%</td></tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-                <div class="cmp-detail__table">
-                  <div class="cmp-detail__table-head cmp-detail__table-head--bad">
-                    <span class="cmp-detail__table-title cmp-detail__table-title--bad">Worst 5 공정</span>
-                    <span class="cmp-detail__table-sub">개선 우선순위</span>
-                  </div>
-                  <div class="sc-aggrid">
-                    <table>
-                      <thead><tr><th style="width:42px;">#</th><th>공정</th><th class="sc-cell-num" style="width:64px;">CMP</th><th class="sc-cell-num" style="width:64px;">UPH</th><th class="sc-cell-num" style="width:60px;">Eff</th></tr></thead>
-                      <tbody>
-                        <tr><td>1</td><td>FOL Adhesion</td><td class="sc-cell-num sc-cell-bad">62.4%</td><td class="sc-cell-num">71.2%</td><td class="sc-cell-num">76.8%</td></tr>
-                        <tr><td>2</td><td>EOL Aging</td><td class="sc-cell-num sc-cell-bad">68.1%</td><td class="sc-cell-num">74.6%</td><td class="sc-cell-num">79.4%</td></tr>
-                        <tr><td>3</td><td>DCR Test</td><td class="sc-cell-num sc-cell-bad">89.4%</td><td class="sc-cell-num">87.5%</td><td class="sc-cell-num">88.6%</td></tr>
-                        <tr><td>4</td><td>VCM Attach</td><td class="sc-cell-num sc-cell-warn">93.5%</td><td class="sc-cell-num">90.4%</td><td class="sc-cell-num">91.8%</td></tr>
-                        <tr><td>5</td><td>Sensor UF</td><td class="sc-cell-num sc-cell-warn">92.9%</td><td class="sc-cell-num">89.7%</td><td class="sc-cell-num">90.6%</td></tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div><!-- /cmp-detail (CM모델A) -->
+                  </div><!-- /cmp-detail__body -->
+                </div><!-- /cmp-detail -->
+              </div><!-- /vit-modal__body -->
+            </div><!-- /vit-modal -->
+          </div><!-- /vit-modal-backdrop -->
 
-          <!-- ══════════════════════════════════════════════════════════ -->
-          <!--  detail block 2 — CM모델B  (점선 구분: .cmp-detail + .cmp-detail) -->
-          <!-- ══════════════════════════════════════════════════════════ -->
-          <div class="cmp-detail">
-            <div class="cmp-detail__model">
-              <div>
-                <div class="cmp-detail__model-eyebrow">MODEL</div>
-                <div class="cmp-detail__model-name">CM모델B</div>
-              </div>
-              <div class="cmp-detail__model-meta">
-                <span><strong>주력 공정</strong> · MOL Bonding</span>
-                <span><strong>호기</strong> · 10</span>
-                <span><strong>영역</strong> · MOL</span>
-                <span><strong>갱신</strong> · 2026-05-07 23:50</span>
-              </div>
-              <div data-testid="stButton"><button>상세 ↗</button></div>
-            </div>
-
-            <div class="cmp-detail__body">
-              <div class="cmp-detail__charts">
-                <div class="cmp-detail__row">
-                  <div class="cmp-detail__metric cmp-detail__metric--cmp">
-                    <div class="cmp-detail__metric-label">CMP 평균</div>
-                    <div class="cmp-detail__metric-value">95.1%</div>
-                    <div class="cmp-detail__metric-delta cmp-detail__metric-delta--good">▲ 2.4% vs 이전</div>
-                  </div>
-                  <div class="sc-mpl">
-                    <div class="sc-mpl-head">
-                      <span class="sc-mpl-title">CMP 달성률 (%) — 30일</span>
-                      <span class="sc-mpl-legend"><span style="color:#A50034;"><i></i>CMP</span></span>
-                    </div>
-                    <svg viewBox="0 0 400 90" style="height:80px;" preserveAspectRatio="none">
-                      <g class="sc-mpl-grid"><line x1="34" y1="14" x2="392" y2="14"/><line x1="34" y1="34" x2="392" y2="34"/><line x1="34" y1="54" x2="392" y2="54"/><line x1="34" y1="74" x2="392" y2="74"/></g>
-                      <g class="sc-mpl-axis"><line x1="34" y1="14" x2="34" y2="74"/><line x1="34" y1="74" x2="392" y2="74"/></g>
-                      <text x="32" y="18" text-anchor="end">100</text><text x="32" y="38" text-anchor="end">85</text><text x="32" y="58" text-anchor="end">70</text><text x="32" y="78" text-anchor="end">55</text>
-                      <path d="M40,46 L80,40 L120,36 L160,32 L200,28 L240,26 L280,22 L320,18 L360,16 L390,14 L390,74 L40,74 Z" fill="#A50034" class="sc-mpl-area"/>
-                      <polyline class="sc-mpl-line" stroke="#A50034" points="40,46 80,40 120,36 160,32 200,28 240,26 280,22 320,18 360,16 390,14"/>
-                      <circle cx="390" cy="14" r="2.6" fill="#A50034" class="sc-mpl-dot"/>
-                    </svg>
-                  </div>
-                </div>
-                <div class="cmp-detail__row">
-                  <div class="cmp-detail__metric cmp-detail__metric--uph">
-                    <div class="cmp-detail__metric-label">UPH 평균</div>
-                    <div class="cmp-detail__metric-value">90.4%</div>
-                    <div class="cmp-detail__metric-delta cmp-detail__metric-delta--good">▲ 1.2% vs 이전</div>
-                  </div>
-                  <div class="sc-mpl">
-                    <div class="sc-mpl-head">
-                      <span class="sc-mpl-title">UPH 달성률 (%) — 30일</span>
-                      <span class="sc-mpl-legend"><span style="color:#B57F1B;"><i></i>UPH</span></span>
-                    </div>
-                    <svg viewBox="0 0 400 90" style="height:80px;" preserveAspectRatio="none">
-                      <g class="sc-mpl-grid"><line x1="34" y1="14" x2="392" y2="14"/><line x1="34" y1="34" x2="392" y2="34"/><line x1="34" y1="54" x2="392" y2="54"/><line x1="34" y1="74" x2="392" y2="74"/></g>
-                      <g class="sc-mpl-axis"><line x1="34" y1="14" x2="34" y2="74"/><line x1="34" y1="74" x2="392" y2="74"/></g>
-                      <text x="32" y="18" text-anchor="end">100</text><text x="32" y="38" text-anchor="end">85</text><text x="32" y="58" text-anchor="end">70</text><text x="32" y="78" text-anchor="end">55</text>
-                      <path d="M40,52 L80,48 L120,46 L160,42 L200,38 L240,34 L280,30 L320,28 L360,26 L390,24 L390,74 L40,74 Z" fill="#B57F1B" class="sc-mpl-area"/>
-                      <polyline class="sc-mpl-line" stroke="#B57F1B" points="40,52 80,48 120,46 160,42 200,38 240,34 280,30 320,28 360,26 390,24"/>
-                      <circle cx="390" cy="24" r="2.6" fill="#B57F1B" class="sc-mpl-dot"/>
-                    </svg>
-                  </div>
-                </div>
-                <div class="cmp-detail__row">
-                  <div class="cmp-detail__metric cmp-detail__metric--eff">
-                    <div class="cmp-detail__metric-label">EFFICIENCY 평균</div>
-                    <div class="cmp-detail__metric-value">93.2%</div>
-                    <div class="cmp-detail__metric-delta cmp-detail__metric-delta--good">▲ 1.8% vs 이전</div>
-                  </div>
-                  <div class="sc-mpl">
-                    <div class="sc-mpl-head">
-                      <span class="sc-mpl-title">Efficiency (%) — 30일</span>
-                      <span class="sc-mpl-legend"><span style="color:#1F8B4C;"><i></i>Eff</span></span>
-                    </div>
-                    <svg viewBox="0 0 400 90" style="height:80px;" preserveAspectRatio="none">
-                      <g class="sc-mpl-grid"><line x1="34" y1="14" x2="392" y2="14"/><line x1="34" y1="34" x2="392" y2="34"/><line x1="34" y1="54" x2="392" y2="54"/><line x1="34" y1="74" x2="392" y2="74"/></g>
-                      <g class="sc-mpl-axis"><line x1="34" y1="14" x2="34" y2="74"/><line x1="34" y1="74" x2="392" y2="74"/></g>
-                      <text x="32" y="18" text-anchor="end">100</text><text x="32" y="38" text-anchor="end">90</text><text x="32" y="58" text-anchor="end">80</text><text x="32" y="78" text-anchor="end">70</text>
-                      <path d="M40,32 L80,30 L120,28 L160,24 L200,22 L240,18 L280,18 L320,16 L360,14 L390,12 L390,74 L40,74 Z" fill="#1F8B4C" class="sc-mpl-area"/>
-                      <polyline class="sc-mpl-line" stroke="#1F8B4C" points="40,32 80,30 120,28 160,24 200,22 240,18 280,18 320,16 360,14 390,12"/>
-                      <circle cx="390" cy="12" r="2.6" fill="#1F8B4C" class="sc-mpl-dot"/>
-                    </svg>
-                  </div>
-                </div>
-              </div>
-              <div class="cmp-detail__tables">
-                <div class="cmp-detail__table">
-                  <div class="cmp-detail__table-head cmp-detail__table-head--good">
-                    <span class="cmp-detail__table-title cmp-detail__table-title--good">Best 5 공정</span>
-                    <span class="cmp-detail__table-sub">달성률 상위</span>
-                  </div>
-                  <div class="sc-aggrid">
-                    <table>
-                      <thead><tr><th style="width:42px;">#</th><th>공정</th><th class="sc-cell-num" style="width:64px;">CMP</th><th class="sc-cell-num" style="width:64px;">UPH</th><th class="sc-cell-num" style="width:60px;">Eff</th></tr></thead>
-                      <tbody>
-                        <tr><td>1</td><td>Laser Mark</td><td class="sc-cell-num sc-cell-good">97.5%</td><td class="sc-cell-num">96.2%</td><td class="sc-cell-num">96.8%</td></tr>
-                        <tr><td>2</td><td>Lens AA</td><td class="sc-cell-num sc-cell-good">97.1%</td><td class="sc-cell-num">94.8%</td><td class="sc-cell-num">95.7%</td></tr>
-                        <tr><td>3</td><td>Module AA</td><td class="sc-cell-num sc-cell-good">96.4%</td><td class="sc-cell-num">94.0%</td><td class="sc-cell-num">95.2%</td></tr>
-                        <tr><td>4</td><td>APS Test</td><td class="sc-cell-num sc-cell-good">96.0%</td><td class="sc-cell-num">94.1%</td><td class="sc-cell-num">95.6%</td></tr>
-                        <tr><td>5</td><td>Flip Chip</td><td class="sc-cell-num sc-cell-good">95.8%</td><td class="sc-cell-num">93.0%</td><td class="sc-cell-num">94.4%</td></tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-                <div class="cmp-detail__table">
-                  <div class="cmp-detail__table-head cmp-detail__table-head--bad">
-                    <span class="cmp-detail__table-title cmp-detail__table-title--bad">Worst 5 공정</span>
-                    <span class="cmp-detail__table-sub">개선 우선순위</span>
-                  </div>
-                  <div class="sc-aggrid">
-                    <table>
-                      <thead><tr><th style="width:42px;">#</th><th>공정</th><th class="sc-cell-num" style="width:64px;">CMP</th><th class="sc-cell-num" style="width:64px;">UPH</th><th class="sc-cell-num" style="width:60px;">Eff</th></tr></thead>
-                      <tbody>
-                        <tr><td>1</td><td>MOL Bonding</td><td class="sc-cell-num sc-cell-warn">79.6%</td><td class="sc-cell-num">82.3%</td><td class="sc-cell-num">85.1%</td></tr>
-                        <tr><td>2</td><td>DCR Test</td><td class="sc-cell-num sc-cell-warn">92.4%</td><td class="sc-cell-num">88.6%</td><td class="sc-cell-num">90.5%</td></tr>
-                        <tr><td>3</td><td>Sensor UF</td><td class="sc-cell-num sc-cell-warn">93.8%</td><td class="sc-cell-num">90.2%</td><td class="sc-cell-num">91.8%</td></tr>
-                        <tr><td>4</td><td>VCM Attach</td><td class="sc-cell-num">94.3%</td><td class="sc-cell-num">91.6%</td><td class="sc-cell-num">92.7%</td></tr>
-                        <tr><td>5</td><td>Bracket Att.</td><td class="sc-cell-num">94.7%</td><td class="sc-cell-num">92.0%</td><td class="sc-cell-num">93.2%</td></tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div><!-- /cmp-detail (CM모델B) -->
-
-          <!-- ── 분석 도구 네비게이션 카드 (zip-pre tools-grid) ─────────── -->
-          <div class="sc-nav-cards__head">
-            <h3 class="sc-nav-cards__title">분석 도구</h3>
-            <span class="sc-nav-cards__sub">PRODUCTION ANALYTICS</span>
-          </div>
-          <div class="sc-nav-cards">
-            <a class="sc-nav-card" href="#sec-cmp" aria-current="page">
-              <div class="sc-nav-card__head">
-                <div class="sc-nav-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div>
-                <span class="sc-nav-card__badge sc-nav-card__badge--good">정식</span>
-              </div>
-              <div class="sc-nav-card__body">
-                <h4 class="sc-nav-card__title">CMP Dashboard</h4>
-                <p class="sc-nav-card__desc">공정별 CMP 달성률 추이 · 영역×모델×기간</p>
-              </div>
-              <div class="sc-nav-card__foot"><span>v4 · 2026-04-28</span><span class="sc-nav-card__arrow">→</span></div>
-            </a>
-            <a class="sc-nav-card" href="#sec-uph">
-              <div class="sc-nav-card__head">
-                <div class="sc-nav-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg></div>
-                <span class="sc-nav-card__badge sc-nav-card__badge--warn">가오픈</span>
-              </div>
-              <div class="sc-nav-card__body">
-                <h4 class="sc-nav-card__title">UPH Dashboard</h4>
-                <p class="sc-nav-card__desc">UPH · 동작시간 · I-TAS 분기 6 섹션</p>
-              </div>
-              <div class="sc-nav-card__foot"><span>가오픈 4/29~</span><span class="sc-nav-card__arrow">→</span></div>
-            </a>
-            <a class="sc-nav-card" href="#sec-mtba">
-              <div class="sc-nav-card__head">
-                <div class="sc-nav-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
-                <span class="sc-nav-card__badge sc-nav-card__badge--warn">가오픈</span>
-              </div>
-              <div class="sc-nav-card__body">
-                <h4 class="sc-nav-card__title">MTBA Dashboard</h4>
-                <p class="sc-nav-card__desc">공정별 MTBA 통계 · 다중 패널</p>
-              </div>
-              <div class="sc-nav-card__foot"><span>가오픈 4/29~</span><span class="sc-nav-card__arrow">→</span></div>
-            </a>
-            <a class="sc-nav-card" href="#sec-detail">
-              <div class="sc-nav-card__head">
-                <div class="sc-nav-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 22 8.5 12 15 2 8.5 12 2"/><polyline points="2 15.5 12 22 22 15.5"/><polyline points="2 12 12 18.5 22 12"/></svg></div>
-                <span class="sc-nav-card__badge sc-nav-card__badge--warn">가오픈</span>
-              </div>
-              <div class="sc-nav-card__body">
-                <h4 class="sc-nav-card__title">MTBA Detail View</h4>
-                <p class="sc-nav-card__desc">패널 드릴다운 · 공정×설비 매트릭스</p>
-              </div>
-              <div class="sc-nav-card__foot"><span>가오픈 4/29~</span><span class="sc-nav-card__arrow">→</span></div>
-            </a>
-            <a class="sc-nav-card" href="#sec-chat" aria-disabled="true">
-              <div class="sc-nav-card__head">
-                <div class="sc-nav-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
-                <span class="sc-nav-card__badge">오픈예정</span>
-              </div>
-              <div class="sc-nav-card__body">
-                <h4 class="sc-nav-card__title">MaxCapa Chat</h4>
-                <p class="sc-nav-card__desc">대화형 생산지표 조회 · 자연어 질의</p>
-              </div>
-              <div class="sc-nav-card__foot"><span>오픈 예정</span><span class="sc-nav-card__arrow">→</span></div>
-            </a>
-          </div>
 
         </div>
       </section>
@@ -2551,14 +2357,64 @@ LIMIT 5;</pre>
     });
   });
   // 사이드바 mocklink (./mockup-S*-B.html target=_blank) 는 그대로 외부 새 탭
-  // 초기 라우팅
-  var initialId = (location.hash && document.getElementById(location.hash.slice(1)))
-    ? location.hash.slice(1) : 'sec-home';
+  // 초기 라우팅 — 기본 sec-home-1, hash 우선. 'sec-home' alias → sec-home-1
+  function resolveDefault(id) {
+    if (!id) return 'sec-home-1';
+    if (id === 'sec-home') return 'sec-home-1';
+    return document.getElementById(id) ? id : 'sec-home-1';
+  }
+  var initialId = resolveDefault(location.hash ? location.hash.slice(1) : '');
   navigateTo(initialId);
   // 뒤/앞 버튼
   window.addEventListener('popstate', function () {
-    var id = location.hash ? location.hash.slice(1) : 'sec-home';
-    if (document.getElementById(id)) navigateTo(id);
+    var id = resolveDefault(location.hash ? location.hash.slice(1) : '');
+    navigateTo(id);
+  });
+
+  // ── CMP 공정 카드 클릭 → 공정별 상세 분석 모달 열림 ─────────────────
+  var procModal = document.getElementById('cmp-proc-modal');
+  var procModalClose = document.getElementById('cmp-proc-modal-close');
+  var procModalTitle = document.getElementById('cmp-proc-modal-title');
+  var procModalName = document.getElementById('cmp-proc-modal-name');
+  var procModalModel = document.getElementById('cmp-proc-modal-model');
+  function openProcModal() {
+    if (!procModal) return;
+    procModal.hidden = false;
+    procModal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeProcModal() {
+    if (!procModal) return;
+    procModal.hidden = true;
+    procModal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+  if (procModalClose) procModalClose.addEventListener('click', closeProcModal);
+  if (procModal) {
+    procModal.addEventListener('click', function (e) {
+      if (e.target === procModal) closeProcModal();
+    });
+  }
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && procModal && !procModal.hidden) closeProcModal();
+  });
+  Array.prototype.slice.call(document.querySelectorAll('.cmp-proc')).forEach(function (p) {
+    p.setAttribute('role', 'button');
+    p.setAttribute('tabindex', '0');
+    var openFromCard = function () {
+      var name = (p.querySelector('.cmp-proc__name') || {}).textContent || '';
+      var col = p.closest('.cmp-model-col');
+      var model = col ? ((col.querySelector('.cmp-model-col__head') || {}).childNodes[0] || {}).nodeValue || '' : '';
+      model = (model || '').trim();
+      if (procModalTitle) procModalTitle.textContent = '공정별 상세 분석' + (name ? ' — ' + name : '');
+      if (procModalName) procModalName.textContent = name || '';
+      if (procModalModel) procModalModel.textContent = model || '—';
+      openProcModal();
+    };
+    p.addEventListener('click', openFromCard);
+    p.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openFromCard(); }
+    });
   });
 
   // login section: prefer self-hosted mp4 over YouTube iframe.
@@ -2641,8 +2497,8 @@ LIMIT 5;</pre>
   )).forEach(function (f) {
     f.addEventListener('submit', function (e) {
       e.preventDefault();
-      navigateTo('sec-home');
-      history.pushState(null, '', '#sec-home');
+      navigateTo('sec-home-1');
+      history.pushState(null, '', '#sec-home-1');
     });
   });
 })();
