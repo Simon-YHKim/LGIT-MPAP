@@ -65,7 +65,7 @@ BORDER             = '#E5E7EB'  # Vitals border
 TEXT               = '#1F2430'  # Vitals ink-body
 SUB                = '#6B7280'  # Vitals ink-muted
 PASTEL_RED         = '#FDECEF'  # Vitals bad-tint
-PASTEL_RED_STRONG  = '#F8D0D8'  # bad-tint 강조
+PASTEL_RED_STRONG  = '#FDECEF'  # Vitals bad-tint (이전 off-token #F8D0D8 → 정식 토큰)
 PASTEL_YELLOW      = '#FAF1DD'  # Vitals warn-tint
 PASTEL_GREEN       = '#E6F4EA'  # Vitals good-tint
 
@@ -74,7 +74,7 @@ st.markdown(f"""
 /* Vitals 토큰 — apply_vitals_theme 의 root 변수에 fallback 으로 결합.
    하드코딩된 f-string hex 와 var() 를 함께 두어, 테마 변경 시 var() 우선 적용. */
 .block-container {{padding-top: 1rem; padding-bottom: 2rem;}}
-.main {{background: linear-gradient(180deg, var(--page-bg, #FFFDFE) 0%, var(--page-bg, {BG}) 100%);}}
+.main {{background: linear-gradient(180deg, var(--page-bg, #FFFFFF) 0%, var(--page-bg, {BG}) 100%);}}
 .soft-card {{
     background: var(--card-bg, rgba(255,255,255,.92));
     border: 1px solid var(--border, {BORDER});
@@ -124,7 +124,7 @@ div.stButton > button[kind="primary"] {{background:var(--primary, {PRIMARY}) !im
 }}
 
 .page-hero-sub {{
-    color: #FFF5F8;
+    color: #FFFFFF;
     font-size: .95rem;
     line-height: 1.5;
 }}
@@ -132,8 +132,8 @@ div.stButton > button[kind="primary"] {{background:var(--primary, {PRIMARY}) !im
 
 div[data-testid="stTextInput"] input {{
     border-radius: 999px !important;
-    border: 1px solid #E8D8DE !important;
-    background: #FFFDFE !important;
+    border: 1px solid #F8E5EC !important;
+    background: #FFFFFF !important;
     color: #A50034 !important;
     font-weight: 700 !important;
     min-height: 42px !important;
@@ -911,11 +911,11 @@ def default_cell_style():
 def build_common_grid_css_dict():
     return {
         '.ag-root-wrapper': {'border': f'1px solid {BORDER} !important', 'border-radius': '20px !important', 'overflow': 'hidden !important'},
-        '.ag-header': {'background': f'linear-gradient(180deg, {ROSE}, #FFFDFE) !important'},
+        '.ag-header': {'background': f'linear-gradient(180deg, {ROSE}, #FFFFFF) !important'},
         '.ag-header-cell': {'font-weight': '800 !important', 'color': f'{PRIMARY} !important', 'justify-content': 'center !important', 'text-align': 'center !important', 'border-right': f'1px solid {BORDER} !important'},
         '.ag-cell': {'font-size': '12px !important', 'display': 'flex !important', 'align-items': 'center !important', 'justify-content': 'center !important', 'color': f'{TEXT} !important', 'border-right': f'1px solid {BORDER} !important'},
-        '.ag-row': {'border-bottom': '1px solid #F0E5EA !important'},
-        '.ag-row-hover': {'background-color': '#FCF7F9 !important'},
+        '.ag-row': {'border-bottom': '1px solid #F8E5EC !important'},
+        '.ag-row-hover': {'background-color': '#F8E5EC !important'},
     }
 
 
@@ -1101,20 +1101,20 @@ def render_popup_alarm_table(popup_rows):
     rows_html = []
     for r in popup_rows:
         rows_html.append(
-            f"<tr><td style='padding:8px 10px; text-align:center; border-bottom:1px solid #eee;'>{r.get('rank','')}</td>"
-            f"<td style='padding:8px 10px; border-bottom:1px solid #eee;'>{escape(str(r.get('alarm_name','')))}</td>"
-            f"<td style='padding:8px 10px; text-align:right; border-bottom:1px solid #eee;'>{fmt_int(r.get('alarm_count',0))}</td>"
-            f"<td style='padding:8px 10px; text-align:right; border-bottom:1px solid #eee;'>{fmt_rate(r.get('alarm_rate_pct',0.0))}%</td>"
-            f"<td style='padding:8px 10px; text-align:right; border-bottom:1px solid #eee;'>{fmt_rate(r.get('share_pct',0.0))}%</td></tr>"
+            f"<tr><td style='padding:8px 10px; text-align:center; border-bottom:1px solid #E5E7EB;'>{r.get('rank','')}</td>"
+            f"<td style='padding:8px 10px; border-bottom:1px solid #E5E7EB;'>{escape(str(r.get('alarm_name','')))}</td>"
+            f"<td style='padding:8px 10px; text-align:right; border-bottom:1px solid #E5E7EB;'>{fmt_int(r.get('alarm_count',0))}</td>"
+            f"<td style='padding:8px 10px; text-align:right; border-bottom:1px solid #E5E7EB;'>{fmt_rate(r.get('alarm_rate_pct',0.0))}%</td>"
+            f"<td style='padding:8px 10px; text-align:right; border-bottom:1px solid #E5E7EB;'>{fmt_rate(r.get('share_pct',0.0))}%</td></tr>"
         )
     html = f"""
     <table style='width:100%; border-collapse:collapse; font-size:13px;'>
         <tr style='background:{ROSE};'>
-            <th style='padding:8px 10px; border-bottom:1px solid #ddd;'>구분</th>
-            <th style='padding:8px 10px; border-bottom:1px solid #ddd;'>알람명</th>
-            <th style='padding:8px 10px; border-bottom:1px solid #ddd;'>알람수</th>
-            <th style='padding:8px 10px; border-bottom:1px solid #ddd;'>알람율</th>
-            <th style='padding:8px 10px; border-bottom:1px solid #ddd;'>점유율</th>
+            <th style='padding:8px 10px; border-bottom:1px solid #CBD0D6;'>구분</th>
+            <th style='padding:8px 10px; border-bottom:1px solid #CBD0D6;'>알람명</th>
+            <th style='padding:8px 10px; border-bottom:1px solid #CBD0D6;'>알람수</th>
+            <th style='padding:8px 10px; border-bottom:1px solid #CBD0D6;'>알람율</th>
+            <th style='padding:8px 10px; border-bottom:1px solid #CBD0D6;'>점유율</th>
         </tr>
         {''.join(rows_html)}
     </table>

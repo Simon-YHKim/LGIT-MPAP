@@ -1,57 +1,6 @@
 {
-  "average": 93.7,
+  "average": 95.2,
   "pages": [
-    {
-      "file": "streamlit-app/pages/4_MTBA_Detail_View.py",
-      "score": 81.1,
-      "max": 100,
-      "breakdown": {
-        "tokens(30)": {
-          "pts": 14.1,
-          "total": 34,
-          "vitals": 16,
-          "off": 18,
-          "off_samples": [
-            "DDDDDD",
-            "E8D8DE",
-            "EEEEEE",
-            "F0E5EA",
-            "F8D0D8",
-            "FCF7F9",
-            "FFF5F8",
-            "FFFDFE"
-          ]
-        },
-        "font(20)": {
-          "pts": 20.0,
-          "violations": [],
-          "has_lg_ei_or_var": true
-        },
-        "theme(10)": {
-          "pts": 10.0,
-          "apply_vitals_theme": true,
-          "local_inject": false
-        },
-        "hero(10)": {
-          "pts": 10.0,
-          "matched": [
-            "page-hero"
-          ]
-        },
-        "components(15)": {
-          "pts": 12.0,
-          "tokens_used": 4,
-          "of": 5
-        },
-        "status(15)": {
-          "pts": 15.0,
-          "good": true,
-          "warn": true,
-          "bad": true,
-          "legacy_status_color": false
-        }
-      }
-    },
     {
       "file": "streamlit-app/pages/1_CMP_Dashboard.py",
       "score": 86.5,
@@ -235,6 +184,50 @@
           "good": true,
           "warn": true,
           "bad": false,
+          "legacy_status_color": false
+        }
+      }
+    },
+    {
+      "file": "streamlit-app/pages/4_MTBA_Detail_View.py",
+      "score": 96.1,
+      "max": 100,
+      "breakdown": {
+        "tokens(30)": {
+          "pts": 29.1,
+          "total": 35,
+          "vitals": 34,
+          "off": 1,
+          "off_samples": [
+            "F8D0D8"
+          ]
+        },
+        "font(20)": {
+          "pts": 20.0,
+          "violations": [],
+          "has_lg_ei_or_var": true
+        },
+        "theme(10)": {
+          "pts": 10.0,
+          "apply_vitals_theme": true,
+          "local_inject": false
+        },
+        "hero(10)": {
+          "pts": 10.0,
+          "matched": [
+            "page-hero"
+          ]
+        },
+        "components(15)": {
+          "pts": 12.0,
+          "tokens_used": 4,
+          "of": 5
+        },
+        "status(15)": {
+          "pts": 15.0,
+          "good": true,
+          "warn": true,
+          "bad": true,
           "legacy_status_color": false
         }
       }
