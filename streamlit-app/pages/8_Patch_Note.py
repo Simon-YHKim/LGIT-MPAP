@@ -135,22 +135,24 @@ def delete_board_post(post_id):
 
 
 def apply_board_styles():
+    """Patch Note 페이지 — Light Vitals 테마 (mockup-S8-B 일치).
+    이전 dark 모드에서 light 로 전환. 백엔드 호출/세션 키/SQL 불변."""
     st.markdown(
         """
         <style>
         .stApp {
-            background: linear-gradient(135deg, #0A0C10 0%, #11151b 100%);
-            color: white;
+            background: var(--page-bg, #F7F8FA);
+            color: var(--ink-body, #1F2430);
         }
-        
+
         header[data-testid="stHeader"] {
             background: transparent !important;
         }
-        
+
         [data-testid="stToolbar"] {
             background: transparent !important;
         }
-        
+
         [data-testid="stDecoration"] {
             background: transparent !important;
         }
@@ -161,16 +163,25 @@ def apply_board_styles():
             padding-bottom: 2rem !important;
         }
 
+        /* Top strip — mockup-S8-B 의 wine-red 8px 띠 */
+        .board-top-strip {
+            height: 6px;
+            background: var(--primary, #A50034);
+            border-radius: 3px;
+            margin-bottom: 16px;
+        }
+
         .board-top-title {
-            font-size: 30px;
-            font-weight: 800;
-            color: #ffffff;
+            font-family: 'LG EI Headline', 'LG EI Text', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--ink-body, #1F2430);
             letter-spacing: -0.02em;
             margin-bottom: 6px;
         }
 
         .board-top-sub {
-            color: rgba(255,255,255,0.68);
+            color: var(--ink-muted, #6B7280);
             font-size: 13px;
             margin-bottom: 24px;
         }
@@ -182,14 +193,12 @@ def apply_board_styles():
             width: 100%;
             height: 100%;
             min-height: 620px;
-            border-radius: 18px;
-            background: rgba(10,12,16,0.58);
-            border: 1px solid rgba(255,255,255,0.10);
+            border-radius: 12px;
+            background: var(--card-bg, #FFFFFF);
+            border: 1px solid var(--border, #E5E7EB);
             box-shadow:
-                0 16px 34px rgba(0,0,0,0.22),
-                inset 0 1px 0 rgba(255,255,255,0.04);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+                0 1px 2px rgba(17,24,39,.04),
+                0 8px 24px rgba(17,24,39,.04);
             pointer-events: none;
             z-index: 0;
         }
@@ -206,23 +215,25 @@ def apply_board_styles():
         }
 
         .board-section-title {
-            font-size: 13px;
+            font-size: 11px;
             font-weight: 700;
-            color: rgba(255,255,255,0.82);
-            letter-spacing: .04em;
+            color: var(--ink-muted, #6B7280);
+            letter-spacing: .08em;
+            text-transform: uppercase;
             margin-bottom: 12px;
         }
 
         .board-meta {
-            color: rgba(255,255,255,0.60);
+            color: var(--ink-muted, #6B7280);
             font-size: 12px;
             line-height: 1.5;
         }
 
         .board-detail-title {
-            font-size: 24px;
-            font-weight: 800;
-            color: #ffffff;
+            font-family: 'LG EI Headline', 'LG EI Text', sans-serif;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--ink-body, #1F2430);
             line-height: 1.3;
             margin-bottom: 8px;
         }
@@ -257,19 +268,28 @@ def apply_board_styles():
         }
 
         .board-tag-default {
-            background: rgba(255,255,255,0.10);
-            border: 1px solid rgba(255,255,255,0.16);
-            color: #ffffff;
+            background: var(--soft, #F1F3F5);
+            border: 1px solid var(--border, #E5E7EB);
+            color: var(--ink-muted, #6B7280);
         }
 
         div[data-testid="stButton"] > button {
-            border-radius: 10px !important;
+            border-radius: 8px !important;
+            border: 1px solid var(--border, #E5E7EB) !important;
+            background: var(--card-bg, #FFFFFF) !important;
+            color: var(--ink-body, #1F2430) !important;
+        }
+
+        div[data-testid="stButton"] > button[kind="primary"] {
+            background: var(--primary, #A50034) !important;
+            border-color: var(--primary, #A50034) !important;
+            color: #FFFFFF !important;
         }
 
         div[data-testid="stButton"] > button[kind="secondary"] {
             background: transparent !important;
             border: none !important;
-            color: rgba(255,255,255,0.86) !important;
+            color: var(--ink-body, #1F2430) !important;
             text-align: left !important;
             justify-content: flex-start !important;
             box-shadow: none !important;
@@ -284,30 +304,32 @@ def apply_board_styles():
         }
 
         div[data-testid="stButton"] > button[kind="secondary"]:hover {
-            color: #ffffff !important;
+            color: var(--primary, #A50034) !important;
             text-decoration: underline !important;
             background: transparent !important;
         }
 
         [data-testid="stExpander"] {
-            background: rgba(10,12,16,0.52);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 14px;
+            background: var(--card-bg, #FFFFFF);
+            border: 1px solid var(--border, #E5E7EB);
+            border-radius: 12px;
         }
 
         [data-testid="stTextInput"] input,
         [data-testid="stTextArea"] textarea {
-            background: rgba(255,255,255,0.96) !important;
+            background: var(--card-bg, #FFFFFF) !important;
+            border: 1px solid var(--border, #E5E7EB) !important;
+            color: var(--ink-body, #1F2430) !important;
         }
 
         .board-list-row {
-            border-top: 1px dashed rgba(255,255,255,0.08);
+            border-top: 1px solid var(--border, #E5E7EB);
             margin: 6px 0;
         }
 
         .board-list-date {
-            color: rgba(255,255,255,0.68);
-            font-size: 10px;
+            color: var(--ink-muted, #6B7280);
+            font-size: 11px;
             font-weight: 700;
             letter-spacing: .05em;
             padding-top: 6px;
@@ -379,7 +401,9 @@ if query_post_id:
 
 apply_board_styles()
 
-st.markdown('<div class="board-top-title">Patch Note · 패치노트</div>', unsafe_allow_html=True)
+# vit-page-head — mockup-S8-B 의 wine-red 띠 + 타이틀 패턴
+st.markdown('<div class="board-top-strip"></div>', unsafe_allow_html=True)
+st.markdown('<div class="board-top-title vit-page-head">Patch Note · 패치노트</div>', unsafe_allow_html=True)
 st.markdown(
     '<div class="board-top-sub">최신 변경 이력을 확인하고 상세 내용을 조회할 수 있습니다.</div>',
     unsafe_allow_html=True

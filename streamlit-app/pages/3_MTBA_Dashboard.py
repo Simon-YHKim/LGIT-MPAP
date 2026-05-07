@@ -82,10 +82,10 @@ COMMENT_TABLE = "mtba.alarm_comment_history"
 
 PAGE_STYLE = f"""
 <style>
-    .stApp {{ background: {BG}; color: {TEXT}; }}
+    .stApp {{ background: var(--page-bg, {BG}); color: var(--ink-body, {TEXT}); }}
     .block-container {{ padding-top: 1rem; padding-bottom: 2rem; }}
     .page-banner {{
-    background: linear-gradient(135deg, {PRIMARY_2} 0%, {PRIMARY} 100%);
+    background: linear-gradient(135deg, var(--primary-dark, {PRIMARY_2}) 0%, var(--primary, {PRIMARY}) 100%);
     color: #fff;
     border-radius: 12px;
     padding: 40px 28px 24px 28px;
@@ -97,21 +97,21 @@ PAGE_STYLE = f"""
     font-weight: 700;
     letter-spacing: -0.025em;
 }}
-    .page-subtitle {{ color: {SUB}; font-size: 13px; margin: 4px 2px 18px 4px; }}
+    .page-subtitle {{ color: var(--ink-muted, {SUB}); font-size: 13px; margin: 4px 2px 18px 4px; }}
     .soft-card {{
-        background: {CARD}; border: 1px solid {BORDER}; border-radius: 12px;
+        background: var(--card-bg, {CARD}); border: 1px solid var(--border, {BORDER}); border-radius: 12px;
         padding: 14px 16px; box-shadow: 0 6px 18px rgba(109,16,40,.05);
     }}
-    .section-title {{ font-size: 22px; font-weight: 800; color: {PRIMARY}; margin: 2px 0 8px 0; }}
-    .muted-note {{ color: {SUB}; font-size: 12px; }}
+    .section-title {{ font-size: 22px; font-weight: 800; color: var(--primary, {PRIMARY}); margin: 2px 0 8px 0; }}
+    .muted-note {{ color: var(--ink-muted, {SUB}); font-size: 12px; }}
     div[data-testid="stMetric"] {{
-        background: {CARD}; border: 1px solid {BORDER}; border-radius: 18px; padding: 10px 12px;
+        background: var(--card-bg, {CARD}); border: 1px solid var(--border, {BORDER}); border-radius: 18px; padding: 10px 12px;
     }}
     div[data-testid="stExpander"] > details {{
-        background: {CARD}; border: 1px solid {BORDER}; border-radius: 18px; overflow: hidden;
+        background: var(--card-bg, {CARD}); border: 1px solid var(--border, {BORDER}); border-radius: 18px; overflow: hidden;
     }}
     div[data-testid="stExpander"] > details > summary {{
-        background: linear-gradient(180deg, {ROSE}, #FFFDFE); color: {PRIMARY}; font-weight: 800;
+        background: linear-gradient(180deg, var(--primary-tint, {ROSE}), var(--card-bg, #FFFDFE)); color: var(--primary, {PRIMARY}); font-weight: 800;
     }}
 </style>
 """
@@ -1059,7 +1059,7 @@ def render_signal_summary_card(summary_info: dict, process_name: str):
           margin: 0;
           padding: 0;
           background: transparent;
-          font-family: Arial, Helvetica, sans-serif;
+          font-family: 'LG EI Text', 'Malgun Gothic', '맑은 고딕', Arial, Helvetica, sans-serif;
         }}
         .card {{
           border: 1px solid #d9d9d9;
@@ -1198,7 +1198,7 @@ def render_best_worst_snapshot_card(snapshot_df: pd.DataFrame, process_name: str
           margin: 0;
           padding: 0;
           background: transparent;
-          font-family: Arial, Helvetica, sans-serif;
+          font-family: 'LG EI Text', 'Malgun Gothic', '맑은 고딕', Arial, Helvetica, sans-serif;
         }}
         .card {{
           border: 1px solid #d9d9d9;

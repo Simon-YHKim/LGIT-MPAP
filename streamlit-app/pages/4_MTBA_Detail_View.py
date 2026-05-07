@@ -67,36 +67,39 @@ PASTEL_GREEN       = '#E6F4EA'  # Vitals good-tint
 
 st.markdown(f"""
 <style>
+/* Vitals 토큰 — apply_vitals_theme 의 root 변수에 fallback 으로 결합.
+   하드코딩된 f-string hex 와 var() 를 함께 두어, 테마 변경 시 var() 우선 적용. */
 .block-container {{padding-top: 1rem; padding-bottom: 2rem;}}
-.main {{background: linear-gradient(180deg, #FFFDFE 0%, {BG} 100%);}}
+.main {{background: linear-gradient(180deg, var(--page-bg, #FFFDFE) 0%, var(--page-bg, {BG}) 100%);}}
 .soft-card {{
-    background: rgba(255,255,255,.92);
-    border: 1px solid {BORDER};
+    background: var(--card-bg, rgba(255,255,255,.92));
+    border: 1px solid var(--border, {BORDER});
     border-radius: 12px;
     padding: 14px 18px;
     box-shadow: 0 10px 24px rgba(109,16,40,.05);
+    color: var(--ink-body, {TEXT});
 }}
-.section-title {{color:{PRIMARY}; font-weight:800; font-size:1.15rem;}}
-.panel-title {{color:{PRIMARY}; font-weight:800; font-size:1.05rem; margin-bottom: .2rem;}}
-.helper {{color:{SUB}; font-size:.9rem;}}
+.section-title {{color:var(--primary, {PRIMARY}); font-weight:800; font-size:1.15rem;}}
+.panel-title {{color:var(--primary, {PRIMARY}); font-weight:800; font-size:1.05rem; margin-bottom: .2rem;}}
+.helper {{color:var(--ink-muted, {SUB}); font-size:.9rem;}}
 .filter-wrap {{
-    background: rgba(255,255,255,.9);
-    border: 1px solid {BORDER};
+    background: var(--card-bg, rgba(255,255,255,.9));
+    border: 1px solid var(--border, {BORDER});
     border-radius: 18px;
     padding: 14px 16px;
     margin-top: 10px;
 }}
 .legend-wrap {{display:flex; gap:8px; flex-wrap:wrap; margin:6px 0 6px 0;}}
-.legend-chip {{border:1px solid {BORDER}; border-radius:999px; padding:6px 10px; font-size:.82rem; background:white;}}
-.legend-red {{background:{PASTEL_RED};}}
-.legend-yellow {{background:{PASTEL_YELLOW};}}
-.legend-green {{background:{PASTEL_GREEN};}}
-.legend-prod {{background:{PASTEL_RED_STRONG};}}
-.badge-chip {{display:inline-block; padding:4px 10px; border-radius:999px; border:1px solid {BORDER}; background:{ROSE}; color:{PRIMARY}; font-size:.8rem; font-weight:700;}}
-div.stButton > button {{border-radius: 999px !important; border:1px solid {BORDER} !important;}}
-div.stButton > button[kind="primary"] {{background:{PRIMARY} !important; color:white !important;}}
-.popup-meta {{border:1px solid {BORDER}; border-radius:16px; padding:12px 14px; background:#fff; margin-bottom:10px;}}
-.popup-title {{color:{PRIMARY}; font-weight:800; font-size:1.05rem; margin-bottom:4px;}}
+.legend-chip {{border:1px solid var(--border, {BORDER}); border-radius:999px; padding:6px 10px; font-size:.82rem; background:var(--card-bg, white);}}
+.legend-red    {{background:var(--status-bad-tint,  {PASTEL_RED});}}
+.legend-yellow {{background:var(--status-warn-tint, {PASTEL_YELLOW});}}
+.legend-green  {{background:var(--status-good-tint, {PASTEL_GREEN});}}
+.legend-prod   {{background:{PASTEL_RED_STRONG};}}
+.badge-chip {{display:inline-block; padding:4px 10px; border-radius:999px; border:1px solid var(--border, {BORDER}); background:var(--primary-tint, {ROSE}); color:var(--primary, {PRIMARY}); font-size:.8rem; font-weight:700;}}
+div.stButton > button {{border-radius: 999px !important; border:1px solid var(--border, {BORDER}) !important;}}
+div.stButton > button[kind="primary"] {{background:var(--primary, {PRIMARY}) !important; color:white !important;}}
+.popup-meta {{border:1px solid var(--border, {BORDER}); border-radius:16px; padding:12px 14px; background:var(--card-bg, #fff); margin-bottom:10px;}}
+.popup-title {{color:var(--primary, {PRIMARY}); font-weight:800; font-size:1.05rem; margin-bottom:4px;}}
 .popup-sub {{color:{SUB}; font-size:.9rem; line-height:1.5;}}
 .page-hero {{
     background: linear-gradient(135deg, {PRIMARY_2} 0%, {PRIMARY} 100%);

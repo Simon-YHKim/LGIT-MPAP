@@ -97,10 +97,53 @@ def download_df_button(df: pd.DataFrame, filename: str, label: str):
 
 
 # ==================================================
-# 페이지 헤더
+# 페이지 헤더 — Vitals page-head 스타일
 # ==================================================
-st.title("📊 관리자 분석 대시보드")
-st.caption("사용자 로그인 / 페이지 조회 로그 기반 분석")
+st.markdown(
+    """
+    <style>
+    .vit-page-head {
+        background: var(--card-bg, #FFFFFF);
+        border: 1px solid var(--border, #E5E7EB);
+        border-left: 4px solid var(--primary, #A50034);
+        border-radius: 12px;
+        padding: 18px 22px;
+        margin-bottom: 14px;
+        box-shadow: 0 1px 2px rgba(17,24,39,.04), 0 8px 24px rgba(17,24,39,.035);
+    }
+    .vit-page-head h1 {
+        margin: 0;
+        font-family: 'LG EI Headline', 'LG EI Text', sans-serif;
+        font-size: 22px; font-weight: 700; letter-spacing:-0.01em;
+        color: var(--ink-body, #1F2430);
+    }
+    .vit-page-head .sub {
+        margin-top: 4px;
+        font-size: 12px; color: var(--ink-muted, #6B7280);
+    }
+    /* Admin 카드 / 메트릭 컨테이너 — Vitals 토큰 정렬 */
+    div[data-testid="stMetric"] {
+        background: var(--card-bg, #FFFFFF);
+        border: 1px solid var(--border, #E5E7EB);
+        border-radius: 8px;
+        padding: 12px 14px;
+        color: var(--ink-body, #1F2430);
+    }
+    div[data-testid="stMetric"] label { color: var(--ink-muted, #6B7280) !important; }
+    /* status semantic — 정상/경고/위험 라벨 */
+    .vit-status-good { color: var(--status-good, #1F8B4C); font-weight: 700; }
+    .vit-status-warn { color: var(--status-warn, #B57F1B); font-weight: 700; }
+    .vit-status-bad  { color: var(--status-bad,  #B23A48); font-weight: 700; }
+    /* DataFrame / Table — soft 토큰 */
+    div[data-testid="stDataFrame"] { background: var(--soft, #F1F3F5); border-radius: 8px; }
+    </style>
+    <div class="vit-page-head">
+        <h1>관리자 분석 대시보드</h1>
+        <div class="sub">사용자 로그인 · 페이지 조회 로그 기반 분석</div>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
 
 # ==================================================
 # 필터

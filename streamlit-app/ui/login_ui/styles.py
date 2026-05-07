@@ -23,7 +23,9 @@ def apply_global_styles():
             display: none !important;
         }
 
-        /* :root 토큰은 vitals 테마에서 모두 정의됨. 여기선 페이지 전용 추가만. */
+        /* :root 토큰은 vitals 테마에서 모두 정의됨. 여기선 페이지 전용 추가만.
+           — Vitals 토큰 (--page-bg, --card-bg, --border, --soft, --ink-body 등)
+             는 vitals 테마에서 이미 :root 에 정의되어 있어 여기서 직접 참조 가능. */
         :root {
             --on-dark:#FFFFFF;
             --on-dark-muted:rgba(255,255,255,0.76);
@@ -31,6 +33,33 @@ def apply_global_styles():
             --panel-dark:rgba(12,14,18,0.68);
             --panel-border-dark:rgba(255,255,255,0.10);
         }
+
+        /* Vitals 토큰 — 우측 로그인 카드(light) 영역 명시적 사용 */
+        .auth-card,
+        .signup-card,
+        .login-card {
+            background: var(--card-bg, #FFFFFF) !important;
+            border: 1px solid var(--border, #E5E7EB) !important;
+            color: var(--ink-body, #1F2430) !important;
+        }
+        .auth-card label,
+        .login-card label {
+            color: var(--ink-muted, #6B7280) !important;
+        }
+        .auth-card input,
+        .login-card input {
+            background: var(--soft, #F1F3F5) !important;
+            border: 1px solid var(--border, #E5E7EB) !important;
+            color: var(--ink-body, #1F2430) !important;
+        }
+        /* page-head — 우리회사 LGIT 로고 + 캐치프레이즈 영역 마커 */
+        .vit-page-head, .login-vit-head {
+            color: var(--on-dark);
+        }
+        /* status 시맨틱 — 회원가입 폼 검증 메시지에서 사용 */
+        .auth-status-good { color: var(--status-good, #1F8B4C) !important; }
+        .auth-status-warn { color: var(--status-warn, #B57F1B) !important; }
+        .auth-status-bad  { color: var(--status-bad,  #B23A48) !important; }
 
         /* 폰트 — vitals 의 LG EI 스택을 페이지 전체에 강제 적용 */
         html, body, [class*="css"] {

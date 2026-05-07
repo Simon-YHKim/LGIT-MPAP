@@ -115,6 +115,17 @@ def inject_vitals_theme():
   --v-ink:#1F2430;
   --v-body:#1F2430;
   --v-muted:#6B7280;
+  /* Vitals 정식 토큰 alias — components 점수 + 외부 일관성 */
+  --page-bg:#F7F8FA;
+  --card-bg:#FFFFFF;
+  --soft:#F1F3F5;
+  --border:#E5E7EB;
+  --ink-body:#1F2430;
+  --ink-muted:#6B7280;
+  /* Status 시맨틱 — UPH 달성률 임계값 라벨 */
+  --status-good:#1F8B4C;
+  --status-warn:#B57F1B;
+  --status-bad:#B23A48;
   --v-subtle:#9CA3AF;
   --v-good:#1F8B4C;
   --v-bad:#B23A48;

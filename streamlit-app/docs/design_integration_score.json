@@ -1,0 +1,469 @@
+{
+  "average": 93.5,
+  "pages": [
+    {
+      "file": "streamlit-app/pages/4_MTBA_Detail_View.py",
+      "score": 81.1,
+      "max": 100,
+      "breakdown": {
+        "tokens(30)": {
+          "pts": 14.1,
+          "total": 34,
+          "vitals": 16,
+          "off": 18,
+          "off_samples": [
+            "DDDDDD",
+            "E8D8DE",
+            "EEEEEE",
+            "F0E5EA",
+            "F8D0D8",
+            "FCF7F9",
+            "FFF5F8",
+            "FFFDFE"
+          ]
+        },
+        "font(20)": {
+          "pts": 20.0,
+          "violations": [],
+          "has_lg_ei_or_var": true
+        },
+        "theme(10)": {
+          "pts": 10.0,
+          "apply_vitals_theme": true,
+          "local_inject": false
+        },
+        "hero(10)": {
+          "pts": 10.0,
+          "matched": [
+            "page-hero"
+          ]
+        },
+        "components(15)": {
+          "pts": 12.0,
+          "tokens_used": 4,
+          "of": 5
+        },
+        "status(15)": {
+          "pts": 15.0,
+          "good": true,
+          "warn": true,
+          "bad": true,
+          "legacy_status_color": false
+        }
+      }
+    },
+    {
+      "file": "streamlit-app/pages/1_CMP_Dashboard.py",
+      "score": 86.2,
+      "max": 100,
+      "breakdown": {
+        "tokens(30)": {
+          "pts": 16.2,
+          "total": 100,
+          "vitals": 54,
+          "off": 46,
+          "off_samples": [
+            "384455",
+            "3F4653",
+            "4B5563",
+            "525866",
+            "5F6673",
+            "8C84B8",
+            "CBD0D6",
+            "CFD5DF"
+          ]
+        },
+        "font(20)": {
+          "pts": 20.0,
+          "violations": [],
+          "has_lg_ei_or_var": true
+        },
+        "theme(10)": {
+          "pts": 10.0,
+          "apply_vitals_theme": true,
+          "local_inject": false
+        },
+        "hero(10)": {
+          "pts": 10.0,
+          "matched": [
+            "section-heading",
+            "<h1\\b"
+          ]
+        },
+        "components(15)": {
+          "pts": 15.0,
+          "tokens_used": 5,
+          "of": 5
+        },
+        "status(15)": {
+          "pts": 15.0,
+          "good": true,
+          "warn": true,
+          "bad": true,
+          "legacy_status_color": false
+        }
+      }
+    },
+    {
+      "file": "streamlit-app/login.py",
+      "score": 92.5,
+      "max": 100,
+      "breakdown": {
+        "tokens(30)": {
+          "pts": 22.5,
+          "total": 32,
+          "vitals": 24,
+          "off": 8,
+          "off_samples": [
+            "000000",
+            "D7FFE5",
+            "DBEAFE",
+            "FFE4EC"
+          ]
+        },
+        "font(20)": {
+          "pts": 20.0,
+          "violations": [],
+          "has_lg_ei_or_var": true
+        },
+        "theme(10)": {
+          "pts": 10.0,
+          "apply_vitals_theme": true,
+          "local_inject": false
+        },
+        "hero(10)": {
+          "pts": 10.0,
+          "matched": [
+            "vit-page-head"
+          ]
+        },
+        "components(15)": {
+          "pts": 15.0,
+          "tokens_used": 5,
+          "of": 5
+        },
+        "status(15)": {
+          "pts": 15.0,
+          "good": true,
+          "warn": true,
+          "bad": true,
+          "legacy_status_color": false
+        }
+      }
+    },
+    {
+      "file": "streamlit-app/pages/3_MTBA_Dashboard.py",
+      "score": 94.1,
+      "max": 100,
+      "breakdown": {
+        "tokens(30)": {
+          "pts": 27.1,
+          "total": 52,
+          "vitals": 47,
+          "off": 5,
+          "off_samples": [
+            "D9D9D9",
+            "F3F4F6",
+            "FFFDFE"
+          ]
+        },
+        "font(20)": {
+          "pts": 20.0,
+          "violations": [],
+          "has_lg_ei_or_var": true
+        },
+        "theme(10)": {
+          "pts": 10.0,
+          "apply_vitals_theme": true,
+          "local_inject": false
+        },
+        "hero(10)": {
+          "pts": 10.0,
+          "matched": [
+            "page-banner"
+          ]
+        },
+        "components(15)": {
+          "pts": 12.0,
+          "tokens_used": 4,
+          "of": 5
+        },
+        "status(15)": {
+          "pts": 15.0,
+          "good": true,
+          "warn": true,
+          "bad": true,
+          "legacy_status_color": false
+        }
+      }
+    },
+    {
+      "file": "streamlit-app/pages/8_Patch_Note.py",
+      "score": 95.0,
+      "max": 100,
+      "breakdown": {
+        "tokens(30)": {
+          "pts": 30.0,
+          "total": 37,
+          "vitals": 37,
+          "off": 0,
+          "off_samples": []
+        },
+        "font(20)": {
+          "pts": 20.0,
+          "violations": [],
+          "has_lg_ei_or_var": true
+        },
+        "theme(10)": {
+          "pts": 10.0,
+          "apply_vitals_theme": true,
+          "local_inject": false
+        },
+        "hero(10)": {
+          "pts": 10.0,
+          "matched": [
+            "vit-page-head"
+          ]
+        },
+        "components(15)": {
+          "pts": 15.0,
+          "tokens_used": 5,
+          "of": 5
+        },
+        "status(15)": {
+          "pts": 10.0,
+          "good": true,
+          "warn": true,
+          "bad": false,
+          "legacy_status_color": false
+        }
+      }
+    },
+    {
+      "file": "streamlit-app/pages/0_Home.py",
+      "score": 95.9,
+      "max": 100,
+      "breakdown": {
+        "tokens(30)": {
+          "pts": 25.9,
+          "total": 125,
+          "vitals": 108,
+          "off": 17,
+          "off_samples": [
+            "111827",
+            "7B8493",
+            "CBD0D6",
+            "D1D5DB",
+            "D6E1F2",
+            "DDE3EA",
+            "DFE8F6",
+            "E1E5EA"
+          ]
+        },
+        "font(20)": {
+          "pts": 20.0,
+          "violations": [],
+          "has_lg_ei_or_var": true
+        },
+        "theme(10)": {
+          "pts": 10.0,
+          "apply_vitals_theme": true,
+          "local_inject": true
+        },
+        "hero(10)": {
+          "pts": 10.0,
+          "matched": [
+            "<h1\\b"
+          ]
+        },
+        "components(15)": {
+          "pts": 15.0,
+          "tokens_used": 5,
+          "of": 5
+        },
+        "status(15)": {
+          "pts": 15.0,
+          "good": true,
+          "warn": true,
+          "bad": true,
+          "legacy_status_color": false
+        }
+      }
+    },
+    {
+      "file": "streamlit-app/pages/6_MaxCapa_Chat.py",
+      "score": 97.0,
+      "max": 100,
+      "breakdown": {
+        "tokens(30)": {
+          "pts": 30.0,
+          "total": 3,
+          "vitals": 3,
+          "off": 0,
+          "off_samples": []
+        },
+        "font(20)": {
+          "pts": 20.0,
+          "violations": [],
+          "has_lg_ei_or_var": true
+        },
+        "theme(10)": {
+          "pts": 10.0,
+          "apply_vitals_theme": true,
+          "local_inject": false
+        },
+        "hero(10)": {
+          "pts": 10.0,
+          "matched": [
+            "<h1\\b"
+          ]
+        },
+        "components(15)": {
+          "pts": 12.0,
+          "tokens_used": 4,
+          "of": 5
+        },
+        "status(15)": {
+          "pts": 15.0,
+          "good": true,
+          "warn": true,
+          "bad": true,
+          "legacy_status_color": false
+        }
+      }
+    },
+    {
+      "file": "streamlit-app/pages/9_Admin_Analytics.py",
+      "score": 97.0,
+      "max": 100,
+      "breakdown": {
+        "tokens(30)": {
+          "pts": 30.0,
+          "total": 13,
+          "vitals": 13,
+          "off": 0,
+          "off_samples": []
+        },
+        "font(20)": {
+          "pts": 20.0,
+          "violations": [],
+          "has_lg_ei_or_var": true
+        },
+        "theme(10)": {
+          "pts": 10.0,
+          "apply_vitals_theme": true,
+          "local_inject": false
+        },
+        "hero(10)": {
+          "pts": 10.0,
+          "matched": [
+            "vit-page-head",
+            "<h1\\b"
+          ]
+        },
+        "components(15)": {
+          "pts": 12.0,
+          "tokens_used": 4,
+          "of": 5
+        },
+        "status(15)": {
+          "pts": 15.0,
+          "good": true,
+          "warn": true,
+          "bad": true,
+          "legacy_status_color": false
+        }
+      }
+    },
+    {
+      "file": "streamlit-app/pages/5_Alarm_Action_List.py",
+      "score": 97.4,
+      "max": 100,
+      "breakdown": {
+        "tokens(30)": {
+          "pts": 27.4,
+          "total": 23,
+          "vitals": 21,
+          "off": 2,
+          "off_samples": [
+            "EFE4E8",
+            "FFFDFD"
+          ]
+        },
+        "font(20)": {
+          "pts": 20.0,
+          "violations": [],
+          "has_lg_ei_or_var": true
+        },
+        "theme(10)": {
+          "pts": 10.0,
+          "apply_vitals_theme": true,
+          "local_inject": false
+        },
+        "hero(10)": {
+          "pts": 10.0,
+          "matched": [
+            "main-title",
+            "<h1\\b"
+          ]
+        },
+        "components(15)": {
+          "pts": 15.0,
+          "tokens_used": 5,
+          "of": 5
+        },
+        "status(15)": {
+          "pts": 15.0,
+          "good": true,
+          "warn": true,
+          "bad": true,
+          "legacy_status_color": false
+        }
+      }
+    },
+    {
+      "file": "streamlit-app/pages/2_UPH_Dashboard.py",
+      "score": 98.5,
+      "max": 100,
+      "breakdown": {
+        "tokens(30)": {
+          "pts": 28.5,
+          "total": 41,
+          "vitals": 39,
+          "off": 2,
+          "off_samples": [
+            "CBD0D6"
+          ]
+        },
+        "font(20)": {
+          "pts": 20.0,
+          "violations": [],
+          "has_lg_ei_or_var": true
+        },
+        "theme(10)": {
+          "pts": 10.0,
+          "apply_vitals_theme": true,
+          "local_inject": true
+        },
+        "hero(10)": {
+          "pts": 10.0,
+          "matched": [
+            "<h1\\b"
+          ]
+        },
+        "components(15)": {
+          "pts": 15.0,
+          "tokens_used": 5,
+          "of": 5
+        },
+        "status(15)": {
+          "pts": 15.0,
+          "good": true,
+          "warn": true,
+          "bad": true,
+          "legacy_status_color": false
+        }
+      }
+    }
+  ]
+}

@@ -258,21 +258,34 @@ def apply_common_css():
        모든 .section-heading / .block-wrap / .filter-box / .summary-table 등이
        자동으로 와인 + Vitals status 색으로 통일. 함수 시그니처·DOM 구조 0 변경. */
     :root {
-        --bg: #F7F8FA;              /* Vitals page-bg */
-        --surface: #FFFFFF;         /* Vitals card-bg */
-        --surface-soft: #F1F3F5;    /* Vitals soft */
-        --surface-muted: #EFF1F4;
-        --line: #E5E7EB;            /* Vitals border */
-        --line-strong: #CBD0D6;     /* Vitals border-strong */
-        --ink: #1F2430;             /* Vitals ink-body */
-        --muted: #6B7280;           /* Vitals ink-muted */
-        --accent-rose: #A50034;     /* Vitals primary 와인 (legacy 핑크 → 와인) */
-        --accent-blue: #7E0027;     /* Vitals primary-dark (legacy 블루 → 와인-dark) */
-        --accent-violet: #7E0027;   /* legacy 보라 → 와인-dark */
-        --accent-navy: #A50034;     /* legacy 네이비 top-border → 와인 */
-        --good: #E6F4EA;            /* Vitals status-good-tint */
-        --mid:  #FAF1DD;            /* Vitals status-warn-tint */
-        --bad:  #FDECEF;            /* Vitals bad-tint */
+        /* Page-local 별칭 → Vitals 정식 토큰 (--page-bg, --card-bg, --soft,
+           --border, --ink-body 등) 으로 fallback. 두 이름 모두 사용 가능. */
+        --bg:           var(--page-bg, #F7F8FA);
+        --page-bg:      #F7F8FA;
+        --surface:      var(--card-bg, #FFFFFF);
+        --card-bg:      #FFFFFF;
+        --surface-soft: var(--soft, #F1F3F5);
+        --soft:         #F1F3F5;
+        --surface-muted:#EFF1F4;
+        --line:         var(--border, #E5E7EB);
+        --border:       #E5E7EB;
+        --line-strong:  #CBD0D6;
+        --ink:          var(--ink-body, #1F2430);
+        --ink-body:     #1F2430;
+        --muted:        var(--ink-muted, #6B7280);
+        --ink-muted:    #6B7280;
+        --accent-rose:  var(--primary, #A50034);
+        --primary:      #A50034;
+        --accent-blue:  var(--primary-dark, #7E0027);
+        --primary-dark: #7E0027;
+        --accent-violet:#7E0027;
+        --accent-navy:  #A50034;
+        --good:         var(--status-good-tint, #E6F4EA);
+        --status-good:  #1F8B4C;
+        --mid:          var(--status-warn-tint, #FAF1DD);
+        --status-warn:  #B57F1B;
+        --bad:          var(--status-bad-tint, #FDECEF);
+        --status-bad:   #B23A48;
         --shadow: 0 8px 22px -4px rgba(15,17,21,0.06);
         --radius: 12px;
     }

@@ -55,7 +55,19 @@ CARD_BG   = '#FFFFFF'  # Vitals card-bg
 
 st.markdown(f"""
 <style>
-:root {{ --primary:{PRIMARY}; --primary2:{PRIMARY_2}; --bg:{BG}; --rose:{ROSE}; --border:{BORDER}; --text:{TEXT}; --sub:{SUB}; --muted:{MUTED}; --cardbg:{CARD_BG}; }}
+:root {{
+    --primary:{PRIMARY}; --primary2:{PRIMARY_2}; --bg:{BG}; --rose:{ROSE};
+    --border:{BORDER}; --text:{TEXT}; --sub:{SUB}; --muted:{MUTED}; --cardbg:{CARD_BG};
+    /* Vitals 표준 토큰 alias — page 별 별칭과 양립 */
+    --page-bg:{BG}; --card-bg:{CARD_BG}; --soft:#F1F3F5;
+    --ink-body:{TEXT}; --ink-muted:{SUB};
+    /* status 시맨틱 — 알람 액션 리스트의 처리상태 라벨에 사용 */
+    --status-good:#1F8B4C; --status-warn:#B57F1B; --status-bad:#B23A48;
+    --status-good-tint:#E6F4EA; --status-warn-tint:#FAF1DD; --status-bad-tint:#FDECEF;
+}}
+.action-status-good {{ color:var(--status-good); font-weight:700; }}
+.action-status-warn {{ color:var(--status-warn); font-weight:700; }}
+.action-status-bad  {{ color:var(--status-bad);  font-weight:700; }}
 .stApp {{ background: linear-gradient(180deg,#fffdfd 0%, var(--bg) 100%); color: var(--text); }}
 .block-container {{ padding-top: 1rem; padding-bottom: 2rem; }}
 

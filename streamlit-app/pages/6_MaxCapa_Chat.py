@@ -22,6 +22,10 @@ def render_header():
     st.markdown(
         """
         <style>
+        /* Status 시맨틱 — LLM 응답 검증 / API 가용성 라벨에 사용 */
+        .chat-status-good { color: var(--status-good, #1F8B4C); font-weight: 700; }
+        .chat-status-warn { color: var(--status-warn, #B57F1B); font-weight: 700; }
+        .chat-status-bad  { color: var(--status-bad,  #B23A48); font-weight: 700; }
         .vit-chat-head {
             margin: 4px 0 18px; padding: 18px 22px;
             background: var(--card-bg); border: 1px solid var(--border);
