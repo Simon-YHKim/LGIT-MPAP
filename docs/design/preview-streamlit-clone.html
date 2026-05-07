@@ -73,11 +73,10 @@
       <!--  LOGIN — login.py (video bg + glass card, mockup-S1-B 일치)   -->
       <!-- =========================================================== -->
       <section id="sec-login" class="sc-page-section sc-login-section">
-        <div class="sc-section-meta">login.py · 로그인 (영상 배경 + 글래스 카드)</div>
+        <div class="sc-section-meta">login.py · 로그인 (zip 이전 landing.html 시안 적용 — 3-col: 카드+identity / spacer / 시스템상태+패치노트)</div>
 
         <!-- 실제 login.py 의 render_video_background() — 사내에선 img/bgi.mp4
-             를 base64 임베드. preview 에서는 YouTube iframe 으로 fallback
-             (landing.html 과 동일 패턴). 폐쇄망에선 자동으로 검정 배경. -->
+             를 base64 임베드. preview 에서는 YouTube iframe 으로 fallback. -->
         <div class="sc-login-stage">
           <div class="sc-login-video" aria-hidden="true">
             <iframe
@@ -97,74 +96,224 @@
             <div data-testid="stMain">
               <div data-testid="block-container" class="sc-login-block">
 
-                <!-- render_top_brand() — LG Innotek 로고 + 팀명 -->
-                <div class="landing-topbar">
-                  <div class="landing-brand">
-                    <img class="landing-brand__logo"
-                         src="./assets/lg-innotek-logo-en-white.png"
-                         alt="LG Innotek">
-                    <span class="landing-brand__divider"></span>
-                    <span class="landing-brand__team">광학 MaxCapa TDR · 광학솔루션사업부 · 생산혁신센터 · Max Capa팀</span>
-                  </div>
-                  <!-- 우측 상단 언어 selector -->
-                  <div class="sc-login-lang">
-                    <button class="sc-lang-btn sc-lang-active">한국어</button>
-                    <button class="sc-lang-btn">EN</button>
-                    <button class="sc-lang-btn">VN</button>
-                    <button class="sc-lang-btn">中文</button>
-                    <button class="sc-lang-btn">PL</button>
-                    <button class="sc-lang-btn">ID</button>
-                  </div>
-                </div>
+                <!-- shell — landing.html 의 .shell 구조 그대로 -->
+                <div class="sc-login-shell">
 
-                <div data-testid="stHorizontalBlock" class="sc-login-cols">
-                  <!-- left: identity block — Vitals + 캐치프레이즈 (LG EI Headline 56px) -->
-                  <div data-testid="column" class="sc-login-left">
-                    <div class="identity-block">
-                      <h3 class="identity-name">Vitals<span class="dot">.</span></h3>
-                      <p class="identity-sub">공정의 호흡을 데이터로 듣다.</p>
-                      <p class="identity-bu">광학솔루션 사업부 · CMP · UPH · MTBA · MaxCapa Chat</p>
+                  <!-- ════ TOP: brand row (LG 로고 + 팀명 + 7개국 lang dropdown) ════ -->
+                  <div class="brand-row">
+                    <div class="brand-cluster">
+                      <div class="brand">
+                        <img class="brand__logo-img"
+                             src="./assets/lg-innotek-logo-en-white.png"
+                             alt="LG Innotek">
+                        <span class="brand__divider" aria-hidden="true"></span>
+                        <span class="brand__team">생산혁신센터 · Max Capa 팀</span>
+                      </div>
+                      <div class="lang" id="login-lang">
+                        <button type="button" class="lang__btn" id="login-lang-btn" aria-haspopup="menu" aria-expanded="false">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>
+                          <span>KO</span>
+                          <span class="lang__caret">▾</span>
+                        </button>
+                        <div class="lang__menu" role="menu">
+                          <button class="lang__item lang__item--active" type="button"><span>한국어</span><span class="lang__item-code">KO</span></button>
+                          <button class="lang__item" type="button"><span>English</span><span class="lang__item-code">EN</span></button>
+                          <button class="lang__item" type="button"><span>Tiếng Việt</span><span class="lang__item-code">VI</span></button>
+                          <button class="lang__item" type="button"><span>Polski</span><span class="lang__item-code">PL</span></button>
+                          <button class="lang__item" type="button"><span>Bahasa Indonesia</span><span class="lang__item-code">ID</span></button>
+                          <button class="lang__item" type="button"><span>Español</span><span class="lang__item-code">ES</span></button>
+                          <button class="lang__item" type="button"><span>中文</span><span class="lang__item-code">ZH</span></button>
+                        </div>
+                      </div>
                     </div>
                   </div>
 
-                  <!-- right: glass login card (backdrop-filter blur) -->
-                  <div data-testid="column" class="sc-login-right">
-                    <div class="sc-glass-card">
-                      <div data-testid="stMarkdown">
-                        <div class="auth-eyebrow">PRODUCTIVITY ANALYTICS · SIGN IN</div>
-                        <h2 class="auth-title">&nbsp;&nbsp;로그인</h2>
-                        <p class="auth-sub">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;사내 계정 아이디만 입력하세요.</p>
-                      </div>
+                  <!-- ════ MAIN: 3 columns (460 / 1fr / 360) ════ -->
+                  <div data-testid="stHorizontalBlock" class="sc-login-main">
 
-                      <div data-testid="stTextInput">
-                        <label>사번</label>
-                        <div data-baseweb="input"><input type="text" placeholder="20240001"></div>
-                      </div>
+                    <!-- ── LEFT: auth-card + identity ────────────────────── -->
+                    <div data-testid="column" class="left">
 
-                      <div data-testid="stTextInput">
-                        <label>비밀번호</label>
-                        <div data-baseweb="input"><input type="password" placeholder="••••••••"></div>
-                      </div>
+                      <!-- auth-card (460×480 fixed) — render_auth_intro + form -->
+                      <section class="auth-card" id="auth-card">
+                        <div class="login__eyebrow">PRODUCTIVITY ANALYTICS · SIGN IN</div>
+                        <h2 class="login__title">로그인</h2>
+                        <p class="login__sub" id="auth-pane-sub">사내 계정 아이디만 입력하세요.</p>
 
-                      <div data-testid="stButton" class="sc-full">
-                        <button kind="primary">로그인</button>
-                      </div>
-
-                      <div data-testid="stHorizontalBlock" class="sc-login-bottom">
-                        <div data-testid="column">
-                          <div data-testid="stButton" class="sc-full"><button>회원가입</button></div>
+                        <div class="tabs" role="tablist">
+                          <button class="tab tab--active" type="button" role="tab" id="tab-signin" aria-selected="true" aria-controls="auth-pane-signin">로그인</button>
+                          <button class="tab" type="button" role="tab" id="tab-signup" aria-selected="false" aria-controls="auth-pane-signup">회원가입</button>
                         </div>
-                        <div data-testid="column">
-                          <div data-testid="stButton" class="sc-full"><button>비밀번호 찾기</button></div>
-                        </div>
-                      </div>
 
-                      <div data-testid="stCaptionContainer" class="sc-login-caption">
-                        회사 이메일 인증 후 가입 가능합니다.
+                        <!-- pane: LOGIN -->
+                        <form id="form-login" class="auth-pane" data-pane="signin" data-action="auth/login" method="POST" autocomplete="on" novalidate>
+                          <div class="field">
+                            <label class="field__label" for="user-id">아이디</label>
+                            <div class="field__input-wrap" data-baseweb="input">
+                              <input id="user-id" name="username" type="text" placeholder="ex) maxcapa" autocomplete="username" required spellcheck="false" autocapitalize="none" />
+                              <span class="field__suffix" aria-hidden="true">@lginnotek.com</span>
+                            </div>
+                            <span class="field__hint">@lginnotek.com 은 자동 적용됩니다.</span>
+                          </div>
+
+                          <div class="field">
+                            <label class="field__label" for="user-pw">비밀번호</label>
+                            <div class="field__input-wrap" data-baseweb="input">
+                              <input id="user-pw" name="password" type="password" autocomplete="current-password" required />
+                            </div>
+                          </div>
+
+                          <input type="hidden" id="user-email-hidden" name="email" value="" />
+
+                          <div class="auth__error" id="login-error" data-error-slot role="alert" hidden></div>
+
+                          <div class="actions">
+                            <button type="submit" class="btn btn--primary" id="btn-login">로그인</button>
+                          </div>
+                        </form>
+
+                        <!-- pane: SIGNUP — 2-step (email → 6-digit code) -->
+                        <div class="auth-pane" data-pane="signup" hidden>
+                          <form id="form-signup-step1" data-signup-step="1" data-action="auth/send-code" method="POST" autocomplete="on" novalidate>
+                            <div class="field">
+                              <label class="field__label" for="signup-email">회사 이메일</label>
+                              <div class="field__input-wrap" data-baseweb="input">
+                                <input id="signup-email" name="email" type="email" placeholder="ex) maxcapa@lginnotek.com" required autocomplete="email" spellcheck="false" autocapitalize="none" pattern=".+@lginnotek\.com" />
+                              </div>
+                              <span class="field__hint">@lginnotek.com 도메인만 사용 가능합니다.</span>
+                            </div>
+                            <div class="auth__error" id="signup-error" data-error-slot role="alert" hidden></div>
+                            <div class="actions">
+                              <button type="submit" class="btn btn--primary" id="btn-send-code">인증코드 발송</button>
+                            </div>
+                          </form>
+
+                          <form id="form-signup-step2" data-signup-step="2" data-action="auth/verify" method="POST" autocomplete="off" novalidate hidden>
+                            <p class="signup__sent">
+                              <span>인증코드를 발송했습니다.</span>
+                              <button type="button" class="link-btn" id="btn-edit-email">← 이메일 수정</button>
+                            </p>
+                            <div class="field">
+                              <label class="field__label" for="signup-code">인증코드 (6자리)</label>
+                              <div class="field__input-wrap" data-baseweb="input">
+                                <input id="signup-code" name="code" type="text" inputmode="numeric" pattern="\d{6}" maxlength="6" placeholder="000000" required autocomplete="one-time-code" />
+                              </div>
+                              <span class="field__hint">유효시간 <span class="signup__timer" id="signup-timer" aria-live="polite">5:00</span></span>
+                            </div>
+                            <input type="hidden" id="signup-email-hidden" name="email" value="" />
+                            <div class="auth__error" id="verify-error" data-error-slot role="alert" hidden></div>
+                            <div class="actions actions--row">
+                              <button type="submit" class="btn btn--primary" id="btn-verify">회원가입 완료</button>
+                              <button type="button" class="btn btn--ghost" id="btn-resend-code">인증코드 재발송</button>
+                            </div>
+                          </form>
+                        </div>
+
+                        <div class="foot">
+                          <span>문의 · 생산혁신센터 Max Capa 팀</span>
+                          <span>v0.4.2</span>
+                        </div>
+                      </section>
+
+                      <!-- identity hero — Vitals. + 캐치프레이즈 + BU -->
+                      <div class="identity">
+                        <h1 class="identity__name">Vitals</h1>
+                        <p class="identity__sub">공정의 호흡을 데이터로 듣다.</p>
+                        <p class="identity__bu">광학솔루션 사업부 · CMP · UPH · MTBA · MaxCapa Chat</p>
                       </div>
                     </div>
-                  </div>
-                </div>
+
+                    <!-- ── MIDDLE: spacer ─────────────────────────────────── -->
+                    <div data-testid="column"></div>
+
+                    <!-- ── RIGHT: system status + patch notes + ops/foot ──── -->
+                    <div data-testid="column" class="right">
+
+                      <!-- system status panel -->
+                      <div class="panel">
+                        <div class="panel__head">
+                          <div class="panel__title">SYSTEM STATUS</div>
+                          <div class="panel__hint">last sync 23:50</div>
+                        </div>
+                        <div class="status-list">
+                          <div class="status-row">
+                            <span class="status-row__dot" aria-label="ok"></span>
+                            <span class="status-row__label">API Gateway</span>
+                            <span class="status-row__detail">142 ms · OK</span>
+                          </div>
+                          <div class="status-row">
+                            <span class="status-row__dot" aria-label="ok"></span>
+                            <span class="status-row__label">PostgreSQL · MES</span>
+                            <span class="status-row__detail">38 ms · OK</span>
+                          </div>
+                          <div class="status-row">
+                            <span class="status-row__dot" aria-label="ok"></span>
+                            <span class="status-row__label">PostgreSQL · ITAS</span>
+                            <span class="status-row__detail">52 ms · OK</span>
+                          </div>
+                          <div class="status-row">
+                            <span class="status-row__dot status-row__dot--warn" aria-label="warn"></span>
+                            <span class="status-row__label">Streamlit Worker</span>
+                            <span class="status-row__detail">2/3 · degraded</span>
+                          </div>
+                          <div class="status-row">
+                            <span class="status-row__dot" aria-label="ok"></span>
+                            <span class="status-row__label">데이터 적재</span>
+                            <span class="status-row__detail">05-07 23:50 · OK</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- patch notes panel -->
+                      <div class="panel">
+                        <div class="panel__head">
+                          <div class="panel__title">PATCH NOTES · 최근 업데이트</div>
+                          <div class="panel__hint">v0.4.2 → v0.3.8</div>
+                        </div>
+                        <div class="patch-list">
+                          <div class="patch">
+                            <div class="patch__date">05-07</div>
+                            <div class="patch__body"><em>NEW</em>Self-hosted Analytics — GA / Clarity 대체. Admin Analytics 10탭 추가.</div>
+                          </div>
+                          <div class="patch">
+                            <div class="patch__date">05-04</div>
+                            <div class="patch__body"><em>FIX</em>CMP Dashboard 모델별 상세 — 카드+그래프+Best5/Worst5 레이아웃 적용.</div>
+                          </div>
+                          <div class="patch">
+                            <div class="patch__date">04-28</div>
+                            <div class="patch__body"><em>NEW</em>MaxCapa Chat 활성 — 자연어 → MES UPH/ITAS UPH 자동 분기 실행.</div>
+                          </div>
+                          <div class="patch">
+                            <div class="patch__date">04-22</div>
+                            <div class="patch__body"><em>UPD</em>UPH 분석 v4 — 동작시간 증가/하락 추세 섹션 분리.</div>
+                          </div>
+                          <div class="patch">
+                            <div class="patch__date">04-19</div>
+                            <div class="patch__body"><em>UPD</em>MTBA Dashboard 다중 패널 — 패널 추가/제거 + 메모/이미지 업로드.</div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- ops status (relocated from top bar) -->
+                      <div class="ops-row">
+                        <span class="ops-row__group">
+                          <span class="dot" aria-hidden="true"></span>
+                          <span>ALL SYSTEMS OPERATIONAL</span>
+                        </span>
+                        <span class="ops-row__sep" aria-hidden="true">·</span>
+                        <span>2026-05-07</span>
+                        <span class="ops-row__sep" aria-hidden="true">·</span>
+                        <span>VITALS v0.4.2</span>
+                      </div>
+
+                      <div class="foot-row">
+                        <span>생산혁신센터 Max Capa 팀 · 사내망 전용</span>
+                        <a href="#sec-patch">변경 로그 전체 보기 →</a>
+                      </div>
+                    </div>
+
+                  </div><!-- /sc-login-main -->
+                </div><!-- /sc-login-shell -->
 
               </div>
             </div>
@@ -2245,6 +2394,59 @@ LIMIT 5;</pre>
   }
   window.addEventListener('scroll', update, { passive: true });
   update();
+
+  // login section: lang dropdown toggle (KO ▾ → 7-language menu)
+  var langWrap = document.getElementById('login-lang');
+  var langBtn  = document.getElementById('login-lang-btn');
+  if (langWrap && langBtn) {
+    langBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var open = langWrap.classList.toggle('is-open');
+      langBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    document.addEventListener('click', function (e) {
+      if (!langWrap.contains(e.target)) {
+        langWrap.classList.remove('is-open');
+        langBtn.setAttribute('aria-expanded', 'false');
+      }
+    });
+    // click-to-pick: update label, mark active, close
+    langWrap.querySelectorAll('.lang__item').forEach(function (item) {
+      item.addEventListener('click', function () {
+        langWrap.querySelectorAll('.lang__item').forEach(function (i) { i.classList.remove('lang__item--active'); });
+        item.classList.add('lang__item--active');
+        var code = item.querySelector('.lang__item-code');
+        if (code) langBtn.querySelector('span:not(.lang__caret)').textContent = code.textContent;
+        langWrap.classList.remove('is-open');
+        langBtn.setAttribute('aria-expanded', 'false');
+      });
+    });
+  }
+
+  // login section: tab switch (login ↔ signup) inside auth-card
+  var tabSignin = document.getElementById('tab-signin');
+  var tabSignup = document.getElementById('tab-signup');
+  var paneSignin = document.querySelector('.sc-login-section .auth-pane[data-pane="signin"]');
+  var paneSignup = document.querySelector('.sc-login-section .auth-pane[data-pane="signup"]');
+  var paneSub = document.getElementById('auth-pane-sub');
+  function activate(tab) {
+    var isSignin = tab === 'signin';
+    if (tabSignin) {
+      tabSignin.classList.toggle('tab--active', isSignin);
+      tabSignin.setAttribute('aria-selected', isSignin ? 'true' : 'false');
+    }
+    if (tabSignup) {
+      tabSignup.classList.toggle('tab--active', !isSignin);
+      tabSignup.setAttribute('aria-selected', !isSignin ? 'true' : 'false');
+    }
+    if (paneSignin) paneSignin.hidden = !isSignin;
+    if (paneSignup) paneSignup.hidden = isSignin;
+    if (paneSub) paneSub.textContent = isSignin
+      ? '사내 계정 아이디만 입력하세요.'
+      : '@lginnotek.com 회사 이메일로 가입합니다.';
+  }
+  if (tabSignin) tabSignin.addEventListener('click', function () { activate('signin'); });
+  if (tabSignup) tabSignup.addEventListener('click', function () { activate('signup'); });
 
   // login section: hide sidebar when login is in viewport (matches login.py
   // which sets `[data-testid="stSidebar"] { display: none !important; }`).
