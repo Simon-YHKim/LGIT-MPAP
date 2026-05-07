@@ -351,11 +351,18 @@ if 'aal_period' not in st.session_state:
     default_start = max(all_min_date, all_max_date - timedelta(days=6))
     st.session_state.aal_period = (default_start, all_max_date)
 
-st.markdown("""
-<div class='main-title'>
-  <h1>Alarm Action List</h1>
-</div>
-""", unsafe_allow_html=True)
+# preview sec-alarm 와 동일 — vit-top-strip 6px wine + flat 페이지 타이틀.
+from ui.vitals.components import render_top_strip, render_sub_head
+render_top_strip()
+st.markdown(
+    '<div class="board-top-title vit-page-head" '
+    'style="font-family:\'LG EI Headline\',\'LG EI Text\',sans-serif;'
+    'font-size:28px;font-weight:700;color:var(--ink-body,#1F2430);'
+    'letter-spacing:-0.02em;margin:0 0 6px;'
+    'border-bottom:1px solid var(--border,#E5E7EB);padding-bottom:8px;">'
+    'Alarm Action List · 알람 액션 이력</div>',
+    unsafe_allow_html=True,
+)
 
 st.markdown("""
 <div class='soft-card'>
@@ -440,7 +447,7 @@ with filter2:
     selected_alarm_codes = st.multiselect('알람코드 필터', alarm_code_options, default=[])
 
 # 저장된 팀 공정 목록 + 배지
-st.markdown('### 저장된 팀 공정 목록')
+render_sub_head("저장된 팀 공정 목록", "현재 팀에 저장된 공정")
 chips = []
 for team in [t for t in TEAM_OPTIONS if t != '전체']:
     saved_ids = [int(x) for x in get_team_process_ids(engine, team)]
@@ -468,7 +475,7 @@ display_df.to_csv(csv_buf, index=False, encoding='utf-8-sig')
 st.download_button('CSV 다운로드', data=csv_buf.getvalue(), file_name='alarm_action_list.csv', mime='text/csv')
 
 # 날짜별 요약
-st.markdown('### 날짜별 요약')
+render_sub_head("날짜별 요약", "선택 기간의 알람 코멘트 추이")
 summary_df = (
     display_df.assign(작성일=pd.to_datetime(display_df['작성일']).dt.date)
     .groupby('작성일', as_index=False)
@@ -481,7 +488,7 @@ st.dataframe(summary_df, use_container_width=True, hide_index=True)
 render_timeline_cards(display_df.copy())
 
 # 전체 이력 테이블
-st.markdown('### 전체 이력 (최신순)')
+render_sub_head("전체 이력 (최신순)", "선택 기간 · 팀의 알람 코멘트 전수")
 full_df = display_df.copy()
 full_df['작성일시'] = pd.to_datetime(full_df['작성일시']).dt.strftime('%Y-%m-%d %H:%M:%S')
 cols = ['작성일시', '작성자', '모델', '공정', '설비명', '호기', '알람코드', '알람명', 'Comment', 'Scope', '세그먼트', '기준일']
