@@ -1,5 +1,5 @@
 {
-  "average": 93.5,
+  "average": 93.7,
   "pages": [
     {
       "file": "streamlit-app/pages/4_MTBA_Detail_View.py",
@@ -54,14 +54,14 @@
     },
     {
       "file": "streamlit-app/pages/1_CMP_Dashboard.py",
-      "score": 86.2,
+      "score": 86.5,
       "max": 100,
       "breakdown": {
         "tokens(30)": {
-          "pts": 16.2,
+          "pts": 16.5,
           "total": 100,
-          "vitals": 54,
-          "off": 46,
+          "vitals": 55,
+          "off": 45,
           "off_samples": [
             "384455",
             "3F4653",
@@ -69,8 +69,8 @@
             "525866",
             "5F6673",
             "8C84B8",
-            "CBD0D6",
-            "CFD5DF"
+            "CFD5DF",
+            "D7DBE2"
           ]
         },
         "font(20)": {
@@ -241,23 +241,23 @@
     },
     {
       "file": "streamlit-app/pages/0_Home.py",
-      "score": 95.9,
+      "score": 96.2,
       "max": 100,
       "breakdown": {
         "tokens(30)": {
-          "pts": 25.9,
+          "pts": 26.2,
           "total": 125,
-          "vitals": 108,
-          "off": 17,
+          "vitals": 109,
+          "off": 16,
           "off_samples": [
             "111827",
             "7B8493",
-            "CBD0D6",
             "D1D5DB",
             "D6E1F2",
             "DDE3EA",
             "DFE8F6",
-            "E1E5EA"
+            "E1E5EA",
+            "E5D5AE"
           ]
         },
         "font(20)": {
@@ -423,17 +423,15 @@
     },
     {
       "file": "streamlit-app/pages/2_UPH_Dashboard.py",
-      "score": 98.5,
+      "score": 100.0,
       "max": 100,
       "breakdown": {
         "tokens(30)": {
-          "pts": 28.5,
+          "pts": 30.0,
           "total": 41,
-          "vitals": 39,
-          "off": 2,
-          "off_samples": [
-            "CBD0D6"
-          ]
+          "vitals": 41,
+          "off": 0,
+          "off_samples": []
         },
         "font(20)": {
           "pts": 20.0,

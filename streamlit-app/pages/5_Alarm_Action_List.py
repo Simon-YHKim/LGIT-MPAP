@@ -36,6 +36,10 @@ st.set_page_config(page_title='Alarm Action List', layout='wide')
 # === Vitals theme (LG EI fonts + wine palette) ===
 from ui.vitals import apply_vitals_theme
 apply_vitals_theme()
+
+from ui.analytics import inject_tracker
+inject_tracker(page_name="5_Alarm_Action_List", page_path="pages/5_Alarm_Action_List.py")
+
 engine = get_engine()
 ensure_team_process_filter_table(engine)
 

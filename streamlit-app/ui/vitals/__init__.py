@@ -16,7 +16,13 @@ components 함수들 (render_topnav, render_page_header, render_chat_panel
 런타임에 base64 로 인코딩해 CSS data: URL 로 주입 → 외부 CDN 의존 0,
 완전 폐쇄망 호환.
 """
-from .theme import apply_vitals_theme
+from .theme import apply_vitals_theme, get_current_theme, render_theme_toggle
+from .preferences import (
+    get_user_theme_pref,
+    save_user_theme_pref,
+    get_user_locale_pref,
+    save_user_locale_pref,
+)
 from .components import (
     render_topnav,
     render_page_header,
@@ -29,6 +35,12 @@ from .components import (
 
 __all__ = [
     "apply_vitals_theme",
+    "get_current_theme",
+    "render_theme_toggle",
+    "get_user_theme_pref",
+    "save_user_theme_pref",
+    "get_user_locale_pref",
+    "save_user_locale_pref",
     "render_topnav",
     "render_page_header",
     "render_card",

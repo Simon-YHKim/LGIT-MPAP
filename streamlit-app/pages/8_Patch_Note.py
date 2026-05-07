@@ -8,6 +8,9 @@ st.set_page_config(page_title="Patch Note", page_icon="📌", layout="wide")
 from ui.vitals import apply_vitals_theme
 apply_vitals_theme()
 
+from ui.analytics import inject_tracker
+inject_tracker(page_name="8_Patch_Note", page_path="pages/8_Patch_Note.py")
+
 
 def get_conn():
     return psycopg2.connect(

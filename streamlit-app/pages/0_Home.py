@@ -25,6 +25,10 @@ from ui.vitals import apply_vitals_theme
 apply_vitals_theme()
 log_page_access("Home")
 
+# === Vitals analytics — client-side click/scroll/error tracker ===
+from ui.analytics import inject_tracker
+inject_tracker(page_name="Home", page_path="pages/0_Home.py")
+
 # =========================================================
 # DB Config
 # =========================================================

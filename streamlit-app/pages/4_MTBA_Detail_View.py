@@ -41,6 +41,10 @@ st.set_page_config(page_title='MTBA Detail View', layout='wide')
 # === Vitals theme (LG EI fonts + wine palette) ===
 from ui.vitals import apply_vitals_theme
 apply_vitals_theme()
+
+from ui.analytics import inject_tracker
+inject_tracker(page_name="4_MTBA_Detail_View", page_path="pages/4_MTBA_Detail_View.py")
+
 engine = get_engine()
 
 ALLOWED_MODELS = ['R53A', 'R53B', 'R50', 'R63A', 'R63B', 'R70']

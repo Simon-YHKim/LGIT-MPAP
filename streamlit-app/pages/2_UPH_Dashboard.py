@@ -28,6 +28,9 @@ apply_vitals_theme()
 
 log_page_access("2_UPH_Dashboard")
 
+from ui.analytics import inject_tracker
+inject_tracker(page_name="2_UPH_Dashboard", page_path="pages/2_UPH_Dashboard.py")
+
 DEFAULT_DB_HOST = 'localhost'
 DEFAULT_DB_PORT = 5432
 DEFAULT_DB_NAME = 'I-TAS_Data'

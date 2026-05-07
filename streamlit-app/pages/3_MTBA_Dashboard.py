@@ -59,6 +59,9 @@ st.set_page_config(page_title="MTBA Dashboard", layout="wide")
 from ui.vitals import apply_vitals_theme
 apply_vitals_theme()
 
+from ui.analytics import inject_tracker
+inject_tracker(page_name="3_MTBA_Dashboard", page_path="pages/3_MTBA_Dashboard.py")
+
 engine = get_engine()
 ensure_team_process_filter_table(engine)
 ensure_alarm_annotation_table(engine)

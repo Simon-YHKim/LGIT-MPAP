@@ -46,6 +46,9 @@ require_login(
 from ui.vitals import apply_vitals_theme
 apply_vitals_theme()
 
+from ui.analytics import inject_tracker
+inject_tracker(page_name="9_Admin_Analytics", page_path="pages/9_Admin_Analytics.py")
+
 user_email = st.session_state.get("user_email")
 
 if not user_email:
@@ -230,13 +233,17 @@ st.divider()
 # ==================================================
 # 탭
 # ==================================================
-tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
+tab1, tab2, tab3, tab4, tab5, tab6, tab_flow, tab_heat, tab_err, tab_sess = st.tabs([
     "개요",
     "일/주/월 통계",
     "페이지 분석",
     "팀 분석",
     "사용자 분석",
-    "원본 로그"
+    "원본 로그",
+    "User Flow",
+    "Heatmap",
+    "Errors",
+    "Sessions",
 ])
 
 # ==================================================
@@ -666,3 +673,341 @@ with tab6:
             download_df_button(show_df, "recent_page_view_logs.csv", "페이지 조회 로그 다운로드")
         else:
             st.info("페이지 조회 로그가 없습니다.")
+
+
+# ==================================================================
+# ===== Vitals self-hosted analytics tabs (additive) ===============
+# ==================================================================
+# These tabs read the new analytics.* schema. They are gracefully
+# defensive — if the schema hasn't been migrated yet they show a
+# friendly hint instead of an exception.
+# ==================================================================
+def _analytics_table_exists(table_name: str) -> bool:
+    try:
+        df = run_query(
+            """
+            SELECT 1
+            FROM information_schema.tables
+            WHERE table_schema = 'analytics' AND table_name = %s
+            LIMIT 1;
+            """,
+            (table_name,),
+        )
+        return not df.empty
+    except Exception:
+        return False
+
+
+_HAS_ANALYTICS = _analytics_table_exists("analytics_pageview")
+
+
+# ------------------------------------------------------------------
+# TAB. User Flow  — page-to-page transitions
+# ------------------------------------------------------------------
+with tab_flow:
+    st.subheader("페이지 간 이동 분석 (User Flow)")
+    if not _HAS_ANALYTICS:
+        st.info("analytics 스키마가 아직 적용되지 않았습니다. SQL/analytics_schema.sql 을 실행해 주세요.")
+    else:
+        flow_query = f"""
+        WITH ordered AS (
+            SELECT
+                user_id,
+                session_id,
+                page_path,
+                started_at,
+                LEAD(page_path) OVER (PARTITION BY user_id, session_id ORDER BY started_at) AS next_path
+            FROM analytics.analytics_pageview
+            WHERE DATE(started_at) BETWEEN %s AND %s
+              {('AND dept = %s' if selected_dept != '전체' else '')}
+        )
+        SELECT
+            page_path AS from_page,
+            next_path AS to_page,
+            COUNT(*) AS transitions
+        FROM ordered
+        WHERE next_path IS NOT NULL
+        GROUP BY page_path, next_path
+        ORDER BY transitions DESC
+        LIMIT 200;
+        """
+        flow_params = [start_date, end_date]
+        if selected_dept != "전체":
+            flow_params.append(selected_dept)
+        flow_df = run_query(flow_query, tuple(flow_params))
+
+        if flow_df.empty:
+            st.info("이동 데이터가 아직 없습니다.")
+        else:
+            st.markdown("#### TOP 페이지 전환")
+            st.dataframe(
+                flow_df.rename(columns={
+                    "from_page": "이전 페이지",
+                    "to_page": "다음 페이지",
+                    "transitions": "이동 횟수",
+                }),
+                use_container_width=True,
+            )
+
+            # Sankey via plotly (lightweight — no new dep)
+            try:
+                import plotly.graph_objects as go
+                top = flow_df.head(40).copy()
+                nodes = list(pd.unique(pd.concat([top["from_page"], top["to_page"]])))
+                idx = {n: i for i, n in enumerate(nodes)}
+                fig = go.Figure(go.Sankey(
+                    node=dict(label=nodes, pad=12, thickness=14),
+                    link=dict(
+                        source=top["from_page"].map(idx).tolist(),
+                        target=top["to_page"].map(idx).tolist(),
+                        value=top["transitions"].tolist(),
+                    ),
+                ))
+                fig.update_layout(title_text="페이지 흐름 (TOP 40)", font_size=11, height=520)
+                st.plotly_chart(fig, use_container_width=True)
+            except Exception as e:
+                st.caption(f"Sankey 렌더 생략: {e}")
+
+
+# ------------------------------------------------------------------
+# TAB. Heatmap  — click density over a chosen page
+# ------------------------------------------------------------------
+with tab_heat:
+    st.subheader("클릭 히트맵")
+    if not _HAS_ANALYTICS:
+        st.info("analytics 스키마가 아직 적용되지 않았습니다. SQL/analytics_schema.sql 을 실행해 주세요.")
+    else:
+        page_choices_df = run_query(
+            """
+            SELECT page_path, COUNT(*) AS clicks
+            FROM analytics.analytics_event
+            WHERE event_type = 'click'
+              AND DATE(ts) BETWEEN %s AND %s
+            GROUP BY page_path
+            ORDER BY clicks DESC
+            LIMIT 50;
+            """,
+            (start_date, end_date),
+        )
+
+        if page_choices_df.empty:
+            st.info("클릭 데이터가 아직 수집되지 않았습니다.")
+        else:
+            chosen_page = st.selectbox(
+                "페이지 선택",
+                page_choices_df["page_path"].tolist(),
+                key="heatmap_page_choice",
+            )
+
+            # Prefer the precomputed daily aggregate; fall back to live events.
+            agg_df = run_query(
+                """
+                SELECT grid_x, grid_y,
+                       SUM(click_count)      AS click_count,
+                       SUM(rage_click_count) AS rage_click_count,
+                       SUM(dead_click_count) AS dead_click_count
+                FROM analytics.analytics_click_heatmap_agg
+                WHERE page_path = %s
+                  AND bucket_date BETWEEN %s AND %s
+                GROUP BY grid_x, grid_y;
+                """,
+                (chosen_page, start_date, end_date),
+            )
+
+            if agg_df.empty:
+                # Fallback — bin live events on the fly.
+                agg_df = run_query(
+                    """
+                    SELECT (position_x / 50)::int AS grid_x,
+                           (position_y / 50)::int AS grid_y,
+                           SUM(CASE WHEN event_type='click'      THEN 1 ELSE 0 END) AS click_count,
+                           SUM(CASE WHEN event_type='rage_click' THEN 1 ELSE 0 END) AS rage_click_count,
+                           SUM(CASE WHEN event_type='dead_click' THEN 1 ELSE 0 END) AS dead_click_count
+                    FROM analytics.analytics_event
+                    WHERE page_path = %s
+                      AND event_type IN ('click','rage_click','dead_click')
+                      AND position_x IS NOT NULL AND position_y IS NOT NULL
+                      AND DATE(ts) BETWEEN %s AND %s
+                    GROUP BY 1, 2;
+                    """,
+                    (chosen_page, start_date, end_date),
+                )
+                st.caption("일별 집계 캐시가 없어 raw event 를 직접 집계했습니다 — 빠른 렌더링을 위해 `aggregate_heatmap_daily` 배치를 권장합니다.")
+
+            if agg_df.empty:
+                st.info("이 페이지의 클릭 데이터가 없습니다.")
+            else:
+                pivot = agg_df.pivot_table(
+                    index="grid_y",
+                    columns="grid_x",
+                    values="click_count",
+                    aggfunc="sum",
+                    fill_value=0,
+                ).sort_index()
+                fig = px.imshow(
+                    pivot.values,
+                    labels=dict(x="X (50px bin)", y="Y (50px bin)", color="클릭"),
+                    x=pivot.columns.tolist(),
+                    y=pivot.index.tolist(),
+                    color_continuous_scale="Reds",
+                    aspect="auto",
+                    title=f"클릭 히트맵 — {chosen_page}",
+                )
+                # Match screen orientation: top-of-page = top of chart.
+                fig.update_yaxes(autorange="reversed")
+                st.plotly_chart(fig, use_container_width=True)
+
+                tot = int(agg_df["click_count"].sum())
+                rage = int(agg_df["rage_click_count"].sum())
+                dead = int(agg_df["dead_click_count"].sum())
+                m1, m2, m3 = st.columns(3)
+                m1.metric("총 클릭", f"{tot:,}")
+                m2.metric("Rage clicks", f"{rage:,}")
+                m3.metric("Dead clicks", f"{dead:,}")
+
+
+# ------------------------------------------------------------------
+# TAB. Errors  — recent JS errors grouped by message + page
+# ------------------------------------------------------------------
+with tab_err:
+    st.subheader("JavaScript 에러")
+    if not _HAS_ANALYTICS:
+        st.info("analytics 스키마가 아직 적용되지 않았습니다. SQL/analytics_schema.sql 을 실행해 주세요.")
+    else:
+        err_group_df = run_query(
+            """
+            SELECT
+                LEFT(COALESCE(message, ''), 200) AS message,
+                page_path,
+                COUNT(*) AS occurrences,
+                COUNT(DISTINCT user_id) AS users_affected,
+                MAX(ts) AS last_seen
+            FROM analytics.analytics_error
+            WHERE DATE(ts) BETWEEN %s AND %s
+            GROUP BY 1, 2
+            ORDER BY occurrences DESC
+            LIMIT 100;
+            """,
+            (start_date, end_date),
+        )
+
+        if err_group_df.empty:
+            st.success("기간 내 JavaScript 에러가 없습니다.")
+        else:
+            st.markdown("#### 메시지별 발생 (TOP 100)")
+            st.dataframe(
+                err_group_df.rename(columns={
+                    "message": "메시지",
+                    "page_path": "페이지",
+                    "occurrences": "발생 횟수",
+                    "users_affected": "영향 사용자",
+                    "last_seen": "마지막 발생",
+                }),
+                use_container_width=True,
+            )
+            download_df_button(err_group_df, "errors_grouped.csv", "에러 그룹 다운로드")
+
+            st.markdown("#### 최근 에러 100건")
+            err_recent_df = run_query(
+                """
+                SELECT ts, user_id, page_path, message, source, line_no
+                FROM analytics.analytics_error
+                WHERE DATE(ts) BETWEEN %s AND %s
+                ORDER BY ts DESC
+                LIMIT 100;
+                """,
+                (start_date, end_date),
+            )
+            st.dataframe(err_recent_df, use_container_width=True)
+
+
+# ------------------------------------------------------------------
+# TAB. Sessions  — recent sessions w/ duration + pages visited
+# ------------------------------------------------------------------
+with tab_sess:
+    st.subheader("최근 세션")
+    if not _HAS_ANALYTICS:
+        st.info("analytics 스키마가 아직 적용되지 않았습니다. SQL/analytics_schema.sql 을 실행해 주세요.")
+    else:
+        sess_query = """
+        SELECT
+            us.id AS session_id,
+            us.user_email,
+            us.department,
+            us.login_at,
+            us.logout_at,
+            us.session_duration_sec,
+            us.session_end_reason,
+            COALESCE(pv.pages_visited, 0) AS pages_visited,
+            COALESCE(pv.total_dwell_sec, 0) AS total_dwell_sec
+        FROM user_sessions us
+        LEFT JOIN (
+            SELECT session_id,
+                   COUNT(*) AS pages_visited,
+                   SUM(COALESCE(duration_sec, 0)) AS total_dwell_sec
+            FROM analytics.analytics_pageview
+            GROUP BY session_id
+        ) pv ON pv.session_id = us.id
+        WHERE DATE(us.login_at) BETWEEN %s AND %s
+        """
+        sess_params = [start_date, end_date]
+        if selected_dept != "전체":
+            sess_query += " AND us.department = %s "
+            sess_params.append(selected_dept)
+        sess_query += " ORDER BY us.login_at DESC LIMIT 200;"
+
+        sess_df = run_query(sess_query, tuple(sess_params))
+
+        if sess_df.empty:
+            st.info("세션 데이터가 없습니다.")
+        else:
+            display = sess_df.copy()
+            display["session_duration_sec"] = display["session_duration_sec"].apply(format_duration)
+            display["total_dwell_sec"] = display["total_dwell_sec"].apply(format_duration)
+            st.dataframe(
+                display.rename(columns={
+                    "session_id": "세션ID",
+                    "user_email": "사용자",
+                    "department": "부서",
+                    "login_at": "로그인",
+                    "logout_at": "로그아웃",
+                    "session_duration_sec": "세션 시간",
+                    "session_end_reason": "종료 사유",
+                    "pages_visited": "페이지 수",
+                    "total_dwell_sec": "체류 시간 합",
+                }),
+                use_container_width=True,
+            )
+
+            st.markdown("#### 세션 타임라인 보기")
+            sel = st.selectbox(
+                "세션ID 선택",
+                sess_df["session_id"].tolist(),
+                format_func=lambda sid: f"#{sid} — {sess_df.loc[sess_df['session_id'] == sid, 'user_email'].iloc[0]}",
+                key="session_timeline_pick",
+            )
+            if sel:
+                tl_df = run_query(
+                    """
+                    SELECT page_name, page_path, started_at, ended_at, duration_sec
+                    FROM analytics.analytics_pageview
+                    WHERE session_id = %s
+                    ORDER BY started_at;
+                    """,
+                    (int(sel),),
+                )
+                if tl_df.empty:
+                    st.caption("이 세션에 대한 pageview 가 아직 기록되지 않았습니다.")
+                else:
+                    show = tl_df.copy()
+                    show["duration_sec"] = show["duration_sec"].apply(format_duration)
+                    st.dataframe(
+                        show.rename(columns={
+                            "page_name": "페이지명",
+                            "page_path": "경로",
+                            "started_at": "시작",
+                            "ended_at": "종료",
+                            "duration_sec": "체류",
+                        }),
+                        use_container_width=True,
+                    )

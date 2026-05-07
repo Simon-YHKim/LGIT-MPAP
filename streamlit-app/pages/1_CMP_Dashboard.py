@@ -30,6 +30,9 @@ from access_logger import log_page_access
 
 log_page_access("1_CMP_Dashboard")
 
+from ui.analytics import inject_tracker
+inject_tracker(page_name="1_CMP_Dashboard", page_path="pages/1_CMP_Dashboard.py")
+
 # -----------------------------
 # DB 설정
 # -----------------------------

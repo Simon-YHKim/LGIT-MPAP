@@ -1,13 +1,23 @@
 """
-ui.vitals.theme — Vitals 글로벌 스타일 진입점
+ui.vitals.theme — Vitals 글로벌 스타일 진입점 (Light + Dark)
 
 페이지 첫 줄에서 `apply_vitals_theme()` 호출 → 와인레드 팔레트, LG EI 폰트,
 Streamlit 기본 사이드바 hide, 카드/표/버튼 톤이 일괄 적용된다.
 
 디자인 토큰 출처: docs/design/landing.html 의 :root 변수 + 사용자 피드백
 반영본 (와인 강조 1점 정책, 8~12px radius, calm engineering 톤).
+
+Dark mode (2026-05-07 추가):
+- :root 는 light 기본값을 정의, [data-theme="dark"] 는 dark 오버라이드
+- Streamlit iframe 샌드박스 우회를 위해 .stApp[data-theme=...] 셀렉터를
+  병행하고, 매 rerun 마다 root 요소들에 data-theme 속성을 설정하는
+  작은 <script> 를 함께 inject. body 클래스 (.vitals-dark) 도 동시에 부여 →
+  어떤 wrapper 가 먼저 잡히든 토큰이 일관되게 적용.
+- 함수 시그니처 호환성: apply_vitals_theme() 는 인자 없이 동작 (기존 호출
+  사이트 모두 그대로 작동). 신규 옵셔널 파라미터 theme 만 추가.
 """
 from __future__ import annotations
+from typing import Literal, Optional
 import streamlit as st
 
 from .fonts import (
@@ -18,8 +28,30 @@ from .fonts import (
 )
 
 
+_THEME_SESSION_KEY = "vitals_theme"  # 'light' | 'dark'
+
+
+def get_current_theme() -> str:
+    """현재 활성 Vitals 테마 ('light' 또는 'dark') 반환.
+
+    session_state['vitals_theme'] 를 정규화 후 반환. 미설정/잘못된 값은 'light'.
+    """
+    raw = st.session_state.get(_THEME_SESSION_KEY, "light")
+    return "dark" if raw == "dark" else "light"
+
+
+def _set_theme(theme: str) -> None:
+    """session_state 에 테마 저장 (정규화). 외부 직접 호출용 헬퍼."""
+    st.session_state[_THEME_SESSION_KEY] = "dark" if theme == "dark" else "light"
+
+
 def _build_css() -> str:
-    """모든 글로벌 스타일을 한 덩어리로 빌드."""
+    """모든 글로벌 스타일을 한 덩어리로 빌드.
+
+    light 토큰은 :root 에, dark 오버라이드는 [data-theme="dark"] 와
+    .vitals-dark (body class) 양쪽에 정의 — Streamlit DOM 어디에 속성이 붙어도
+    var() 가 정상 해상되도록.
+    """
     return f"""
 {font_face_block()}
 
@@ -49,6 +81,7 @@ def _build_css() -> str:
     --status-bad:     #B23A48;
     --status-good-tint: #E6F4EA;
     --status-warn-tint: #FAF1DD;
+    --status-bad-tint:  #FDECEF;
 
     /* On-dark (login video bg 등 다크 영역용) */
     --on-dark:           #FFFFFF;
@@ -69,6 +102,40 @@ def _build_css() -> str:
     --shadow-elev:   0 30px 80px -20px rgba(0,0,0,0.55);
 }}
 
+/* Dark theme overrides — applied when ANY ancestor has data-theme="dark"
+   OR body carries .vitals-dark. Both sets of selectors target the same
+   var() group so cascade resolution always succeeds in Streamlit's nested
+   shadow/iframe-ish DOM. */
+:root[data-theme="dark"],
+[data-theme="dark"],
+body.vitals-dark,
+body.vitals-dark .stApp,
+.stApp[data-theme="dark"] {{
+    --primary:        #A50034;
+    --primary-dark:   #7E0027;
+    --primary-tint:   #2A1218;
+
+    --page-bg:        #0E1117;
+    --card-bg:        #161B22;
+    --soft:           #1A1F2A;
+
+    --border:         #2A2F3A;
+    --border-strong:  #3A4051;
+
+    --ink-body:       #E5E7EB;
+    --ink-muted:      #9CA3AF;
+    --ink-subtle:     #6B7280;
+
+    --status-good:    #2EA85C;
+    --status-warn:    #D69E2E;
+    --status-bad:     #E5495A;
+    --status-good-tint: #0F2418;
+    --status-warn-tint: #2A2210;
+    --status-bad-tint:  #2E1318;
+
+    --shadow-card:   0 8px 22px -4px rgba(0,0,0,0.45);
+}}
+
 /* Reset / base ---------------------------------------------------- */
 html, body, [class*="css"] {{
     font-family: var(--font-body);
@@ -79,12 +146,13 @@ html, body {{
     color: var(--ink-body);
     -webkit-font-smoothing: antialiased;
 }}
+.stApp {{ background: var(--page-bg); }}
 
 /* Streamlit 사이드바 — 우리 디자인 톤으로 스타일 (기본 표시, 페이지 이동에 사용)
    로그인 페이지는 ui/login_ui/styles.py 에서 별도 hide 함. */
 [data-testid="stSidebar"],
 section[data-testid="stSidebar"] {{
-    background: #FFFFFF !important;
+    background: var(--card-bg) !important;
     border-right: 1px solid var(--border) !important;
 }}
 [data-testid="stSidebar"] [data-testid="stSidebarNav"] a,
@@ -135,7 +203,8 @@ h1, h2, h3, h4, h5, h6 {{
 .stSelectbox > div > div {{
     border-radius: var(--radius) !important;
     border: 1px solid var(--border) !important;
-    background: #FFFFFF !important;
+    background: var(--card-bg) !important;
+    color: var(--ink-body) !important;
     transition: border-color .15s, box-shadow .15s;
 }}
 [data-baseweb="input"]:focus-within > div,
@@ -151,7 +220,7 @@ h1, h2, h3, h4, h5, h6 {{
 .stDownloadButton > button {{
     border-radius: var(--radius) !important;
     border: 1px solid var(--border) !important;
-    background: #FFFFFF !important;
+    background: var(--card-bg) !important;
     color: var(--ink-body) !important;
     font-family: var(--font-body) !important;
     font-weight: 600 !important;
@@ -224,18 +293,106 @@ h1, h2, h3, h4, h5, h6 {{
     font-weight: 700;
     margin-left: 0.02em;
 }}
+
+/* Theme toggle button (rendered by render_theme_toggle) --------- */
+.vit-theme-toggle-wrap {{
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin: 0 0 4px 0;
+}}
+.vit-theme-toggle-wrap [data-testid="stButton"] > button {{
+    width: 34px;
+    height: 34px;
+    padding: 0 !important;
+    border-radius: 50% !important;
+    border: 1px solid var(--border) !important;
+    background: var(--card-bg) !important;
+    color: var(--ink-body) !important;
+    line-height: 1 !important;
+}}
+.vit-theme-toggle-wrap [data-testid="stButton"] > button:hover {{
+    border-color: var(--primary) !important;
+    color: var(--primary) !important;
+}}
+.vit-theme-toggle-wrap [data-testid="stButton"] > button svg {{
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    vertical-align: middle;
+}}
 """
 
 
-def apply_vitals_theme() -> None:
+# Inline SVG icons (no emoji per repo policy) — sun for "switch to light",
+# moon for "switch to dark". Stroked, currentColor — inherits from button text.
+_SUN_SVG = (
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" '
+    'stroke="currentColor" stroke-width="2" stroke-linecap="round" '
+    'stroke-linejoin="round">'
+    '<circle cx="12" cy="12" r="4"/>'
+    '<path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41'
+    'M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>'
+    '</svg>'
+)
+_MOON_SVG = (
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" '
+    'stroke="currentColor" stroke-width="2" stroke-linecap="round" '
+    'stroke-linejoin="round">'
+    '<path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/>'
+    '</svg>'
+)
+
+
+def _theme_attr_script(theme: str) -> str:
+    """매 rerun 시 root/body 에 data-theme 와 .vitals-dark 클래스를 동기화하는
+    작은 inline <script>. Streamlit 의 outer document 와 실제 컴포넌트
+    iframe 사이의 attribute drift 를 방어.
+    """
+    return f"""
+<script>
+(function() {{
+  try {{
+    var t = "{theme}";
+    var root = window.parent && window.parent.document
+        ? window.parent.document.documentElement : document.documentElement;
+    var body = window.parent && window.parent.document
+        ? window.parent.document.body : document.body;
+    if (root) root.setAttribute('data-theme', t);
+    if (body) {{
+      body.setAttribute('data-theme', t);
+      if (t === 'dark') body.classList.add('vitals-dark');
+      else body.classList.remove('vitals-dark');
+      var apps = body.querySelectorAll('.stApp');
+      apps.forEach(function(a) {{ a.setAttribute('data-theme', t); }});
+    }}
+  }} catch (e) {{ /* swallow — best-effort */ }}
+}})();
+</script>
+"""
+
+
+def apply_vitals_theme(theme: Optional[Literal["light", "dark", "auto"]] = None) -> None:
     """모든 페이지의 첫 줄에서 호출 — 와인 팔레트 + LG EI 폰트 + Streamlit 기본 hide.
 
+    Args:
+        theme: 'light' | 'dark' | 'auto' | None
+            - None (default): session_state 기반. 미설정 시 'light'. 기존 호출 사이트
+              호환을 위해 NO-arg 형태로 그대로 사용 가능.
+            - 'auto': session_state 사용 (None 과 동일).
+            - 'light' / 'dark': 강제 지정 + session_state 동기화.
+
     PERF #8 — 한 페이지의 매 rerun 마다 ~1.7MB CSS 재방출하는 비용 회피:
-    페이지 단위 session_state key (`_vitals_theme_applied__{file}`) 로 첫 진입에만
-    st.markdown 호출. 이후 rerun 에선 no-op (브라우저 캐시된 <style> 그대로 유지).
-    페이지 전환 시엔 새 페이지 키로 다시 발화 → 항상 적용 보장.
+    페이지 단위 session_state key 로 첫 진입에만 st.markdown 호출. 단,
+    테마가 변경되면 강제 재방출 (data-theme 토글 + 클래스 동기화 스크립트는
+    매 rerun 마다 짧게 다시 inject — 페이지 전환 후에도 다크 상태 유지 보장).
     """
-    # Streamlit 의 script run context 에서 현재 페이지 식별 (없으면 그냥 발화)
+    # 1) 테마 결정
+    if theme in ("light", "dark"):
+        _set_theme(theme)
+    current = get_current_theme()
+
+    # 2) 페이지 식별 (rerun no-op 캐시 키)
     try:
         from streamlit.runtime.scriptrunner import get_script_run_ctx
         ctx = get_script_run_ctx()
@@ -244,7 +401,78 @@ def apply_vitals_theme() -> None:
         page_key = "default"
 
     flag_key = f"_vitals_theme_applied__{page_key}"
-    if st.session_state.get(flag_key):
-        return  # 이미 이번 페이지에서 발화함 — 중복 방출 회피
-    st.markdown(f"<style>\n{_build_css()}\n</style>", unsafe_allow_html=True)
-    st.session_state[flag_key] = True
+    last_theme_key = f"_vitals_theme_last__{page_key}"
+    needs_css = (
+        not st.session_state.get(flag_key)
+        or st.session_state.get(last_theme_key) != current
+    )
+
+    if needs_css:
+        st.markdown(f"<style>\n{_build_css()}\n</style>", unsafe_allow_html=True)
+        st.session_state[flag_key] = True
+        st.session_state[last_theme_key] = current
+
+    # 3) data-theme 속성 동기화 — 매 rerun 마다 짧은 스크립트 inject (cheap).
+    #    이게 있어야 페이지 nav 후에도 dark 가 유지된다.
+    st.markdown(_theme_attr_script(current), unsafe_allow_html=True)
+
+    # 4) 사이드바에 테마 토글 자동 부착. Streamlit 위젯은 매 rerun 마다
+    #    재선언되어야 하므로 sentinel 캐싱 없이 항상 호출. 사이드바가 없는
+    #    페이지 (예: login.py 는 apply_vitals_theme 자체를 부르지 않음) 는
+    #    영향 없음.
+    try:
+        render_theme_toggle(location="sidebar")
+    except Exception:
+        # 사이드바 컨텍스트 이슈 시 silent — 페이지가 직접 호출하도록 위임
+        pass
+
+
+def render_theme_toggle(location: str = "sidebar") -> None:
+    """테마 토글 버튼 렌더링.
+
+    Args:
+        location: 'sidebar' (기본) | 'inline' (현재 위치).
+
+    UX:
+        - 라벨은 'Dark' / 'Light' 텍스트 (이모지 금지 정책). SVG 아이콘은 옆에
+          별도 markdown 으로 표시.
+        - 클릭 시 session_state 토글 → DB persist (best-effort) → st.rerun()
+        - DB persist 실패해도 페이지 렌더 진행 — 세션 내 토글은 항상 동작.
+    """
+    current = get_current_theme()
+    next_theme = "dark" if current == "light" else "light"
+    icon_html = _MOON_SVG if current == "light" else _SUN_SVG
+    label = "Dark" if current == "light" else "Light"
+    aria = f"Switch to {next_theme} mode"
+
+    container = st.sidebar if location == "sidebar" else st
+
+    container.markdown(
+        f'<div class="vit-theme-toggle-wrap" title="{aria}">{icon_html}</div>',
+        unsafe_allow_html=True,
+    )
+    clicked = container.button(
+        label,
+        key="vitals_theme_toggle",  # stable key — Streamlit 이 동일 위젯으로 추적
+        help=aria,
+        use_container_width=False,
+    )
+
+    if clicked:
+        _set_theme(next_theme)
+        # DB persist (best-effort)
+        try:
+            user_id = st.session_state.get("user_email") or st.session_state.get("user_id")
+            if user_id:
+                from .preferences import save_user_theme_pref
+                save_user_theme_pref(str(user_id), next_theme)
+        except Exception:
+            pass
+        st.rerun()
+
+
+__all__ = [
+    "apply_vitals_theme",
+    "get_current_theme",
+    "render_theme_toggle",
+]

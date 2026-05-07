@@ -1,0 +1,61 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>vitals-analytics</title>
+  <style>html,body{margin:0;padding:0;width:0;height:0;overflow:hidden;}</style>
+</head>
+<body>
+  <script>
+    // ===========================================================
+    // Streamlit custom-component bridge (no build step).
+    // We talk to the host page via window.parent postMessage, using
+    // the same message protocol Streamlit's CLI components use.
+    //
+    // Outgoing  : { isStreamlitMessage: true, type, ...payload }
+    //   - COMPONENT_READY        — ack, allows setComponentValue calls
+    //   - SET_COMPONENT_VALUE    — send {value, dataType:"json"}
+    //   - SET_FRAME_HEIGHT       — keep iframe at 0px
+    // Incoming  : { type: "streamlit:render", args: {...component args} }
+    // ===========================================================
+    var Streamlit = (function () {
+      function send(type, data) {
+        var msg = Object.assign({ isStreamlitMessage: true, type: type }, data || {});
+        window.parent.postMessage(msg, "*");
+      }
+      return {
+        setComponentReady: function () { send("streamlit:componentReady", { apiVersion: 1 }); },
+        setFrameHeight:    function (h) { send("streamlit:setFrameHeight", { height: h || 0 }); },
+        setComponentValue: function (v) { send("streamlit:setComponentValue", { value: v, dataType: "json" }); },
+      };
+    })();
+    window.Streamlit = Streamlit;
+
+    // Cache the latest args from Python (user_id, page_path, ...).
+    var ARGS = {};
+    var ATTACHED = false;
+
+    window.addEventListener("message", function (e) {
+      var d = e.data || {};
+      if (d.type !== "streamlit:render") return;
+      ARGS = (d.args || {});
+      window.__VITALS_ANALYTICS_CFG__ = ARGS;
+      if (!ATTACHED) {
+        ATTACHED = true;
+        attachTracker();
+      } else {
+        // Update CFG only — pageview_id may have changed on rerun.
+        if (window.__vitalsUpdateCfg__) window.__vitalsUpdateCfg__(ARGS);
+      }
+    });
+
+    Streamlit.setComponentReady();
+    Streamlit.setFrameHeight(0);
+
+    // tracker.js content is injected by Python at file-read time.
+    function attachTracker() {
+      /* __TRACKER_JS_INLINE__ */
+    }
+  </script>
+</body>
+</html>

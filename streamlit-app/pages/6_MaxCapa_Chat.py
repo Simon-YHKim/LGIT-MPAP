@@ -14,6 +14,9 @@ require_login(
 from ui.vitals import apply_vitals_theme
 apply_vitals_theme()
 
+from ui.analytics import inject_tracker
+inject_tracker(page_name="6_MaxCapa_Chat", page_path="pages/6_MaxCapa_Chat.py")
+
 FASTAPI_BASE_URL = "http://localhost:9000"
 
 

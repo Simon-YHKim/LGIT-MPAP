@@ -1,0 +1,1064 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Vitals · Streamlit Perfect Clone — LGIT MPAP</title>
+<link rel="stylesheet" href="./_shared.css">
+<link rel="stylesheet" href="./streamlit-clone.css">
+<style>
+  /* preview-only: 페이지 섹션 사이 시각 분리 */
+  .sc-preview-divider { height: 1px; background: var(--border); margin: 2rem 0; }
+</style>
+</head>
+<body>
+
+<!-- ================================================================ -->
+<!--  data-testid="stApp" — Streamlit root                             -->
+<!-- ================================================================ -->
+<div data-testid="stApp" class="vitals-app">
+
+  <!-- header — Streamlit 의 layout=wide 에서는 거의 비어있음 -->
+  <header data-testid="stHeader"></header>
+
+  <!-- ===================== Sidebar (real Streamlit selectors) ===================== -->
+  <section data-testid="stSidebar" aria-label="sidebar">
+    <div data-testid="stSidebarHeader">
+      <div style="font-size:16px;font-weight:700;letter-spacing:-0.01em;color:var(--ink-body);">Vitals</div>
+      <div style="margin-top:2px;font-family:var(--font-mono);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-subtle);">LGIT MPAP</div>
+    </div>
+    <nav data-testid="stSidebarNav">
+      <a data-testid="stSidebarNavLink" href="#sec-login">Login</a>
+      <a data-testid="stSidebarNavLink" href="#sec-home" aria-current="page">0 · Home</a>
+      <a data-testid="stSidebarNavLink" href="#sec-cmp">1 · CMP Dashboard</a>
+      <a data-testid="stSidebarNavLink" href="#sec-uph">2 · UPH Dashboard</a>
+      <a data-testid="stSidebarNavLink" href="#sec-mtba">3 · MTBA Dashboard</a>
+      <a data-testid="stSidebarNavLink" href="#sec-detail">4 · MTBA Detail</a>
+      <a data-testid="stSidebarNavLink" href="#sec-alarm">5 · Alarm Action</a>
+      <a data-testid="stSidebarNavLink" href="#sec-chat">6 · MaxCapa Chat</a>
+      <a data-testid="stSidebarNavLink" href="#sec-patch">8 · Patch Note</a>
+      <a data-testid="stSidebarNavLink" href="#sec-admin">9 · Admin Analytics</a>
+    </nav>
+    <div class="sc-sidebar-foot">
+      © LG Innotek<br>
+      Max Capa 팀<br>
+      v · streamlit-clone
+    </div>
+  </section>
+
+  <!-- ===================== Main ===================== -->
+  <main data-testid="stMain" class="main">
+    <div data-testid="block-container" class="block-container">
+
+      <!-- =========================================================== -->
+      <!--  LOGIN — login.py                                           -->
+      <!-- =========================================================== -->
+      <section id="sec-login" class="sc-page-section">
+        <div class="sc-section-meta">login.py · 로그인</div>
+        <div data-testid="stVerticalBlock">
+
+          <div data-testid="stHorizontalBlock">
+            <!-- left: dark hero -->
+            <div data-testid="column" style="flex: 1.4;">
+              <div style="background: linear-gradient(135deg, #0A0C10 0%, #1a1f2b 100%); border-radius: 12px; padding: 2rem 1.5rem; color: #fff; min-height: 360px; display:flex; flex-direction:column; justify-content:space-between;">
+                <div>
+                  <div style="font-family: var(--font-mono); font-size: 11px; letter-spacing: .08em; opacity: .72; text-transform: uppercase;">VITALS · LGIT MPAP</div>
+                  <h2 style="font-family: 'LG EI Headline', 'LG EI Text', sans-serif; font-size: 2rem; font-weight: 700; letter-spacing:-0.025em; margin: 0.5rem 0 0.375rem;">공정의 호흡을 데이터로 듣다</h2>
+                  <p style="font-size: 13px; opacity: .82; max-width: 420px; margin:0;">LG Innotek 광학솔루션 사업부 · 생산혁신센터 Max Capa 팀</p>
+                </div>
+                <div style="display:flex;gap:6px;font-family:var(--font-mono);font-size:11px;opacity:.72;flex-wrap:wrap;">
+                  <span>한국어</span><span>·</span><span>English</span><span>·</span><span>Tiếng Việt</span><span>·</span><span>中文</span><span>·</span><span>Polski</span><span>·</span><span>Bahasa</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- right: light Vitals login card -->
+            <div data-testid="column" style="flex: 1;">
+              <div data-testid="stVerticalBlock" style="background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem;">
+                <div data-testid="stMarkdown">
+                  <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-muted);">SIGN IN</div>
+                  <h3 style="margin: 0.25rem 0 1rem; font-size: 18px;">로그인</h3>
+                </div>
+
+                <div data-testid="stTextInput">
+                  <label>사번</label>
+                  <div data-baseweb="input"><input type="text" placeholder="20240001"></div>
+                </div>
+
+                <div data-testid="stTextInput">
+                  <label>비밀번호</label>
+                  <div data-baseweb="input"><input type="password" placeholder="••••••••"></div>
+                </div>
+
+                <div data-testid="stButton" class="sc-full">
+                  <button kind="primary">로그인</button>
+                </div>
+
+                <div data-testid="stHorizontalBlock">
+                  <div data-testid="column">
+                    <div data-testid="stButton" class="sc-full"><button>회원가입</button></div>
+                  </div>
+                  <div data-testid="column">
+                    <div data-testid="stButton" class="sc-full"><button>비밀번호 찾기</button></div>
+                  </div>
+                </div>
+
+                <div data-testid="stCaptionContainer">회사 이메일 인증 후 가입 가능합니다.</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <div class="sc-preview-divider"></div>
+
+      <!-- =========================================================== -->
+      <!--  HOME — 0_Home.py                                           -->
+      <!-- =========================================================== -->
+      <section id="sec-home" class="sc-page-section">
+        <div class="sc-section-meta">0_Home.py · 설비생산성 분석 플랫폼</div>
+        <div data-testid="stVerticalBlock">
+
+          <!-- 3-mode selector (vit-mode-bar — st.button row) -->
+          <div data-testid="stHorizontalBlock" class="vit-mode-bar" style="padding: 0.375rem; background: var(--soft); border-radius: 10px; width: fit-content;">
+            <div data-testid="column" style="flex:0 0 auto;">
+              <div data-testid="stMarkdown" style="padding: 0.375rem 0.625rem; font-size: 11px; font-weight: 700; color: var(--ink-muted); text-transform: uppercase; letter-spacing: .08em;">View</div>
+            </div>
+            <div data-testid="column" style="flex:0 0 auto;"><div data-testid="stButton"><button>기본</button></div></div>
+            <div data-testid="column" style="flex:0 0 auto;"><div data-testid="stButton"><button kind="primary">Best · Worst 카드</button></div></div>
+            <div data-testid="column" style="flex:0 0 auto;"><div data-testid="stButton"><button>CMP 요약 상황판</button></div></div>
+          </div>
+
+          <!-- Worst 3 -->
+          <div class="vit-cat-head"><span class="vit-cat-bar"></span><h3 class="vit-cat-title">Worst 3<span class="vit-cat-sub">개선 우선순위</span></h3></div>
+          <div data-testid="stHorizontalBlock">
+            <div data-testid="column">
+              <div data-testid="stMetric" class="sc-card-bad">
+                <div data-testid="stMetricLabel">#1 · FOL Adhesion</div>
+                <div data-testid="stMetricValue">62.4%</div>
+                <div data-testid="stMetricDelta" data-direction="down">FOL · CM모델A</div>
+              </div>
+            </div>
+            <div data-testid="column">
+              <div data-testid="stMetric" class="sc-card-bad">
+                <div data-testid="stMetricLabel">#2 · EOL Aging</div>
+                <div data-testid="stMetricValue">68.1%</div>
+                <div data-testid="stMetricDelta" data-direction="down">EOL · DM모델</div>
+              </div>
+            </div>
+            <div data-testid="column">
+              <div data-testid="stMetric" class="sc-card-warn">
+                <div data-testid="stMetricLabel">#3 · MOL Bonding</div>
+                <div data-testid="stMetricValue">79.6%</div>
+                <div data-testid="stMetricDelta" data-direction="down">MOL · CM모델B</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Best 3 -->
+          <div class="vit-cat-head"><span class="vit-cat-bar"></span><h3 class="vit-cat-title">Best 3<span class="vit-cat-sub">달성률 상위</span></h3></div>
+          <div data-testid="stHorizontalBlock">
+            <div data-testid="column">
+              <div data-testid="stMetric" class="sc-card-good">
+                <div data-testid="stMetricLabel">#1 · Tele Inspection</div>
+                <div data-testid="stMetricValue">102.4%</div>
+                <div data-testid="stMetricDelta" data-direction="up">Tele · 신모델</div>
+              </div>
+            </div>
+            <div data-testid="column">
+              <div data-testid="stMetric" class="sc-card-good">
+                <div data-testid="stMetricLabel">#2 · Wide Final</div>
+                <div data-testid="stMetricValue">99.8%</div>
+                <div data-testid="stMetricDelta" data-direction="up">Wide · CM모델C</div>
+              </div>
+            </div>
+            <div data-testid="column">
+              <div data-testid="stMetric" class="sc-card-good">
+                <div data-testid="stMetricLabel">#3 · DM Final</div>
+                <div data-testid="stMetricValue">96.2%</div>
+                <div data-testid="stMetricDelta" data-direction="up">DM · 모델E</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 분석 도구 -->
+          <div data-testid="stMarkdown">
+            <h3>분석 도구</h3>
+            <p style="color:var(--ink-muted);font-size:13px;">상단 요약에서 이상 공정/모델을 확인한 후, 아래 카테고리 별 도구에서 상세 분석 화면으로 이동하세요.</p>
+          </div>
+
+          <div class="vit-cat-head"><span class="vit-cat-bar"></span><h3 class="vit-cat-title">생산성 분석<span class="vit-cat-sub">Performance</span></h3></div>
+          <div data-testid="stHorizontalBlock">
+            <div data-testid="column"><div data-testid="stButton" class="sc-full"><button><b>CMP Dashboard</b><br><span style="font-size:11px;font-weight:400;color:var(--ink-muted);">모델별 일자별 CMP / UPH / Efficiency</span></button></div></div>
+            <div data-testid="column"><div data-testid="stButton" class="sc-full"><button><b>UPH Dashboard</b><br><span style="font-size:11px;font-weight:400;color:var(--ink-muted);">설비별 UPH / 동작시간 분석</span></button></div></div>
+            <div data-testid="column"><div data-testid="stButton" class="sc-full"><button><b>MTBA Dashboard</b><br><span style="font-size:11px;font-weight:400;color:var(--ink-muted);">공정×호기 + Best/Worst Alarm</span></button></div></div>
+          </div>
+
+          <div class="vit-cat-head"><span class="vit-cat-bar"></span><h3 class="vit-cat-title">알람 분석<span class="vit-cat-sub">Alarm</span></h3></div>
+          <div data-testid="stHorizontalBlock">
+            <div data-testid="column"><div data-testid="stButton" class="sc-full"><button><b>MTBA Detail View</b><br><span style="font-size:11px;font-weight:400;color:var(--ink-muted);">패널형 상세 + heatmap + 댓글</span></button></div></div>
+            <div data-testid="column"><div data-testid="stButton" class="sc-full"><button><b>Alarm Action List</b><br><span style="font-size:11px;font-weight:400;color:var(--ink-muted);">팀별 알람 처리 액션 + 코멘트</span></button></div></div>
+            <div data-testid="column"></div>
+          </div>
+
+          <div class="vit-cat-head"><span class="vit-cat-bar"></span><h3 class="vit-cat-title">AI · Tools<span class="vit-cat-sub">AI</span></h3></div>
+          <div data-testid="stHorizontalBlock">
+            <div data-testid="column"><div data-testid="stButton" class="sc-full"><button><b>MaxCapa Chat</b><br><span style="font-size:11px;font-weight:400;color:var(--ink-muted);">vLLM 자연어 → SQL 조회</span></button></div></div>
+            <div data-testid="column"><div data-testid="stButton" class="sc-full"><button><b>Patch Note</b><br><span style="font-size:11px;font-weight:400;color:var(--ink-muted);">변경 이력 게시판</span></button></div></div>
+            <div data-testid="column"><div data-testid="stButton" class="sc-full"><button><b>Admin Analytics</b><br><span style="font-size:11px;font-weight:400;color:var(--ink-muted);">사용 로그 분석 (관리자)</span></button></div></div>
+          </div>
+
+          <div data-testid="stAlert" kind="info">
+            <span>Worst 3 / Best 3 카드는 최근 7일 데이터를 기준으로 자동 계산됩니다. 빈 데이터 또는 NaN 가 있는 항목은 제외됩니다.</span>
+          </div>
+        </div>
+      </section>
+
+      <div class="sc-preview-divider"></div>
+
+      <!-- =========================================================== -->
+      <!--  CMP — 1_CMP_Dashboard.py                                   -->
+      <!-- =========================================================== -->
+      <section id="sec-cmp" class="sc-page-section">
+        <div class="sc-section-meta">1_CMP_Dashboard.py · CMP 달성률 Dashboard</div>
+        <div data-testid="stVerticalBlock">
+
+          <div data-testid="stMarkdown">
+            <div style="font-size: 13px; font-weight: 700; color: var(--primary); margin-bottom: 0.25rem;">요약 필터</div>
+          </div>
+
+          <!-- filter row -->
+          <div data-testid="stHorizontalBlock">
+            <div data-testid="column" style="flex: 0.85;">
+              <div data-testid="stMultiSelect">
+                <label>영역</label>
+                <div data-baseweb="select"><div>
+                  <span data-baseweb="tag">FOL <span role="button">×</span></span>
+                  <span data-baseweb="tag">MOL <span role="button">×</span></span>
+                </div></div>
+              </div>
+            </div>
+            <div data-testid="column" style="flex: 4.45;">
+              <div data-testid="stMultiSelect">
+                <label>모델</label>
+                <div data-baseweb="select"><div>
+                  <span data-baseweb="tag">CM모델A <span role="button">×</span></span>
+                  <span data-baseweb="tag">CM모델B <span role="button">×</span></span>
+                  <span data-baseweb="tag">CM모델C <span role="button">×</span></span>
+                  <span data-baseweb="tag">DM모델 <span role="button">×</span></span>
+                </div></div>
+              </div>
+            </div>
+            <div data-testid="column" style="flex: 2.45;">
+              <div data-testid="stDateInput">
+                <label>기간</label>
+                <div data-baseweb="input"><input type="text" value="2026-04-07 ~ 2026-05-07"></div>
+              </div>
+            </div>
+            <div data-testid="column" style="flex: 0.72;">
+              <label style="visibility:hidden;display:block;">_</label>
+              <div data-testid="stButton" class="sc-full"><button kind="primary">조회</button></div>
+            </div>
+            <div data-testid="column" style="flex: 0.72;">
+              <label style="visibility:hidden;display:block;">_</label>
+              <div data-testid="stButton" class="sc-full"><button>초기화</button></div>
+            </div>
+          </div>
+
+          <div data-testid="stCaptionContainer">아래 드롭다운에서 공정을 선택하면 동일 기간 CMP / UPH / Efficiency 상세가 아래에 표시됩니다.</div>
+
+          <!-- model column / charts / summary -->
+          <div data-testid="stHorizontalBlock">
+            <div data-testid="column" style="flex: 0.6;">
+              <div data-testid="stMetric">
+                <div data-testid="stMetricLabel">MODEL</div>
+                <div data-testid="stMetricValue" style="font-size: 1.25rem;">CM모델A</div>
+                <div data-testid="stMetricDelta" data-direction="off">FOL Adhesion · 12 호기</div>
+              </div>
+            </div>
+            <div data-testid="column" style="flex: 2.8;">
+              <div data-testid="stVerticalBlock">
+                <div class="sc-chart">
+                  <div class="sc-chart-title">CMP 달성률 — Wine</div>
+                  <svg viewBox="0 0 400 80" style="width:100%;height:60px;display:block;">
+                    <polyline fill="none" stroke="#A50034" stroke-width="2" points="0,60 50,52 100,40 150,48 200,30 250,38 300,22 350,28 400,14"/>
+                  </svg>
+                </div>
+                <div class="sc-chart">
+                  <div class="sc-chart-title">UPH 달성률 — Warn</div>
+                  <svg viewBox="0 0 400 80" style="width:100%;height:60px;display:block;">
+                    <polyline fill="none" stroke="#B57F1B" stroke-width="2" points="0,40 50,48 100,42 150,50 200,46 250,44 300,42 350,38 400,32"/>
+                  </svg>
+                </div>
+                <div class="sc-chart">
+                  <div class="sc-chart-title">Efficiency — Status Good</div>
+                  <svg viewBox="0 0 400 80" style="width:100%;height:60px;display:block;">
+                    <polyline fill="none" stroke="#1F8B4C" stroke-width="2" points="0,30 50,28 100,32 150,24 200,26 250,18 300,22 350,14 400,18"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+            <div data-testid="column" style="flex: 4;">
+              <div data-testid="stHorizontalBlock">
+                <div data-testid="column"><div data-testid="stMetric"><div data-testid="stMetricLabel">CMP</div><div data-testid="stMetricValue">94.2%</div><div data-testid="stMetricDelta" data-direction="up">▲ 2.1%</div></div></div>
+                <div data-testid="column"><div data-testid="stMetric"><div data-testid="stMetricLabel">UPH</div><div data-testid="stMetricValue">88.6%</div><div data-testid="stMetricDelta" data-direction="down">▼ 0.8%</div></div></div>
+                <div data-testid="column"><div data-testid="stMetric"><div data-testid="stMetricLabel">Eff</div><div data-testid="stMetricValue">91.0%</div><div data-testid="stMetricDelta" data-direction="up">▲ 1.4%</div></div></div>
+              </div>
+              <div data-testid="stDataFrame">
+                <table>
+                  <thead><tr><th>주차</th><th>공정</th><th class="sc-num">CMP</th></tr></thead>
+                  <tbody>
+                    <tr><td>W18</td><td>FOL Adhesion</td><td class="sc-num" style="color:var(--status-bad);">62.4%</td></tr>
+                    <tr><td>W18</td><td>EOL Aging</td><td class="sc-num" style="color:var(--status-bad);">68.1%</td></tr>
+                    <tr><td>W18</td><td>MOL Bonding</td><td class="sc-num" style="color:var(--status-warn);">79.6%</td></tr>
+                    <tr><td>W18</td><td>EOL Test</td><td class="sc-num" style="color:var(--status-warn);">82.3%</td></tr>
+                    <tr><td>W18</td><td>Tele Insp</td><td class="sc-num" style="color:var(--status-good);">96.8%</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <div class="sc-preview-divider"></div>
+
+      <!-- =========================================================== -->
+      <!--  UPH — 2_UPH_Dashboard.py                                   -->
+      <!-- =========================================================== -->
+      <section id="sec-uph" class="sc-page-section">
+        <div class="sc-section-meta">2_UPH_Dashboard.py · UPH/동작시간 분석 대시보드 (PostgreSQL SQL 집계형 v4)</div>
+        <div data-testid="stVerticalBlock">
+
+          <div data-testid="stMarkdown">
+            <h2>설비별 UPH / 동작시간 분석</h2>
+          </div>
+
+          <div data-testid="stHorizontalBlock">
+            <div data-testid="column">
+              <div data-testid="stSelectbox">
+                <label>공장 선택</label>
+                <div data-baseweb="select"><div>전체</div></div>
+              </div>
+            </div>
+            <div data-testid="column">
+              <div data-testid="stSelectbox">
+                <label>공정 선택</label>
+                <div data-baseweb="select"><div>FOL Adhesion</div></div>
+              </div>
+            </div>
+            <div data-testid="column">
+              <div data-testid="stSelectbox">
+                <label>모델 선택</label>
+                <div data-baseweb="select"><div>CM모델A</div></div>
+              </div>
+            </div>
+            <div data-testid="column">
+              <div data-testid="stDateInput">
+                <label>날짜 선택</label>
+                <div data-baseweb="input"><input type="text" value="2026-05-07"></div>
+              </div>
+            </div>
+          </div>
+
+          <div data-testid="stCaptionContainer">선택 날짜: 2026-05-07 · 선택 공장/공정/모델: 전체 / FOL Adhesion / CM모델A</div>
+
+          <div data-testid="stMarkdown">
+            <h3>분석 결과 2026-05-07 · 전체 / FOL Adhesion / CM모델A</h3>
+          </div>
+
+          <!-- 4 metrics -->
+          <div data-testid="stHorizontalBlock">
+            <div data-testid="column"><div data-testid="stMetric"><div data-testid="stMetricLabel">평균 UPH</div><div data-testid="stMetricValue">324</div><div data-testid="stMetricDelta" data-direction="up">▲ 4.2% vs 이전</div></div></div>
+            <div data-testid="column"><div data-testid="stMetric"><div data-testid="stMetricLabel">평균 동작시간</div><div data-testid="stMetricValue">14.2 h</div><div data-testid="stMetricDelta" data-direction="down">▼ 2.1%</div></div></div>
+            <div data-testid="column"><div data-testid="stMetric"><div data-testid="stMetricLabel">UPH 편차</div><div data-testid="stMetricValue">8.4%</div><div data-testid="stMetricDelta" data-direction="up">▼ 1.2%</div></div></div>
+            <div data-testid="column"><div data-testid="stMetric"><div data-testid="stMetricLabel">호기 수</div><div data-testid="stMetricValue">42</div><div data-testid="stMetricDelta" data-direction="off">─ 0</div></div></div>
+          </div>
+
+          <!-- machine trend chart -->
+          <div class="sc-chart">
+            <div class="sc-chart-title">호기별 UPH 트렌드 (최근 30일)</div>
+            <svg viewBox="0 0 600 120" style="width:100%;height:160px;display:block;">
+              <polyline fill="none" stroke="#A50034" stroke-width="2" points="0,80 50,72 100,75 150,60 200,68 250,50 300,55 350,40 400,48 450,30 500,38 550,22 600,28"/>
+              <polyline fill="none" stroke="#B57F1B" stroke-width="1.5" stroke-dasharray="4 4" points="0,90 50,84 100,90 150,78 200,84 250,68 300,72 350,56 400,62 450,44 500,52 550,36 600,42"/>
+              <polyline fill="none" stroke="#1F8B4C" stroke-width="1.5" stroke-dasharray="2 3" points="0,100 50,98 100,100 150,96 200,100 250,90 300,94 350,84 400,88 450,76 500,82 550,72 600,78"/>
+            </svg>
+          </div>
+
+          <!-- Best vs Worst expander -->
+          <div data-testid="stExpander">
+            <details open>
+              <summary>Best / Worst 호기 요약 보기</summary>
+              <div class="sc-expander-body">
+                <div data-testid="stHorizontalBlock">
+                  <div data-testid="column">
+                    <div data-testid="stSelectbox">
+                      <label>Best</label>
+                      <div data-baseweb="select"><div>FOL-12 (UPH 412)</div></div>
+                    </div>
+                  </div>
+                  <div data-testid="column">
+                    <div data-testid="stSelectbox">
+                      <label>Worst</label>
+                      <div data-baseweb="select"><div>FOL-03 (UPH 218)</div></div>
+                    </div>
+                  </div>
+                </div>
+                <div data-testid="stCaptionContainer">자동선정 Best: FOL-12 / Worst: FOL-03</div>
+                <div class="sc-chart" style="margin-top:0.5rem;">
+                  <div class="sc-chart-title">동작시간 편차</div>
+                  <svg viewBox="0 0 400 60" style="width:100%;height:80px;display:block;">
+                    <rect x="0"  y="20" width="40" height="30" fill="#1F8B4C" opacity="0.8"/>
+                    <rect x="50" y="14" width="40" height="36" fill="#1F8B4C" opacity="0.8"/>
+                    <rect x="100" y="22" width="40" height="28" fill="#B57F1B" opacity="0.8"/>
+                    <rect x="150" y="30" width="40" height="20" fill="#B57F1B" opacity="0.8"/>
+                    <rect x="200" y="38" width="40" height="12" fill="#B23A48" opacity="0.8"/>
+                    <rect x="250" y="42" width="40" height="8"  fill="#B23A48" opacity="0.8"/>
+                  </svg>
+                </div>
+              </div>
+            </details>
+          </div>
+
+          <div data-testid="stButton"><button>🏠 메뉴선택 화면으로 가기</button></div>
+        </div>
+      </section>
+
+      <div class="sc-preview-divider"></div>
+
+      <!-- =========================================================== -->
+      <!--  MTBA — 3_MTBA_Dashboard.py                                 -->
+      <!-- =========================================================== -->
+      <section id="sec-mtba" class="sc-page-section">
+        <div class="sc-section-meta">3_MTBA_Dashboard.py · MTBA Dashboard</div>
+        <div data-testid="stVerticalBlock">
+
+          <!-- page-banner / hero -->
+          <div class="vit-page-hero">
+            <h1>MTBA Dashboard</h1>
+            <p>선택한 기간 기준으로 기간별 MTBA / 공정 통계 / 클릭 Drill-down 기반 MTBA 현황 / Alarm 차이 분석</p>
+          </div>
+
+          <!-- filters -->
+          <div data-testid="stHorizontalBlock">
+            <div data-testid="column">
+              <div data-testid="stSelectbox">
+                <label>팀 선택</label>
+                <div data-baseweb="select"><div>CM FOL생산기술팀</div></div>
+              </div>
+            </div>
+            <div data-testid="column">
+              <div data-testid="stSelectbox">
+                <label>모델 선택</label>
+                <div data-baseweb="select"><div>CM모델A</div></div>
+              </div>
+            </div>
+            <div data-testid="column">
+              <div data-testid="stDateInput">
+                <label>기간 선택</label>
+                <div data-baseweb="input"><input type="text" value="2026-04-30 ~ 2026-05-07"></div>
+              </div>
+            </div>
+          </div>
+
+          <div data-testid="stCaptionContainer">※ 팀 = 전체 : 모든 공정을 대상으로 조회합니다.</div>
+
+          <!-- expander: 팀 공정 선택 -->
+          <div data-testid="stExpander">
+            <details>
+              <summary>CM FOL생산기술팀 공정 선택</summary>
+              <div class="sc-expander-body">
+                <div data-testid="stCaptionContainer">※ 필요한 공정만 체크한 뒤 '팀 공정 저장' 버튼을 눌러주세요.</div>
+                <div data-testid="stVerticalBlock">
+                  <label data-testid="stCheckbox"><input type="checkbox" checked> FOL Adhesion</label>
+                  <label data-testid="stCheckbox"><input type="checkbox" checked> FOL Pre-curing</label>
+                  <label data-testid="stCheckbox"><input type="checkbox"> FOL Post-curing</label>
+                  <label data-testid="stCheckbox"><input type="checkbox" checked> FOL Inspection</label>
+                </div>
+                <div data-testid="stButton" class="sc-full"><button kind="primary">팀 공정 저장</button></div>
+              </div>
+            </details>
+          </div>
+
+          <!-- signal cards (R/G/Y) -->
+          <div data-testid="stHorizontalBlock">
+            <div data-testid="column">
+              <div data-testid="stMetric" style="border-left: 4px solid var(--status-good);">
+                <div data-testid="stMetricLabel">FOL Adhesion · 공정</div>
+                <div data-testid="stMetricValue" style="font-size:1.125rem;">Total 가동 설비 : 12대</div>
+                <div data-testid="stMetricDelta" data-direction="off" style="display:flex;flex-direction:column;gap:2px;color:var(--ink-body);">
+                  <span><span style="display:inline-block;width:10px;height:10px;background:var(--status-good);border-radius:50%;margin-right:6px;"></span>120min↑ : 7대</span>
+                  <span><span style="display:inline-block;width:10px;height:10px;background:var(--status-warn);border-radius:50%;margin-right:6px;"></span>60~120min : 3대</span>
+                  <span><span style="display:inline-block;width:10px;height:10px;background:var(--status-bad);border-radius:50%;margin-right:6px;"></span>60min↓ : 2대</span>
+                </div>
+                <div style="margin-top:8px;border-top:1px dashed var(--border);padding-top:8px;font-size:13px;line-height:1.7;font-family:var(--font-mono);">
+                  <div style="color:var(--status-good);font-weight:700;">Best : 248 min (FOL-12)</div>
+                  <div style="color:var(--primary);font-weight:700;">Worst : 28 min (FOL-03)</div>
+                  <div>평균 : 142 min</div>
+                </div>
+              </div>
+            </div>
+            <div data-testid="column">
+              <div data-testid="stMetric" style="border-left: 4px solid var(--status-warn);">
+                <div data-testid="stMetricLabel">MOL Bonding · 공정</div>
+                <div data-testid="stMetricValue" style="font-size:1.125rem;">Total 가동 설비 : 10대</div>
+                <div data-testid="stMetricDelta" data-direction="off">3 / 5 / 2 (정상/주의/위험)</div>
+              </div>
+            </div>
+            <div data-testid="column">
+              <div data-testid="stMetric" style="border-left: 4px solid var(--status-bad);">
+                <div data-testid="stMetricLabel">EOL Aging · 공정</div>
+                <div data-testid="stMetricValue" style="font-size:1.125rem;">Total 가동 설비 : 8대</div>
+                <div data-testid="stMetricDelta" data-direction="off">2 / 3 / 3 (정상/주의/위험)</div>
+              </div>
+            </div>
+          </div>
+
+          <div data-testid="stMarkdown">
+            <h3>Best vs Worst 호기 Alarm 차이 분석</h3>
+          </div>
+
+          <div data-testid="stDataFrame">
+            <table>
+              <thead><tr><th>구분</th><th>호기</th><th>알람코드</th><th>알람명</th><th class="sc-num">발생수</th></tr></thead>
+              <tbody>
+                <tr><td><span class="sc-pill sc-pill--bad">Worst</span></td><td>FOL-03</td><td>A1042</td><td>Cell Defect</td><td class="sc-num">86</td></tr>
+                <tr><td><span class="sc-pill sc-pill--bad">Worst</span></td><td>FOL-03</td><td>A1078</td><td>Vacuum Loss</td><td class="sc-num">42</td></tr>
+                <tr><td><span class="sc-pill sc-pill--bad">Worst</span></td><td>FOL-03</td><td>A1102</td><td>Pressure Drop</td><td class="sc-num">18</td></tr>
+                <tr><td><span class="sc-pill sc-pill--good">Best</span></td><td>FOL-12</td><td>—</td><td>(알람 없음)</td><td class="sc-num">0</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <div class="sc-preview-divider"></div>
+
+      <!-- =========================================================== -->
+      <!--  MTBA Detail — 4_MTBA_Detail_View.py                        -->
+      <!-- =========================================================== -->
+      <section id="sec-detail" class="sc-page-section">
+        <div class="sc-section-meta">4_MTBA_Detail_View.py · MTBA Detail View</div>
+        <div data-testid="stVerticalBlock">
+
+          <div class="vit-page-hero">
+            <h1>MTBA Detail View</h1>
+            <p>공정·기간·기준값 선택 → 셀 클릭으로 알람 상세 / 댓글 / 호기별 추이 확인</p>
+          </div>
+
+          <!-- filter row -->
+          <div data-testid="stHorizontalBlock">
+            <div data-testid="column">
+              <div data-testid="stSelectbox"><label>모델</label><div data-baseweb="select"><div>CM모델A</div></div></div>
+            </div>
+            <div data-testid="column">
+              <div data-testid="stSelectbox"><label>공정</label><div data-baseweb="select"><div>FOL Adhesion</div></div></div>
+            </div>
+            <div data-testid="column">
+              <div data-testid="stDateInput"><label>기준일</label><div data-baseweb="input"><input type="text" value="2026-05-07"></div></div>
+            </div>
+            <div data-testid="column">
+              <div data-testid="stNumberInput"><label>MTBA 기준 (분)</label><div data-baseweb="input"><input type="text" value="120"></div></div>
+            </div>
+            <div data-testid="column" style="flex:0 0 auto;">
+              <label style="visibility:hidden;display:block;">_</label>
+              <div data-testid="stButton" class="sc-full"><button kind="primary">데이터 조회</button></div>
+            </div>
+            <div data-testid="column" style="flex:0 0 auto;">
+              <label style="visibility:hidden;display:block;">_</label>
+              <div data-testid="stButton" class="sc-full"><button>+ 패널 추가</button></div>
+            </div>
+          </div>
+
+          <!-- panel #1 -->
+          <div style="background:var(--card-bg);border:1px solid var(--border);border-left:4px solid var(--primary);border-radius:12px;padding:1rem 1.125rem;">
+            <div style="display:flex;align-items:center;gap:0.625rem;">
+              <strong style="font-size:14px;color:var(--primary);">MTBA 분석 Reporting #1</strong>
+              <span style="font-size:11px;color:var(--ink-muted);font-family:var(--font-mono);">FOL Adhesion · CM모델A · 2026-05-07</span>
+              <div data-testid="stButton" style="margin-left:auto;"><button>이름 변경</button></div>
+            </div>
+
+            <div style="display:flex;gap:0.5rem;margin:0.625rem 0;">
+              <span class="sc-pill sc-pill--good">120min↑ 7</span>
+              <span class="sc-pill sc-pill--warn">60-120min 3</span>
+              <span class="sc-pill sc-pill--bad">60min↓ 2</span>
+            </div>
+
+            <div data-testid="stMarkdown"><b style="font-size:12px;">Heatmap (호기 × 시간)</b></div>
+            <div class="sc-heatmap">
+              <div class="sc-heat-cell" style="background:#1F8B4C;"></div>
+              <div class="sc-heat-cell" style="background:#1F8B4C;"></div>
+              <div class="sc-heat-cell" style="background:#3A9B5E;"></div>
+              <div class="sc-heat-cell" style="background:#67AC78;"></div>
+              <div class="sc-heat-cell" style="background:#B57F1B;"></div>
+              <div class="sc-heat-cell" style="background:#C49B4B;"></div>
+              <div class="sc-heat-cell" style="background:#1F8B4C;"></div>
+              <div class="sc-heat-cell" style="background:#1F8B4C;"></div>
+              <div class="sc-heat-cell" style="background:#1F8B4C;"></div>
+              <div class="sc-heat-cell" style="background:#3A9B5E;"></div>
+              <div class="sc-heat-cell" style="background:#B57F1B;"></div>
+              <div class="sc-heat-cell" style="background:#B23A48;"></div>
+              <div class="sc-heat-cell" style="background:#B23A48;"></div>
+              <div class="sc-heat-cell" style="background:#B57F1B;"></div>
+              <div class="sc-heat-cell" style="background:#1F8B4C;"></div>
+              <div class="sc-heat-cell" style="background:#1F8B4C;"></div>
+              <div class="sc-heat-cell" style="background:#1F8B4C;"></div>
+              <div class="sc-heat-cell" style="background:#1F8B4C;"></div>
+              <div class="sc-heat-cell" style="background:#1F8B4C;"></div>
+              <div class="sc-heat-cell" style="background:#3A9B5E;"></div>
+              <div class="sc-heat-cell" style="background:#67AC78;"></div>
+              <div class="sc-heat-cell" style="background:#1F8B4C;"></div>
+              <div class="sc-heat-cell" style="background:#1F8B4C;"></div>
+              <div class="sc-heat-cell" style="background:#1F8B4C;"></div>
+            </div>
+
+            <div data-testid="stCaptionContainer" style="margin-top:0.75rem;">날짜 셀 클릭 시 해당 날짜/알람 상세 팝업이 열립니다.</div>
+          </div>
+
+          <!-- comment input + history -->
+          <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:1rem 1.125rem;">
+            <div data-testid="stMarkdown">
+              <h3 style="color:var(--primary);font-size:14px;margin:0;">Comment 입력 / 이력</h3>
+              <p style="font-size:12px;color:var(--ink-muted);margin:0.25rem 0 0.625rem;">알람 [A1042] Cell Defect — 저장 시 수정이 아니라 이력으로 누적됩니다.</p>
+            </div>
+
+            <div data-testid="stSelectbox">
+              <label>알람 선택</label>
+              <div data-baseweb="select"><div>[A1042] Cell Defect — FOL-03 · 14:22</div></div>
+            </div>
+
+            <div data-testid="stTextArea">
+              <label>Comment</label>
+              <div data-baseweb="textarea"><textarea placeholder="알람 원인, 조치 내용, 재발 방지 대책 등을 입력하세요."></textarea></div>
+            </div>
+
+            <div data-testid="stHorizontalBlock">
+              <div data-testid="column"><div data-testid="stButton" class="sc-full"><button kind="primary">Comment 저장</button></div></div>
+              <div data-testid="column"><div data-testid="stButton" class="sc-full"><button>이력 새로고침</button></div></div>
+            </div>
+
+            <div data-testid="stCaptionContainer">저장 시 수정이 아니라 이력으로 누적됩니다.</div>
+
+            <div data-testid="stMarkdown">
+              <h4 style="font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-muted);margin:0.875rem 0 0.375rem;">Comment 이력</h4>
+            </div>
+
+            <div data-testid="stDataFrame">
+              <table>
+                <thead><tr><th>저장일시</th><th>작성자</th><th>알람코드</th><th>Comment</th></tr></thead>
+                <tbody>
+                  <tr><td class="sc-mono" style="font-size:11px;">2026-05-07 14:22:08</td><td>김시몬</td><td>A1042</td><td>FOL-03 흡착 노즐 청소 후 정상화. 7일 모니터링 필요.</td></tr>
+                  <tr><td class="sc-mono" style="font-size:11px;">2026-05-06 09:15:42</td><td>이엔지</td><td>A1042</td><td>Cell Defect 발생 — 진공 압력 변동 확인</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div data-testid="stButton" class="sc-full"><button>팝업 닫기</button></div>
+          </div>
+        </div>
+      </section>
+
+      <div class="sc-preview-divider"></div>
+
+      <!-- =========================================================== -->
+      <!--  Alarm Action — 5_Alarm_Action_List.py                       -->
+      <!-- =========================================================== -->
+      <section id="sec-alarm" class="sc-page-section">
+        <div class="sc-section-meta">5_Alarm_Action_List.py · Alarm Action List</div>
+        <div data-testid="stVerticalBlock">
+
+          <div class="vit-page-hero">
+            <h1>Alarm Action List</h1>
+            <p>팀별 공정 선택 → 저장된 공정에 누적된 알람 / 조치 / 댓글 검토</p>
+          </div>
+
+          <div data-testid="stAlert" kind="info">
+            <span><b>사용 방법</b><br>선택한 팀에 따라 공정 선택 카드 제목과 저장 버튼 문구가 동적으로 바뀌며, 팀별 저장 공정 수 배지가 함께 표시됩니다.</span>
+          </div>
+
+          <div data-testid="stHorizontalBlock">
+            <div data-testid="column">
+              <div data-testid="stSelectbox">
+                <label>팀 선택</label>
+                <div data-baseweb="select"><div>CM FOL생산기술팀</div></div>
+              </div>
+            </div>
+            <div data-testid="column">
+              <div data-testid="stDateInput">
+                <label>기간 선택</label>
+                <div data-baseweb="input"><input type="text" value="2026-04-30 ~ 2026-05-07"></div>
+              </div>
+            </div>
+            <div data-testid="column">
+              <div data-testid="stTextInput">
+                <label>검색어</label>
+                <div data-baseweb="input"><input type="text" placeholder="알람명 / 알람코드 / Comment / 설비명 / 호기"></div>
+              </div>
+            </div>
+          </div>
+
+          <div data-testid="stExpander">
+            <details open>
+              <summary>CM FOL생산기술팀 팀 공정 선택 · 저장 12개</summary>
+              <div class="sc-expander-body">
+                <div data-testid="stHorizontalBlock">
+                  <div data-testid="column">
+                    <label data-testid="stCheckbox"><input type="checkbox" checked> FOL Adhesion</label>
+                    <label data-testid="stCheckbox"><input type="checkbox" checked> FOL Pre-curing</label>
+                    <label data-testid="stCheckbox"><input type="checkbox"> FOL Post-curing</label>
+                  </div>
+                  <div data-testid="column">
+                    <label data-testid="stCheckbox"><input type="checkbox" checked> FOL Inspection</label>
+                    <label data-testid="stCheckbox"><input type="checkbox"> FOL Cleaning</label>
+                    <label data-testid="stCheckbox"><input type="checkbox" checked> FOL Test</label>
+                  </div>
+                </div>
+                <div data-testid="stHorizontalBlock">
+                  <div data-testid="column"><div data-testid="stButton" class="sc-full"><button kind="primary">[CM FOL생산기술팀] 팀 공정 저장</button></div></div>
+                  <div data-testid="column"><div data-testid="stButton" class="sc-full"><button>저장값 다시 불러오기</button></div></div>
+                </div>
+              </div>
+            </details>
+          </div>
+
+          <div data-testid="stHorizontalBlock">
+            <div data-testid="column">
+              <div data-testid="stMultiSelect">
+                <label>작성자 필터</label>
+                <div data-baseweb="select"><div><span class="sc-muted">전체 (선택 없음)</span></div></div>
+              </div>
+            </div>
+            <div data-testid="column">
+              <div data-testid="stMultiSelect">
+                <label>알람코드 필터</label>
+                <div data-baseweb="select"><div>
+                  <span data-baseweb="tag">A1042 <span role="button">×</span></span>
+                </div></div>
+              </div>
+            </div>
+          </div>
+
+          <div data-testid="stDataFrame">
+            <table>
+              <thead><tr><th>발생일시</th><th>호기</th><th>알람</th><th>처리 상태</th><th>담당</th><th>최근 코멘트</th></tr></thead>
+              <tbody>
+                <tr><td class="sc-mono" style="font-size:11px;">2026-05-07 14:22</td><td>FOL-03</td><td>[A1042] Cell Defect</td><td><span class="sc-pill sc-pill--good">완료</span></td><td>김시몬</td><td>흡착 노즐 청소 후 정상화</td></tr>
+                <tr><td class="sc-mono" style="font-size:11px;">2026-05-07 11:08</td><td>FOL-08</td><td>[A1078] Vacuum Loss</td><td><span class="sc-pill sc-pill--warn">진행</span></td><td>이엔지</td><td>진공 펌프 점검 중</td></tr>
+                <tr><td class="sc-mono" style="font-size:11px;">2026-05-07 09:32</td><td>FOL-03</td><td>[A1042] Cell Defect</td><td><span class="sc-pill sc-pill--bad">대기</span></td><td>—</td><td>—</td></tr>
+                <tr><td class="sc-mono" style="font-size:11px;">2026-05-06 22:14</td><td>FOL-12</td><td>[A1102] Pressure Drop</td><td><span class="sc-pill sc-pill--good">완료</span></td><td>박매니저</td><td>압력 센서 calibration</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <div class="sc-preview-divider"></div>
+
+      <!-- =========================================================== -->
+      <!--  Chat — 6_MaxCapa_Chat.py                                   -->
+      <!-- =========================================================== -->
+      <section id="sec-chat" class="sc-page-section">
+        <div class="sc-section-meta">6_MaxCapa_Chat.py · 대화형 생산지표 조회</div>
+        <div data-testid="stVerticalBlock">
+
+          <!-- vit-chat-head -->
+          <div style="background:var(--card-bg);border:1px solid var(--border);border-left:4px solid var(--primary);border-radius:12px;padding:1rem 1.125rem;">
+            <div style="display:flex;align-items:center;gap:0.5rem;font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--primary);">
+              <span style="display:inline-block;width:4px;height:14px;background:var(--primary);border-radius:2px;"></span>
+              VITALS · MAXCAPA · AI ASSISTANT
+            </div>
+            <h2 style="font-family:'LG EI Headline','LG EI Text',sans-serif;font-size:1.5rem;font-weight:700;letter-spacing:-0.02em;margin:0.375rem 0 0;">대화형 생산지표 조회</h2>
+          </div>
+
+          <!-- chat history -->
+          <div data-testid="stVerticalBlock" style="gap:0.5rem;">
+            <div class="sc-chat-bubble user">최근 일주일간 FOL 공정 중 CMP 달성률이 가장 낮은 호기 5개 알려줘</div>
+            <div class="sc-chat-bubble">
+              <div style="display:flex;gap:0.375rem;align-items:center;font-size:11px;color:var(--ink-muted);margin-bottom:0.375rem;">
+                <span class="sc-pill sc-pill--good" style="font-size:10px;">검증됨</span>
+                <span class="sc-mono">intent_parser → planner → SQL · 1.2s</span>
+              </div>
+              <pre>SELECT machine_no, AVG(cmp_rate) AS avg_cmp
+FROM mtba.cmp_daily
+WHERE process_l1 = 'FOL'
+  AND base_date BETWEEN '2026-04-30' AND '2026-05-07'
+GROUP BY machine_no
+ORDER BY avg_cmp ASC
+LIMIT 5;</pre>
+              <div data-testid="stDataFrame" style="margin-top:0.5rem;">
+                <table>
+                  <thead><tr><th>호기</th><th class="sc-num">평균 CMP</th></tr></thead>
+                  <tbody>
+                    <tr><td>FOL-03</td><td class="sc-num" style="color:var(--status-bad);">62.4%</td></tr>
+                    <tr><td>FOL-07</td><td class="sc-num" style="color:var(--status-bad);">71.2%</td></tr>
+                    <tr><td>FOL-12</td><td class="sc-num" style="color:var(--status-warn);">79.6%</td></tr>
+                    <tr><td>FOL-09</td><td class="sc-num" style="color:var(--status-warn);">82.1%</td></tr>
+                    <tr><td>FOL-15</td><td class="sc-num" style="color:var(--status-good);">88.8%</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- expander: 실행 계획 -->
+          <div data-testid="stExpander">
+            <details>
+              <summary>실행 계획 / SQL 미리보기</summary>
+              <div class="sc-expander-body">
+                <div data-testid="stCaptionContainer">전체 평균 UPH: 312.40</div>
+                <pre style="font-family:var(--font-mono);font-size:11px;background:var(--soft);padding:0.5rem;border-radius:6px;margin:0.375rem 0 0;">{
+  "intent": "rank_machines_by_metric",
+  "metric": "cmp_rate",
+  "scope": "process_l1=FOL",
+  "period": "last_7d",
+  "limit": 5,
+  "order": "asc"
+}</pre>
+              </div>
+            </details>
+          </div>
+
+          <!-- input -->
+          <div data-testid="stTextArea">
+            <label>질문</label>
+            <div data-baseweb="textarea"><textarea placeholder="자연어로 질문해 보세요. (예: FOL-03 의 어제 알람 5개 보여줘)"></textarea></div>
+          </div>
+
+          <div style="display:flex;justify-content:flex-end;">
+            <div data-testid="stButton"><button kind="primary">질문 분석 및 실행</button></div>
+          </div>
+        </div>
+      </section>
+
+      <div class="sc-preview-divider"></div>
+
+      <!-- =========================================================== -->
+      <!--  Patch Note — 8_Patch_Note.py (light Vitals)                 -->
+      <!-- =========================================================== -->
+      <section id="sec-patch" class="sc-page-section">
+        <div class="sc-section-meta">8_Patch_Note.py · 패치노트</div>
+        <div data-testid="stVerticalBlock">
+
+          <div class="sc-top-strip"></div>
+          <div data-testid="stMarkdown">
+            <h1>Patch Note · 패치노트</h1>
+            <p style="color:var(--ink-muted);font-size:13px;margin:0.375rem 0 0;">최신 변경 이력을 확인하고 상세 내용을 조회할 수 있습니다.</p>
+          </div>
+
+          <!-- expander: 게시글 등록 -->
+          <div data-testid="stExpander">
+            <details>
+              <summary>게시글 등록</summary>
+              <div class="sc-expander-body">
+                <div data-testid="stHorizontalBlock">
+                  <div data-testid="column">
+                    <div data-testid="stSelectbox"><label>태그</label><div data-baseweb="select"><div>NEW</div></div></div>
+                  </div>
+                  <div data-testid="column" style="flex: 3;">
+                    <div data-testid="stTextInput"><label>제목</label><div data-baseweb="input"><input type="text"></div></div>
+                  </div>
+                </div>
+                <div data-testid="stTextArea">
+                  <label>내용</label>
+                  <div data-baseweb="textarea"><textarea style="min-height:140px;"></textarea></div>
+                </div>
+                <div data-testid="stButton"><button kind="primary">등록</button></div>
+              </div>
+            </details>
+          </div>
+
+          <div data-testid="stHorizontalBlock">
+            <!-- list -->
+            <div data-testid="column">
+              <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:0.875rem 1rem;">
+                <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-muted);margin-bottom:0.625rem;">목록</div>
+                <div style="display:flex;flex-direction:column;gap:0.375rem;">
+                  <div style="display:flex;align-items:center;gap:0.625rem;padding:0.375rem 0;border-bottom:1px solid var(--border);">
+                    <span class="sc-pill sc-pill--good">NEW</span>
+                    <span style="flex:1;font-weight:600;">디자인 통합도 71.5% → 93.5% 향상</span>
+                    <span class="sc-mono" style="font-size:11px;color:var(--ink-muted);">05-07</span>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:0.625rem;padding:0.375rem 0;border-bottom:1px solid var(--border);">
+                    <span class="sc-pill sc-pill--warn">UPD</span>
+                    <span style="flex:1;font-weight:600;">Patch Note dark → light Vitals 전환</span>
+                    <span class="sc-mono" style="font-size:11px;color:var(--ink-muted);">05-07</span>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:0.625rem;padding:0.375rem 0;border-bottom:1px solid var(--border);">
+                    <span class="sc-pill sc-pill--bad">FIX</span>
+                    <span style="flex:1;font-weight:600;">팝업 응답 5-30s → &lt;1s (st.rerun 제거)</span>
+                    <span class="sc-mono" style="font-size:11px;color:var(--ink-muted);">05-07</span>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:0.625rem;padding:0.375rem 0;border-bottom:1px solid var(--border);">
+                    <span class="sc-pill sc-pill--bad">FIX</span>
+                    <span style="flex:1;font-weight:600;">댓글 캐시 base_date 타입 정규화</span>
+                    <span class="sc-mono" style="font-size:11px;color:var(--ink-muted);">05-07</span>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:0.625rem;padding:0.375rem 0;">
+                    <span class="sc-pill sc-pill--good">NEW</span>
+                    <span style="flex:1;font-weight:600;">Home 3-mode selector (Current·Case1·Case2)</span>
+                    <span class="sc-mono" style="font-size:11px;color:var(--ink-muted);">05-06</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- detail -->
+            <div data-testid="column" style="flex:1.4;">
+              <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:0.875rem 1rem;">
+                <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-muted);margin-bottom:0.375rem;">상세</div>
+                <h3 style="font-family:'LG EI Headline','LG EI Text',sans-serif;font-size:1.375rem;font-weight:700;letter-spacing:-0.01em;margin:0 0 0.25rem;color:var(--ink-body);">디자인 통합도 71.5% → 93.5% 향상</h3>
+                <div style="font-size:11px;color:var(--ink-muted);margin-bottom:0.75rem;font-family:var(--font-mono);">2026-05-07 · 김시몬 · NEW</div>
+                <p style="font-size:13px;line-height:1.7;color:var(--ink-body);">
+                  모든 Streamlit 페이지가 canonical Vitals var() 토큰 (--page-bg, --card-bg, --soft, --border, --ink-body, --status-good/warn/bad) 을 사용하도록 정렬했습니다.
+                  백엔드 호출 (function signature, SQL, session_state key) 은 100% 보존되었으며, AST diff 로 검증되었습니다.
+                </p>
+                <ul style="font-size:13px;line-height:1.7;padding-left:1.125rem;color:var(--ink-body);">
+                  <li>변경 파일: 9 페이지 + login_ui</li>
+                  <li>측정 스크립트: streamlit-app/scripts/measure_design_integration.py</li>
+                  <li>Patch Note: dark → light Vitals 전환 (mockup-S8-B 일치)</li>
+                  <li>9_Admin_Analytics: vit-page-head 신규 + S9-B mockup 작성</li>
+                </ul>
+                <div data-testid="stHorizontalBlock">
+                  <div data-testid="column"><div data-testid="stButton" class="sc-full"><button>수정</button></div></div>
+                  <div data-testid="column"><div data-testid="stButton" class="sc-full"><button>삭제</button></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="sc-preview-divider"></div>
+
+      <!-- =========================================================== -->
+      <!--  Admin — 9_Admin_Analytics.py                                -->
+      <!-- =========================================================== -->
+      <section id="sec-admin" class="sc-page-section">
+        <div class="sc-section-meta">9_Admin_Analytics.py · 관리자 분석 대시보드</div>
+        <div data-testid="stVerticalBlock">
+
+          <!-- vit-page-head -->
+          <div class="vit-page-head">
+            <h1>관리자 분석 대시보드</h1>
+            <p class="sub">사용자 로그인 · 페이지 조회 로그 기반 분석</p>
+          </div>
+
+          <!-- filters -->
+          <div data-testid="stHorizontalBlock">
+            <div data-testid="column">
+              <div data-testid="stDateInput"><label>시작일</label><div data-baseweb="input"><input type="text" value="2026-04-07"></div></div>
+            </div>
+            <div data-testid="column">
+              <div data-testid="stDateInput"><label>종료일</label><div data-baseweb="input"><input type="text" value="2026-05-07"></div></div>
+            </div>
+            <div data-testid="column">
+              <div data-testid="stSelectbox"><label>부서</label><div data-baseweb="select"><div>전체</div></div></div>
+            </div>
+            <div data-testid="column" style="flex:0 0 auto;">
+              <label style="visibility:hidden;display:block;">_</label>
+              <div data-testid="stButton"><button kind="primary">적용</button></div>
+            </div>
+          </div>
+
+          <!-- 4 metrics -->
+          <div data-testid="stHorizontalBlock">
+            <div data-testid="column"><div data-testid="stMetric"><div data-testid="stMetricLabel">총 로그인 (30d)</div><div data-testid="stMetricValue">2,148</div><div data-testid="stMetricDelta" data-direction="up">▲ 18.4%</div></div></div>
+            <div data-testid="column"><div data-testid="stMetric"><div data-testid="stMetricLabel">고유 사용자</div><div data-testid="stMetricValue">312</div><div data-testid="stMetricDelta" data-direction="up">▲ 6.1%</div></div></div>
+            <div data-testid="column"><div data-testid="stMetric"><div data-testid="stMetricLabel">평균 세션</div><div data-testid="stMetricValue">14.6 min</div><div data-testid="stMetricDelta" data-direction="off">─ 0.2%</div></div></div>
+            <div data-testid="column"><div data-testid="stMetric"><div data-testid="stMetricLabel">팝업 P95</div><div data-testid="stMetricValue">0.84 s</div><div data-testid="stMetricDelta" data-direction="up">▼ 96.4% (perf)</div></div></div>
+          </div>
+
+          <!-- tabs -->
+          <div data-testid="stTabs">
+            <div data-baseweb="tab-list" role="tablist">
+              <button data-baseweb="tab" role="tab" aria-selected="true">방문 추이</button>
+              <button data-baseweb="tab" role="tab" aria-selected="false">시간대 분석</button>
+              <button data-baseweb="tab" role="tab" aria-selected="false">페이지별</button>
+              <button data-baseweb="tab" role="tab" aria-selected="false">팀별</button>
+              <button data-baseweb="tab" role="tab" aria-selected="false">사용자별</button>
+              <button data-baseweb="tab" role="tab" aria-selected="false">로그</button>
+            </div>
+
+            <div data-testid="stMarkdown"><h3 style="margin-top:0.625rem;">일별 방문 추이</h3></div>
+
+            <div class="sc-chart">
+              <svg viewBox="0 0 600 120" style="width:100%;height:160px;display:block;">
+                <path d="M0,90 L50,80 L100,85 L150,70 L200,75 L250,55 L300,62 L350,48 L400,52 L450,32 L500,42 L550,22 L600,30 L600,120 L0,120 Z" fill="rgba(165,0,52,0.08)"/>
+                <polyline fill="none" stroke="#A50034" stroke-width="2" points="0,90 50,80 100,85 150,70 200,75 250,55 300,62 350,48 400,52 450,32 500,42 550,22 600,30"/>
+              </svg>
+            </div>
+          </div>
+
+          <!-- dept table -->
+          <div data-testid="stMarkdown"><h3>팀별 페이지 조회 현황</h3></div>
+          <div data-testid="stDataFrame">
+            <table>
+              <thead><tr><th>부서</th><th class="sc-num">활성</th><th class="sc-num">평균 세션</th><th class="sc-num">7일 추세</th><th>상태</th></tr></thead>
+              <tbody>
+                <tr><td>CM FOL생산기술팀</td><td class="sc-num">42</td><td class="sc-num">18.2 min</td><td class="sc-num" style="color:var(--status-good);">▲ 12%</td><td><span class="sc-pill sc-pill--good">정상</span></td></tr>
+                <tr><td>DM 생산기술팀</td><td class="sc-num">28</td><td class="sc-num">12.4 min</td><td class="sc-num" style="color:var(--status-warn);">▼ 8%</td><td><span class="sc-pill sc-pill--warn">관찰</span></td></tr>
+                <tr><td>Actuator생산팀</td><td class="sc-num">14</td><td class="sc-num">9.2 min</td><td class="sc-num" style="color:var(--status-bad);">▼ 22%</td><td><span class="sc-pill sc-pill--bad">위험</span></td></tr>
+                <tr><td>EOL품질팀</td><td class="sc-num">9</td><td class="sc-num">7.8 min</td><td class="sc-num" style="color:var(--ink-muted);">─ 1%</td><td><span class="sc-pill sc-pill--soft">대기</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div data-testid="stAlert" kind="success">
+            <span>일별 / 주별 / 월별 / 시간대 / 페이지별 / 팀별 / 사용자별 / 로그 — 8개 탭으로 구분되어 있으며, 모든 카드와 표는 Vitals 토큰을 사용합니다.</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- footer -->
+      <p style="margin:2.5rem 0 1rem;padding-top:1.125rem;border-top:1px solid var(--border);font-size:11px;color:var(--ink-subtle);font-family:var(--font-mono);letter-spacing:.04em;">
+        © LG Innotek 광학솔루션 사업부 · 생산혁신센터 Max Capa 팀 · Vitals · 공정의 호흡을 데이터로 듣다 · streamlit-clone preview
+      </p>
+
+    </div>
+  </main>
+</div>
+
+<!-- dark-mode toggle -->
+<button class="sc-theme-toggle" id="sc-theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">◐</button>
+
+<script>
+(function () {
+  // theme toggle (light <-> dark via [data-theme] on <html>)
+  var root = document.documentElement;
+  var btn  = document.getElementById('sc-theme-toggle');
+  function setTheme(t) {
+    root.setAttribute('data-theme', t);
+    try { localStorage.setItem('vitals-clone-theme', t); } catch (e) {}
+  }
+  try {
+    var saved = localStorage.getItem('vitals-clone-theme');
+    if (saved === 'dark' || saved === 'light') setTheme(saved);
+  } catch (e) {}
+  btn.addEventListener('click', function () {
+    var cur = root.getAttribute('data-theme') || 'light';
+    setTheme(cur === 'dark' ? 'light' : 'dark');
+  });
+
+  // sidebar nav active state on scroll
+  var links    = Array.prototype.slice.call(document.querySelectorAll('[data-testid="stSidebarNavLink"]'));
+  var sections = links.map(function (a) { return document.getElementById(a.getAttribute('href').slice(1)); });
+  function update() {
+    var y = window.scrollY + 80;
+    var active = sections[0];
+    for (var i = 0; i < sections.length; i++) {
+      if (sections[i] && sections[i].offsetTop <= y) active = sections[i];
+    }
+    links.forEach(function (a) {
+      var match = a.getAttribute('href') === '#' + (active && active.id);
+      if (match) a.setAttribute('aria-current', 'page');
+      else a.removeAttribute('aria-current');
+    });
+  }
+  window.addEventListener('scroll', update, { passive: true });
+  update();
+})();
+</script>
+</body>
+</html>

@@ -22,14 +22,24 @@ REPO = Path(__file__).resolve().parents[2]
 PAGES_DIR = REPO / "streamlit-app" / "pages"
 LOGIN = REPO / "streamlit-app" / "login.py"
 
-# Vitals 정식 팔레트 (대소문자 무시)
+# Vitals 정식 팔레트 (대소문자 무시) — Light + Dark 양쪽 토큰
 VITALS_HEX = {
+    # ----- Light theme -----
     "A50034", "7E0027", "F8E5EC",         # primary / dark / tint
     "F7F8FA", "FFFFFF", "F1F3F5", "E5E7EB", "FAFAFA",  # surfaces
+    "CBD0D6",                              # border-strong
     "1F2430", "6B7280", "9CA3AF",         # ink
     "1F8B4C", "B57F1B", "B23A48",         # status base
     "E6F4EA", "FAF1DD", "FDECEF",         # status tints
-    "111111", "FFFFFF",                    # neutral terminal
+    "111111",                              # neutral terminal
+    # ----- Dark theme overrides -----
+    "0E1117", "0A0C10",                   # page-bg dark
+    "161B22", "11161E",                   # card-bg dark
+    "1A1F2A",                              # soft dark
+    "2A2F3A", "3A4051",                   # border / border-strong dark
+    "2EA85C", "D69E2E", "E5495A",         # status base dark
+    "0F2418", "2A2210", "2E1318",         # status tints dark
+    "2A1218",                              # primary-tint dark
 }
 VITALS_HEX = {h.upper() for h in VITALS_HEX}
 
