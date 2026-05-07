@@ -136,6 +136,38 @@ def inject_css() -> None:
         }
         .home-sub{margin:0;color:var(--ink-muted);font-size:14px;}
 
+        /* Vitals 3-카테고리 헤딩 (생산 / 설비 성능 / 설비 효율) ----------- */
+        .vit-cat-head{
+            display:flex; align-items:center; flex-wrap:wrap; gap:10px;
+            margin: 24px 0 14px;
+            padding-left: 4px;
+        }
+        .vit-cat-bar{
+            width:4px; height:22px;
+            background: var(--primary);
+            border-radius: 2px;
+            flex: 0 0 auto;
+        }
+        .vit-cat-title{
+            margin:0; font-family: var(--font-display);
+            font-size:18px; font-weight:700; letter-spacing:-0.01em;
+            color: var(--ink-body);
+            display:flex; align-items:baseline; gap:10px;
+        }
+        .vit-cat-sub{
+            font-family: var(--font-mono);
+            font-size:11px; font-weight:600;
+            color: var(--ink-subtle);
+            letter-spacing: .08em;
+            text-transform: uppercase;
+        }
+        .vit-cat-desc{
+            margin: 0 0 0 4px;
+            font-size: 12px; color: var(--ink-muted);
+            flex: 1 1 auto; min-width: 0;
+            text-align: right;
+        }
+
         /* 모든 Home 카드 버튼의 실제 클릭 영역과 디자인 영역을 동일하게 처리 */
         .st-key-home_card_cmp,
         .st-key-home_card_uph,
@@ -2051,32 +2083,66 @@ def render_card_button(key: str, page: str, title: str, desc: str, disabled: boo
         st.switch_page(page)
 
 
-def render_menu_section():
+def _render_category_heading(ko: str, en: str, desc: str = "") -> None:
+    """우리 home.html mockup 의 3-카테고리 헤딩 (좌 와인 vertical bar + Ko + En sub).
+    백엔드 호출 0 — 순수 HTML 렌더."""
     st.markdown(
-        """
-        <div class="home-head" style="margin-top:44px;">
-            <h2 class="home-title">상세 분석 메뉴</h2>
-            <p class="home-sub">상단 요약에서 이상 공정/모델을 확인한 후, 아래 메뉴에서 상세 분석 화면으로 이동하세요.</p>
+        f"""
+        <div class="vit-cat-head">
+            <span class="vit-cat-bar"></span>
+            <h3 class="vit-cat-title">{ko}<span class="vit-cat-sub">{en}</span></h3>
+            {f'<p class="vit-cat-desc">{desc}</p>' if desc else ''}
         </div>
         """,
         unsafe_allow_html=True,
     )
 
-    row1 = st.columns(3, gap="medium")
-    with row1[0]:
-        render_card_button("cmp", PAGES["cmp"], "CMP Dashboard", "공정별 CMP 달성률 추이 · 영역×모델×기간 필터로 조회")
-    with row1[1]:
-        render_card_button("uph", PAGES["uph"], "UPH Dashboard", "UPH · 동작시간 분석 · I-TAS 분기 + 6 섹션 추적")
-    with row1[2]:
-        render_card_button("mtba", PAGES["mtba"], "MTBA Dashboard", "공정별 MTBA 통계 · 다중 패널 · 메모/이미지 업로드")
 
-    row2 = st.columns(3, gap="medium")
-    with row2[0]:
-        render_card_button("mtba_detail", PAGES["mtba_detail"], "MTBA Detail View", "패널 기반 드릴다운 · 공정×설비 매트릭스 · 알람 상세 팝업")
-    with row2[1]:
-        render_card_button("chat", PAGES["chat"], "MaxCapa Chat", "대화형 생산지표 조회 · MES UPH / ITAS UPH 자연어 질의", disabled=True)
-    with row2[2]:
+def render_menu_section():
+    """상세 분석 메뉴 — 우리 home.html mockup 처럼 3 대분류로 그룹.
+       - 생산 (Production): CMP Dashboard
+       - 설비 성능 (Equipment Performance): UPH Dashboard
+       - 설비 효율 (Equipment Efficiency): MTBA Dashboard, MTBA Detail View, MaxCapa Chat
+       각 카드의 click → switch_page 백엔드 호출 동일 (render_card_button 그대로 사용)."""
+    st.markdown(
+        """
+        <div class="home-head" style="margin-top:44px;">
+            <h2 class="home-title">분석 도구</h2>
+            <p class="home-sub">상단 요약에서 이상 공정/모델을 확인한 후, 아래 카테고리 별 도구에서 상세 분석 화면으로 이동하세요.</p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    # ── 카테고리 1: 생산 (CMP) ─────────────────────────────────
+    _render_category_heading("생산", "Production", "공정별 달성률 · 라인 KPI")
+    cat1 = st.columns(3, gap="medium")
+    with cat1[0]:
+        render_card_button("cmp", PAGES["cmp"], "CMP Dashboard", "공정별 CMP 달성률 추이 · 영역×모델×기간 필터로 조회")
+    with cat1[1]:
         st.empty()
+    with cat1[2]:
+        st.empty()
+
+    # ── 카테고리 2: 설비 성능 (UPH) ────────────────────────────
+    _render_category_heading("설비 성능", "Equipment Performance", "UPH · 동작시간 · 편차 분석")
+    cat2 = st.columns(3, gap="medium")
+    with cat2[0]:
+        render_card_button("uph", PAGES["uph"], "UPH Dashboard", "UPH · 동작시간 분석 · I-TAS 분기 + 6 섹션 추적")
+    with cat2[1]:
+        st.empty()
+    with cat2[2]:
+        st.empty()
+
+    # ── 카테고리 3: 설비 효율 (MTBA + MaxCapa Chat) ────────────
+    _render_category_heading("설비 효율", "Equipment Efficiency", "MTBA · 알람 · 자연어 분석")
+    cat3 = st.columns(3, gap="medium")
+    with cat3[0]:
+        render_card_button("mtba", PAGES["mtba"], "MTBA Dashboard", "공정별 MTBA 통계 · 다중 패널 · 메모/이미지 업로드")
+    with cat3[1]:
+        render_card_button("mtba_detail", PAGES["mtba_detail"], "MTBA Detail View", "패널 기반 드릴다운 · 공정×설비 매트릭스 · 알람 상세 팝업")
+    with cat3[2]:
+        render_card_button("chat", PAGES["chat"], "MaxCapa Chat", "대화형 생산지표 조회 · MES UPH / ITAS UPH 자연어 질의", disabled=True)
 
 
 def render_contact_box():
