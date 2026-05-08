@@ -420,14 +420,49 @@ if query_post_id:
 
 apply_board_styles()
 
-# vit-top-strip + vit-page-head — preview-streamlit-clone.html sec-patch 와 동일.
-# render_top_strip() = ui/vitals/components.py 의 STAGE 2 primitive — 6px wine bar.
+# preview sec-patch 의 sc-sec-head 패턴 — vit-top-strip + 좌측 wine bar +
+# h2 title + 우측 액션 row 가 한 줄.
 from ui.vitals.components import render_top_strip, render_sub_head
 render_top_strip()
-st.markdown('<div class="board-top-title vit-page-head">Patch Note · 패치노트</div>', unsafe_allow_html=True)
 st.markdown(
-    '<div class="board-top-sub">최신 변경 이력을 확인하고 상세 내용을 조회할 수 있습니다.</div>',
-    unsafe_allow_html=True
+    """
+    <style>
+    /* sc-sec-head — preview-streamlit-clone.html 와 동일 패턴 */
+    .vit-sec-head {
+        display:flex; align-items:flex-end; gap:14px;
+        padding: 6px 0 12px;
+        margin: 0 0 16px;
+        border-bottom: 1px solid var(--border, #E5E7EB);
+    }
+    .vit-sec-head__bar {
+        width:5px; height:30px;
+        background: var(--primary, #A50034);
+        flex: 0 0 auto;
+        margin-bottom: 4px;
+    }
+    .vit-sec-head__body { flex: 1 1 auto; }
+    .vit-sec-head__title {
+        font-family: 'LG EI Headline', 'LG EI Text', sans-serif;
+        font-size: 28px; font-weight: 700;
+        color: var(--ink-body, #1F2430);
+        letter-spacing: -0.02em;
+        margin: 0; line-height: 1.1;
+    }
+    .vit-sec-head__sub {
+        margin-top: 2px;
+        font-size: 12px; color: var(--ink-muted, #6B7280);
+    }
+    .vit-sec-head__actions { flex: 0 0 auto; }
+    </style>
+    <div class="vit-sec-head vit-page-head">
+      <span class="vit-sec-head__bar" aria-hidden="true"></span>
+      <div class="vit-sec-head__body">
+        <h2 class="vit-sec-head__title">Patch Note · 패치노트</h2>
+        <div class="vit-sec-head__sub">최신 변경 이력을 확인하고 상세 내용을 조회할 수 있습니다.</div>
+      </div>
+    </div>
+    """,
+    unsafe_allow_html=True,
 )
 
 # ----------------------------
