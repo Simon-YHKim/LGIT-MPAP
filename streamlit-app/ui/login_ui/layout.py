@@ -15,8 +15,14 @@ def render_left_panel_background():
 
 
 def render_top_brand():
-    """상단 브랜드 행 — 다크 비디오 배경 위에 흰 LG Innotek 공식 로고 PNG +
-    구분선 + 팀명 + 우측 ALL SYSTEMS OPERATIONAL 상태."""
+    """상단 브랜드 행 — 다크 비디오 배경 위.
+    LG Innotek 공식 로고 PNG + 1px 회색 divider + 'Vitals' wordmark + 우측
+    ALL SYSTEMS OPERATIONAL 상태.
+
+    이전: 로고 옆에 '광학 MaxCapa TDR · 광학솔루션사업부 · 생산혁신센터 · Max Capa팀'
+    부제 텍스트 표시. 사용자 피드백 (2026-05-08): 부제 제거 + 'Vitals' 워드마크
+    배치로 균형. 회사 정보는 한 곳 (identity-block hero) 에서만.
+    """
     st.markdown(
         f"""
         <div class="landing-topbar">
@@ -24,7 +30,7 @@ def render_top_brand():
                 <img src="{LOGO_WHITE_DATA_URI}" alt="LG Innotek"
                      class="landing-brand__logo" />
                 <span class="landing-brand__divider"></span>
-                <span class="landing-brand__team">광학 MaxCapa TDR · 광학솔루션사업부 · 생산혁신센터 · Max Capa팀</span>
+                <span class="landing-brand__wordmark">Vitals<span class="landing-brand__dot">.</span></span>
             </div>
             <div class="landing-status">ALL SYSTEMS OPERATIONAL</div>
         </div>
@@ -34,6 +40,19 @@ def render_top_brand():
             /* 흰 PNG — 다크 배경에 자연스럽게 올라감 */
         }}
         .landing-brand__name {{ display: none; }}  /* 텍스트 워드마크 폐기 */
+        .landing-brand__wordmark {{
+            font-family: var(--font-display, 'LG EI Headline', 'LG EI Text', sans-serif);
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: var(--on-dark, rgba(255,255,255,0.96));
+            line-height: 1;
+            white-space: nowrap;
+        }}
+        .landing-brand__dot {{
+            color: var(--primary, #A50034);
+            margin-left: 0.02em;
+        }}
         </style>
         """,
         unsafe_allow_html=True
@@ -52,13 +71,17 @@ def render_auth_intro():
 
 
 def render_identity_block():
-    """Vitals 브랜드 hero — 우리 landing.html 처럼 LG EI Headline 큰 타이포 + 와인 점."""
+    """Vitals 브랜드 hero — landing.html 처럼 LG EI Headline 큰 타이포 + 와인 점.
+
+    이전: 'Vitals' + 캐치프레이즈 + '광학솔루션 사업부 · CMP · UPH · MTBA · MaxCapa Chat' BU 라인.
+    사용자 피드백 (2026-05-08): BU 라인 제거 — 분석 도메인 나열은 hero 가
+    아닌 Home 의 카테고리 카드에서 표현.
+    """
     st.markdown(
         """
         <div class="identity-block">
             <h3 class="identity-name">Vitals<span class="dot">.</span></h3>
             <p class="identity-sub">공정의 호흡을 데이터로 듣다.</p>
-            <p class="identity-bu">광학솔루션 사업부 · CMP · UPH · MTBA · MaxCapa Chat</p>
         </div>
         <style>
         /* identity 블록 폰트를 LG EI Headline 으로 교체 + 56px hero 타이포 */
