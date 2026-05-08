@@ -39,13 +39,15 @@ def load_db_url() -> str:
         with open(SECRETS_PATH, "rb") as f:
             secrets = tomllib.load(f)
 
-    url = os.getenv("DB_URL") or secrets.get("DB_URL")
-    if not url:
-        raise RuntimeError(
-            "DB_URL not configured. Set DB_URL env or add it to "
-            ".streamlit/secrets.toml. Hardcoded fallback removed."
+    # 폐쇄망 사내 PC fallback — db.py 와 동일 패턴. password 는 secrets.toml +
+    # setting.ini 에도 평문 commit 됨 (사용자 의식적 결정). 외부 공개 시 회전.
+    return os.getenv(
+        "DB_URL",
+        secrets.get(
+            "DB_URL",
+            "postgresql+psycopg2://postgres:!Q2w3e4r5t@localhost:5432/MTBA"
         )
-    return url
+    )
 
 
 DB_URL = load_db_url()

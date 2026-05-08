@@ -28,13 +28,14 @@ def load_db_url():
         with open(SECRETS_PATH, "rb") as f:
             secrets = tomllib.load(f)
 
-    url = os.getenv("DB_URL") or secrets.get("DB_URL")
-    if not url:
-        raise RuntimeError(
-            "DB_URL not configured. Set DB_URL env or add it to "
-            ".streamlit/secrets.toml. Hardcoded fallback removed for security."
-        )
-    return url
+    # 폐쇄망 사내 PC 환경 — env / secrets.toml 둘 다 없을 때 즉시 작동을 위한
+    # fallback. 이 password 는 streamlit-app/.streamlit/secrets.toml +
+    # streamlit-app/pages/setting.ini 에도 평문으로 git commit 되어 있음
+    # (사용자 의식적 결정, .gitignore 의 주석 참조). 외부 공개 시 즉시 회전 필요.
+    return os.getenv(
+        "DB_URL",
+        secrets.get("DB_URL", "postgresql+psycopg2://postgres:!Q2w3e4r5t@localhost:5432/MTBA")
+    )
 
 
 def _build_engine():

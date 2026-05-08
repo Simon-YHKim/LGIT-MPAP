@@ -10,17 +10,12 @@ import psycopg2
 import re
 
 
-# R4 — env var override 지원. 패스워드만 fallback 제거 (시크릿).
+# R4 — env var override 지원 (기본값 보존: 폐쇄망 그대로 작동).
 DEFAULT_DB_HOST     = os.getenv('ITAS_DB_HOST',     'localhost')
 DEFAULT_DB_PORT     = int(os.getenv('ITAS_DB_PORT', '5432'))
 DEFAULT_DB_NAME     = os.getenv('ITAS_DB_NAME',     'I-TAS_Data')
 DEFAULT_DB_USER     = os.getenv('ITAS_DB_USER',     'postgres')
-DEFAULT_DB_PASSWORD = os.getenv('ITAS_DB_PASSWORD')
-if not DEFAULT_DB_PASSWORD:
-    raise RuntimeError(
-        "ITAS_DB_PASSWORD not configured. Set the env var (or add to "
-        ".streamlit/secrets.toml and re-export). Hardcoded fallback removed."
-    )
+DEFAULT_DB_PASSWORD = os.getenv('ITAS_DB_PASSWORD', '!Q2w3e4r5t')
 DEFAULT_DB_SCHEMA   = os.getenv('ITAS_DB_SCHEMA',   'public')
 DEFAULT_MES_DB_NAME = os.getenv('MES_DB_NAME',      'MES_UPH')
 

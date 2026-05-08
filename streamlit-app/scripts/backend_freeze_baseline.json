@@ -839,7 +839,6 @@
   "pages/2_UPH_Dashboard.py": {
     "functions": [
       "_get_master_selector_keys()",
-      "_resolve_required_password(secrets)",
       "apply_plot_theme(fig)",
       "build_action_prefix_filter_sql(column_name)",
       "build_ai_payload(title, df, data_type, x_col, y_col, is_time_series)",
@@ -1012,6 +1011,7 @@
       "time",
       "ui.analytics",
       "ui.vitals",
+      "ui.vitals.components",
       "utils"
     ],
     "session_state_keys": [
@@ -1124,7 +1124,8 @@
       "streamlit",
       "streamlit.components.v1",
       "ui.analytics",
-      "ui.vitals"
+      "ui.vitals",
+      "ui.vitals.components"
     ],
     "session_state_keys": [
       "detail_grid_nonce",
@@ -1177,6 +1178,7 @@
       "streamlit",
       "ui.analytics",
       "ui.vitals",
+      "ui.vitals.components",
       "utils"
     ],
     "session_state_keys": [
@@ -1248,7 +1250,8 @@
       "psycopg2",
       "streamlit",
       "ui.analytics",
-      "ui.vitals"
+      "ui.vitals",
+      "ui.vitals.components"
     ],
     "session_state_keys": [
       "edit_mode",
@@ -1281,7 +1284,8 @@
       "streamlit",
       "tracking",
       "ui.analytics",
-      "ui.vitals"
+      "ui.vitals",
+      "ui.vitals.components"
     ],
     "session_state_keys": [
       "get",

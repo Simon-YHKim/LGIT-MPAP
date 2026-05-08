@@ -40,12 +40,7 @@ DB_HOST = "localhost"
 DB_PORT = 5432
 DB_NAME = "CMP"
 DB_USER = "postgres"
-DB_PASSWORD = os.getenv("CMP_DB_PASSWORD")
-if not DB_PASSWORD:
-    raise RuntimeError(
-        "CMP_DB_PASSWORD not configured. Set the env var (or add to "
-        ".streamlit/secrets.toml and re-export). Hardcoded fallback removed."
-    )
+DB_PASSWORD = os.getenv("CMP_DB_PASSWORD", "!Q2w3e4r5t")
 DB_SCHEMA = "public"
 DB_TABLE = "mart_cmp_dashboard_daily"
 
