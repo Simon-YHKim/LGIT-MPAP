@@ -318,7 +318,7 @@ def render_timeline_cards(display_df: pd.DataFrame):
                 with c1:
                     if st.button('수정 저장', key=f'save_edit_{rid}', type='primary', use_container_width=True):
                         update_comment(engine, rid, new_text, new_author)
-                        st.success('Comment가 수정되었습니다.')
+                        render_toast('Comment가 수정되었습니다.', kind="success")
                         st.session_state.pop('editing_comment_id', None)
                         st.rerun()
                 with c2:
@@ -333,7 +333,7 @@ def render_timeline_cards(display_df: pd.DataFrame):
                 with c1:
                     if st.button('삭제 확인', key=f'confirm_del_{rid}', type='primary', use_container_width=True):
                         delete_comment(engine, rid)
-                        st.success('Comment가 삭제되었습니다.')
+                        render_toast('Comment가 삭제되었습니다.', kind="success")
                         st.session_state.pop('delete_comment_id', None)
                         st.rerun()
                 with c2:
@@ -425,7 +425,7 @@ if team_name != '전체':
         with btn1:
             if st.button(dynamic_save_label, type='primary', use_container_width=True):
                 save_team_process_ids(engine, team_name, selected_process_ids)
-                st.success(f'[{team_name}] 팀 공정 목록이 저장되었습니다.')
+                render_toast(f'[{team_name}] 팀 공정 목록이 저장되었습니다.', kind="success")
                 st.rerun()
         with btn2:
             if st.button('저장값 다시 불러오기', use_container_width=True):

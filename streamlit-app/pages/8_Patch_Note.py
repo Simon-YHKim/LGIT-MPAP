@@ -458,7 +458,7 @@ if st.session_state.role == "admin":
                             content=content.strip(),
                             created_by=created_by
                         )
-                        st.success("등록되었습니다.")
+                        render_toast("등록되었습니다.", kind="success")
                         st.query_params.clear()
                         st.session_state.selected_post_id = None
                         st.session_state.edit_mode = False
@@ -566,7 +566,7 @@ with col2:
                         if st.button("삭제", key=f"delete_post_{st.session_state.selected_post_id}"):
                             try:
                                 delete_board_post(st.session_state.selected_post_id)
-                                st.success("삭제되었습니다.")
+                                render_toast("삭제되었습니다.", kind="success")
                                 st.session_state.selected_post_id = None
                                 st.session_state.edit_mode = False
                                 st.query_params.clear()
@@ -604,7 +604,7 @@ with col2:
                                             title=edit_title.strip(),
                                             content=edit_content.strip()
                                         )
-                                        st.success("수정되었습니다.")
+                                        render_toast("수정되었습니다.", kind="success")
                                         st.session_state.edit_mode = False
                                         st.rerun()
                                     except Exception as e:

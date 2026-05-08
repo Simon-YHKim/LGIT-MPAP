@@ -415,7 +415,7 @@ def render_alarm_annotation_editor(alarm_code, alarm_name, panel_id, save_button
             note_text=st.session_state.get(note_key, ""),
             uploaded_file=uploaded_file,
         )
-        st.success("저장되었습니다.")
+        render_toast("저장되었습니다.", kind="success")
         if close_after_save:
             st.session_state.active_alarm_popup = None
             st.session_state.active_alarm_popup_event_id = None
@@ -588,7 +588,7 @@ def render_dashboard_comment_section(payload, panel_id):
             # text_area 위젯 생성 후에는 같은 run에서 st.session_state[text_key]를 직접 수정하지 않음
             # rerun하지 않고 같은 dialog 안에서 저장 성공/이력 표시만 수행해 팝업 안정성을 높임
             st.session_state[history_key] = True
-            st.success("Comment가 저장되었습니다.")
+            render_toast("Comment가 저장되었습니다.", kind="success")
 
     if st.session_state.get(history_key, False):
         st.markdown("#### Comment 이력")
@@ -1408,7 +1408,7 @@ def render_panel(panel_id: int):
             with save_col1:
                 if st.button("팀 공정 저장", key=f"save_team_process_{panel_id}_{team_name}"):
                     save_team_process_ids(engine, team_name, selected_team_process_ids)
-                    st.success(f"{team_name} 공정 설정이 저장되었습니다.")
+                    render_toast(f"{team_name} 공정 설정이 저장되었습니다.", kind="success")
                     st.session_state.active_alarm_popup = None
                     st.session_state.active_alarm_popup_event_id = None
                     bump_alarm_grid_version(panel_id)
@@ -1720,7 +1720,7 @@ def render_panel(panel_id: int):
             note_text=note_text,
             uploaded_file=uploaded_file
         )
-        st.success("저장되었습니다.")
+        render_toast("저장되었습니다.", kind="success")
 
     # =====================================================
     # 패널 하단 추가 / 제거

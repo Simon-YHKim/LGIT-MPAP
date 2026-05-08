@@ -608,7 +608,7 @@ def add_comment_section_to_popup(popup_payload: dict, panel_id: int):
                 'created_by': st.session_state.get('user_name', None),
             }
             insert_alarm_comment(payload)
-            st.success('Comment가 저장되었습니다.')
+            render_toast('Comment가 저장되었습니다.', kind="success")
             st.rerun()
     hist_df = load_alarm_comment_history(popup_payload, selected_alarm['alarm_name'], selected_alarm['alarm_code'], limit=100)
     st.markdown('#### Comment 이력')

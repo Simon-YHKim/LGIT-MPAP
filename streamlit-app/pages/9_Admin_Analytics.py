@@ -90,13 +90,9 @@ def format_duration(seconds):
 
 
 def download_df_button(df: pd.DataFrame, filename: str, label: str):
-    csv = df.to_csv(index=False).encode("utf-8-sig")
-    st.download_button(
-        label=label,
-        data=csv,
-        file_name=filename,
-        mime="text/csv"
-    )
+    # STAGE 2 primitive — UTF-8 BOM 포함 (Excel 한글 호환).
+    from ui.vitals.components import render_csv_export
+    render_csv_export(df, label=label, filename=filename, key=f"_admin_csv_{filename}")
 
 
 # ==================================================
