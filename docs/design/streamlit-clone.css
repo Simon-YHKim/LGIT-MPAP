@@ -15,8 +15,11 @@
   --sc-radius-lg: 0;
   --sc-radius-pill: 0;
   --sc-gap: 1rem;             /* Streamlit element 간 기본 vertical gap */
-  --sc-pad-x: 1rem;           /* block-container horizontal padding */
-  --sc-pad-y: 1.5rem;
+  /* 사용자 피드백 (2026-05-08):
+     · 대시보드 좌우 여백 = patch note 패턴 (1rem 유지 — 충분히 좁음).
+     · 상하 여백 최소화 — 1.5rem → 0.5rem (top + bottom 8px). */
+  --sc-pad-x: 1rem;           /* block-container horizontal padding (= patch note) */
+  --sc-pad-y: 0.5rem;         /* 상하 여백 최소 (이전 1.5rem) */
   --sc-sidebar-w: 244px;      /* Streamlit 기본 사이드바 폭 */
   --sc-header-h: 0px;         /* layout=wide 사용 시 헤더 투명 */
   --sc-text-sm: 14px;
@@ -138,6 +141,36 @@ body.is-login-active .vitals-app section[data-testid="stSidebar"] {
   display: flex;
   flex-direction: column;
   gap: 2px;
+  /* 사용자 피드백 (2026-05-08): user profile 항상 사이드바 최하단.
+     stSidebarNav 가 stSidebar 의 column 안에서 flex:1 으로 남은 공간 모두 차지,
+     안에서 sc-sidebar-divider 부터 margin-top:auto 로 sticky bottom. */
+  flex: 1 1 auto;
+  height: 100%;
+}
+/* sc-sidebar-divider 가 nav 안의 link list 와 user profile 사이 push down */
+[data-testid="stSidebarNav"] > .sc-sidebar-divider {
+  margin-top: auto !important;
+}
+/* sc-sidebar-user 영역 — 사용자 피드백 (2026-05-08) 으로 문의 메일 link 추가됨.
+   profile 정보 + 설정 버튼 그대로, 그 아래 문의 메일 버튼. */
+.sc-sidebar-user-contact {
+  padding: 8px 12px 4px;
+  font-size: 12px;
+  font-family: var(--font-mono);
+  color: var(--ink-muted);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border-top: 1px dashed var(--border);
+  margin-top: 8px;
+  transition: color 120ms;
+}
+.sc-sidebar-user-contact:hover { color: var(--primary); }
+.sc-sidebar-user-contact svg {
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
 }
 
 [data-testid="stSidebar"] [data-testid="stSidebarNavLink"] {
@@ -1074,8 +1107,11 @@ body.is-login-active .vitals-app section[data-testid="stSidebar"] {
 .sc-login-app > [data-testid="stMain"] { display: block; min-width: 0; }
 .sc-login-header { background: transparent !important; height: 0 !important; }
 .sc-login-block {
-  padding: 28px 36px 36px !important;
-  max-width: 1320px;
+  /* 사용자 피드백 (2026-05-08): 로그인 화면 구성요소 좌우 분리 (4:3 → 16:9).
+     이전 max-width:1320px → 풀폭 (max-width: 100%).
+     padding 좌우 80px 로 여유 + 16:9 모니터 (1920px) 활용. */
+  padding: 28px 80px 36px !important;
+  max-width: 100%;
   margin: 0 auto;
 }
 
@@ -1126,14 +1162,16 @@ body.is-login-active .vitals-app section[data-testid="stSidebar"] {
   color: #fff;
 }
 
-/* Two-column layout */
+/* Two-column layout — 사용자 피드백 (2026-05-08): 4:3 → 16:9 좌우 분리.
+   identity hero 좌측 / auth-card 우측, 사이 gap 더 늘림. min-height 더 키움. */
 .sc-login-cols {
   display: grid !important;
-  grid-template-columns: 1.3fr 1fr;
-  gap: 48px;
+  grid-template-columns: 1.4fr 0.7fr;
+  gap: 80px;
   align-items: center;
+  justify-content: space-between;
   margin-top: 28px;
-  min-height: 540px;
+  min-height: 640px;
 }
 @media (max-width: 980px) {
   .sc-login-cols { grid-template-columns: 1fr; gap: 28px; }
@@ -1298,8 +1336,8 @@ body.is-login-active .vitals-app section[data-testid="stSidebar"] {
 .sc-nav-card {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding: 18px 20px 18px 24px;
+  gap: 16px;
+  padding: 24px;
   background: var(--card-bg);
   border: 1px solid var(--border);
   border-radius: 8px;
@@ -1326,23 +1364,28 @@ body.is-login-active .vitals-app section[data-testid="stSidebar"] {
 .sc-nav-card:hover::before { background: var(--primary-dark); }
 .sc-nav-card[aria-disabled="true"] { opacity: 0.55; cursor: not-allowed; }
 
+/* 사용자 피드백 (2026-05-08): Home_1 카드 아이콘 가운데 + 키움.
+   · head row layout 변경 — icon 가운데, badge 우상단 absolute.
+   · icon 36 → 96 (카드 여백 채울 정도). svg 18 → 48.
+   · body text 가운데 정렬. */
 .sc-nav-card__head {
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
+  align-items: center;
+  justify-content: center;
   gap: 12px;
+  flex: 1 1 auto;
+  min-height: 96px;
 }
 .sc-nav-card__icon {
-  width: 36px; height: 36px;
-  border-radius: 6px;
+  width: 96px; height: 96px;
   background: var(--soft);
   display: grid;
   place-items: center;
   flex: 0 0 auto;
-  color: var(--ink-body);
+  color: var(--primary);
   transition: background 160ms, color 160ms;
 }
-.sc-nav-card__icon svg { width: 18px; height: 18px; stroke-width: 1.6; }
+.sc-nav-card__icon svg { width: 48px; height: 48px; stroke-width: 1.5; }
 .sc-nav-card:hover .sc-nav-card__icon {
   background: var(--primary-tint);
   color: var(--primary-dark);
@@ -1360,6 +1403,10 @@ body.is-login-active .vitals-app section[data-testid="stSidebar"] {
   line-height: 1.4;
   background: var(--soft);
   color: var(--ink-subtle);
+  /* 사용자 피드백 (2026-05-08): icon 가운데로 옮길 때 badge 는 우상단 absolute. */
+  position: absolute;
+  top: 12px;
+  right: 12px;
 }
 .sc-nav-card__badge--good { color: var(--status-good); background: rgba(31, 139, 76, 0.08); }
 .sc-nav-card__badge--warn { color: var(--status-warn); background: rgba(181, 127, 27, 0.08); }
@@ -1367,8 +1414,10 @@ body.is-login-active .vitals-app section[data-testid="stSidebar"] {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  flex: 1;
+  flex: 0 0 auto;
   min-width: 0;
+  /* 사용자 피드백 (2026-05-08): icon 가운데 정렬에 맞춰 텍스트도 가운데. */
+  text-align: center;
 }
 .sc-nav-card__title {
   margin: 0;
@@ -2348,17 +2397,17 @@ body.is-login-active .vitals-app section[data-testid="stSidebar"] {
 }
 
 .sc-mode-card {
-  background: var(--card-bg);
-  border: 1px solid var(--border);
-  padding: 1.25rem 1.5rem 1.5rem;
+  /* 사용자 피드백 (2026-05-08) Home 일관 디자인:
+     · 흰색 background panel + border 제거. 다른 페이지 (CMP/UPH/MTBA/...)
+       와 동일하게 본문이 page-bg 위에 직접 표시되도록.
+     · 흰 panel 로 사용 못했던 좌우 여백 확보. */
+  background: transparent;
+  border: 0;
+  padding: 0;
   margin-bottom: 0.5rem;
-  /* 페이지를 카드 크기로 좁히지 않고 풀폭으로 채움. */
   width: 100%;
   min-height: calc(100vh - 80px);
-  /* 사용자 피드백 (2026-05-08) Home_1 (s2-b):
-     · 하단 회색선 (sc-contact-box) 을 panel 최하단으로 → flex column +
-       sc-contact-box margin-top:auto 로 자동 push down.
-     · nav-cards--hero 가 panel 전체 영역 사용 → flex: 1 로 expand. */
+  /* Home_1 의 sc-contact-box 최하단 push 위해 column flex 유지. */
   display: flex;
   flex-direction: column;
 }
@@ -4015,11 +4064,13 @@ body.is-login-active .vitals-app section[data-testid="stSidebar"] {
 .sc-nav-cards--hero > .sc-nav-card:first-child .sc-nav-card__desc {
   font-size: 14px;
 }
+/* 사용자 피드백 (2026-05-08): hero 첫 카드 (MaxCapa Chat) icon 도 더 크게 — 카드
+   여백 채울 정도. 일반 카드 96 보다 더 큼 (140) — 첫 카드는 2 row 차지하니. */
 .sc-nav-cards--hero > .sc-nav-card:first-child .sc-nav-card__icon {
-  width: 44px; height: 44px;
+  width: 140px; height: 140px;
 }
 .sc-nav-cards--hero > .sc-nav-card:first-child .sc-nav-card__icon svg {
-  width: 22px; height: 22px;
+  width: 70px; height: 70px;
 }
 @media (max-width: 880px) {
   .sc-nav-cards--hero {

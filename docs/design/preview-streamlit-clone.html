@@ -39,7 +39,7 @@
 
       <div class="sc-nav-group" data-group="home">
         <button type="button" class="sc-nav-group__head" aria-expanded="true">
-          <span>Home</span>
+          <span data-i18n="home">Home</span>
           <svg class="sc-nav-group__caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
         </button>
         <div class="sc-nav-group__list">
@@ -49,8 +49,8 @@
         </div>
       </div>
 
-      <a data-testid="stSidebarNavLink" href="#sec-cmp">CMP Dashboard</a>
-      <a data-testid="stSidebarNavLink" href="#sec-uph">UPH Dashboard</a>
+      <a data-testid="stSidebarNavLink" href="#sec-cmp" data-i18n="cmp">CMP Dashboard</a>
+      <a data-testid="stSidebarNavLink" href="#sec-uph" data-i18n="uph">UPH Dashboard</a>
 
       <div class="sc-nav-group" data-group="mtba">
         <button type="button" class="sc-nav-group__head" aria-expanded="true">
@@ -58,15 +58,15 @@
           <svg class="sc-nav-group__caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
         </button>
         <div class="sc-nav-group__list">
-          <a data-testid="stSidebarNavLink" href="#sec-mtba">MTBA Dashboard</a>
-          <a data-testid="stSidebarNavLink" href="#sec-detail">MTBA Detail</a>
-          <a data-testid="stSidebarNavLink" href="#sec-alarm">Alarm Action</a>
+          <a data-testid="stSidebarNavLink" href="#sec-mtba" data-i18n="mtba">MTBA Dashboard</a>
+          <a data-testid="stSidebarNavLink" href="#sec-detail" data-i18n="detail">MTBA Detail</a>
+          <a data-testid="stSidebarNavLink" href="#sec-alarm" data-i18n="alarm">Alarm Action</a>
         </div>
       </div>
 
-      <a data-testid="stSidebarNavLink" href="#sec-chat">MaxCapa Chat</a>
-      <a data-testid="stSidebarNavLink" href="#sec-patch">Patch Note</a>
-      <a data-testid="stSidebarNavLink" href="#sec-admin">Admin Analytics</a>
+      <a data-testid="stSidebarNavLink" href="#sec-chat" data-i18n="chat">MaxCapa Chat</a>
+      <a data-testid="stSidebarNavLink" href="#sec-patch" data-i18n="patch">Patch Note</a>
+      <a data-testid="stSidebarNavLink" href="#sec-admin" data-i18n="admin">Admin Analytics</a>
       <div class="sc-sidebar-divider"></div>
       <div class="sc-sidebar-user">
         <div class="sc-sidebar-user__avatar">SK</div>
@@ -78,6 +78,11 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
         </button>
       </div>
+      <!-- 사용자 피드백 (2026-05-08): 문의 메일 버튼 사이드바 user profile 하단으로 이동 -->
+      <a class="sc-sidebar-user-contact" href="mailto:max.capa@lginnotek.com">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22 6 12 13 2 6"/></svg>
+        <span data-i18n="contact">문의 메일 보내기</span>
+      </a>
 </nav>
     <!-- 사용자 피드백 (2026-05-08): sc-sidebar-foot 텍스트 (© LG Innotek /
          Max Capa 팀 / v · streamlit-clone) 제거. 회사 소개·버전 정보는 랜딩
@@ -235,7 +240,7 @@
                         </div>
 
                         <div class="foot">
-                          <span>문의 · 생산혁신센터 Max Capa 팀</span>
+                          <span>문의 · 생산혁신센터 Max Capa TDR</span>
                           <span>v0.4.2</span>
                         </div>
                       </section>
@@ -323,7 +328,7 @@
                       </div>
 
                       <div class="foot-row">
-                        <span>생산혁신센터 Max Capa 팀 · 사내망 전용</span>
+                        <span>생산혁신센터 Max Capa TDR · 사내망 전용</span>
                         <a href="#sec-patch">변경 로그 전체 보기 →</a>
                       </div>
                     </div>
@@ -3489,6 +3494,53 @@
   }
 
   // login section: lang dropdown toggle (KO ▾ → 7-language menu)
+  // 사용자 피드백 (2026-05-08): 언어 선택 실 기능 구현 — localStorage persist
+  // + 사이드바 nav 라벨 swap (다국어 demo). 사용자가 다른 언어 선택 시 페이지의
+  // 핵심 텍스트가 즉시 변경.
+  var I18N = {
+    KO: { home:'Home', cmp:'CMP Dashboard', uph:'UPH Dashboard',
+          mtba:'MTBA Dashboard', detail:'MTBA Detail', alarm:'Alarm Action',
+          chat:'MaxCapa Chat', patch:'Patch Note', admin:'Admin Analytics',
+          settings:'설정', contact:'문의 메일 보내기' },
+    EN: { home:'Home', cmp:'CMP Dashboard', uph:'UPH Dashboard',
+          mtba:'MTBA Dashboard', detail:'MTBA Detail', alarm:'Alarm Action',
+          chat:'MaxCapa Chat', patch:'Patch Note', admin:'Admin Analytics',
+          settings:'Settings', contact:'Contact mail' },
+    VI: { home:'Trang chủ', cmp:'Bảng CMP', uph:'Bảng UPH',
+          mtba:'Bảng MTBA', detail:'Chi tiết MTBA', alarm:'Cảnh báo',
+          chat:'Trò chuyện MaxCapa', patch:'Ghi chú', admin:'Phân tích quản trị',
+          settings:'Cài đặt', contact:'Email liên hệ' },
+    PL: { home:'Główna', cmp:'Pulpit CMP', uph:'Pulpit UPH',
+          mtba:'Pulpit MTBA', detail:'Szczegóły MTBA', alarm:'Alarmy',
+          chat:'Czat MaxCapa', patch:'Notatki', admin:'Analityka',
+          settings:'Ustawienia', contact:'E-mail kontaktowy' },
+    ID: { home:'Beranda', cmp:'Dasbor CMP', uph:'Dasbor UPH',
+          mtba:'Dasbor MTBA', detail:'Detail MTBA', alarm:'Alarm',
+          chat:'Obrolan MaxCapa', patch:'Catatan', admin:'Analitik Admin',
+          settings:'Pengaturan', contact:'Kontak email' },
+    ES: { home:'Inicio', cmp:'Panel CMP', uph:'Panel UPH',
+          mtba:'Panel MTBA', detail:'Detalle MTBA', alarm:'Alarmas',
+          chat:'Chat MaxCapa', patch:'Notas', admin:'Analítica',
+          settings:'Ajustes', contact:'Email de contacto' },
+    ZH: { home:'首页', cmp:'CMP 面板', uph:'UPH 面板',
+          mtba:'MTBA 面板', detail:'MTBA 详情', alarm:'告警',
+          chat:'MaxCapa 聊天', patch:'更新记录', admin:'管理分析',
+          settings:'设置', contact:'联系邮箱' },
+  };
+  function _applyLang(code) {
+    var dict = I18N[code] || I18N.KO;
+    document.querySelectorAll('[data-i18n]').forEach(function (el) {
+      var key = el.getAttribute('data-i18n');
+      if (dict[key]) el.textContent = dict[key];
+    });
+    try { localStorage.setItem('vitals.lang', code); } catch (e) {}
+  }
+  // 첫 로드 시 localStorage 의 언어 적용
+  try {
+    var savedLang = localStorage.getItem('vitals.lang');
+    if (savedLang && I18N[savedLang]) _applyLang(savedLang);
+  } catch (e) {}
+
   var langWrap = document.getElementById('login-lang');
   var langBtn  = document.getElementById('login-lang-btn');
   if (langWrap && langBtn) {
@@ -3503,13 +3555,17 @@
         langBtn.setAttribute('aria-expanded', 'false');
       }
     });
-    // click-to-pick: update label, mark active, close
+    // click-to-pick: update label, mark active, close, apply i18n
     langWrap.querySelectorAll('.lang__item').forEach(function (item) {
       item.addEventListener('click', function () {
         langWrap.querySelectorAll('.lang__item').forEach(function (i) { i.classList.remove('lang__item--active'); });
         item.classList.add('lang__item--active');
         var code = item.querySelector('.lang__item-code');
-        if (code) langBtn.querySelector('span:not(.lang__caret)').textContent = code.textContent;
+        if (code) {
+          langBtn.querySelector('span:not(.lang__caret)').textContent = code.textContent;
+          _applyLang(code.textContent);  // 실 기능
+          if (typeof showToast === 'function') showToast('언어가 변경되었습니다: ' + code.textContent);
+        }
         langWrap.classList.remove('is-open');
         langBtn.setAttribute('aria-expanded', 'false');
       });
