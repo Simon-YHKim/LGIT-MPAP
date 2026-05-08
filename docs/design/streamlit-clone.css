@@ -2352,10 +2352,25 @@ body.is-login-active .vitals-app section[data-testid="stSidebar"] {
   border: 1px solid var(--border);
   padding: 1.25rem 1.5rem 1.5rem;
   margin-bottom: 0.5rem;
-  /* 페이지를 카드 크기로 좁히지 않고 풀폭으로 채움. 안의 hero grid 가
-     자체 max-width 로 가운데 정렬. */
+  /* 페이지를 카드 크기로 좁히지 않고 풀폭으로 채움. */
   width: 100%;
   min-height: calc(100vh - 80px);
+  /* 사용자 피드백 (2026-05-08) Home_1 (s2-b):
+     · 하단 회색선 (sc-contact-box) 을 panel 최하단으로 → flex column +
+       sc-contact-box margin-top:auto 로 자동 push down.
+     · nav-cards--hero 가 panel 전체 영역 사용 → flex: 1 로 expand. */
+  display: flex;
+  flex-direction: column;
+}
+/* nav-cards 가 panel 의 남은 공간 모두 차지 (= 카드 크기 확대) */
+.sc-mode-card .sc-nav-cards--hero {
+  flex: 1 1 auto;
+  /* hero grid 가 부모 panel 의 폭 모두 사용 (이전 max-width 1080 제한 해제) */
+  max-width: none !important;
+}
+/* sc-contact-box 가 항상 panel 최하단 */
+.sc-mode-card .sc-contact-box {
+  margin-top: auto !important;
 }
 
 /* sidebar — zip 이전 mockup 링크 */
