@@ -68,6 +68,11 @@
       <a data-testid="stSidebarNavLink" href="#sec-patch" data-i18n="patch">Patch Note</a>
       <a data-testid="stSidebarNavLink" href="#sec-admin" data-i18n="admin">Admin Analytics</a>
       <div class="sc-sidebar-divider"></div>
+      <!-- 사용자 피드백 (2026-05-08): 문의 메일 = 사용자 프로필 *위* + 중앙정렬 -->
+      <a class="sc-sidebar-user-contact sc-sidebar-user-contact--centered" href="mailto:max.capa@lginnotek.com">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22 6 12 13 2 6"/></svg>
+        <span data-i18n="contact">문의 메일 보내기</span>
+      </a>
       <div class="sc-sidebar-user">
         <div class="sc-sidebar-user__avatar">SK</div>
         <div class="sc-sidebar-user__body">
@@ -78,11 +83,6 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
         </button>
       </div>
-      <!-- 사용자 피드백 (2026-05-08): 문의 메일 버튼 사이드바 user profile 하단으로 이동 -->
-      <a class="sc-sidebar-user-contact" href="mailto:max.capa@lginnotek.com">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22 6 12 13 2 6"/></svg>
-        <span data-i18n="contact">문의 메일 보내기</span>
-      </a>
 </nav>
     <!-- 사용자 피드백 (2026-05-08): sc-sidebar-foot 텍스트 (© LG Innotek /
          Max Capa 팀 / v · streamlit-clone) 제거. 회사 소개·버전 정보는 랜딩
@@ -413,11 +413,9 @@
               </a>
             </div>
 
-            <div class="sc-contact-box" style="margin-top:1.25rem;">
-              <!-- 사용자 피드백 (2026-05-08): '제작 · 광학 Max Capa TDR |' 제거.
-                   문의 메일 만 유지 (향후 사이드바 user profile 하단으로 이동 예정). -->
-              <a href="mailto:max.capa@lginnotek.com">문의 메일 보내기</a>
-            </div>
+            <!-- 사용자 피드백 (2026-05-08): sc-contact-box 통째 제거.
+                 문의 메일 = 사이드바 user profile 위로 이동. -->
+
           </div>
 
         </div><!-- /stVerticalBlock (sec-home-1) -->
@@ -587,10 +585,9 @@
               </a>
             </div>
 
-            <div class="sc-contact-box" style="margin-top:1.5rem;">
-              <!-- 사용자 피드백 (2026-05-08): '제작 · 광학 Max Capa TDR |' 제거. -->
-              <a href="mailto:max.capa@lginnotek.com">문의 메일 보내기</a>
-            </div>
+            <!-- 사용자 피드백 (2026-05-08): sc-contact-box 통째 제거.
+                 문의 메일 = 사이드바 user profile 위로 이동. -->
+
           </div><!-- /sc-mode-card (시안 2) -->
 
         </div><!-- /stVerticalBlock (sec-home-2) -->
@@ -770,10 +767,9 @@
               </a>
             </div>
 
-            <div class="sc-contact-box" style="margin-top:1.5rem;">
-              <!-- 사용자 피드백 (2026-05-08): '제작 · 광학 Max Capa TDR |' 제거. -->
-              <a href="mailto:max.capa@lginnotek.com">문의 메일 보내기</a>
-            </div>
+            <!-- 사용자 피드백 (2026-05-08): sc-contact-box 통째 제거.
+                 문의 메일 = 사이드바 user profile 위로 이동. -->
+
           </div><!-- /sc-mode-card (시안 3) -->
 
         </div><!-- /stVerticalBlock -->
@@ -1406,7 +1402,7 @@
                 <input type="number" id="mtba-target-input" value="120" min="1" step="1">
               </label>
             </div>
-            <svg id="mtba-bar-chart" class="vit-bar-chart-svg" viewBox="0 0 740 240" preserveAspectRatio="none">
+            <svg id="mtba-bar-chart" class="vit-bar-chart-svg" viewBox="0 0 740 240" preserveAspectRatio="xMidYMid meet">
               <g class="vit-bar-grid">
                 <line x1="40" y1="20"  x2="700" y2="20"/>
                 <line x1="40" y1="65"  x2="700" y2="65"/>
@@ -2558,14 +2554,19 @@
       <button type="button" class="vit-modal__close" id="alarm-modal-close" aria-label="닫기">✕</button>
     </div>
     <div class="vit-modal__body">
-      <dl class="vit-kv">
-        <dt>알람명</dt><dd id="alarm-modal-alarm">IRCF Attach Pickup Vacuum Loss</dd>
-        <dt>호기</dt><dd id="alarm-modal-machine">#1116</dd>
-        <dt>모델명</dt><dd id="alarm-modal-model">CM모델A</dd>
-        <dt>설비세그먼트명</dt><dd id="alarm-modal-seg">SEG-B3</dd>
-        <dt>MTBA</dt><dd id="alarm-modal-mtba" class="high">38</dd>
-        <dt>생산수량</dt><dd id="alarm-modal-qty">7,240</dd>
-      </dl>
+      <!-- 사용자 피드백 (2026-05-08): 공정 상세란 + 우측 메모 아이콘 영역 -->
+      <div class="vit-modal__detail-row">
+        <dl class="vit-kv vit-modal__detail-kv">
+          <dt>알람명</dt><dd id="alarm-modal-alarm">IRCF Attach Pickup Vacuum Loss</dd>
+          <dt>호기</dt><dd id="alarm-modal-machine">#1116</dd>
+          <dt>모델명</dt><dd id="alarm-modal-model">CM모델A</dd>
+          <dt>설비세그먼트명</dt><dd id="alarm-modal-seg">SEG-B3</dd>
+          <dt>MTBA</dt><dd id="alarm-modal-mtba" class="high">38</dd>
+          <dt>생산수량</dt><dd id="alarm-modal-qty">7,240</dd>
+        </dl>
+        <!-- 메모 아이콘 영역: 최대 3개 표시, 초과 시 좌우 스크롤. -->
+        <div class="vit-modal__memo-icons" id="alarm-modal-memo-icons" aria-label="저장된 메모"></div>
+      </div>
       <div class="vit-modal__sect">
         <h4>최근 알람 이력 (3건)</h4>
         <ul class="vit-alm-list">
@@ -2623,7 +2624,13 @@
 
     </div>
     <div class="vit-modal__foot">
-      <div data-testid="stButton"><button>메모 추가</button></div>
+      <!-- 사용자 피드백 (2026-05-08): 메모 추가 버튼 옆에 text input 추가.
+           input 의 내용이 우상단 메모 아이콘으로 저장. -->
+      <div class="vit-modal__memo-row">
+        <input type="text" class="vit-modal__memo-input" id="alarm-modal-memo-input"
+               placeholder="메모 입력 — Enter 또는 메모 추가 버튼 클릭" />
+        <div data-testid="stButton"><button id="alarm-modal-memo-add">메모 추가</button></div>
+      </div>
       <div data-testid="stButton"><button kind="primary">상세 보고서 열기</button></div>
     </div>
   </div>
@@ -2983,19 +2990,57 @@
     });
   });
 
-  // ── MTBA Dashboard: 공정별 요약 체크박스 ↔ 비교 차트 막대 그룹 토글 ──
+  // ── MTBA Dashboard: 공정별 요약 체크박스 ↔ 비교 차트 막대 그룹 토글 + 재정렬 ──
+  // 사용자 피드백 (2026-05-08): 체크 해제 시 단순 hide 가 아니라 가시 그룹들이
+  // 빈 자리 채우며 균등 spacing 으로 재정렬되어야 함.
+  // 알고리즘:
+  //   1. SVG 의 bar 영역 폭 (viewBox 40 ~ 700, 즉 660 width) 에서 균등 분할
+  //   2. 가시 그룹 수 N → 각 그룹 중심점 = 40 + (i + 0.5) * (660 / N)
+  //   3. 원본 x (translate 의 X) 와 새 중심점 차이만큼 transform 갱신
   function applyMtbaCheckboxFilter() {
     var procs = {};
     Array.prototype.slice.call(document.querySelectorAll('.vit-mtba-cb')).forEach(function (cb) {
       procs[cb.getAttribute('data-proc')] = cb.checked;
     });
-    Array.prototype.slice.call(document.querySelectorAll('#mtba-bar-groups .vit-bar-grp')).forEach(function (grp) {
-      var p = grp.getAttribute('data-proc');
-      grp.setAttribute('data-hidden', procs[p] ? '0' : '1');
+    var groups = Array.prototype.slice.call(document.querySelectorAll('#mtba-bar-groups .vit-bar-grp'));
+    var visible = groups.filter(function (g) { return procs[g.getAttribute('data-proc')]; });
+    var N = visible.length || 1;
+    var areaStart = 40, areaEnd = 700;
+    var slotWidth = (areaEnd - areaStart) / N;
+    // 원본 transform 의 X 좌표 추출 (재정렬 차이 계산용)
+    function _origX(g) {
+      var m = (g.getAttribute('data-original-x') ||
+               (g.getAttribute('transform') || '').replace(/.*translate\(([\d.-]+).*/, '$1')) || '0';
+      // 첫 호출에 원본 저장 (이후 호출은 항상 동일 기준점으로 계산)
+      if (!g.getAttribute('data-original-x')) g.setAttribute('data-original-x', m);
+      return parseFloat(m);
+    }
+    // 모든 그룹: 가시 → 새 위치, 비가시 → hidden + 원위치
+    var visibleIdx = 0;
+    groups.forEach(function (g) {
+      var p = g.getAttribute('data-proc');
+      var oX = _origX(g);
+      if (procs[p]) {
+        var newCenter = areaStart + (visibleIdx + 0.5) * slotWidth;
+        var dx = newCenter - oX;
+        g.setAttribute('transform', 'translate(' + (oX + dx) + ',0)');
+        g.setAttribute('data-hidden', '0');
+        visibleIdx += 1;
+      } else {
+        g.setAttribute('data-hidden', '1');
+        g.setAttribute('transform', 'translate(' + oX + ',0)');
+      }
     });
-    Array.prototype.slice.call(document.querySelectorAll('#mtba-bar-x text[data-x-proc]')).forEach(function (t) {
-      var p = t.getAttribute('data-x-proc');
-      t.style.display = procs[p] ? '' : 'none';
+    // x-axis 라벨 — 가시 그룹과 동일 위치로 재정렬
+    var labels = Array.prototype.slice.call(document.querySelectorAll('#mtba-bar-x text[data-x-proc]'));
+    var visLabels = labels.filter(function (t) { return procs[t.getAttribute('data-x-proc')]; });
+    visLabels.forEach(function (t, i) {
+      var newCenter = areaStart + (i + 0.5) * slotWidth;
+      t.setAttribute('x', newCenter);
+      t.style.display = '';
+    });
+    labels.forEach(function (t) {
+      if (!procs[t.getAttribute('data-x-proc')]) t.style.display = 'none';
     });
   }
   Array.prototype.slice.call(document.querySelectorAll('.vit-mtba-cb')).forEach(function (cb) {
@@ -3362,6 +3407,56 @@
       e.stopPropagation();
       exportSectionCSV(btn.getAttribute('data-export'));
     });
+  });
+
+  // ── alarm-detail-modal: 메모 input + 추가 버튼 + 우측 아이콘 (사용자 피드백 2026-05-08) ──
+  // input 에 텍스트 입력 → 메모 추가 버튼 또는 Enter → 우측 메모 아이콘 영역에 추가.
+  // 최대 3개 표시 (CSS 의 grid + overflow-x:auto 가 4번째부터 좌우 스크롤).
+  var memoInput = document.getElementById('alarm-modal-memo-input');
+  var memoAddBtn = document.getElementById('alarm-modal-memo-add');
+  var memoIconsHost = document.getElementById('alarm-modal-memo-icons');
+  var _memoStore = [];  // {ts, text}
+  function _renderMemoIcons() {
+    if (!memoIconsHost) return;
+    memoIconsHost.innerHTML = '';
+    _memoStore.forEach(function (m, idx) {
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'vit-modal__memo-icon';
+      btn.title = m.text;
+      btn.innerHTML =
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" ' +
+        'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+        '<rect x="6" y="3" width="12" height="18" rx="0"/>' +
+        '<line x1="9" y1="8" x2="15" y2="8"/>' +
+        '<line x1="9" y1="12" x2="15" y2="12"/>' +
+        '<line x1="9" y1="16" x2="13" y2="16"/></svg>' +
+        '<span class="vit-modal__memo-icon__tooltip">' +
+        m.ts + '\n' + m.text.replace(/[<>&]/g, function (c) {
+          return c === '<' ? '&lt;' : c === '>' ? '&gt;' : '&amp;';
+        }) +
+        '</span>';
+      memoIconsHost.appendChild(btn);
+    });
+  }
+  function _addMemo() {
+    if (!memoInput) return;
+    var v = (memoInput.value || '').trim();
+    if (!v) {
+      if (typeof showToast === 'function') showToast('메모 내용을 입력하세요.');
+      return;
+    }
+    var now = new Date();
+    var ts = ('0' + (now.getMonth() + 1)).slice(-2) + '-' + ('0' + now.getDate()).slice(-2) + ' ' +
+             ('0' + now.getHours()).slice(-2) + ':' + ('0' + now.getMinutes()).slice(-2);
+    _memoStore.push({ ts: ts, text: v });
+    memoInput.value = '';
+    _renderMemoIcons();
+    if (typeof showToast === 'function') showToast('메모를 추가했습니다.');
+  }
+  if (memoAddBtn) memoAddBtn.addEventListener('click', _addMemo);
+  if (memoInput) memoInput.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') { e.preventDefault(); _addMemo(); }
   });
 
   // ── alarm-detail-modal: 클릭 시 Worst 5 표 헤더 (공정명/호기명) 동기화 ──

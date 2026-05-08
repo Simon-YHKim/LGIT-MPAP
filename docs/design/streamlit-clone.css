@@ -102,9 +102,18 @@
    사용자가 실 화면에서 차이 보면 padding-bottom 조정. */
 [data-testid="stSidebar"] .stSidebarHeader,
 [data-testid="stSidebar"] [data-testid="stSidebarHeader"] {
-  padding: 1.5rem 1.25rem 1.5rem;
+  /* 사용자 피드백 (2026-05-08): page-head 검은 underline 의 Y 좌표와 일치.
+     · main 측: page-head 까지 ≈ block-container padding-top 0 + page-head h1
+       (28px line-height) + padding-bottom 10px + border 1px ≈ 39-44px.
+     · sidebar 측: stSidebarHeader 의 height 를 동일하게 맞춤 — fixed height
+       + flex center 로 brand cluster 수직 중앙. */
+  padding: 0 1rem;
   border-bottom: 1px solid var(--border);
-  margin-bottom: 0.75rem;
+  margin-bottom: 0;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
 }
 
 /* sidebar — LG Innotek logo (light/dark swap) */
@@ -172,6 +181,15 @@ body.is-login-active .vitals-app section[data-testid="stSidebar"] {
   height: 14px;
   flex: 0 0 auto;
 }
+/* 사용자 피드백 (2026-05-08): 문의 메일 = user profile 위 + 중앙정렬 variant */
+.sc-sidebar-user-contact--centered {
+  justify-content: center;
+  border-top: 0;
+  border-bottom: 1px dashed var(--border);
+  margin-top: 0;
+  margin-bottom: 8px;
+  padding: 10px 12px;
+}
 
 [data-testid="stSidebar"] [data-testid="stSidebarNavLink"] {
   display: flex;
@@ -179,11 +197,13 @@ body.is-login-active .vitals-app section[data-testid="stSidebar"] {
   justify-content: space-between;
   height: 36px;
   padding: 0 0.875rem;
+  /* 사용자 피드백 (2026-05-08): 폰트 LG EI Text 명시 — 사이드바 한·영 일관 */
+  font-family: 'LG EI Text', 'LG EI Headline', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
   font-size: 13px;
   font-weight: 600;
   color: var(--ink-muted);
   text-decoration: none;
-  border-radius: 6px;
+  border-radius: 0;
   position: relative;
   transition: background var(--sc-anim);
 }
@@ -232,7 +252,11 @@ body.is-login-active .vitals-app section[data-testid="stSidebar"] {
 .vitals-app > .main > .block-container,
 .vitals-app > [data-testid="block-container"],
 .vitals-app > .block-container {
-  padding: var(--sc-pad-y) var(--sc-pad-x) calc(var(--sc-pad-y) * 2);
+  /* 사용자 피드백 (2026-05-08):
+     · padding-top 0 — 와인 strip 이 main 영역 최상단에 직접 붙도록.
+     · padding-left/right = patch note 패턴 (0.875rem ≈ 14px).
+     · padding-bottom 일반 (--sc-pad-y * 2). */
+  padding: 0 0.875rem calc(var(--sc-pad-y) * 2);
   max-width: 100%;
   margin: 0 auto;
 }
@@ -903,13 +927,19 @@ body.is-login-active .vitals-app section[data-testid="stSidebar"] {
 
 /* ── Vitals 일관성: 모든 일반 페이지 상단에 와인 6px 가로 strip ─────────
    sec-login (영상 배경) 만 제외. 모든 페이지가 동일 위치/크기. */
+/* ── Vitals 일관성: 모든 일반 페이지 상단에 와인 6px 가로 strip ─────────
+   sec-login (영상 배경) 만 제외. 모든 페이지가 동일 위치/크기.
+   사용자 피드백 (2026-05-08): 좌우 끝까지 연장 (block-container padding 영역까지),
+   최상단 (margin-top:0) 에 붙임. */
 .sc-page-section:not(.sc-login-section)::before {
   content: "" !important;
   display: block !important;
   height: 6px !important;
   width: auto !important;
   background: var(--primary) !important;
-  margin: 0 0 1.25rem 0 !important;
+  /* margin: top 0, 좌우 -padding 만큼 (block-container padding 영역까지 확장),
+     bottom 1rem 으로 다음 콘텐츠와 분리. */
+  margin: 0 -0.875rem 1rem !important;
 }
 /* sc-sec-head — 모든 페이지가 동일 margin/padding 보장 */
 .sc-page-section.is-active > [data-testid="stVerticalBlock"] > .sc-sec-head:first-of-type {
@@ -1052,16 +1082,23 @@ body.is-login-active .vitals-app section[data-testid="stSidebar"] {
 
 .sc-login-section { padding: 0; background: transparent; }
 
-/* Stage = self-contained box (not viewport-fixed) so video stays
-   within this section while user scrolls other sections. */
+/* Stage = 사용자 피드백 (2026-05-08): 영상 브라우저 화면 전체 꼉 채움.
+   · width 100vw + height 100vh (브라우저 viewport 전체)
+   · radius/shadow 제거 (full bleed)
+   · 좌측 시작점이 사이드바 영역 자연 hide 라 100vw OK */
 .sc-login-stage {
   position: relative;
-  width: 100%;
-  min-height: 720px;
-  border-radius: 14px;
+  width: 100vw;
+  min-height: 100vh;
+  height: 100vh;
+  border-radius: 0;
   overflow: hidden;
   background: #000;
-  box-shadow: 0 16px 40px rgba(0,0,0,.18);
+  box-shadow: none;
+  /* sec-login 안에서 negative margin 으로 모든 padding 무시하고 풀폭 */
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  margin-top: 0;
 }
 
 .sc-login-video {
@@ -1453,13 +1490,22 @@ body.is-login-active .vitals-app section[data-testid="stSidebar"] {
   margin: -1.25rem -1.25rem 1.25rem;
 }
 /* (override prior `.vit-page-head` def — flat, bottom black underline only) */
+/* 사용자 피드백 (2026-05-08): 검은선 Y 좌표 = sidebar header 회색선 Y 일치.
+   · stSidebarHeader 가 height 56px 이라 vit-page-head 도 동일 56px.
+   · vit-top-strip (6px) 다음 시작이라 height = 50px (56 - 6).
+   · flex center 로 텍스트 vertical 가운데. */
 .vit-page-head {
   background: transparent;
   border: 0;
   border-bottom: 1px solid var(--ink-body);
   border-radius: 0;
-  padding: 0 0 0.625rem;
+  padding: 0;
   margin: 0 0 1.125rem;
+  height: 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-sizing: border-box;
 }
 .vit-page-head .eyebrow {
   font-family: var(--font-mono);
@@ -4474,3 +4520,86 @@ html body .vit-modal-backdrop[hidden] {
 /* ─── Focus trap visual hint for modals ────────────────────────── */
 .vit-modal-backdrop:focus-within .vit-modal { box-shadow:
   0 0 0 2px var(--primary), 0 30px 80px -20px rgba(0,0,0,0.55); }
+
+/* ─── MTBA Detail 공정/알람 팝업 — 메모 input + 우측 아이콘 영역
+       (사용자 피드백 2026-05-08) ────────────────────────────────── */
+.vit-modal__detail-row {
+  display: grid;
+  grid-template-columns: 1fr 168px;  /* 좌: KV / 우: memo icons (3 × 56) */
+  gap: 16px;
+  align-items: start;
+}
+.vit-modal__detail-kv { margin: 0; }
+.vit-modal__memo-icons {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  overflow-x: auto;        /* 3개 초과 시 가로 스크롤 */
+  padding: 4px 0;
+  border-left: 1px dashed var(--border);
+  padding-left: 12px;
+  min-height: 56px;
+  align-items: flex-start;
+  scrollbar-width: thin;
+}
+.vit-modal__memo-icons::-webkit-scrollbar { height: 6px; }
+.vit-modal__memo-icons::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+}
+.vit-modal__memo-icon {
+  flex: 0 0 48px;
+  width: 48px;
+  height: 48px;
+  background: var(--primary-tint);
+  color: var(--primary-dark);
+  border: 1px solid var(--primary);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  position: relative;
+  transition: background 120ms;
+}
+.vit-modal__memo-icon:hover { background: var(--primary); color: #FFFFFF; }
+.vit-modal__memo-icon svg { width: 22px; height: 22px; stroke-width: 1.7; }
+.vit-modal__memo-icon__tooltip {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  right: 0;
+  min-width: 200px;
+  max-width: 280px;
+  padding: 8px 10px;
+  background: var(--ink-body);
+  color: #FFFFFF;
+  font-size: 11px;
+  font-family: var(--font-body);
+  white-space: pre-wrap;
+  word-break: break-word;
+  z-index: 10;
+  display: none;
+  text-align: left;
+}
+.vit-modal__memo-icon:hover .vit-modal__memo-icon__tooltip { display: block; }
+
+/* 메모 input + 추가 버튼 같은 row */
+.vit-modal__memo-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1 1 auto;
+}
+.vit-modal__memo-input {
+  flex: 1 1 auto;
+  height: 36px;
+  padding: 0 12px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--ink-body);
+  transition: border-color 120ms;
+}
+.vit-modal__memo-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px var(--primary-tint);
+}
