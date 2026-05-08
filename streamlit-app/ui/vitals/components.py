@@ -57,7 +57,7 @@ def render_topnav(active: str = "home", show_brand: bool = True) -> None:
             f'<div class="vit-topnav__brand">'
             f'  <img src="{LOGO_GRAY_DATA_URI}" alt="LG Innotek" class="vit-topnav__logo" />'
             f'  <span class="vit-topnav__divider"></span>'
-            f'  <span class="vit-topnav__team">생산혁신센터 · Max Capa 팀</span>'
+            f'  <span class="vit-topnav__team">생산혁신센터 · Max Capa TDR</span>'
             f'</div>'
         )
 

@@ -152,10 +152,19 @@ html, body {{
 
 /* Streamlit 사이드바 — 우리 디자인 톤으로 스타일 (기본 표시, 페이지 이동에 사용)
    로그인 페이지는 ui/login_ui/styles.py 에서 별도 hide 함. */
+/* 사용자 피드백 (2026-05-08): 사이드바 user profile 항상 최하단 sticky.
+   stSidebar 의 column flex 안에서 stSidebarNav 가 전체 차지, user profile
+   영역 (vit-sidebar-user) 이 margin-top:auto 로 push down. */
 [data-testid="stSidebar"],
 section[data-testid="stSidebar"] {{
     background: var(--card-bg) !important;
     border-right: 1px solid var(--border) !important;
+    display: flex !important;
+    flex-direction: column !important;
+}}
+[data-testid="stSidebar"] [data-testid="stSidebarUserContent"],
+[data-testid="stSidebar"] [data-testid="stSidebarNav"] {{
+    flex: 1 1 auto !important;
 }}
 [data-testid="stSidebar"] [data-testid="stSidebarNav"] a,
 [data-testid="stSidebar"] [data-testid="stSidebarNavLink"] {{
@@ -165,6 +174,66 @@ section[data-testid="stSidebar"] {{
     border-radius: var(--radius) !important;
     transition: background .12s, color .12s !important;
 }}
+/* Vitals 사이드바 user profile + contact (apply_vitals_theme 가 inject) */
+.vit-sidebar-user {{
+    margin-top: auto;
+    padding: 12px 16px;
+    border-top: 1px solid var(--border);
+    background: var(--card-bg);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}}
+.vit-sidebar-user__avatar {{
+    width: 32px; height: 32px;
+    flex: 0 0 auto;
+    background: var(--primary);
+    color: #FFFFFF;
+    display: grid;
+    place-items: center;
+    font-family: 'LG EI Headline', 'LG EI Text', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+}}
+.vit-sidebar-user__body {{
+    flex: 1 1 auto;
+    min-width: 0;
+}}
+.vit-sidebar-user__name {{
+    font-family: 'LG EI Headline', 'LG EI Text', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink-body);
+    line-height: 1.2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}}
+.vit-sidebar-user__email {{
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--ink-muted);
+    line-height: 1.2;
+    margin-top: 2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}}
+.vit-sidebar-user-contact {{
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-muted);
+    text-decoration: none;
+    border-top: 1px dashed var(--border);
+    transition: color 120ms;
+}}
+.vit-sidebar-user-contact:hover {{ color: var(--primary); }}
+.vit-sidebar-user-contact svg {{ width: 13px; height: 13px; flex: 0 0 auto; }}
 [data-testid="stSidebar"] [data-testid="stSidebarNav"] a:hover,
 [data-testid="stSidebar"] [data-testid="stSidebarNavLink"]:hover {{
     background: var(--soft) !important;
@@ -182,11 +251,18 @@ section[data-testid="stSidebar"] {{
 /* Streamlit 기본 푸터 hide */
 footer {{ visibility: hidden; }}
 
-/* Streamlit 컨테이너 폭/패딩 */
+/* Streamlit 컨테이너 폭/패딩 — 사용자 피드백 (2026-05-08):
+   · 16:9 모니터 최적화 — 상하 여백 최소.
+   · 좌우 여백 = patch note 패턴 (1rem).
+   · max-width 1640 → 100% (16:9 풀폭 활용).
+   이전: padding-top 1.6rem, padding-bottom 1.2rem.
+   지금: padding-top 0.5rem, padding-bottom 0.5rem (= preview --sc-pad-y). */
 .block-container {{
-    padding-top: 1.6rem !important;
-    padding-bottom: 1.2rem !important;
-    max-width: 1640px !important;
+    padding-top: 0.5rem !important;
+    padding-bottom: 0.5rem !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+    max-width: 100% !important;
 }}
 
 /* Headings ------------------------------------------------------- */
@@ -430,15 +506,98 @@ def apply_vitals_theme(theme: Optional[Literal["light", "dark", "auto"]] = None)
     #    이게 있어야 페이지 nav 후에도 dark 가 유지된다.
     st.markdown(_theme_attr_script(current), unsafe_allow_html=True)
 
-    # 4) 사이드바에 테마 토글 자동 부착. Streamlit 위젯은 매 rerun 마다
-    #    재선언되어야 하므로 sentinel 캐싱 없이 항상 호출. 사이드바가 없는
-    #    페이지 (예: login.py 는 apply_vitals_theme 자체를 부르지 않음) 는
-    #    영향 없음.
+    # 4) 사이드바에 테마 토글 + user profile + 문의 메일 자동 부착.
+    #    Streamlit 위젯은 매 rerun 마다 재선언되어야 하므로 sentinel 캐싱 없이
+    #    항상 호출. 사이드바가 없는 페이지 (예: login.py 는 apply_vitals_theme
+    #    자체를 부르지 않음) 는 영향 없음.
     try:
         render_theme_toggle(location="sidebar")
     except Exception:
-        # 사이드바 컨텍스트 이슈 시 silent — 페이지가 직접 호출하도록 위임
         pass
+    try:
+        render_sidebar_user_profile()
+    except Exception:
+        pass
+
+
+def render_lang_picker(location: str = "sidebar") -> None:
+    """Vitals 언어 선택기 — 사용자 피드백 (2026-05-08): 실 기능 구현.
+
+    7 언어 (KO/EN/VI/PL/ID/ES/ZH) selectbox → st.session_state['vitals.lang']
+    persist + 페이지 핵심 텍스트 swap (각 페이지가 _t() 헬퍼 사용 시).
+
+    현재 구현은 demo — 사이드바 nav link 라벨은 Streamlit 자동 생성이라
+    직접 swap 불가. 페이지 본문의 명시적 _t('home') 같은 호출처만 swap.
+    """
+    container = st.sidebar if location == "sidebar" else st
+    options = [("KO", "한국어"), ("EN", "English"), ("VI", "Tiếng Việt"),
+               ("PL", "Polski"), ("ID", "Bahasa Indonesia"),
+               ("ES", "Español"), ("ZH", "中文")]
+    current = st.session_state.get("vitals.lang", "KO")
+    labels = [f"{code} · {name}" for code, name in options]
+    codes = [code for code, _ in options]
+    try:
+        idx = codes.index(current)
+    except ValueError:
+        idx = 0
+    picked_label = container.selectbox(
+        "Lang", labels, index=idx, key="_vit_lang_picker",
+        label_visibility="collapsed",
+    )
+    picked_code = picked_label.split(" · ")[0]
+    if picked_code != current:
+        st.session_state["vitals.lang"] = picked_code
+
+
+# 간단 i18n dictionary — 페이지 코드가 _t('key') 로 사용.
+_I18N_DICT = {
+    "KO": {"home": "Home", "settings": "설정", "contact": "문의 메일"},
+    "EN": {"home": "Home", "settings": "Settings", "contact": "Contact"},
+    "VI": {"home": "Trang chủ", "settings": "Cài đặt", "contact": "Liên hệ"},
+    "PL": {"home": "Główna", "settings": "Ustawienia", "contact": "Kontakt"},
+    "ID": {"home": "Beranda", "settings": "Pengaturan", "contact": "Kontak"},
+    "ES": {"home": "Inicio", "settings": "Ajustes", "contact": "Contacto"},
+    "ZH": {"home": "首页", "settings": "设置", "contact": "联系"},
+}
+
+
+def _t(key: str, default: Optional[str] = None) -> str:
+    """현재 lang 의 dict 에서 key 찾아 텍스트 반환. 미존재 시 default 또는 key 자체."""
+    code = st.session_state.get("vitals.lang", "KO")
+    return _I18N_DICT.get(code, {}).get(key, default if default is not None else key)
+
+
+def render_sidebar_user_profile() -> None:
+    """사이드바 최하단 user profile + 설정 + 문의 메일.
+
+    사용자 피드백 (2026-05-08):
+      · 항상 사이드바 최하단 sticky (CSS margin-top:auto in apply_vitals_theme).
+      · 설정 버튼 = 향후 settings_modal trigger (현재 toast 알림).
+      · 문의 메일 버튼 = mailto: link (이전 페이지 footer 의 sc-contact-box
+        에서 사이드바로 이동).
+    """
+    user_email = st.session_state.get("user_email") or st.session_state.get("user_id") or ""
+    user_name = st.session_state.get("user_name") or (user_email.split("@")[0] if user_email else "")
+    avatar = (user_name[:2] if user_name else (user_email[:2] if user_email else "??")).upper()
+
+    from html import escape as _e
+    st.sidebar.markdown(
+        f'<div class="vit-sidebar-user">'
+        f'  <div class="vit-sidebar-user__avatar">{_e(avatar)}</div>'
+        f'  <div class="vit-sidebar-user__body">'
+        f'    <div class="vit-sidebar-user__name">{_e(user_name or "Guest")}</div>'
+        f'    <div class="vit-sidebar-user__email">{_e(user_email or "—")}</div>'
+        f'  </div>'
+        f'</div>'
+        f'<a class="vit-sidebar-user-contact" href="mailto:max.capa@lginnotek.com">'
+        f'  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" '
+        f'       stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
+        f'    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>'
+        f'    <polyline points="22 6 12 13 2 6"/></svg>'
+        f'  <span>문의 메일 보내기</span>'
+        f'</a>',
+        unsafe_allow_html=True,
+    )
 
 
 def render_theme_toggle(location: str = "sidebar") -> None:

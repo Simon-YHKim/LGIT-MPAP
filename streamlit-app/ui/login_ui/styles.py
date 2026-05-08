@@ -73,9 +73,13 @@ def apply_global_styles():
 
         /* 상단 Streamlit 헤더와 겹치지 않도록 여백 */
         .block-container {
-            padding-top: 4.6rem !important;
+            /* 사용자 피드백 (2026-05-08): 로그인 좌우 분리 (4:3 → 16:9).
+               max-width 1380 → 100% 풀폭. padding 좌우 80px 로 spread. */
+            padding-top: 2.5rem !important;
             padding-bottom: 1.2rem !important;
-            max-width: 1380px !important;
+            padding-left: 80px !important;
+            padding-right: 80px !important;
+            max-width: 100% !important;
         }
 
         /* 상단 브랜드 */

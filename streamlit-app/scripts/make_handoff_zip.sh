@@ -93,7 +93,7 @@ DB 패스워드:
    streamlit-app/.streamlit/secrets.toml 에 설정되어 있음.
    코드의 fallback (!Q2w3e4r5t) 도 동일. PG 가 다른 비번 쓰면 둘 다 갱신.
 
-문의: 생산혁신센터 Max Capa 팀
+문의: 생산혁신센터 Max Capa TDR
 EOF
 
 # === zip 빌드 ===
