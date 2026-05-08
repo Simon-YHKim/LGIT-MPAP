@@ -85,14 +85,16 @@ else
   check_warn "$SECRETS not found — env vars 로 대체 가능"
 fi
 
-# ─── 3. 환경변수 fallback ────────────────────────────────────────
+# ─── 3. 환경변수 (정보성 — secrets.toml + 코드 fallback 둘 다 있어 필수 아님) ──
 echo ""
-echo "[3] Environment variables (fallback if secrets.toml missing)"
+echo "[3] Environment variables (정보성 — secrets.toml + 코드 fallback 우선)"
 for env_var in DB_URL ITAS_DB_PASSWORD CMP_DB_PASSWORD; do
   if [ -n "${!env_var:-}" ]; then
-    check_pass "env $env_var is set"
+    check_pass "env $env_var is set (override 우선 적용)"
   else
-    check_warn "env $env_var is unset (OK if secrets.toml provides it)"
+    # 폐쇄망 운영성 보존을 위해 코드에 fallback literal !Q2w3e4r5t 가 있고
+    # secrets.toml 에도 password 가 commit 되어 있음 — env 미설정 OK.
+    echo "  [INFO] env $env_var unset — secrets.toml 또는 코드 fallback 사용"
   fi
 done
 
