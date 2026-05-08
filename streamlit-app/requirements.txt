@@ -1,0 +1,51 @@
+# LG Innotek Vitals — Python 의존성 핀
+#
+# 회사 폐쇄망 사내 PC 셋업용. 새 PC 에서:
+#   python -m venv .venv
+#   source .venv/bin/activate          # macOS/Linux
+#   .venv\Scripts\activate             # Windows
+#   pip install -r streamlit-app/requirements.txt
+#
+# 버전 핀 정책:
+#   - Streamlit 1.55.x 강제 핀 (clone.css 의 32 data-testid selector 가 이 버전 기준)
+#   - 다른 패키지는 minor 호환 (~=) 으로 약간 여유. 안정성 우선.
+#
+# 갱신 시 주의:
+#   - Streamlit upgrade 시 verify_dark_mode_tokens.py + 페이지 시각 재검증 필수.
+#   - sqlalchemy / psycopg2 upgrade 는 db.py + tracking.py + ETL 셋 모두 smoke test.
+# ────────────────────────────────────────────────────────────────────
+
+# === Core: Streamlit 본체 (버전 핀 강제) ===
+streamlit==1.55.0
+
+# === DB ===
+SQLAlchemy>=2.0,<3.0
+psycopg2-binary>=2.9,<3.0
+
+# === 데이터 처리 ===
+pandas>=2.0,<3.0
+numpy>=1.24,<3.0
+
+# === 시각화 ===
+plotly>=5.17,<6.0
+matplotlib>=3.7,<4.0
+
+# === Streamlit 확장 ===
+streamlit-aggrid>=0.3.4,<2.0    # 3_MTBA / 4_Detail 의 데이터 그리드
+streamlit-extras>=0.3,<1.0      # 일부 utility (현재 직접 사용은 적음)
+
+# === 인증 / 보안 ===
+bcrypt>=4.0,<5.0                # auth_guard 의 비밀번호 해싱
+
+# === 파일·날짜 처리 ===
+python-dateutil>=2.8,<3.0
+openpyxl>=3.1,<4.0              # MTBA Master Excel 읽기 (xlsx)
+Pillow>=10.0                    # 알람 이미지 처리
+tomli>=2.0; python_version < "3.11"   # py<3.11 fallback. 3.11+ 는 std tomllib 사용
+
+# === HTTP ===
+requests>=2.31,<3.0             # 6_MaxCapa_Chat 의 FastAPI:9000 호출
+
+# === Windows 전용 (선택) ===
+# pywin32>=306; sys_platform == "win32"   # 02.MTBA_Mailing.bat 가 Outlook COM 사용 시
+# 현재 win32com import 는 mtba_detail_view 에서 conditional — Linux/macOS 에서도 작동.
