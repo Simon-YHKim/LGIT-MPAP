@@ -3,41 +3,18 @@ import time
 import streamlit as st
 import psycopg2
 from psycopg2.extras import Json
-from sqlalchemy import create_engine
-from sqlalchemy.pool import QueuePool
 
 # ==================================================
-# DB 연결 (auth DB — 분석/세션/이벤트 로그 전용)
+# DB 연결
 # ==================================================
-# PERF: analytics call 마다 새 psycopg2.connect 가 일어나면
-# Streamlit 멀티페이지 + JS flush_ms=4000 환경에서 PG max_connections 고갈.
-# QueuePool 기반 SQLAlchemy 엔진을 @st.cache_resource 로 워커-안전 싱글톤화하고,
-# raw_connection() 으로 기존 psycopg2 SQL 문법 (%s placeholders) 호환 유지.
-@st.cache_resource(show_spinner=False)
-def _get_tracking_engine():
-    s = st.secrets["db"]
-    url = (
-        f"postgresql+psycopg2://{s['user']}:{s['password']}"
-        f"@{s['host']}:{s['port']}/{s['name']}"
-    )
-    return create_engine(
-        url,
-        poolclass=QueuePool,
-        pool_size=5,
-        max_overflow=10,
-        pool_pre_ping=True,
-        pool_recycle=1800,
-        future=True,
-    )
-
-
 def get_conn():
-    """Pool 에서 raw psycopg2 connection 을 빌려옴. close() 호출 시 pool 로 반환.
-
-    호출자는 기존과 똑같이 conn.cursor() / conn.commit() / conn.close() 만 쓰면 됨 —
-    내부적으로 SQLAlchemy 가 connection 을 재사용한다.
-    """
-    return _get_tracking_engine().raw_connection()
+    return psycopg2.connect(
+        host=st.secrets["db"]["host"],
+        dbname=st.secrets["db"]["name"],
+        user=st.secrets["db"]["user"],
+        password=st.secrets["db"]["password"],
+        port=st.secrets["db"]["port"],
+    )
 
 
 # ==================================================

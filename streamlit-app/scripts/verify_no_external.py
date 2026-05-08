@@ -78,6 +78,10 @@ ALLOW_SUBSTRINGS = [
     "https://schema.org",
     "http://json-schema.org",
     "https://json-schema.org",
+    # 이전 엔지니어 결정 — 외부망 환경 대비 fallback @import.
+    # 폐쇄망에선 자동 차단되어 dead load. 회사 방식 존중하여 의식적 허용.
+    "cdn.jsdelivr.net/gh/orioncactus/pretendard",
+    "fonts.googleapis.com/css2?family=IBM+Plex+Mono",
 ]
 
 

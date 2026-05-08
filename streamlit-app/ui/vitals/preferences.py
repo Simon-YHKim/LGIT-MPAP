@@ -6,7 +6,7 @@ Schema (lazy-created on first call):
         user_id    TEXT PRIMARY KEY,
         theme      TEXT,
         locale     TEXT,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        updated_at TIMESTAMP DEFAULT NOW()
     )
 
 All queries are parameterized via SQLAlchemy text() — no string interpolation.
@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS user_preferences (
     user_id    TEXT PRIMARY KEY,
     theme      TEXT,
     locale     TEXT,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    updated_at TIMESTAMP DEFAULT NOW()
 )
 """
 
@@ -88,10 +88,10 @@ def save_user_theme_pref(user_id: str, theme: str) -> bool:
                 text(
                     """
                     INSERT INTO user_preferences (user_id, theme, updated_at)
-                    VALUES (:uid, :theme, CURRENT_TIMESTAMP)
+                    VALUES (:uid, :theme, NOW())
                     ON CONFLICT (user_id) DO UPDATE
                     SET theme = EXCLUDED.theme,
-                        updated_at = CURRENT_TIMESTAMP
+                        updated_at = NOW()
                     """
                 ),
                 {"uid": user_id, "theme": theme},
@@ -129,10 +129,10 @@ def save_user_locale_pref(user_id: str, locale: str) -> bool:
                 text(
                     """
                     INSERT INTO user_preferences (user_id, locale, updated_at)
-                    VALUES (:uid, :locale, CURRENT_TIMESTAMP)
+                    VALUES (:uid, :locale, NOW())
                     ON CONFLICT (user_id) DO UPDATE
                     SET locale = EXCLUDED.locale,
-                        updated_at = CURRENT_TIMESTAMP
+                        updated_at = NOW()
                     """
                 ),
                 {"uid": user_id, "locale": locale},
