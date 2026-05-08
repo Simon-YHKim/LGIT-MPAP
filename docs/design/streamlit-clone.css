@@ -2439,6 +2439,21 @@ body.is-login-active .vitals-app section[data-testid="stSidebar"] {
   text-transform: uppercase;
   white-space: nowrap;
 }
+/* Vitals wordmark — 사용자 피드백 (2026-05-08) 으로 brand__team (광학 솔루션 ·
+   Max Capa 부제) 대신 'Vitals.' wordmark 표시. LG EI Headline + wine dot. */
+.sc-login-section .brand__wordmark {
+  font-family: 'LG EI Headline', 'LG EI Text', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: rgba(255, 255, 255, 0.96);
+  line-height: 1;
+  white-space: nowrap;
+}
+.sc-login-section .brand__dot {
+  color: var(--primary, #A50034);
+  margin-left: 0.02em;
+}
 
 /* lang dropdown (KO ▾ → 7-language menu) ------------------------- */
 .sc-login-section .lang { position: relative; }
