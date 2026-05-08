@@ -174,10 +174,12 @@ section[data-testid="stSidebar"] {{
     border-radius: var(--radius) !important;
     transition: background .12s, color .12s !important;
 }}
-/* Vitals 사이드바 user profile + contact (apply_vitals_theme 가 inject) */
+/* Vitals 사이드바 user profile + contact (apply_vitals_theme 가 inject)
+   사용자 피드백 (2026-05-08, 재): 문의 메일과 user profile 을 한 덩어리로
+   붙임 → border 제거 + 같은 background. */
 .vit-sidebar-user {{
     margin-top: auto;
-    padding: 12px 16px;
+    padding: 10px 16px 4px;
     border-top: 1px solid var(--border);
     background: var(--card-bg);
     display: flex;
@@ -223,13 +225,15 @@ section[data-testid="stSidebar"] {{
 .vit-sidebar-user-contact {{
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 6px;
-    padding: 8px 16px;
+    padding: 4px 16px 10px;
     font-family: var(--font-mono);
     font-size: 11px;
     color: var(--ink-muted);
     text-decoration: none;
-    border-top: 1px dashed var(--border);
+    border-top: 0;
+    background: var(--card-bg);
     transition: color 120ms;
 }}
 .vit-sidebar-user-contact:hover {{ color: var(--primary); }}

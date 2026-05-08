@@ -181,14 +181,19 @@ body.is-login-active .vitals-app section[data-testid="stSidebar"] {
   height: 14px;
   flex: 0 0 auto;
 }
-/* 사용자 피드백 (2026-05-08): 문의 메일 = user profile 위 + 중앙정렬 variant */
+/* 사용자 피드백 (2026-05-08): 문의 메일 = user profile 와 attach (한 덩어리).
+   같은 soft bg + 상단 border 만 + margin-top:auto 로 sticky 그룹의 시작점. */
 .sc-sidebar-user-contact--centered {
   justify-content: center;
-  border-top: 0;
-  border-bottom: 1px dashed var(--border);
-  margin-top: 0;
-  margin-bottom: 8px;
-  padding: 10px 12px;
+  border-top: 1px solid var(--border);
+  border-bottom: 0;
+  margin-top: auto;
+  margin-bottom: 0;
+  padding: 10px 12px 6px;
+  background: var(--soft);
+  position: sticky;
+  bottom: 56px;
+  z-index: 5;
 }
 
 [data-testid="stSidebar"] [data-testid="stSidebarNavLink"] {
@@ -776,7 +781,7 @@ body.is-login-active .vitals-app section[data-testid="stSidebar"] {
 }
 
 .vit-page-hero {
-  background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+  background: var(--primary);
   color: #fff;
   border-radius: var(--sc-radius-lg);
   padding: 1.75rem 1.5rem 1.375rem;
@@ -823,9 +828,9 @@ body.is-login-active .vitals-app section[data-testid="stSidebar"] {
 .vit-mode-bar { padding: 0.25rem; background: var(--soft); border-radius: var(--sc-radius); width: fit-content; display: inline-flex; gap: 0.25rem; }
 
 /* worst/best card variants */
-.sc-card-bad  { border-left: 4px solid var(--status-bad);  background: linear-gradient(180deg, #FDECEF 0%, var(--card-bg) 60%); }
-.sc-card-warn { border-left: 4px solid var(--status-warn); background: linear-gradient(180deg, #FAF1DD 0%, var(--card-bg) 60%); }
-.sc-card-good { border-left: 4px solid var(--status-good); background: linear-gradient(180deg, #E6F4EA 0%, var(--card-bg) 60%); }
+.sc-card-bad  { border-left: 4px solid var(--status-bad);  background: var(--status-bad-tint); }
+.sc-card-warn { border-left: 4px solid var(--status-warn); background: var(--status-warn-tint); }
+.sc-card-good { border-left: 4px solid var(--status-good); background: var(--status-good-tint); }
 .sc-card-bad  [data-testid="stMetricValue"] { color: var(--status-bad); }
 .sc-card-warn [data-testid="stMetricValue"] { color: var(--status-warn); }
 .sc-card-good [data-testid="stMetricValue"] { color: var(--status-good); }
@@ -1082,6 +1087,29 @@ body.is-login-active .vitals-app section[data-testid="stSidebar"] {
 
 .sc-login-section { padding: 0; background: transparent; }
 
+/* 사용자 피드백 (2026-05-08, 재): login 화면은 영상이 viewport 풀 — block-container
+   padding 까지 무력화해야 위·아래 여백 0. body 도 overflow:hidden 으로 스크롤 차단.
+   사이드바도 hide → 100vw / 100vh 정확히 viewport 사이즈. */
+.vitals-app:has(.sc-login-section.is-active) > [data-testid="stMain"] > [data-testid="block-container"],
+.vitals-app:has(.sc-login-section.is-active) > .main > .block-container,
+.vitals-app:has(.sc-login-section.is-active) > [data-testid="block-container"],
+.vitals-app:has(.sc-login-section.is-active) > .main {
+  padding: 0 !important;
+  max-width: none !important;
+}
+.vitals-app:has(.sc-login-section.is-active) [data-testid="stSidebar"] {
+  display: none !important;
+}
+.vitals-app:has(.sc-login-section.is-active) {
+  overflow: hidden !important;
+}
+html:has(.sc-login-section.is-active),
+body:has(.sc-login-section.is-active) {
+  overflow: hidden !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
 /* Stage = 사용자 피드백 (2026-05-08): 영상 브라우저 화면 전체 꼉 채움.
    · width 100vw + height 100vh (브라우저 viewport 전체)
    · radius/shadow 제거 (full bleed)
@@ -1131,15 +1159,20 @@ body.is-login-active .vitals-app section[data-testid="stSidebar"] {
 }
 
 .sc-login-app {
-  position: relative;
+  position: absolute;
+  inset: 0;
   z-index: 3;
   background: transparent !important;
-  min-height: 720px;
+  min-height: 0;
+  height: 100%;
   color: #fff;
   /* nested data-testid="stApp" — 글로벌 .vitals-app[data-testid="stApp"]
      셀렉터는 .vitals-app 클래스가 있는 root 만 매칭하므로 여기는 안전.
-     자체 단일 컬럼 레이아웃으로 sidebar grid 영향 받지 않음. */
+     자체 단일 컬럼 레이아웃으로 sidebar grid 영향 받지 않음.
+     사용자 피드백 (2026-05-08, 재): 영상이 viewport 풀 — content 도 absolute 로
+     stage 전체에 채워지게 (grid 가 그 안에서 분배). */
   display: block;
+  overflow: hidden;
 }
 .sc-login-app > [data-testid="stMain"] { display: block; min-width: 0; }
 .sc-login-header { background: transparent !important; height: 0 !important; }
@@ -2012,7 +2045,7 @@ body.is-login-active .vitals-app section[data-testid="stSidebar"] {
 }
 .sc-aggrid thead th {
   position: sticky; top: 0;
-  background: linear-gradient(180deg, #FBEEF2 0%, #F4DCE3 100%);
+  background: var(--primary-tint, #F8E5EC);
   color: var(--primary-dark);
   font-family: var(--font-mono);
   font-size: 10.5px;
@@ -2112,7 +2145,7 @@ body.is-login-active .vitals-app section[data-testid="stSidebar"] {
 
 /* ---- Page banner (wine gradient hero) ------------------------------ */
 .sc-page-banner {
-  background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+  background: var(--primary);
   color: #fff;
   border-radius: 12px;
   padding: 1.75rem 1.5rem 1.25rem;
@@ -2372,9 +2405,9 @@ body.is-login-active .vitals-app section[data-testid="stSidebar"] {
   border: 1px solid var(--border);
   position: relative;
 }
-.sc-proc-card.is-bad  { background: linear-gradient(180deg, #FDECEF 0%, var(--card-bg) 60%); border-left: 4px solid var(--status-bad); }
-.sc-proc-card.is-warn { background: linear-gradient(180deg, #FAF1DD 0%, var(--card-bg) 60%); border-left: 4px solid var(--status-warn); }
-.sc-proc-card.is-good { background: linear-gradient(180deg, #E6F4EA 0%, var(--card-bg) 60%); border-left: 4px solid var(--status-good); }
+.sc-proc-card.is-bad  { background: var(--status-bad-tint); border-left: 4px solid var(--status-bad); }
+.sc-proc-card.is-warn { background: var(--status-warn-tint); border-left: 4px solid var(--status-warn); }
+.sc-proc-card.is-good { background: var(--status-good-tint); border-left: 4px solid var(--status-good); }
 .sc-proc-card__rank {
   font-family: var(--font-mono);
   font-size: 10px;
@@ -2509,15 +2542,20 @@ body.is-login-active .vitals-app section[data-testid="stSidebar"] {
   --panel-border-dark: rgba(255, 255, 255, 0.08);
 }
 
-/* shell — 3 row grid (brand / main / blank) ----------------------- */
+/* shell — 3 row grid (brand / main / blank) -----------------------
+   사용자 피드백 (2026-05-08, 재): 영상이 풀 — shell 도 stage 100% 차지,
+   min-height 720px 제거 (스크롤 유발), padding 줄임. */
 .sc-login-section .sc-login-shell {
   position: relative;
   z-index: 3;
-  min-height: 720px;
+  height: 100%;
+  min-height: 0;
   display: grid;
   grid-template-rows: auto 1fr;
-  gap: 28px;
-  padding: 4px 4px 8px;
+  gap: 20px;
+  padding: 12px 12px 16px;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 /* brand row + dropdown lang switcher ----------------------------- */
@@ -4316,12 +4354,12 @@ table[data-mtba-summary] input[type="checkbox"] { accent-color: var(--primary); 
    Sidebar user profile + 설정 버튼 (footer)
    ============================================================================ */
 .sc-sidebar-user {
-  margin-top: auto;
+  margin-top: 0;
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 12px 1rem 14px;
-  border-top: 1px solid var(--border);
+  padding: 8px 1rem 12px;
+  border-top: 0;
   background: var(--soft);
   /* 사이드바 안에서 항상 하단 sticky — 스크롤 시에도 보임 */
   position: sticky;

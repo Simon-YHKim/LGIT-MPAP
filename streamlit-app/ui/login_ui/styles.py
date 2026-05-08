@@ -71,12 +71,20 @@ def apply_global_styles():
             color: var(--on-dark);
         }
 
-        /* 상단 Streamlit 헤더와 겹치지 않도록 여백 */
+        /* 상단 Streamlit 헤더와 겹치지 않도록 여백
+           사용자 피드백 (2026-05-08, 재): 영상이 viewport 풀 — 위·아래 여백
+           최소화 + 스크롤 차단. max-width 100% 유지. */
+        html, body { overflow: hidden !important; }
+        [data-testid="stAppViewContainer"] {
+            min-height: 100vh !important;
+            height: 100vh !important;
+            overflow: hidden !important;
+        }
         .block-container {
             /* 사용자 피드백 (2026-05-08): 로그인 좌우 분리 (4:3 → 16:9).
                max-width 1380 → 100% 풀폭. padding 좌우 80px 로 spread. */
-            padding-top: 2.5rem !important;
-            padding-bottom: 1.2rem !important;
+            padding-top: 0.75rem !important;
+            padding-bottom: 0.5rem !important;
             padding-left: 80px !important;
             padding-right: 80px !important;
             max-width: 100% !important;
