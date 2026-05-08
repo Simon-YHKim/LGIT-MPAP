@@ -242,11 +242,11 @@ def achievement_color(v):
     if pd.isna(v):
         return '#ffffff'
     if v >= 1.00:
-        return '#dfe8f6'
+        return '#F7F8FA'
     elif v >= 0.95:
-        return '#efe5cc'
+        return '#FAF1DD'
     else:
-        return '#f2d7df'
+        return '#F8E5EC'
 
 def apply_common_css():
     css = """
@@ -274,7 +274,7 @@ def apply_common_css():
         --card-bg:      #FFFFFF;
         --surface-soft: var(--soft, #F1F3F5);
         --soft:         #F1F3F5;
-        --surface-muted:#EFF1F4;
+        --surface-muted:#F1F3F5;
         --line:         var(--border, #E5E7EB);
         --border:       #E5E7EB;
         --line-strong:  #CBD0D6;
@@ -302,7 +302,7 @@ def apply_common_css():
        페이지 단위로 override 하지 않음. */
 
     .stApp {
-        background: linear-gradient(180deg, #fcfdff 0%, #f7f9fc 100%);
+        background: linear-gradient(180deg, #FFFFFF 0%, #F7F8FA 100%);
         color: var(--ink);
     }
     .block-container {
@@ -380,7 +380,7 @@ def apply_common_css():
         padding: 14px 16px 10px 16px;
         border: 1px solid var(--line);
         border-radius: var(--radius);
-        background: linear-gradient(180deg, #ffffff 0%, #f9fbfd 100%);
+        background: linear-gradient(180deg, #ffffff 0%, #FFFFFF 100%);
         box-shadow: inset 0 1px 0 rgba(255,255,255,0.92);
         margin-bottom: 14px;
     }
@@ -389,7 +389,7 @@ def apply_common_css():
     .stMultiSelect [data-baseweb='tag'],
     div[data-baseweb='tag'],
     span[data-baseweb='tag'] {
-        background: linear-gradient(180deg, #ffffff 0%, #f8f9fb 100%) !important;
+        background: linear-gradient(180deg, #ffffff 0%, #F7F8FA 100%) !important;
         border: 1px solid var(--line) !important;
         color: var(--ink) !important;
         border-radius: 999px !important;
@@ -401,7 +401,7 @@ def apply_common_css():
     .stMultiSelect [data-baseweb='select'] > div,
     .stDateInput > div > div,
     .stTextInput > div > div > input {
-        background: linear-gradient(180deg, #ffffff 0%, #f9fbfd 100%) !important;
+        background: linear-gradient(180deg, #ffffff 0%, #FFFFFF 100%) !important;
         border: 1px solid var(--line) !important;
         border-radius: 12px !important;
         min-height: 42px !important;
@@ -446,12 +446,12 @@ def apply_common_css():
         padding-bottom: 8px !important;
     }
     div[role='option'][aria-selected='true'] {
-        background: #edf3fb !important;
+        background: #F7F8FA !important;
         color: var(--ink) !important;
         font-weight: 700 !important;
     }
     div[role='option']:hover {
-        background: #f5f7fb !important;
+        background: #F7F8FA !important;
     }
 
     .block-wrap {
@@ -465,7 +465,7 @@ def apply_common_css():
         margin-bottom: 22px;
     }
     .model-box {
-        background: linear-gradient(180deg, #f9fafc 0%, #eef2f7 100%);
+        background: linear-gradient(180deg, #F7F8FA 0%, #F1F3F5 100%);
         border: 1px solid var(--line);
         border-radius: 14px;
         min-height: 850px;
@@ -512,7 +512,7 @@ def apply_common_css():
     }
     .summary-table thead th,
     .worst-table thead th {
-        background: linear-gradient(180deg, #f8f9fb 0%, #eef2f6 100%);
+        background: linear-gradient(180deg, #F7F8FA 0%, #F1F3F5 100%);
         font-weight: 800;
         color: var(--ink);
     }
@@ -528,7 +528,7 @@ def apply_common_css():
     div[data-testid='stCaptionContainer'] p { color: var(--muted); }
 
     div[data-testid='stMetric'] {
-        background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+        background: linear-gradient(180deg, #ffffff 0%, #F7F8FA 100%);
         border: 1px solid var(--line);
         border-radius: 14px;
         padding: 10px 12px;
@@ -539,7 +539,7 @@ def apply_common_css():
     .stButton button {
         border-radius: 10px !important;
         border: 1px solid var(--line) !important;
-        background: linear-gradient(180deg, #ffffff 0%, #f7f9fc 100%) !important;
+        background: linear-gradient(180deg, #ffffff 0%, #F7F8FA 100%) !important;
         color: var(--ink) !important;
         font-weight: 700 !important;
     }
@@ -570,7 +570,7 @@ def apply_common_css():
         position: sticky;
         top: 0;
         z-index: 20;
-        background: linear-gradient(180deg, #f8f9fb 0%, #eef2f6 100%);
+        background: linear-gradient(180deg, #F7F8FA 0%, #F1F3F5 100%);
         font-weight: 800;
     }
     table.sticky-cmp th:first-child,
@@ -587,7 +587,7 @@ def apply_common_css():
     table.sticky-cmp thead .sticky-col-2,
     table.sticky-cmp thead .sticky-col-3 {
         z-index: 25;
-        background: linear-gradient(180deg, #f8f9fb 0%, #eef2f6 100%);
+        background: linear-gradient(180deg, #F7F8FA 0%, #F1F3F5 100%);
     }
     .col-model { min-width: 90px; max-width: 90px; width: 90px; }
     .col-factory { min-width: 120px; max-width: 120px; }
@@ -735,7 +735,7 @@ def make_line_chart(daily: pd.DataFrame, y_col: str, title: str, color: str):
     fp_kr = get_matplotlib_korean_fontprop()
 
     fig, ax = plt.subplots(figsize=(7.2, 2.9), facecolor='#ffffff')
-    ax.set_facecolor('#fbfbfc')
+    ax.set_facecolor('#FFFFFF')
     y = daily[y_col] * 100
     x = daily['날짜']
 
@@ -751,13 +751,13 @@ def make_line_chart(daily: pd.DataFrame, y_col: str, title: str, color: str):
     ax.yaxis.set_major_formatter(FuncFormatter(percent_axis_formatter))
     ax.grid(axis='y', linestyle='--', linewidth=0.7, alpha=0.22, color='#6b7280')
     ax.grid(axis='x', visible=False)
-    ax.tick_params(axis='x', labelsize=8, pad=6, colors='#5f6673')
-    ax.tick_params(axis='y', labelsize=8, colors='#5f6673')
+    ax.tick_params(axis='x', labelsize=8, pad=6, colors='#6B7280')
+    ax.tick_params(axis='y', labelsize=8, colors='#6B7280')
 
     for spine in ['top', 'right']:
         ax.spines[spine].set_visible(False)
-    ax.spines['left'].set_color('#d7dbe2')
-    ax.spines['bottom'].set_color('#d7dbe2')
+    ax.spines['left'].set_color('#E5E7EB')
+    ax.spines['bottom'].set_color('#E5E7EB')
 
     if fp_kr is not None:
         for lbl in ax.get_xticklabels():
@@ -768,7 +768,7 @@ def make_line_chart(daily: pd.DataFrame, y_col: str, title: str, color: str):
     for xi, yi in zip(x, y):
         if not pd.isna(yi):
             text_kwargs = dict(
-                ha='center', va='bottom', fontsize=7.2, color='#525866',
+                ha='center', va='bottom', fontsize=7.2, color='#6B7280',
                 bbox=dict(boxstyle='round,pad=0.18', fc='#ffffff', ec='none', alpha=0.85),
             )
             if fp_kr is not None:
@@ -1290,11 +1290,11 @@ def color_from_value(value):
     if pd.isna(value):
         return '#ffffff'
     if value >= 1.0:
-        return '#dfe8f6'
+        return '#F7F8FA'
     elif value >= 0.95:
-        return '#efe5cc'
+        return '#FAF1DD'
     else:
-        return '#f2d7df'
+        return '#F8E5EC'
 
 def render_frozen_html_table(value_df: pd.DataFrame, color_df: pd.DataFrame) -> str:
     meta_cols = {'__row_type', '__row_key', '__parent_key'}
@@ -1307,7 +1307,7 @@ def render_frozen_html_table(value_df: pd.DataFrame, color_df: pd.DataFrame) -> 
     .cmp-daily-wrap {
         max-height: 710px;
         overflow: auto;
-        border: 1px solid #d7dbe2;
+        border: 1px solid #E5E7EB;
         border-radius: 14px;
         background: #ffffff;
         box-shadow: 0 8px 24px rgba(31, 36, 48, 0.05);
@@ -1321,8 +1321,8 @@ def render_frozen_html_table(value_df: pd.DataFrame, color_df: pd.DataFrame) -> 
     }
     table.cmp-daily th,
     table.cmp-daily td {
-        border-right: 1px solid #d7dbe2;
-        border-bottom: 1px solid #d7dbe2;
+        border-right: 1px solid #E5E7EB;
+        border-bottom: 1px solid #E5E7EB;
         padding: 7px 10px;
         white-space: nowrap;
         text-align: center;
@@ -1331,13 +1331,13 @@ def render_frozen_html_table(value_df: pd.DataFrame, color_df: pd.DataFrame) -> 
         position: sticky;
         top: 0;
         z-index: 20;
-        background: linear-gradient(180deg, #f8f8fa 0%, #eef1f4 100%);
+        background: linear-gradient(180deg, #F7F8FA 0%, #F1F3F5 100%);
         font-weight: 800;
         color: #1f2430;
     }
     table.cmp-daily th:first-child,
-    table.cmp-daily td:first-child { border-left: 1px solid #d7dbe2; }
-    table.cmp-daily thead tr:first-child th { border-top: 1px solid #d7dbe2; }
+    table.cmp-daily td:first-child { border-left: 1px solid #E5E7EB; }
+    table.cmp-daily thead tr:first-child th { border-top: 1px solid #E5E7EB; }
     .cmp-sticky-1 { position: sticky; left: 0px; z-index: 12; background: #ffffff; }
     .cmp-sticky-2 { position: sticky; left: 96px; z-index: 12; background: #ffffff; }
     .cmp-sticky-3 { position: sticky; left: 216px; z-index: 12; background: #ffffff; }
@@ -1345,7 +1345,7 @@ def render_frozen_html_table(value_df: pd.DataFrame, color_df: pd.DataFrame) -> 
     table.cmp-daily thead .cmp-sticky-2,
     table.cmp-daily thead .cmp-sticky-3 {
         z-index: 25;
-        background: linear-gradient(180deg, #f8f8fa 0%, #eef1f4 100%);
+        background: linear-gradient(180deg, #F7F8FA 0%, #F1F3F5 100%);
     }
     .cmp-col-model { min-width: 96px; max-width: 96px; width: 96px; overflow: hidden; text-overflow: ellipsis; }
     .cmp-col-factory { min-width: 120px; max-width: 120px; width: 120px; }
@@ -1355,24 +1355,24 @@ def render_frozen_html_table(value_df: pd.DataFrame, color_df: pd.DataFrame) -> 
     .cmp-parent-row .cmp-col-process { font-weight: 800; cursor: pointer; color: #1f2430; }
     .cmp-parent-row:hover td { filter: brightness(0.985); }
     .cmp-child-row { display: none; }
-    .cmp-child-row td { background-color: #fbfcfe; color: #3f4653; }
-    .cmp-child-row .cmp-col-process { padding-left: 24px; font-weight: 600; color: #4b5563; }
+    .cmp-child-row td { background-color: #FFFFFF; color: #1F2430; }
+    .cmp-child-row .cmp-col-process { padding-left: 24px; font-weight: 600; color: #6B7280; }
     .tree-toggle {
         display: inline-flex;
         width: 18px;
         height: 18px;
         align-items: center;
         justify-content: center;
-        border: 1px solid #cfd5df;
+        border: 1px solid #CBD0D6;
         border-radius: 5px;
         margin-right: 6px;
         background: #ffffff;
         font-size: 11px;
-        color: #384455;
+        color: #1F2430;
         vertical-align: middle;
     }
     .tree-equipment-icon {
-        color: #8c84b8;
+        color: #9CA3AF;
         font-weight: 800;
         margin-right: 4px;
     }
