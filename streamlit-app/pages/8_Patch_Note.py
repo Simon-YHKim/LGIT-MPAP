@@ -171,7 +171,7 @@ def apply_board_styles():
         .board-top-strip {
             height: 6px;
             background: var(--primary, #A50034);
-            border-radius: 3px;
+            border-radius: 0;
             margin-bottom: 16px;
         }
 
@@ -197,7 +197,7 @@ def apply_board_styles():
             width: 100%;
             height: 100%;
             min-height: 620px;
-            border-radius: 12px;
+            border-radius: 0;
             background: var(--card-bg, #FFFFFF);
             border: 1px solid var(--border, #E5E7EB);
             box-shadow:
@@ -245,7 +245,7 @@ def apply_board_styles():
         .board-tag {
             display: inline-block;
             padding: 3px 8px;
-            border-radius: 6px;
+            border-radius: 0;
             font-size: 11px;
             font-weight: 700;
             margin-right: 8px;
@@ -278,7 +278,7 @@ def apply_board_styles():
         }
 
         div[data-testid="stButton"] > button {
-            border-radius: 8px !important;
+            border-radius: 0!important;
             border: 1px solid var(--border, #E5E7EB) !important;
             background: var(--card-bg, #FFFFFF) !important;
             color: var(--ink-body, #1F2430) !important;
@@ -316,7 +316,7 @@ def apply_board_styles():
         [data-testid="stExpander"] {
             background: var(--card-bg, #FFFFFF);
             border: 1px solid var(--border, #E5E7EB);
-            border-radius: 12px;
+            border-radius: 0;
         }
 
         [data-testid="stTextInput"] input,

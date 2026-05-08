@@ -330,7 +330,7 @@ def apply_common_css():
         background: var(--surface);
         border: 1px solid var(--line);
         border-top: 3px solid var(--accent-navy);
-        border-radius: 16px;
+        border-radius: 0;
         box-shadow: var(--shadow);
         padding: 18px 22px 16px 22px;
         margin-bottom: 18px;
@@ -379,7 +379,7 @@ def apply_common_css():
     .filter-box, .filter-panel {
         padding: 14px 16px 10px 16px;
         border: 1px solid var(--line);
-        border-radius: var(--radius);
+        border-radius: 0;
         background: linear-gradient(180deg, #ffffff 0%, #FFFFFF 100%);
         box-shadow: inset 0 1px 0 rgba(255,255,255,0.92);
         margin-bottom: 14px;
@@ -392,7 +392,7 @@ def apply_common_css():
         background: linear-gradient(180deg, #ffffff 0%, #F7F8FA 100%) !important;
         border: 1px solid var(--line) !important;
         color: var(--ink) !important;
-        border-radius: 999px !important;
+        border-radius: 0!important;
         box-shadow: 0 1px 3px rgba(31, 36, 48, 0.04) !important;
         padding-left: 2px !important;
         padding-right: 2px !important;
@@ -403,7 +403,7 @@ def apply_common_css():
     .stTextInput > div > div > input {
         background: linear-gradient(180deg, #ffffff 0%, #FFFFFF 100%) !important;
         border: 1px solid var(--line) !important;
-        border-radius: 12px !important;
+        border-radius: 0!important;
         min-height: 42px !important;
         box-shadow: 0 2px 8px rgba(31, 36, 48, 0.04) !important;
         transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
@@ -429,7 +429,7 @@ def apply_common_css():
         letter-spacing: -0.01em;
     }
     div[data-baseweb='popover'] {
-        border-radius: 14px !important;
+        border-radius: 0!important;
         overflow: hidden !important;
         border: 1px solid var(--line) !important;
         box-shadow: 0 14px 32px rgba(31, 36, 48, 0.10) !important;
@@ -440,7 +440,7 @@ def apply_common_css():
         background: #ffffff !important;
     }
     div[role='option'] {
-        border-radius: 10px !important;
+        border-radius: 0!important;
         margin: 2px 4px !important;
         padding-top: 8px !important;
         padding-bottom: 8px !important;
@@ -458,7 +458,7 @@ def apply_common_css():
         background: var(--surface);
         border: 1px solid var(--line);
         border-top: 3px solid var(--accent-navy);
-        border-radius: 16px;
+        border-radius: 0;
         box-shadow: var(--shadow);
         padding: 16px 16px 14px 16px;
         margin-top: 10px;
@@ -467,7 +467,7 @@ def apply_common_css():
     .model-box {
         background: linear-gradient(180deg, #F7F8FA 0%, #F1F3F5 100%);
         border: 1px solid var(--line);
-        border-radius: 14px;
+        border-radius: 0;
         min-height: 850px;
         display: flex;
         align-items: center;
@@ -489,7 +489,7 @@ def apply_common_css():
         font-size: 12px;
         table-layout: fixed;
         overflow: hidden;
-        border-radius: 12px;
+        border-radius: 0;
         border: 1px solid var(--line);
     }
     .summary-table th, .summary-table td,
@@ -530,14 +530,14 @@ def apply_common_css():
     div[data-testid='stMetric'] {
         background: linear-gradient(180deg, #ffffff 0%, #F7F8FA 100%);
         border: 1px solid var(--line);
-        border-radius: 14px;
+        border-radius: 0;
         padding: 10px 12px;
         box-shadow: var(--shadow);
     }
 
     .stDownloadButton button,
     .stButton button {
-        border-radius: 10px !important;
+        border-radius: 0!important;
         border: 1px solid var(--line) !important;
         background: linear-gradient(180deg, #ffffff 0%, #F7F8FA 100%) !important;
         color: var(--ink) !important;
@@ -548,7 +548,7 @@ def apply_common_css():
         max-height: 700px;
         overflow: auto;
         border: 1px solid var(--line);
-        border-radius: 14px;
+        border-radius: 0;
         background: #ffffff;
     }
     table.sticky-cmp {
@@ -643,7 +643,7 @@ def apply_common_css():
     .home-button-wrap button[kind="secondary"] {
         height: 34px !important;
         padding: 0 14px !important;
-        border-radius: 999px !important;
+        border-radius: 0!important;
         border: 1px solid var(--line-strong) !important;
         background: #ffffff !important;
         color: var(--ink) !important;
@@ -923,7 +923,7 @@ def render_worst5_interactive(worst_hist: pd.DataFrame, latest_week_label: str |
         for j, (m, w) in enumerate(all_week_labels, start=2):
             v = lookup.get((proc, m, w), np.nan)
             row_cols[j].markdown(
-                f"<div style='background:{achievement_color(v)};padding:4px 2px;border-radius:4px;text-align:center;'>{fmt_pct(v)}</div>",
+                f"<div style='background:{achievement_color(v)};padding:4px 2px;border-radius:0;text-align:center;'>{fmt_pct(v)}</div>",
                 unsafe_allow_html=True,
             )
 
@@ -1308,7 +1308,7 @@ def render_frozen_html_table(value_df: pd.DataFrame, color_df: pd.DataFrame) -> 
         max-height: 710px;
         overflow: auto;
         border: 1px solid #E5E7EB;
-        border-radius: 14px;
+        border-radius: 0;
         background: #ffffff;
         box-shadow: 0 8px 24px rgba(31, 36, 48, 0.05);
     }
@@ -1364,7 +1364,7 @@ def render_frozen_html_table(value_df: pd.DataFrame, color_df: pd.DataFrame) -> 
         align-items: center;
         justify-content: center;
         border: 1px solid #CBD0D6;
-        border-radius: 5px;
+        border-radius: 0;
         margin-right: 6px;
         background: #ffffff;
         font-size: 11px;

@@ -78,7 +78,7 @@ st.markdown(f"""
 .main-title {{
     background: linear-gradient(135deg, {PRIMARY_2} 0%, {PRIMARY} 100%);
     color: #fff;
-    border-radius: 12px;
+    border-radius: 0;
     padding: 40px 28px 24px 28px;
     box-shadow: 0 10px 24px rgba(109,16,40,.18);
     margin: 0 0 14px 0;
@@ -96,24 +96,24 @@ st.markdown(f"""
     font-size: 13px;
     color: rgba(255,255,255,.92);
 }}
-.soft-card {{ border:1px solid var(--border); border-radius: 12px; padding:12px 14px; background:rgba(255,255,255,.96); box-shadow:0 8px 18px rgba(109,16,40,.05); margin-bottom:10px; }}
+.soft-card {{ border:1px solid var(--border); border-radius: 0; padding:12px 14px; background:rgba(255,255,255,.96); box-shadow:0 8px 18px rgba(109,16,40,.05); margin-bottom:10px; }}
 .section-title {{ font-size:13px; font-weight:800; color:var(--primary); margin:0 0 8px 0; }}
 .small-muted {{ color:var(--sub); font-size:12px; }}
 .info-chip {{ display:inline-block; padding:6px 12px; border-radius:999px; background:var(--rose); color:var(--primary); font-size:12px; font-weight:800; margin-right:6px; margin-bottom:6px; border:1px solid var(--border); }}
 .team-badge {{ display:inline-block; padding:4px 10px; border-radius:999px; background:#fff; color:var(--primary); border:1px solid var(--border); font-size:12px; font-weight:800; margin-left:8px; }}
-.timeline-day {{ border:1px solid var(--border); border-radius: 12px; padding:14px 16px; background:rgba(255,255,255,.96); box-shadow:0 8px 18px rgba(109,16,40,.05); margin-bottom:12px; }}
+.timeline-day {{ border:1px solid var(--border); border-radius: 0; padding:14px 16px; background:rgba(255,255,255,.96); box-shadow:0 8px 18px rgba(109,16,40,.05); margin-bottom:12px; }}
 .timeline-day-header {{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:10px; }}
 .timeline-date {{ font-size:20px; font-weight:900; color:var(--primary); }}
 .timeline-stats {{ color:var(--sub); font-size:12px; }}
-.comment-card {{ border:1px solid var(--border); border-radius:18px; padding:12px 14px; background:var(--cardbg); margin-bottom:10px; box-shadow:0 4px 10px rgba(109,16,40,.04); }}
+.comment-card {{ border:1px solid var(--border); border-radius:0; padding:12px 14px; background:var(--cardbg); margin-bottom:10px; box-shadow:0 4px 10px rgba(109,16,40,.04); }}
 .comment-title {{ font-size:14px; font-weight:800; color:var(--primary); margin-bottom:6px; }}
 .comment-meta {{ color:var(--sub); font-size:12px; margin-bottom:8px; }}
-.comment-body {{ color:var(--text); font-size:13px; white-space:pre-wrap; line-height:1.5; background:#fff; border:1px solid #EFE4E8; border-radius:14px; padding:10px 12px; }}
+.comment-body {{ color:var(--text); font-size:13px; white-space:pre-wrap; line-height:1.5; background:#fff; border:1px solid #EFE4E8; border-radius:0; padding:10px 12px; }}
 .proc-card-head {{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:4px; }}
 .proc-card-title {{ font-size:16px; font-weight:900; color:var(--primary); }}
 .proc-card-sub {{ color:var(--sub); font-size:12px; }}
-div[data-baseweb="select"] > div, div[data-baseweb="input"] > div, .stDateInput > div > div, .stTextArea textarea {{ border-radius:16px !important; border:1px solid var(--border) !important; box-shadow:none !important; background:#fff !important; }}
-.stButton > button {{ border-radius:16px !important; border:1px solid var(--border) !important; min-height:2.5rem; }}
+div[data-baseweb="select"] > div, div[data-baseweb="input"] > div, .stDateInput > div > div, .stTextArea textarea {{ border-radius:0!important; border:1px solid var(--border) !important; box-shadow:none !important; background:#fff !important; }}
+.stButton > button {{ border-radius:0!important; border:1px solid var(--border) !important; min-height:2.5rem; }}
 button[kind="primary"] {{ background:linear-gradient(135deg,var(--primary) 0%, var(--primary2) 100%) !important; color:#fff !important; box-shadow:0 8px 16px rgba(109,16,40,.15) !important; }}
 </style>
 """, unsafe_allow_html=True)

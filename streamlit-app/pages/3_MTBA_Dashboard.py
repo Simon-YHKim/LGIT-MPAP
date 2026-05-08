@@ -90,7 +90,7 @@ PAGE_STYLE = f"""
     .page-banner {{
     background: linear-gradient(135deg, var(--primary-dark, {PRIMARY_2}) 0%, var(--primary, {PRIMARY}) 100%);
     color: #fff;
-    border-radius: 12px;
+    border-radius: 0;
     padding: 40px 28px 24px 28px;
     box-shadow: 0 10px 24px rgba(165,0,52,.18);
     margin: 0 0 14px 0;
@@ -102,16 +102,16 @@ PAGE_STYLE = f"""
 }}
     .page-subtitle {{ color: var(--ink-muted, {SUB}); font-size: 13px; margin: 4px 2px 18px 4px; }}
     .soft-card {{
-        background: var(--card-bg, {CARD}); border: 1px solid var(--border, {BORDER}); border-radius: 12px;
+        background: var(--card-bg, {CARD}); border: 1px solid var(--border, {BORDER}); border-radius: 0;
         padding: 14px 16px; box-shadow: 0 6px 18px rgba(109,16,40,.05);
     }}
     .section-title {{ font-size: 22px; font-weight: 800; color: var(--primary, {PRIMARY}); margin: 2px 0 8px 0; }}
     .muted-note {{ color: var(--ink-muted, {SUB}); font-size: 12px; }}
     div[data-testid="stMetric"] {{
-        background: var(--card-bg, {CARD}); border: 1px solid var(--border, {BORDER}); border-radius: 18px; padding: 10px 12px;
+        background: var(--card-bg, {CARD}); border: 1px solid var(--border, {BORDER}); border-radius: 0; padding: 10px 12px;
     }}
     div[data-testid="stExpander"] > details {{
-        background: var(--card-bg, {CARD}); border: 1px solid var(--border, {BORDER}); border-radius: 18px; overflow: hidden;
+        background: var(--card-bg, {CARD}); border: 1px solid var(--border, {BORDER}); border-radius: 0; overflow: hidden;
     }}
     div[data-testid="stExpander"] > details > summary {{
         background: linear-gradient(180deg, var(--primary-tint, {ROSE}), var(--card-bg, #FFFDFE)); color: var(--primary, {PRIMARY}); font-weight: 800;
@@ -686,7 +686,7 @@ def render_fast_dialog_close_button(button_text="팝업 닫기"):
         width:100%;
         height:46px;
         border:0;
-        border-radius:10px;
+        border-radius:0;
         background:#A50034;
         color:white;
         font-weight:800;
@@ -902,7 +902,7 @@ def render_alarm_top5_compare_grid(alarm_df, best_eq_name, worst_eq_name, panel_
     # Vitals 팔레트 정렬 — 구 분홍/파랑 잡색 제거. worst/best 는 wine-red 톤만 사용
     # (Vitals 는 monochrome accent — 파랑은 사용하지 않음).
     custom_css = {
-        ".ag-root-wrapper": {"border": "1px solid #E5E7EB !important", "border-radius": "20px !important", "overflow": "hidden !important"},
+        ".ag-root-wrapper": {"border": "1px solid #E5E7EB !important", "border-radius": "0 !important", "overflow": "hidden !important"},
         ".ag-header": {"background": "linear-gradient(180deg, #F8E5EC, #FFFFFF) !important"},
         ".ag-header-cell, .ag-header-group-cell": {"justify-content": "center !important", "text-align": "center !important", "font-size": "13px !important", "font-weight": "800 !important", "border-right": "1px solid #E5E7EB !important", "color": "#A50034 !important"},
         ".ag-cell": {"display": "flex !important", "align-items": "center !important", "justify-content": "center !important", "font-size": "12px !important", "font-weight": "700 !important", "color": "#1F2430 !important", "border-right": "1px solid #E5E7EB !important", "border-bottom": "1px solid #F1F3F5 !important"},
@@ -1069,7 +1069,7 @@ def render_signal_summary_card(summary_info: dict, process_name: str):
         }}
         .card {{
           border: 1px solid #d9d9d9;
-          border-radius: 10px;
+          border-radius: 0;
           padding: 14px 16px;
           min-height: 228px;
           background: #ffffff;
@@ -1208,7 +1208,7 @@ def render_best_worst_snapshot_card(snapshot_df: pd.DataFrame, process_name: str
         }}
         .card {{
           border: 1px solid #d9d9d9;
-          border-radius: 10px;
+          border-radius: 0;
           padding: 12px 12px 10px 12px;
           min-height: 198px;
           background: #ffffff;

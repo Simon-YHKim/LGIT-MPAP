@@ -337,7 +337,7 @@ def render_plan():
             padding-left: 4px;
         }
         .vit-chat-section__bar {
-            width:4px; height:20px; background: var(--primary); border-radius:2px;
+            width:4px; height:20px; background: var(--primary); border-radius:0;
         }
         .vit-chat-section__title {
             margin:0; font-family: var(--font-display, var(--font-body));

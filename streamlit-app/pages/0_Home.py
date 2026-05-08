@@ -157,7 +157,7 @@ def inject_css() -> None:
         .vit-cat-bar{
             width:4px; height:22px;
             background: var(--primary);
-            border-radius: 2px;
+            border-radius: 0;
             flex: 0 0 auto;
         }
         .vit-cat-title{
@@ -213,7 +213,7 @@ def inject_css() -> None:
             margin:0 !important;
             background:var(--card-bg) !important;
             border:1px solid var(--border) !important;
-            border-radius:10px !important;
+            border-radius:0!important;
             box-shadow:none !important;
             overflow:hidden !important;
             cursor:pointer !important;
@@ -281,7 +281,7 @@ def inject_css() -> None:
             top:20px;
             width:36px;
             height:36px;
-            border-radius:8px;
+            border-radius:0;
             background:var(--soft);
             color:var(--ink-body);
             display:flex;
@@ -317,7 +317,7 @@ def inject_css() -> None:
             align-items:center;
             gap:5px;
             padding:2px 8px;
-            border-radius:4px;
+            border-radius:0;
             font-family:var(--font-mono);
             font-size:10px;
             font-weight:800;
@@ -451,7 +451,7 @@ def inject_css() -> None:
         /* 요약 상황판 필터: y축 최소화 */
         .cmp-filter-compact div[data-testid="stForm"]{
             border:1px solid var(--border) !important;
-            border-radius:8px !important;
+            border-radius:0!important;
             background:#fff !important;
             padding:8px 10px !important;
             margin-bottom:10px !important;
@@ -465,7 +465,7 @@ def inject_css() -> None:
         }
         .cmp-filter-compact div[data-baseweb="select"] > div{
             min-height:34px !important;
-            border-radius:7px !important;
+            border-radius:0!important;
             font-size:11px !important;
         }
         .cmp-filter-compact div[data-baseweb="tag"]{
@@ -473,7 +473,7 @@ def inject_css() -> None:
             margin-top:1px !important;
             margin-bottom:1px !important;
             background:var(--status-bad, #B23A48) !important;
-            border-radius:5px !important;
+            border-radius:0!important;
         }
         .cmp-filter-compact div[data-baseweb="tag"] span{
             font-size:10px !important;
@@ -493,7 +493,7 @@ def inject_css() -> None:
             min-height:34px !important;
             height:34px !important;
             padding:0 10px !important;
-            border-radius:7px !important;
+            border-radius:0!important;
             border:1px solid var(--border) !important;
             background:#fff !important;
             color:var(--ink-body) !important;
@@ -509,7 +509,7 @@ def inject_css() -> None:
             background:var(--primary-tint) !important;
         }
 
-        .cmp-top-strip{height:7px;background:var(--primary);border-radius:8px 8px 0 0;margin:10px 0 14px 0;}
+        .cmp-top-strip{height:7px;background:var(--primary);border-radius:0;margin:10px 0 14px 0;}
         .cmp-page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:12px;}
         .cmp-eyebrow{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-subtle);margin-bottom:7px;}
         .cmp-page-head h1{margin:0 0 6px 0;font-family:var(--font-display);font-size:26px;line-height:1.18;font-weight:800;letter-spacing:-.03em;color:var(--ink-body);}
@@ -517,24 +517,24 @@ def inject_css() -> None:
 
         .cmp-kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:16px;}
         .cmp-kpi{
-            position:relative;background:#fff;border:1px solid var(--border);border-radius:8px;
+            position:relative;background:#fff;border:1px solid var(--border);border-radius:0;
             padding:13px 16px 12px 19px;min-height:104px;height:auto;
             display:flex;flex-direction:column;justify-content:center;gap:6px;overflow:visible;
         }
-        .cmp-kpi::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--primary);border-radius:8px 0 0 8px;}
+        .cmp-kpi::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--primary);border-radius:0;}
         .cmp-kpi__label{font-size:11px;font-weight:800;letter-spacing:.04em;color:var(--ink-subtle);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.25;}
         .cmp-kpi__value{font-family:var(--font-mono);font-size:30px;line-height:1.18;font-weight:700;color:var(--ink-body);letter-spacing:-.03em;overflow:visible;}
         .cmp-kpi__delta{font-family:var(--font-mono);font-size:12px;line-height:1.25;font-weight:700;overflow:visible;}
         .cmp-kpi__delta.good{color:var(--status-good);}.cmp-kpi__delta.bad{color:#B23A48;}.cmp-kpi__delta.neutral{color:var(--ink-subtle);}
 
         .cmp-sect-head{display:flex;align-items:center;gap:10px;margin:15px 0 10px;justify-content:space-between;}
-        .cmp-sect-head__left{display:flex;align-items:center;gap:10px;}.cmp-sect-head__bar{width:4px;height:18px;background:var(--primary);border-radius:2px;}.cmp-sect-head__title{font-size:17px;font-weight:800;color:var(--ink-body);}.cmp-sect-head__meta{font-size:12px;color:var(--ink-muted);font-family:var(--font-mono);}
+        .cmp-sect-head__left{display:flex;align-items:center;gap:10px;}.cmp-sect-head__bar{width:4px;height:18px;background:var(--primary);border-radius:0;}.cmp-sect-head__title{font-size:17px;font-weight:800;color:var(--ink-body);}.cmp-sect-head__meta{font-size:12px;color:var(--ink-muted);font-family:var(--font-mono);}
         .cmp-models{display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:14px;margin-bottom:34px;}
-        .cmp-model-col{background:#fff;border:1px solid var(--border);border-radius:8px;padding:13px;}
+        .cmp-model-col{background:#fff;border:1px solid var(--border);border-radius:0;padding:13px;}
         .cmp-model-col__head{font-size:13px;font-weight:800;color:var(--ink-body);margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
         .cmp-count{font-family:var(--font-mono);font-size:11px;color:var(--ink-subtle);font-weight:400;}
         .cmp-proc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:6px;}
-        .cmp-proc{height:56px;border-radius:6px;background:var(--soft);display:flex;flex-direction:column;justify-content:space-between;padding:6px 8px;border:1px solid transparent;}
+        .cmp-proc{height:56px;border-radius:0;background:var(--soft);display:flex;flex-direction:column;justify-content:space-between;padding:6px 8px;border:1px solid transparent;}
         .cmp-proc__name{font-size:11px;color:var(--ink-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.25;}
         .cmp-proc__val{font-family:var(--font-mono);font-size:14px;font-weight:700;color:var(--ink-body);line-height:1.25;}
         .cmp-proc.good{background:#DFE8F6;border-color:#D6E1F2}.cmp-proc.good .cmp-proc__val{color:var(--status-good)}
@@ -563,7 +563,7 @@ def inject_css() -> None:
         }
         div[data-testid="stForm"]{
             border:1px solid var(--border) !important;
-            border-radius:7px !important;
+            border-radius:0!important;
             background:#fff !important;
             padding:4px 7px !important;
             margin:0 0 8px 0 !important;
@@ -617,7 +617,7 @@ def inject_css() -> None:
             min-height:25px !important;
             padding-top:0 !important;
             padding-bottom:0 !important;
-            border-radius:6px !important;
+            border-radius:0!important;
             font-size:9px !important;
         }
         div[data-testid="stForm"] div[data-baseweb="select"] input{
@@ -630,7 +630,7 @@ def inject_css() -> None:
             min-height:17px !important;
             margin:1px 2px 1px 0 !important;
             padding:0 4px !important;
-            border-radius:4px !important;
+            border-radius:0!important;
             background:var(--status-bad, #B23A48) !important;
         }
         div[data-testid="stForm"] div[data-baseweb="tag"] span{
@@ -647,7 +647,7 @@ def inject_css() -> None:
             min-height:25px !important;
             height:25px !important;
             padding:0 5px !important;
-            border-radius:6px !important;
+            border-radius:0!important;
             border:1px solid var(--border) !important;
             background:#fff !important;
             color:var(--ink-body) !important;
@@ -695,7 +695,7 @@ def inject_css() -> None:
         div[data-testid="stForm"]{
             padding:3px 5px !important;
             margin:0 0 7px 0 !important;
-            border-radius:6px !important;
+            border-radius:0!important;
             min-height:30px !important;
         }
         div[data-testid="stForm"] div[data-testid="stHorizontalBlock"]{
@@ -746,7 +746,7 @@ def inject_css() -> None:
         div[data-testid="stForm"] div[data-baseweb="select"] > div{
             min-height:22px !important;
             padding:0 2px !important;
-            border-radius:5px !important;
+            border-radius:0!important;
             font-size:8px !important;
         }
         div[data-testid="stForm"] div[data-baseweb="select"] input{
@@ -760,7 +760,7 @@ def inject_css() -> None:
             min-height:15px !important;
             margin:1px 1px !important;
             padding:0 3px !important;
-            border-radius:3px !important;
+            border-radius:0!important;
             max-width:82px !important;
             overflow:hidden !important;
         }
@@ -782,7 +782,7 @@ def inject_css() -> None:
             min-height:22px !important;
             height:22px !important;
             padding:0 4px !important;
-            border-radius:5px !important;
+            border-radius:0!important;
             font-size:8px !important;
             line-height:1 !important;
             font-weight:700 !important;
@@ -797,7 +797,7 @@ def inject_css() -> None:
             height:5px !important;
             margin-top:5px !important;
             margin-bottom:8px !important;
-            border-radius:5px !important;
+            border-radius:0!important;
         }
         .cmp-page-head{
             margin-bottom:8px !important;
@@ -827,13 +827,13 @@ def inject_css() -> None:
             min-height:74px !important;
             height:74px !important;
             padding:8px 11px 8px 14px !important;
-            border-radius:6px !important;
+            border-radius:0!important;
             gap:3px !important;
             justify-content:center !important;
         }
         .cmp-kpi::before{
             width:3px !important;
-            border-radius:6px 0 0 6px !important;
+            border-radius:0!important;
         }
         .cmp-kpi__label{
             font-size:8px !important;
@@ -871,7 +871,7 @@ def inject_css() -> None:
         }
         .cmp-model-col{
             padding:9px !important;
-            border-radius:6px !important;
+            border-radius:0!important;
         }
         .cmp-model-col__head{
             font-size:11px !important;
@@ -888,7 +888,7 @@ def inject_css() -> None:
         .cmp-proc{
             height:39px !important;
             min-height:39px !important;
-            border-radius:4px !important;
+            border-radius:0!important;
             padding:4px 5px !important;
         }
         .cmp-proc__name{
@@ -939,7 +939,7 @@ def inject_css() -> None:
         div[data-testid="stForm"]{
             padding:4px 7px !important;
             margin:0 0 8px 0 !important;
-            border-radius:7px !important;
+            border-radius:0!important;
             min-height:34px !important;
         }
         div[data-testid="stForm"] div[data-testid="stHorizontalBlock"]{
@@ -976,7 +976,7 @@ def inject_css() -> None:
         div[data-testid="stForm"] div[data-baseweb="select"] > div{
             min-height:24px !important;
             padding:0 3px !important;
-            border-radius:6px !important;
+            border-radius:0!important;
             font-size:9px !important;
         }
         div[data-testid="stForm"] div[data-baseweb="select"] input{
@@ -989,7 +989,7 @@ def inject_css() -> None:
             min-height:17px !important;
             margin:1px 2px !important;
             padding:0 4px !important;
-            border-radius:4px !important;
+            border-radius:0!important;
             max-width:92px !important;
         }
         div[data-testid="stForm"] div[data-baseweb="tag"] span{
@@ -1005,7 +1005,7 @@ def inject_css() -> None:
             min-height:24px !important;
             height:24px !important;
             padding:0 6px !important;
-            border-radius:6px !important;
+            border-radius:0!important;
             font-size:9px !important;
             line-height:1 !important;
         }
@@ -1019,7 +1019,7 @@ def inject_css() -> None:
             height:6px !important;
             margin-top:6px !important;
             margin-bottom:10px !important;
-            border-radius:6px !important;
+            border-radius:0!important;
         }
         .cmp-page-head{
             margin-bottom:10px !important;
@@ -1049,12 +1049,12 @@ def inject_css() -> None:
             min-height:82px !important;
             height:82px !important;
             padding:10px 13px 10px 16px !important;
-            border-radius:7px !important;
+            border-radius:0!important;
             gap:4px !important;
         }
         .cmp-kpi::before{
             width:3px !important;
-            border-radius:7px 0 0 7px !important;
+            border-radius:0!important;
         }
         .cmp-kpi__label{
             font-size:9px !important;
@@ -1092,7 +1092,7 @@ def inject_css() -> None:
         }
         .cmp-model-col{
             padding:11px !important;
-            border-radius:7px !important;
+            border-radius:0!important;
         }
         .cmp-model-col__head{
             font-size:12px !important;
@@ -1109,7 +1109,7 @@ def inject_css() -> None:
         .cmp-proc{
             height:44px !important;
             min-height:44px !important;
-            border-radius:5px !important;
+            border-radius:0!important;
             padding:5px 6px !important;
         }
         .cmp-proc__name{
@@ -1167,7 +1167,7 @@ def inject_css() -> None:
         div[data-testid="stForm"]{
             background:#FFFFFF !important;
             border:1px solid #E1E5EA !important;
-            border-radius:var(--home-filter-form-radius) !important;
+            border-radius:0!important;
             padding:var(--home-filter-form-padding-y) var(--home-filter-form-padding-x) !important;
             margin:0 0 12px 0 !important;
             min-height:0 !important;
@@ -1238,7 +1238,7 @@ def inject_css() -> None:
         }
         div[data-testid="stForm"] div[data-baseweb="select"] > div{
             min-height:var(--home-filter-control-height) !important;
-            border-radius:8px !important;
+            border-radius:0!important;
             border-color:#DDE3EA !important;
             background:#FFFFFF !important;
             padding-top:1px !important;
@@ -1258,7 +1258,7 @@ def inject_css() -> None:
             align-items:center !important;
             margin:1px 2px 1px 0 !important;
             padding:0 6px !important;
-            border-radius:999px !important;
+            border-radius:0!important;
             background:#F8E5EC !important;
             border:1px solid #A50034 !important;
             color:#7E0027 !important;
@@ -1291,7 +1291,7 @@ def inject_css() -> None:
             justify-content:center !important;
             padding:0 10px !important;
             margin:0 !important;
-            border-radius:8px !important;
+            border-radius:0!important;
             font-size:var(--home-filter-button-font-size) !important;
             line-height:1 !important;
             font-weight:800 !important;
@@ -1391,7 +1391,7 @@ def inject_css() -> None:
             align-items:center !important;
             margin:1px 2px 1px 0 !important;
             padding:0 var(--home-filter-selected-tag-padding-x) !important;
-            border-radius:999px !important;
+            border-radius:0!important;
             background:#FFFFFF !important;
             border:1px solid #111111 !important;
             color:#111111 !important;
@@ -1498,7 +1498,7 @@ def inject_css() -> None:
             box-shadow:none !important;
             height:var(--neutral-tag-height) !important;
             min-height:var(--neutral-tag-height) !important;
-            border-radius:999px !important;
+            border-radius:0!important;
             padding:0 var(--neutral-tag-padding-x) !important;
             margin:1px 2px 1px 0 !important;
             display:inline-flex !important;
@@ -2188,7 +2188,7 @@ def render_home_mode_selector() -> str:
             padding: 6px;
             background: var(--soft);
             border: 1px solid var(--border);
-            border-radius: 10px;
+            border-radius: 0;
             margin-bottom: 22px;
             width: max-content;
         }
@@ -2206,7 +2206,7 @@ def render_home_mode_selector() -> str:
             font-weight: 600 !important;
             min-height: 32px !important;
             padding: 0 14px !important;
-            border-radius: 8px !important;
+            border-radius: 0!important;
             box-shadow: none !important;
         }
         div[class*="st-key-vit_mode_btn_"] button:hover {
@@ -2394,7 +2394,7 @@ def render_case1_best_worst_cards():
             background: var(--card-bg);
             border: 1px solid var(--border);
             border-left: 4px solid var(--border-strong);
-            border-radius: 12px;
+            border-radius: 0;
             padding: 14px 16px;
             display:flex; flex-direction:column; gap:6px;
             position: relative;

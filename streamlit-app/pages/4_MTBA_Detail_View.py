@@ -78,7 +78,7 @@ st.markdown(f"""
 .soft-card {{
     background: var(--card-bg, rgba(255,255,255,.92));
     border: 1px solid var(--border, {BORDER});
-    border-radius: 12px;
+    border-radius: 0;
     padding: 14px 18px;
     box-shadow: 0 10px 24px rgba(109,16,40,.05);
     color: var(--ink-body, {TEXT});
@@ -89,7 +89,7 @@ st.markdown(f"""
 .filter-wrap {{
     background: var(--card-bg, rgba(255,255,255,.9));
     border: 1px solid var(--border, {BORDER});
-    border-radius: 18px;
+    border-radius: 0;
     padding: 14px 16px;
     margin-top: 10px;
 }}
@@ -100,14 +100,14 @@ st.markdown(f"""
 .legend-green  {{background:var(--status-good-tint, {PASTEL_GREEN});}}
 .legend-prod   {{background:{PASTEL_RED_STRONG};}}
 .badge-chip {{display:inline-block; padding:4px 10px; border-radius:999px; border:1px solid var(--border, {BORDER}); background:var(--primary-tint, {ROSE}); color:var(--primary, {PRIMARY}); font-size:.8rem; font-weight:700;}}
-div.stButton > button {{border-radius: 999px !important; border:1px solid var(--border, {BORDER}) !important;}}
+div.stButton > button {{border-radius: 0!important; border:1px solid var(--border, {BORDER}) !important;}}
 div.stButton > button[kind="primary"] {{background:var(--primary, {PRIMARY}) !important; color:white !important;}}
-.popup-meta {{border:1px solid var(--border, {BORDER}); border-radius:16px; padding:12px 14px; background:var(--card-bg, #fff); margin-bottom:10px;}}
+.popup-meta {{border:1px solid var(--border, {BORDER}); border-radius:0; padding:12px 14px; background:var(--card-bg, #fff); margin-bottom:10px;}}
 .popup-title {{color:var(--primary, {PRIMARY}); font-weight:800; font-size:1.05rem; margin-bottom:4px;}}
 .popup-sub {{color:{SUB}; font-size:.9rem; line-height:1.5;}}
 .page-hero {{
     background: linear-gradient(135deg, {PRIMARY_2} 0%, {PRIMARY} 100%);
-    border-radius: 12px;
+    border-radius: 0;
     padding: 40px 28px 24px 28px;
     box-shadow: 0 10px 24px rgba(109,16,40,.18);
     margin: 0 0 14px 0;
@@ -131,7 +131,7 @@ div.stButton > button[kind="primary"] {{background:var(--primary, {PRIMARY}) !im
 
 
 div[data-testid="stTextInput"] input {{
-    border-radius: 999px !important;
+    border-radius: 0!important;
     border: 1px solid #F8E5EC !important;
     background: #FFFFFF !important;
     color: #A50034 !important;
@@ -910,7 +910,7 @@ def default_cell_style():
 
 def build_common_grid_css_dict():
     return {
-        '.ag-root-wrapper': {'border': f'1px solid {BORDER} !important', 'border-radius': '20px !important', 'overflow': 'hidden !important'},
+        '.ag-root-wrapper': {'border': f'1px solid {BORDER} !important', 'border-radius': '0 !important', 'overflow': 'hidden !important'},
         '.ag-header': {'background': f'linear-gradient(180deg, {ROSE}, #FFFFFF) !important'},
         '.ag-header-cell': {'font-weight': '800 !important', 'color': f'{PRIMARY} !important', 'justify-content': 'center !important', 'text-align': 'center !important', 'border-right': f'1px solid {BORDER} !important'},
         '.ag-cell': {'font-size': '12px !important', 'display': 'flex !important', 'align-items': 'center !important', 'justify-content': 'center !important', 'color': f'{TEXT} !important', 'border-right': f'1px solid {BORDER} !important'},

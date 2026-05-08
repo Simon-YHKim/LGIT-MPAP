@@ -223,7 +223,7 @@ div[data-testid="stSlider"],
 div[data-testid="stCheckbox"]{
   background:var(--v-card);
   border:1px solid var(--v-border);
-  border-radius:var(--v-radius);
+  border-radius:0;
   padding:8px 10px 7px 10px;
   box-shadow:0 1px 2px rgba(0,0,0,.035);
 }
@@ -239,7 +239,7 @@ div[data-baseweb="select"] > div,
 input,
 textarea{
   border-color:var(--v-border) !important;
-  border-radius:6px !important;
+  border-radius:0!important;
   background:#fff !important;
   font-size:12px !important;
 }
@@ -249,7 +249,7 @@ textarea{
   border:1px solid var(--v-border) !important;
   background:#fff !important;
   color:var(--v-body) !important;
-  border-radius:7px !important;
+  border-radius:0!important;
   height:32px !important;
   padding:0 12px !important;
   font-size:12px !important;
@@ -268,7 +268,7 @@ div[data-testid="stTable"]{
   background:var(--v-card) !important;
   border:1px solid var(--v-border) !important;
   border-left:3px solid var(--v-accent) !important;
-  border-radius:var(--v-radius) !important;
+  border-radius:0!important;
   padding:10px !important;
   box-shadow:var(--v-shadow) !important;
   overflow:hidden !important;
@@ -277,7 +277,7 @@ div[data-testid="stTable"]{
 /* dataframe 내부를 HTML dev-row 느낌으로 */
 div[data-testid="stDataFrame"] [role="grid"],
 div[data-testid="stDataFrame"] canvas{
-  border-radius:6px !important;
+  border-radius:0!important;
 }
 
 /* Metric이 존재할 경우 HTML KPI 카드와 유사하게 */
@@ -285,7 +285,7 @@ div[data-testid="metric-container"]{
   position:relative;
   background:var(--v-card) !important;
   border:1px solid var(--v-border) !important;
-  border-radius:var(--v-radius) !important;
+  border-radius:0!important;
   padding:14px 16px 14px 18px !important;
   box-shadow:var(--v-shadow) !important;
   overflow:hidden !important;
@@ -316,7 +316,7 @@ div[data-testid="metric-container"] [data-testid="stMetricValue"]{
   font-size:11px !important;
 }
 div[data-testid="stAlert"]{
-  border-radius:var(--v-radius) !important;
+  border-radius:0!important;
   border:1px solid var(--v-border) !important;
   border-left:3px solid var(--v-accent) !important;
   background:#fff !important;
@@ -326,7 +326,7 @@ div[data-testid="stAlert"]{
 details[data-testid="stExpander"]{
   border:1px solid var(--v-border) !important;
   border-left:3px solid var(--v-accent) !important;
-  border-radius:var(--v-radius) !important;
+  border-radius:0!important;
   background:var(--v-card) !important;
   box-shadow:var(--v-shadow) !important;
 }
@@ -343,7 +343,7 @@ div[role="radiogroup"] label{
   background:#fff !important;
   border:1px solid var(--v-border) !important;
   padding:5px 9px !important;
-  border-radius:6px !important;
+  border-radius:0!important;
   font-size:12px !important;
 }
 
