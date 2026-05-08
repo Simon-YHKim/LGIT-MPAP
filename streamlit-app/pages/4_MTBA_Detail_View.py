@@ -65,7 +65,7 @@ BORDER             = '#E5E7EB'  # Vitals border
 TEXT               = '#1F2430'  # Vitals ink-body
 SUB                = '#6B7280'  # Vitals ink-muted
 PASTEL_RED         = '#FDECEF'  # Vitals bad-tint
-PASTEL_RED_STRONG  = '#FDECEF'  # Vitals bad-tint (이전 off-token #F8D0D8 → 정식 토큰)
+PASTEL_RED_STRONG  = '#FDECEF'  # Vitals bad-tint (이전 off-token #FDECEF → 정식 토큰)
 PASTEL_YELLOW      = '#FAF1DD'  # Vitals warn-tint
 PASTEL_GREEN       = '#E6F4EA'  # Vitals good-tint
 

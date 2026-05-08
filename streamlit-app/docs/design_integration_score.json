@@ -1,99 +1,6 @@
 {
-  "average": 96.6,
+  "average": 97.8,
   "pages": [
-    {
-      "file": "streamlit-app/login.py",
-      "score": 92.5,
-      "max": 100,
-      "breakdown": {
-        "tokens(30)": {
-          "pts": 22.5,
-          "total": 32,
-          "vitals": 24,
-          "off": 8,
-          "off_samples": [
-            "000000",
-            "D7FFE5",
-            "DBEAFE",
-            "FFE4EC"
-          ]
-        },
-        "font(20)": {
-          "pts": 20.0,
-          "violations": [],
-          "has_lg_ei_or_var": true
-        },
-        "theme(10)": {
-          "pts": 10.0,
-          "apply_vitals_theme": true,
-          "local_inject": false
-        },
-        "hero(10)": {
-          "pts": 10.0,
-          "matched": [
-            "vit-page-head"
-          ]
-        },
-        "components(15)": {
-          "pts": 15.0,
-          "tokens_used": 5,
-          "of": 5
-        },
-        "status(15)": {
-          "pts": 15.0,
-          "good": true,
-          "warn": true,
-          "bad": true,
-          "legacy_status_color": false
-        }
-      }
-    },
-    {
-      "file": "streamlit-app/pages/3_MTBA_Dashboard.py",
-      "score": 94.1,
-      "max": 100,
-      "breakdown": {
-        "tokens(30)": {
-          "pts": 27.1,
-          "total": 52,
-          "vitals": 47,
-          "off": 5,
-          "off_samples": [
-            "D9D9D9",
-            "F3F4F6",
-            "FFFDFE"
-          ]
-        },
-        "font(20)": {
-          "pts": 20.0,
-          "violations": [],
-          "has_lg_ei_or_var": true
-        },
-        "theme(10)": {
-          "pts": 10.0,
-          "apply_vitals_theme": true,
-          "local_inject": false
-        },
-        "hero(10)": {
-          "pts": 10.0,
-          "matched": [
-            "page-banner"
-          ]
-        },
-        "components(15)": {
-          "pts": 12.0,
-          "tokens_used": 4,
-          "of": 5
-        },
-        "status(15)": {
-          "pts": 15.0,
-          "good": true,
-          "warn": true,
-          "bad": true,
-          "legacy_status_color": false
-        }
-      }
-    },
     {
       "file": "streamlit-app/pages/8_Patch_Note.py",
       "score": 95.0,
@@ -137,18 +44,58 @@
       }
     },
     {
-      "file": "streamlit-app/pages/4_MTBA_Detail_View.py",
-      "score": 96.1,
+      "file": "streamlit-app/pages/3_MTBA_Dashboard.py",
+      "score": 97.0,
       "max": 100,
       "breakdown": {
         "tokens(30)": {
-          "pts": 29.1,
-          "total": 35,
-          "vitals": 34,
-          "off": 1,
-          "off_samples": [
-            "F8D0D8"
+          "pts": 30.0,
+          "total": 52,
+          "vitals": 52,
+          "off": 0,
+          "off_samples": []
+        },
+        "font(20)": {
+          "pts": 20.0,
+          "violations": [],
+          "has_lg_ei_or_var": true
+        },
+        "theme(10)": {
+          "pts": 10.0,
+          "apply_vitals_theme": true,
+          "local_inject": false
+        },
+        "hero(10)": {
+          "pts": 10.0,
+          "matched": [
+            "page-banner"
           ]
+        },
+        "components(15)": {
+          "pts": 12.0,
+          "tokens_used": 4,
+          "of": 5
+        },
+        "status(15)": {
+          "pts": 15.0,
+          "good": true,
+          "warn": true,
+          "bad": true,
+          "legacy_status_color": false
+        }
+      }
+    },
+    {
+      "file": "streamlit-app/pages/4_MTBA_Detail_View.py",
+      "score": 97.0,
+      "max": 100,
+      "breakdown": {
+        "tokens(30)": {
+          "pts": 30.0,
+          "total": 35,
+          "vitals": 35,
+          "off": 0,
+          "off_samples": []
         },
         "font(20)": {
           "pts": 20.0,
@@ -169,57 +116,6 @@
         "components(15)": {
           "pts": 12.0,
           "tokens_used": 4,
-          "of": 5
-        },
-        "status(15)": {
-          "pts": 15.0,
-          "good": true,
-          "warn": true,
-          "bad": true,
-          "legacy_status_color": false
-        }
-      }
-    },
-    {
-      "file": "streamlit-app/pages/0_Home.py",
-      "score": 96.2,
-      "max": 100,
-      "breakdown": {
-        "tokens(30)": {
-          "pts": 26.2,
-          "total": 125,
-          "vitals": 109,
-          "off": 16,
-          "off_samples": [
-            "111827",
-            "7B8493",
-            "D1D5DB",
-            "D6E1F2",
-            "DDE3EA",
-            "DFE8F6",
-            "E1E5EA",
-            "E5D5AE"
-          ]
-        },
-        "font(20)": {
-          "pts": 20.0,
-          "violations": [],
-          "has_lg_ei_or_var": true
-        },
-        "theme(10)": {
-          "pts": 10.0,
-          "apply_vitals_theme": true,
-          "local_inject": true
-        },
-        "hero(10)": {
-          "pts": 10.0,
-          "matched": [
-            "<h1\\b"
-          ]
-        },
-        "components(15)": {
-          "pts": 15.0,
-          "tokens_used": 5,
           "of": 5
         },
         "status(15)": {
@@ -317,6 +213,52 @@
       }
     },
     {
+      "file": "streamlit-app/login.py",
+      "score": 97.2,
+      "max": 100,
+      "breakdown": {
+        "tokens(30)": {
+          "pts": 27.2,
+          "total": 32,
+          "vitals": 29,
+          "off": 3,
+          "off_samples": [
+            "D7FFE5",
+            "DBEAFE",
+            "FFE4EC"
+          ]
+        },
+        "font(20)": {
+          "pts": 20.0,
+          "violations": [],
+          "has_lg_ei_or_var": true
+        },
+        "theme(10)": {
+          "pts": 10.0,
+          "apply_vitals_theme": true,
+          "local_inject": false
+        },
+        "hero(10)": {
+          "pts": 10.0,
+          "matched": [
+            "vit-page-head"
+          ]
+        },
+        "components(15)": {
+          "pts": 15.0,
+          "tokens_used": 5,
+          "of": 5
+        },
+        "status(15)": {
+          "pts": 15.0,
+          "good": true,
+          "warn": true,
+          "bad": true,
+          "legacy_status_color": false
+        }
+      }
+    },
+    {
       "file": "streamlit-app/pages/5_Alarm_Action_List.py",
       "score": 97.6,
       "max": 100,
@@ -346,6 +288,48 @@
           "matched": [
             "vit-page-head",
             "main-title"
+          ]
+        },
+        "components(15)": {
+          "pts": 15.0,
+          "tokens_used": 5,
+          "of": 5
+        },
+        "status(15)": {
+          "pts": 15.0,
+          "good": true,
+          "warn": true,
+          "bad": true,
+          "legacy_status_color": false
+        }
+      }
+    },
+    {
+      "file": "streamlit-app/pages/0_Home.py",
+      "score": 100.0,
+      "max": 100,
+      "breakdown": {
+        "tokens(30)": {
+          "pts": 30.0,
+          "total": 125,
+          "vitals": 125,
+          "off": 0,
+          "off_samples": []
+        },
+        "font(20)": {
+          "pts": 20.0,
+          "violations": [],
+          "has_lg_ei_or_var": true
+        },
+        "theme(10)": {
+          "pts": 10.0,
+          "apply_vitals_theme": true,
+          "local_inject": true
+        },
+        "hero(10)": {
+          "pts": 10.0,
+          "matched": [
+            "<h1\\b"
           ]
         },
         "components(15)": {

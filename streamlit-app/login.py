@@ -947,11 +947,11 @@ def render_image_background():
         f"""
         <style>
         html, body {{
-            background: #000000 !important;
+            background: #1F2430 !important;
         }}
 
         .stApp {{
-            background-color: #000000 !important;
+            background-color: #1F2430 !important;
             background-image: url("data:image/png;base64,{encoded}") !important;
             background-repeat: no-repeat !important;
             background-position: center center !important;
@@ -1003,7 +1003,7 @@ def render_video_background():
         f"""
         <style>
         html, body {{
-            background: #000000 !important;
+            background: #1F2430 !important;
         }}
 
         .stApp {{
@@ -1032,7 +1032,7 @@ def render_video_background():
             width: 100vw;
             height: 100vh;
             overflow: hidden;
-            background: #000000;
+            background: #1F2430;
             z-index: -9999;
             pointer-events: none;
         }}
@@ -1047,7 +1047,7 @@ def render_video_background():
             height: auto;
             transform: translate(-50%, -50%);
             object-fit: cover;
-            background: #000000;
+            background: #1F2430;
         }}
 
         .video-background-overlay {{

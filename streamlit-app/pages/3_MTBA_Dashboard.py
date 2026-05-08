@@ -114,7 +114,7 @@ PAGE_STYLE = f"""
         background: var(--card-bg, {CARD}); border: 1px solid var(--border, {BORDER}); border-radius: 0; overflow: hidden;
     }}
     div[data-testid="stExpander"] > details > summary {{
-        background: linear-gradient(180deg, var(--primary-tint, {ROSE}), var(--card-bg, #FFFDFE)); color: var(--primary, {PRIMARY}); font-weight: 800;
+        background: linear-gradient(180deg, var(--primary-tint, {ROSE}), var(--card-bg, #FFFFFF)); color: var(--primary, {PRIMARY}); font-weight: 800;
     }}
 </style>
 """
@@ -1068,7 +1068,7 @@ def render_signal_summary_card(summary_info: dict, process_name: str):
           font-family: 'LG EI Text', 'Malgun Gothic', '맑은 고딕', Arial, Helvetica, sans-serif;
         }}
         .card {{
-          border: 1px solid #d9d9d9;
+          border: 1px solid #CBD0D6;
           border-radius: 0;
           padding: 14px 16px;
           min-height: 228px;
@@ -1207,7 +1207,7 @@ def render_best_worst_snapshot_card(snapshot_df: pd.DataFrame, process_name: str
           font-family: 'LG EI Text', 'Malgun Gothic', '맑은 고딕', Arial, Helvetica, sans-serif;
         }}
         .card {{
-          border: 1px solid #d9d9d9;
+          border: 1px solid #CBD0D6;
           border-radius: 0;
           padding: 12px 12px 10px 12px;
           min-height: 198px;
@@ -1226,14 +1226,14 @@ def render_best_worst_snapshot_card(snapshot_df: pd.DataFrame, process_name: str
           font-size: 13px;
         }}
         th, td {{
-          border: 1px solid #d9d9d9;
+          border: 1px solid #CBD0D6;
           padding: 8px 6px;
           text-align: center;
           vertical-align: middle;
           word-break: break-word;
         }}
         thead tr {{
-          background: #f3f4f6;
+          background: #F1F3F5;
           color: #111111;
           font-weight: 700;
         }}

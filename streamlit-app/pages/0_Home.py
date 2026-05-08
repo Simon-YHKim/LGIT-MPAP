@@ -113,7 +113,7 @@ def inject_css() -> None:
             --status-warn:#B57F1B;
             --status-good-tint:#E6F4EA;
             --status-warn-tint:#FAF1DD;
-            --status-subtle-tint:#EEF0F3;
+            --status-subtle-tint:#F1F3F5;
             --font-body:'LG EI Text','LG Smart','Pretendard Variable',Pretendard,'Malgun Gothic',system-ui,sans-serif;
             --font-display:'LG EI Headline','LG EI Text','Pretendard Variable',Pretendard,sans-serif;
             --font-mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
@@ -532,9 +532,9 @@ def inject_css() -> None:
         .cmp-proc{height:56px;border-radius:0;background:var(--soft);display:flex;flex-direction:column;justify-content:space-between;padding:6px 8px;border:1px solid transparent;}
         .cmp-proc__name{font-size:11px;color:var(--ink-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.25;}
         .cmp-proc__val{font-family:var(--font-mono);font-size:14px;font-weight:700;color:var(--ink-body);line-height:1.25;}
-        .cmp-proc.good{background:#DFE8F6;border-color:#D6E1F2}.cmp-proc.good .cmp-proc__val{color:var(--status-good)}
-        .cmp-proc.warn{background:#EFE5CC;border-color:#E5D5AE}.cmp-proc.warn .cmp-proc__val{color:var(--status-warn)}
-        .cmp-proc.bad{background:#F2D7DF;border-color:#EBC6D0}.cmp-proc.bad .cmp-proc__val{color:#B23A48}
+        .cmp-proc.good{background:#F1F3F5;border-color:#F1F3F5}.cmp-proc.good .cmp-proc__val{color:var(--status-good)}
+        .cmp-proc.warn{background:#FAF1DD;border-color:#FAF1DD}.cmp-proc.warn .cmp-proc__val{color:var(--status-warn)}
+        .cmp-proc.bad{background:#F8E5EC;border-color:#F8E5EC}.cmp-proc.bad .cmp-proc__val{color:#B23A48}
 
         /* 기존 Home 카드 디자인이 요약 필터 버튼에 오염되지 않도록 보정 */
         .cmp-filter-compact div[data-testid="stForm"] div[data-testid="stButton"] button{
@@ -685,7 +685,7 @@ def inject_css() -> None:
             font-size:8px !important;
             line-height:1 !important;
             margin:0 0 1px 0 !important;
-            color:#7b8493 !important;
+            color:#6B7280 !important;
         }
         div[data-testid="stForm"]{
             padding:3px 5px !important;
@@ -1161,7 +1161,7 @@ def inject_css() -> None:
         /* 필터 form 박스 자체 */
         div[data-testid="stForm"]{
             background:#FFFFFF !important;
-            border:1px solid #E1E5EA !important;
+            border:1px solid #E5E7EB !important;
             border-radius:0!important;
             padding:var(--home-filter-form-padding-y) var(--home-filter-form-padding-x) !important;
             margin:0 0 12px 0 !important;
@@ -1234,7 +1234,7 @@ def inject_css() -> None:
         div[data-testid="stForm"] div[data-baseweb="select"] > div{
             min-height:var(--home-filter-control-height) !important;
             border-radius:0!important;
-            border-color:#DDE3EA !important;
+            border-color:#E5E7EB !important;
             background:#FFFFFF !important;
             padding-top:1px !important;
             padding-bottom:1px !important;
@@ -1303,8 +1303,8 @@ def inject_css() -> None:
         }
         div[data-testid="stForm"] button[kind="secondaryFormSubmit"]{
             background:#FFFFFF !important;
-            color:#111827 !important;
-            border:1px solid #DDE3EA !important;
+            color:#1F2430 !important;
+            border:1px solid #E5E7EB !important;
         }
         div[data-testid="stForm"] button[kind="secondaryFormSubmit"]:hover{
             background:#F8E5EC !important;
@@ -1454,7 +1454,7 @@ def inject_css() -> None:
         div[data-baseweb="popover"] li[aria-selected="true"],
         div[data-baseweb="popover"] div[role="option"]:hover,
         div[data-baseweb="popover"] li:hover{
-            background:#F3F4F6 !important;
+            background:#F1F3F5 !important;
             color:#111111 !important;
         }
 
@@ -1690,11 +1690,11 @@ def inject_css() -> None:
         html body .stApp [data-testid="stForm"] label[data-baseweb="radio"]{
             display:inline-flex !important;
             align-items:center !important;
-            color:#111827 !important;
+            color:#1F2430 !important;
         }
         html body .stApp [data-testid="stForm"] div[role="radiogroup"] label p,
         html body .stApp [data-testid="stForm"] label[data-baseweb="radio"] p{
-            color:#111827 !important;
+            color:#1F2430 !important;
         }
 
         /* BaseWeb radio 원형 외곽: 기본/미선택 */
@@ -1703,7 +1703,7 @@ def inject_css() -> None:
             background:#FFFFFF !important;
             background-color:#FFFFFF !important;
             background-image:none !important;
-            border-color:#D1D5DB !important;
+            border-color:#CBD0D6 !important;
             box-shadow:none !important;
         }
 
