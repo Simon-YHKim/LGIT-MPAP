@@ -1485,14 +1485,11 @@ def render_bottom_section(data_file: str):
     st.markdown("<div class='table-title' style='margin-top:8px;'>일별 평균 CMP 달성률</div>", unsafe_allow_html=True)
     components.html(render_frozen_html_table(value_pivot, color_pivot), height=730, scrolling=False)
 
-    csv_bytes = value_pivot.to_csv(index=False, encoding='utf-8-sig').encode('utf-8-sig')
-    st.download_button(
-        label='테이블 CSV 다운로드',
-        data=csv_bytes,
-        file_name='cmp_daily_table.csv',
-        mime='text/csv',
-        use_container_width=False,
-    )
+    # STAGE 2 primitive — UTF-8 BOM 포함, Excel 한글 호환.
+    from ui.vitals.components import render_csv_export
+    render_csv_export(value_pivot, label='테이블 CSV 다운로드',
+                      filename='cmp_daily_table.csv',
+                      key='cmp_daily_csv_dl')
 
 def render_home_button():
     """상단 우측 메뉴선택 화면 복귀 버튼.

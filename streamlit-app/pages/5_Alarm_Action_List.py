@@ -469,10 +469,11 @@ if result_df.empty:
 
 display_df = rename_display(result_df)
 
-# CSV 다운로드
-csv_buf = io.StringIO()
-display_df.to_csv(csv_buf, index=False, encoding='utf-8-sig')
-st.download_button('CSV 다운로드', data=csv_buf.getvalue(), file_name='alarm_action_list.csv', mime='text/csv')
+# CSV 다운로드 — STAGE 2 primitive (UTF-8 BOM 포함, Excel 한글 호환).
+from ui.vitals.components import render_csv_export
+render_csv_export(display_df, label='CSV 다운로드',
+                  filename='alarm_action_list.csv',
+                  key='alarm_csv_dl')
 
 # 날짜별 요약
 render_sub_head("날짜별 요약", "선택 기간의 알람 코멘트 추이")
