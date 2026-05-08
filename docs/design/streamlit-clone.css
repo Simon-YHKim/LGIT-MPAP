@@ -86,9 +86,20 @@
   flex-direction: column;
 }
 
+/* stSidebarHeader — brand-cluster 영역. 하단 회색선 (border-bottom 1px) 의 Y 위치는
+   페이지 측 .vit-page-head 의 검은 underline Y 위치와 시각 정렬 (사용자 피드백 2026-05-08).
+
+   페이지 측 page-head Y 추정:
+     stHeader 36 + block-container padding-top 1.6rem (~26) + page-head h1 line-height
+     27px + page-head padding-bottom 10px + 1px border ≈ 100px
+
+   사이드바 측 매칭 padding:
+     padding-top 1.5rem (~24) + brand-cluster height (~30) + padding-bottom 1.5rem (~24)
+     + 1px border ≈ ~79px → 추가 미세 조정 가능.
+   사용자가 실 화면에서 차이 보면 padding-bottom 조정. */
 [data-testid="stSidebar"] .stSidebarHeader,
 [data-testid="stSidebar"] [data-testid="stSidebarHeader"] {
-  padding: 0 1.25rem 0.875rem;
+  padding: 1.5rem 1.25rem 1.5rem;
   border-bottom: 1px solid var(--border);
   margin-bottom: 0.75rem;
 }
@@ -4156,37 +4167,35 @@ table[data-mtba-summary] input[type="checkbox"] { accent-color: var(--primary); 
    Sidebar header 재구성 — LG 로고 옆 Vitals. + 하단 sub
    ============================================================================ */
 /* sidebar header — 2-row: row1 [LG logo + Vitals.] / row2 [광학솔루션 · Max Capa] */
+/* sc-sidebar-brand-cluster — 사용자 피드백 (2026-05-08):
+   · 부제 '광학솔루션 · Max Capa' 제거 → row1 만 (로고 + Vitals 균형)
+   · 로고 height 와 Vitals title font-size 를 비슷하게 맞춤 (시각 무게 균형)
+   · gap 14px (이전 12) — 로고와 워드마크 약간 더 여유 */
 .sc-sidebar-brand-cluster {
   display: flex;
   flex-direction: column;
-  gap: 6px;
 }
 .sc-sidebar-brand-row1 {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
 }
-.sc-sidebar-brand-cluster .sc-sidebar-logo { height: 22px; flex: 0 0 auto; }
+/* 로고 height 24 + title font 22 → 시각 baseline 맞춤 (이전 22 vs 18 불균형) */
+.sc-sidebar-brand-cluster .sc-sidebar-logo { height: 24px; flex: 0 0 auto; }
 .sc-sidebar-brand-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .sc-sidebar-brand-title {
   font-family: 'LG EI Headline', 'LG EI Text', sans-serif;
-  font-size: 18px;
+  font-size: 22px;
   font-weight: 700;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.015em;
   color: var(--ink-body);
   line-height: 1;
 }
 .sc-sidebar-brand-title .vit-dot { color: var(--primary); }
+/* sc-sidebar-brand-sub — 부제 제거됐지만 (HTML 에서 line 삭제) CSS 정의는
+   호환성 위해 보존. 다른 페이지에 잔재 있을 시 자동 적용. */
 .sc-sidebar-brand-sub {
-  font-family: var(--font-mono);
-  font-size: 9.5px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: .08em;
-  color: var(--ink-subtle);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  display: none;
 }
 /* 기존 brand divider 제거 (스코프 안에서) */
 .sc-sidebar-divider--brand { display: none !important; }
