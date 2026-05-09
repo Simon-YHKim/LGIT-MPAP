@@ -1104,7 +1104,9 @@ render_video_background()
 #render_image_background()
 render_top_brand()
 
-left_col, _, right_col = st.columns([0.35, 0.20, 0.45])
+# preview-streamlit-clone.html sec-login parity: 460px / 1fr / 360px
+# Streamlit 분수 비율로 근사 — 좌(auth+identity) / 가운데(spacer) / 우(panels)
+left_col, _, right_col = st.columns([0.32, 0.38, 0.30])
 
 with left_col:
     render_left_panel_background()

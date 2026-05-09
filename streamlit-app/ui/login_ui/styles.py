@@ -137,6 +137,17 @@ def apply_global_styles():
             white-space: nowrap;
         }
 
+        /* preview-streamlit-clone.html sec-login parity:
+           좌측 column 460px / 우측 column 360px max-width 강제.
+           Streamlit 분수 비율 위에 추가 제약을 걸어 큰 화면에서도
+           auth-card 460px 폭과 panels 360px 폭 의도 보존. */
+        [data-testid="stHorizontalBlock"] > [data-testid="column"]:first-child {
+            max-width: 460px !important;
+        }
+        [data-testid="stHorizontalBlock"] > [data-testid="column"]:last-child {
+            max-width: 360px !important;
+        }
+
         .left-panel-bg {
             position: absolute;
             top: 36px;
