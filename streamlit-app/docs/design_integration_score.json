@@ -214,13 +214,13 @@
     },
     {
       "file": "streamlit-app/login.py",
-      "score": 97.2,
+      "score": 97.3,
       "max": 100,
       "breakdown": {
         "tokens(30)": {
-          "pts": 27.2,
-          "total": 32,
-          "vitals": 29,
+          "pts": 27.3,
+          "total": 33,
+          "vitals": 30,
           "off": 3,
           "off_samples": [
             "D7FFE5",
