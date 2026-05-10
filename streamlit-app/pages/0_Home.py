@@ -84,19 +84,14 @@ CONTACT_MAIL_BODY = """안녕하세요.
 
 
 def inject_css() -> None:
+    # 사용자 피드백 (2026-05-11) — 폐쇄망 사전 점검:
+    # ① 외부 CDN @import (jsdelivr Pretendard, Google Fonts IBM Plex Mono) 제거.
+    #    LG 사내 통신망에서 외부 fetch 차단 → 폰트 로드 실패 + browser timeout 발생.
+    #    LG EI / Pretendard / IBM Plex Mono 는 ui.vitals.fonts.font_face_block() 가
+    #    base64 data URI 로 inline 주입 (apply_vitals_theme 가 호출됨).
+    # ② 상대경로 @font-face (./fonts/...) 도 제거 — Streamlit inline CSS 에서
+    #    상대경로 resolve 안 됨. fonts.py 의 base64 inline 으로 대체.
     st.markdown("""<style>
-        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css');
-        @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap');
-
-        @font-face{font-family:'LG EI Text';font-weight:300;font-style:normal;font-display:swap;src:url('./fonts/lg-ei-text-300.woff2') format('woff2')}
-        @font-face{font-family:'LG EI Text';font-weight:400;font-style:normal;font-display:swap;src:url('./fonts/lg-ei-text-400.woff2') format('woff2')}
-        @font-face{font-family:'LG EI Text';font-weight:600;font-style:normal;font-display:swap;src:url('./fonts/lg-ei-text-600.woff2') format('woff2')}
-        @font-face{font-family:'LG EI Text';font-weight:700;font-style:normal;font-display:swap;src:url('./fonts/lg-ei-text-700.woff2') format('woff2')}
-        @font-face{font-family:'LG EI Headline';font-weight:300;font-style:normal;font-display:swap;src:url('./fonts/lg-ei-headline-300.woff2') format('woff2')}
-        @font-face{font-family:'LG EI Headline';font-weight:400;font-style:normal;font-display:swap;src:url('./fonts/lg-ei-headline-400.woff2') format('woff2')}
-        @font-face{font-family:'LG EI Headline';font-weight:600;font-style:normal;font-display:swap;src:url('./fonts/lg-ei-headline-600.woff2') format('woff2')}
-        @font-face{font-family:'LG EI Headline';font-weight:700;font-style:normal;font-display:swap;src:url('./fonts/lg-ei-headline-700.woff2') format('woff2')}
-
         :root{
             --primary:#A50034;
             --primary-dark:#7E0027;

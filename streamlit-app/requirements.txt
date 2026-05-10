@@ -47,5 +47,7 @@ tomli>=2.0; python_version < "3.11"   # py<3.11 fallback. 3.11+ 는 std tomllib 
 requests>=2.31,<3.0             # 6_MaxCapa_Chat 의 FastAPI:9000 호출
 
 # === Windows 전용 (선택) ===
-# pywin32>=306; sys_platform == "win32"   # 02.MTBA_Mailing.bat 가 Outlook COM 사용 시
-# 현재 win32com import 는 mtba_detail_view 에서 conditional — Linux/macOS 에서도 작동.
+# 사용자 피드백 (2026-05-11) — 폐쇄망 사전 점검: 운영 PC (Windows + Outlook) 에서
+# login.py 의 회원가입 인증 메일 발송에 pywin32 가 필수. 환경 marker 로 Windows
+# 전용 설치 보장 + Linux/macOS 개발 PC 에서는 conditional import + LGIT_MOCK fallback.
+pywin32>=306; sys_platform == "win32"
