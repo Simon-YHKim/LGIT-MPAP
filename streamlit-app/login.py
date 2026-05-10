@@ -1240,8 +1240,8 @@ with left_col:
         if st.session_state.view == "signup":
             st.markdown(
                 """
-                <div class="auth-eyebrow">PRODUCTIVITY ANALYTICS · SIGN IN</div>
-                <h2 class="auth-title">로그인</h2>
+                <div class="auth-eyebrow">PRODUCTIVITY ANALYTICS · SIGN UP</div>
+                <h2 class="auth-title">회원가입</h2>
                 <p class="auth-sub">@lginnotek.com 회사 이메일로 가입합니다.</p>
                 """,
                 unsafe_allow_html=True,
