@@ -551,17 +551,9 @@ def render_change_password():
 # --------------------------------------------------
 # 로그인 상태
 # --------------------------------------------------
-# 사용자 피드백 (2026-05-11) — 이미 로그인된 상태로 login.py 에 도달하면 (예: F5
-# 새로고침, 사이드바 'login' 링크 클릭, 또는 직접 / URL 진입) 즉시 Home 으로 리다이렉트.
-# 이전: post-login UI 가 styling 없이 표시되어 사이드바 시각 결함 발생.
-if st.session_state.login and st.session_state.login_view == "home":
-    try:
-        st.switch_page("pages/0_Home.py")
-    except Exception:
-        # switch_page 가 일부 streamlit 버전에서 실패할 수 있음 → fallback 으로
-        # 아래 post-login UI 표시 (비밀번호 변경 등은 그대로 사용 가능).
-        pass
-
+# 사용자 피드백 (2026-05-11): 자동 redirect 가 페이지 간 이동을 방해 (auth_guard
+# fallback → login.py → switch_page 가 user navigation 의도와 충돌). 제거하여
+# 정상 navigation 복원.
 if st.session_state.login:
     st.success(f"✅ 로그인: {st.session_state.user_email}")
     st.write(f"부서: **{st.session_state.department}**")
