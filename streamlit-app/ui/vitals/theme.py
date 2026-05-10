@@ -803,6 +803,38 @@ def _sidebar_runtime_script() -> str:
             ? " is-active" : ""
         );
         a.textContent = item[1];
+        // 사용자 피드백 (2026-05-11) — <a href> 클릭은 hard browser navigation 발생,
+        // session_state 유실 → login 으로 회귀. Streamlit 의 React onClick 을 hijack
+        // 하여 SPA 모드로 전환 + 그 후 home_mode query param 추가.
+        a.addEventListener("click", function(ev) {
+          ev.preventDefault();
+          ev.stopPropagation();
+          const mode = item[0];
+          const propsKey = Object.keys(homeLink).find(function(k) { return k.indexOf("__reactProps$") === 0; });
+          const reactProps = propsKey ? homeLink[propsKey] : null;
+          // 1) Streamlit React onClick 으로 /Home SPA 이동 (session 유지)
+          if (reactProps && reactProps.onClick) {
+            try {
+              reactProps.onClick({
+                preventDefault: function(){}, stopPropagation: function(){},
+                target: homeLink, currentTarget: homeLink, button: 0,
+              });
+            } catch (err) { /* swallow */ }
+          }
+          // 2) home_mode query param 갱신 (replaceState + popstate trigger).
+          //    React onClick 가 history.pushState 로 /Home 을 push 한 직후 replaceState
+          //    로 query param 추가, popstate 로 Streamlit 의 URL 리스너 알림.
+          setTimeout(function() {
+            try {
+              const winParent = window.parent;
+              const newUrl = new URL(winParent.location.href);
+              if (!newUrl.pathname.endsWith("/Home")) newUrl.pathname = "/Home";
+              newUrl.searchParams.set("home_mode", mode);
+              winParent.history.replaceState({}, "", newUrl.toString());
+              winParent.dispatchEvent(new PopStateEvent("popstate"));
+            } catch (err) { /* swallow */ }
+          }, 80);
+        });
         list.appendChild(a);
       });
       if (homeItem && homeItem.parentElement) {
