@@ -1,5 +1,5 @@
 from pathlib import Path
-from datetime import timedelta
+from datetime import date, timedelta
 from html import escape
 from textwrap import dedent
 import time
@@ -20,8 +20,8 @@ from auth_guard import require_login
 #    initial_sidebar_state="collapsed",
 #)
 require_login(
-    page_name="CMP_dashboard",
-    page_path="pages/1_CMP_Dashboard.py"
+    page_name="MTBA_dashboard",
+    page_path="pages/3_MTBA_Dashboard.py"
 )
 
 # AgGrid
@@ -58,6 +58,22 @@ st.set_page_config(page_title="MTBA Dashboard", layout="wide")
 # === Vitals theme (LG EI fonts + wine palette) ===
 from ui.vitals import apply_vitals_theme
 apply_vitals_theme()
+
+# preview-streamlit-clone.html sec-mtba parity marker (표현 layer)
+import streamlit as _st_marker  # noqa: E402
+_st_marker.markdown(
+    '<div class="sc-page-section sc-mtba-section is-active" data-sec="mtba"></div>',
+    unsafe_allow_html=True
+)
+# components.html iframe 으로 parent body class 조작 (markdown script 는 sanitize)
+import streamlit.components.v1 as _comp_for_body_class  # noqa: E402
+_comp_for_body_class.html(
+    '<script>parent.document.body.classList.remove("is-login-active");'
+    'parent.document.body.classList.add("is-mtba-active");</script>',
+    height=0
+)
+from ui.vitals import render_section_header as _render_section_header  # noqa: E402
+_render_section_header("mtba")
 
 from ui.analytics import inject_tracker
 inject_tracker(page_name="3_MTBA_Dashboard", page_path="pages/3_MTBA_Dashboard.py")
@@ -146,12 +162,11 @@ with engine.begin() as conn:
 if not st.session_state.get("_mtba_dashboard_page_style_applied"):
     st.markdown(PAGE_STYLE, unsafe_allow_html=True)
     st.session_state["_mtba_dashboard_page_style_applied"] = True
-# preview sec-mtba 와 정렬 — vit-top-strip 6px wine + flat title.
-from ui.vitals.components import render_top_strip
-render_top_strip()
-st.markdown("<div class='page-banner'>MTBA Dashboard</div>", unsafe_allow_html=True)
+# Backend-freeze compatibility: the old visual top strip import remains, while
+# the actual header is now rendered once through render_section_header("mtba").
+from ui.vitals.components import render_toast, render_top_strip as _legacy_render_top_strip
 st.markdown(
-    "<div class='page-subtitle'>선택한 기간 기준으로 기간별 MTBA / 공정 통계 / 클릭 Drill-down 기반 MTBA 현황 / Alarm 차이 분석</div>",
+    "<ul class='vit-note-list'><li>선택한 기간 기준으로 기간별 MTBA, 공정 통계, 클릭 Drill-down 기반 MTBA 현황, Alarm 차이 분석을 확인합니다.</li></ul>",
     unsafe_allow_html=True
 )
 
@@ -208,14 +223,28 @@ def remove_panel(current_panel_id: int):
 # 기본 조회
 # =========================================================
 TEAM_OPTIONS = ["전체", "FOL팀", "MOL팀", "EOL팀"]
+MTBA_PREVIEW_MODE = False
 
 models_df = get_models(engine)
-model_options = dict(zip(models_df["model_name"], models_df["model_id"]))
+if models_df is None or models_df.empty:
+    MTBA_PREVIEW_MODE = True
+    model_options = {"CM모델A": 1, "CM모델B": 2, "CM모델C": 3}
+else:
+    model_options = dict(zip(models_df["model_name"], models_df["model_id"]))
 
 all_process_df = get_all_processes(engine).copy()
 if all_process_df.empty:
-    st.error("dim_process에 공정 데이터가 없습니다. ETL 적재 상태를 확인해주세요.")
-    st.stop()
+    MTBA_PREVIEW_MODE = True
+    all_process_df = pd.DataFrame(
+        [
+            {"process_id": 101, "process_short_name": "Lens AA", "process_name": "Lens AA"},
+            {"process_id": 102, "process_short_name": "Flip Chip", "process_name": "Flip Chip Bonding"},
+            {"process_id": 103, "process_short_name": "IRCF Attach", "process_name": "IRCF Attach"},
+            {"process_id": 104, "process_short_name": "Module AA", "process_name": "Module AA"},
+            {"process_id": 105, "process_short_name": "Pre Focus", "process_name": "Pre Focus"},
+            {"process_id": 106, "process_short_name": "APS Test", "process_name": "APS Test"},
+        ]
+    )
 
 all_process_df["process_id"] = all_process_df["process_id"].astype(int)
 all_process_df = all_process_df.sort_values(["process_name"]).reset_index(drop=True)
@@ -227,8 +256,9 @@ process_label_map = {
 
 min_date, max_date = get_date_range(engine)
 if min_date is None or max_date is None:
-    st.error("DB에 조회 가능한 날짜 데이터가 없습니다. ETL 적재 상태를 확인해주세요.")
-    st.stop()
+    MTBA_PREVIEW_MODE = True
+    min_date = date(2026, 4, 27)
+    max_date = date(2026, 5, 7)
 
 
 # =========================================================
@@ -1748,8 +1778,131 @@ def render_panel(panel_id: int):
 
 
 
+@st.dialog("팀별 공정")
+def render_mtba_preview_team_dialog():
+    st.caption("HTML 시안의 팀별 공정 모달을 Streamlit 목업으로 연결했습니다.")
+    team = st.selectbox("팀", ["FOL팀", "MOL팀", "EOL팀"], key="mtba_preview_team_dialog_team")
+    selected = st.multiselect(
+        "저장 공정",
+        ["Lens AA", "Flip Chip Bonding", "IRCF Attach", "Module AA", "Pre Focus", "APS Test"],
+        default=["Lens AA", "Flip Chip Bonding", "IRCF Attach"],
+        key="mtba_preview_team_dialog_processes",
+    )
+    if st.button("팀 공정 저장", type="primary", use_container_width=True):
+        st.session_state["mtba_preview_team_saved"] = {"team": team, "processes": selected}
+        render_toast(f"{team} 공정 {len(selected)}개를 저장했습니다.", kind="success")
+        st.rerun()
+
+
+def render_mtba_preview_mock():
+    """No-data MTBA dashboard that keeps the HTML sec-mtba behavior alive."""
+    from ui.vitals.components import render_csv_export, render_sub_head
+
+    st.markdown(
+        """
+        <style>
+        .mtba-preview-filter {
+            border: 1px solid var(--border);
+            background: var(--card-bg);
+            padding: 12px;
+            margin: 0 0 14px;
+        }
+        .mtba-preview-table div[data-testid="stDataFrame"] {
+            border: 1px solid var(--border);
+        }
+        </style>
+        <ul class="vit-note-list">
+          <li>팀 · 모델 · 공정 · 기간을 기준으로 공정별 MTBA를 비교합니다.</li>
+          <li>공정별 요약 체크박스는 비교 차트와 연동됩니다.</li>
+          <li>현재는 데이터 소스가 비어 있어 HTML 시안 기반 목업 데이터로 표시합니다.</li>
+        </ul>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    st.session_state.setdefault("mtba_preview_selected", ["Lens AA", "Flip Chip Bonding", "IRCF Attach", "Module AA", "APS Test", "Pre Focus"])
+    # 사용자 피드백 (2026-05-11) — checkbox 토글로 widget key 변경 시 _pending 로 우회.
+    # rerun 후 widget 생성 전 시점에 pending → widget key 로 이동.
+    if "_mtba_preview_pending" in st.session_state:
+        st.session_state["mtba_preview_process"] = st.session_state.pop("_mtba_preview_pending")
+
+    process_rows = pd.DataFrame(
+        [
+            {"공정명": "Lens AA", "선택 기간": 142, "1주전": 138, "2주전": 135, "지난달": 128, "2달전": 124, "지난해": 118, "설비수": 8},
+            {"공정명": "Flip Chip Bonding", "선택 기간": 98, "1주전": 102, "2주전": 95, "지난달": 88, "2달전": 82, "지난해": 76, "설비수": 6},
+            {"공정명": "IRCF Attach", "선택 기간": 62, "1주전": 68, "2주전": 71, "지난달": 74, "2달전": 78, "지난해": 82, "설비수": 4},
+            {"공정명": "Module AA", "선택 기간": 124, "1주전": 122, "2주전": 119, "지난달": 115, "2달전": 112, "지난해": 108, "설비수": 5},
+            {"공정명": "Pre Focus", "선택 기간": 88, "1주전": 90, "2주전": 87, "지난달": 84, "2달전": 81, "지난해": 78, "설비수": 5},
+            {"공정명": "APS Test", "선택 기간": 156, "1주전": 152, "2주전": 148, "지난달": 142, "2달전": 138, "지난해": 132, "설비수": 8},
+        ]
+    )
+
+    st.markdown('<div class="mtba-preview-filter">', unsafe_allow_html=True)
+    with st.form("mtba_preview_filter_form", border=False):
+        c1, c2, c3 = st.columns([1.15, 1.35, 2.0])
+        with c1:
+            st.selectbox("팀", ["광학 MaxCapa TDR", "FOL팀", "MOL팀", "EOL팀"], key="mtba_preview_team")
+        with c2:
+            st.multiselect("모델", ["CM모델A", "CM모델B", "CM모델C"], default=["CM모델A"], key="mtba_preview_model")
+        with c3:
+            st.multiselect("공정 대분류 (영역)", ["FOL", "MOL", "EOL"], default=["FOL", "MOL", "EOL"], key="mtba_preview_area")
+        c4, c5 = st.columns([2.0, 1.4])
+        with c4:
+            st.multiselect("공정", process_rows["공정명"].tolist(), default=st.session_state["mtba_preview_selected"], key="mtba_preview_process")
+        with c5:
+            st.date_input("기간", value=(date(2026, 4, 27), date(2026, 4, 28)), key="mtba_preview_period")
+        a1, a2, a3, _ = st.columns([1.0, 1.0, 1.2, 4.2])
+        team_clicked = a1.form_submit_button("팀별 공정")
+        reset_clicked = a2.form_submit_button("초기화")
+        apply_clicked = a3.form_submit_button("필터 적용", type="primary")
+    st.markdown('</div>', unsafe_allow_html=True)
+
+    if team_clicked:
+        render_mtba_preview_team_dialog()
+    if reset_clicked:
+        st.session_state["mtba_preview_selected"] = process_rows["공정명"].tolist()
+        render_toast("MTBA 필터를 초기화했습니다.", kind="info")
+        st.rerun()
+    if apply_clicked:
+        st.session_state["mtba_preview_selected"] = st.session_state.get("mtba_preview_process", process_rows["공정명"].tolist())
+        render_toast("MTBA 필터가 적용되었습니다.", kind="success")
+
+    selected = st.session_state.get("mtba_preview_process") or st.session_state.get("mtba_preview_selected", process_rows["공정명"].tolist())
+    target = st.number_input("Target MTBA (min)", value=120, min_value=1, step=1, key="mtba_preview_target")
+    chart_df = process_rows[process_rows["공정명"].isin(selected)].set_index("공정명")[["선택 기간", "1주전", "2주전", "지난달", "2달전", "지난해"]]
+
+    render_sub_head("공정별 MTBA 기간 비교", f"y: MTBA · Target {target}")
+    st.bar_chart(chart_df, use_container_width=True, height=280)
+    st.caption(f"Target {target}분을 기준선으로 보고, 낮은 MTBA 공정은 요약표에서 바로 선택/제외할 수 있습니다.")
+
+    render_sub_head("2026-04-27 ~ 2026-04-28 공정별 요약", "체크박스와 차트 표시 연동")
+    editor_df = process_rows.copy()
+    editor_df.insert(0, "선택", editor_df["공정명"].isin(selected))
+    edited = st.data_editor(
+        editor_df,
+        use_container_width=True,
+        hide_index=True,
+        key="mtba_preview_summary_editor",
+        column_config={"선택": st.column_config.CheckboxColumn("선택", default=True)},
+        disabled=["공정명", "선택 기간", "1주전", "2주전", "지난달", "2달전", "지난해", "설비수"],
+    )
+    next_selected = edited.loc[edited["선택"], "공정명"].tolist()
+    if next_selected != selected:
+        # 사용자 피드백 (2026-05-11) — Streamlit 은 widget 인스턴스화 후 같은 key 의
+        # session_state 변경 금지. 별도 _pending key 로 우회 → 다음 rerun 첫 진입에서
+        # widget 생성 전에 widget key 로 값 이동.
+        st.session_state["_mtba_preview_pending"] = next_selected
+        st.rerun()
+
+    render_csv_export(process_rows, label="CSV 내보내기", filename="mtba_dashboard_preview.csv", key="mtba_preview_csv")
+
+
 # =========================================================
 # 패널 렌더링
 # =========================================================
+if MTBA_PREVIEW_MODE:
+    render_mtba_preview_mock()
+    st.stop()
+
 for panel_id in st.session_state.panel_ids:
     render_panel(panel_id)

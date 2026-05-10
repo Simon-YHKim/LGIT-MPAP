@@ -46,6 +46,22 @@ require_login(
 from ui.vitals import apply_vitals_theme
 apply_vitals_theme()
 
+# preview-streamlit-clone.html sec-admin parity marker (표현 layer)
+import streamlit as _st_marker  # noqa: E402
+_st_marker.markdown(
+    '<div class="sc-page-section sc-admin-section is-active" data-sec="admin"></div>',
+    unsafe_allow_html=True
+)
+# components.html iframe 으로 parent body class 조작 (markdown script 는 sanitize)
+import streamlit.components.v1 as _comp_for_body_class  # noqa: E402
+_comp_for_body_class.html(
+    '<script>parent.document.body.classList.remove("is-login-active");'
+    'parent.document.body.classList.add("is-admin-active");</script>',
+    height=0
+)
+from ui.vitals import render_section_header as _render_section_header  # noqa: E402
+_render_section_header("admin")
+
 from ui.analytics import inject_tracker
 inject_tracker(page_name="9_Admin_Analytics", page_path="pages/9_Admin_Analytics.py")
 
@@ -99,29 +115,10 @@ def download_df_button(df: pd.DataFrame, filename: str, label: str):
 # 페이지 헤더 — preview sec-admin 와 정렬: vit-top-strip + flat page-head
 # (이전 rounded card-style 헤더 제거, 'rectangles only' 원칙 준수)
 # ==================================================
-from ui.vitals.components import render_top_strip, render_sub_head
-render_top_strip()
+from ui.vitals.components import render_sub_head
 st.markdown(
     """
     <style>
-    .vit-page-head {
-        /* Vitals 'rectangles only' — radius / shadow 제거. left wine bar 만 유지. */
-        background: var(--card-bg, #FFFFFF);
-        border: 1px solid var(--border, #E5E7EB);
-        border-left: 4px solid var(--primary, #A50034);
-        padding: 18px 22px;
-        margin-bottom: 14px;
-    }
-    .vit-page-head h1 {
-        margin: 0;
-        font-family: 'LG EI Headline', 'LG EI Text', sans-serif;
-        font-size: 22px; font-weight: 700; letter-spacing:-0.01em;
-        color: var(--ink-body, #1F2430);
-    }
-    .vit-page-head .sub {
-        margin-top: 4px;
-        font-size: 12px; color: var(--ink-muted, #6B7280);
-    }
     /* Admin 카드 / 메트릭 컨테이너 — Vitals 토큰 정렬 (radius 제거) */
     div[data-testid="stMetric"] {
         background: var(--card-bg, #FFFFFF);
@@ -137,10 +134,9 @@ st.markdown(
     /* DataFrame / Table — soft 토큰 (radius 제거) */
     div[data-testid="stDataFrame"] { background: var(--soft, #F1F3F5); }
     </style>
-    <div class="vit-page-head">
-        <h1>관리자 분석 대시보드</h1>
-        <div class="sub">사용자 로그인 · 페이지 조회 로그 기반 분석</div>
-    </div>
+    <ul class="vit-note-list">
+      <li>사용자 로그인과 페이지 조회 로그를 기반으로 사용 현황을 분석합니다.</li>
+    </ul>
     """,
     unsafe_allow_html=True,
 )

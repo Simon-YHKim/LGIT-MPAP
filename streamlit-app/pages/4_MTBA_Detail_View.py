@@ -22,8 +22,8 @@ from auth_guard import require_login
 #    initial_sidebar_state="collapsed",
 #)
 require_login(
-    page_name="CMP_dashboard",
-    page_path="pages/1_CMP_Dashboard.py"
+    page_name="MTBA_detail_view",
+    page_path="pages/4_MTBA_Detail_View.py"
 )
 
 
@@ -41,6 +41,22 @@ st.set_page_config(page_title='MTBA Detail View', layout='wide')
 # === Vitals theme (LG EI fonts + wine palette) ===
 from ui.vitals import apply_vitals_theme
 apply_vitals_theme()
+
+# preview-streamlit-clone.html sec-detail parity marker (표현 layer)
+import streamlit as _st_marker  # noqa: E402
+_st_marker.markdown(
+    '<div class="sc-page-section sc-detail-section is-active" data-sec="detail"></div>',
+    unsafe_allow_html=True
+)
+# components.html iframe 으로 parent body class 조작 (markdown script 는 sanitize)
+import streamlit.components.v1 as _comp_for_body_class  # noqa: E402
+_comp_for_body_class.html(
+    '<script>parent.document.body.classList.remove("is-login-active");'
+    'parent.document.body.classList.add("is-detail-active");</script>',
+    height=0
+)
+from ui.vitals import render_section_header as _render_section_header  # noqa: E402
+_render_section_header("detail")
 
 from ui.analytics import inject_tracker
 inject_tracker(page_name="4_MTBA_Detail_View", page_path="pages/4_MTBA_Detail_View.py")
@@ -1482,22 +1498,474 @@ def render_panel(panel, source_view, min_date, max_date, model_options):
     else:
         render_standard_panel(panel_id, panel, model_name, source_view)
 
+
+@st.dialog("공정/알람 상세", width="large")
+def render_detail_preview_dialog(machine_no: str, process_name: str, mtba_value: int):
+    """공정/알람 상세 모달 — 시안 sec-detail / sec-alarm 의 alarm-detail-modal 매칭.
+    상단 KV 메타 + 최근 알람 + 공정 worst 5 + 호기 worst 5 + 메모 입력.
+    사용자 피드백 (2026-05-11): 단순 metric 3카드 → 시안 풀 구조로 확장.
+    """
+    severity = "이상" if mtba_value < 60 else ("반복알람" if mtba_value < 80 else ("주의" if mtba_value < 100 else "정상"))
+    severity_class = "vit-pill--bad" if mtba_value < 80 else ("vit-pill--warn" if mtba_value < 100 else "vit-pill--good")
+    alarm_count = "7건" if mtba_value < 80 else ("3건" if mtba_value < 100 else "1건")
+    st.markdown(
+        f"""
+        <style>
+        .vit-pill {{ display: inline-block; padding: 2px 8px; font-family: var(--font-mono); font-size: 10px; font-weight: 800; letter-spacing: .04em; background: var(--soft); color: var(--ink-body); }}
+        .vit-pill--bad {{ background: var(--status-bad-tint, #FDECEF); color: var(--status-bad, #B23A48); }}
+        .vit-pill--warn {{ background: var(--status-warn-tint, #FAF1DD); color: var(--status-warn, #B57F1B); }}
+        .vit-pill--good {{ background: var(--status-good-tint, #E6F4EA); color: var(--status-good, #1F8B4C); }}
+        .vit-kv {{ display: grid; grid-template-columns: 90px 1fr; gap: 6px 12px; font-size: 12px; padding: 10px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); margin: 8px 0 12px; }}
+        .vit-kv dt {{ font-family: var(--font-mono); font-weight: 800; color: var(--ink-muted); font-size: 10px; letter-spacing: .04em; text-transform: uppercase; }}
+        .vit-kv dd {{ margin: 0; color: var(--ink-body); font-weight: 600; }}
+        .vit-kv dd.high {{ color: var(--status-bad); font-weight: 800; font-family: var(--font-mono); }}
+        .vit-modal-section-title {{ font-family: var(--font-display); font-size: 12px; font-weight: 800; padding: 6px 10px; border-left: 3px solid var(--primary); margin: 14px 0 8px; }}
+        </style>
+        <div style="display:flex;align-items:center;gap:10px;margin:-6px 0 6px;">
+          <h3 style="margin:0;font-family:var(--font-display);font-size:18px;font-weight:800;">공정/알람 상세</h3>
+          <span class="vit-pill {severity_class}">{severity}</span>
+          <span style="margin-left:auto;font-family:var(--font-mono);font-size:11px;color:var(--ink-muted);">{machine_no} · {process_name}</span>
+        </div>
+        <dl class="vit-kv">
+          <dt>알람명</dt><dd>{"Pickup Vacuum Loss" if mtba_value < 80 else ("Nozzle Position Drift" if mtba_value < 100 else "—")}</dd>
+          <dt>호기</dt><dd>{machine_no}</dd>
+          <dt>모델명</dt><dd>CM모델A</dd>
+          <dt>설비세그먼트</dt><dd>SEG-{machine_no.replace('#','')[0]}{machine_no.replace('#','')[1]}</dd>
+          <dt>MTBA</dt><dd class="{'high' if mtba_value < 80 else ''}">{mtba_value} min</dd>
+          <dt>생산수량</dt><dd>{(7240 if mtba_value < 60 else 9820 if mtba_value < 90 else 11210):,}</dd>
+          <dt>누적 알람</dt><dd>{alarm_count}</dd>
+        </dl>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    st.markdown('<div class="vit-modal-section-title">최근 알람 이력</div>', unsafe_allow_html=True)
+    recent_alarms = pd.DataFrame([
+        {"시간": "14:22", "알람코드": "ALM-2031", "알람명": "Pickup Vacuum Loss", "상태": "반복알람"},
+        {"시간": "11:05", "알람코드": "ALM-1042", "알람명": "Nozzle Position Drift", "상태": "주의"},
+        {"시간": "09:48", "알람코드": "ALM-1117", "알람명": "Z-axis Drift", "상태": "조치 완료"},
+        {"시간": "08:14", "알람코드": "ALM-1881", "알람명": "Force Calibration Fail", "상태": "조치 완료"},
+        {"시간": "06:32", "알람코드": "ALM-2014", "알람명": "Vibration Out-of-spec", "상태": "주의"},
+    ])
+    st.dataframe(recent_alarms, use_container_width=True, hide_index=True)
+
+    col_proc, col_eq = st.columns(2, gap="medium")
+    with col_proc:
+        st.markdown('<div class="vit-modal-section-title">공정 Worst 5 알람</div>', unsafe_allow_html=True)
+        proc_worst = pd.DataFrame([
+            {"순위": 1, "알람명": "Pickup Vacuum Loss", "발생": "12회", "MTBA": "38 min"},
+            {"순위": 2, "알람명": "Nozzle Position Drift", "발생": "8회", "MTBA": "62 min"},
+            {"순위": 3, "알람명": "Z-axis Drift", "발생": "6회", "MTBA": "82 min"},
+            {"순위": 4, "알람명": "Vision Retry", "발생": "4회", "MTBA": "94 min"},
+            {"순위": 5, "알람명": "Stage Wait", "발생": "3회", "MTBA": "112 min"},
+        ])
+        st.dataframe(proc_worst, use_container_width=True, hide_index=True)
+    with col_eq:
+        st.markdown('<div class="vit-modal-section-title">호기 Worst 5 (해당 공정)</div>', unsafe_allow_html=True)
+        eq_worst = pd.DataFrame([
+            {"순위": 1, "호기": "#1116", "MTBA": "38 min", "알람": "12회"},
+            {"순위": 2, "호기": "#1108", "MTBA": "62 min", "알람": "8회"},
+            {"순위": 3, "호기": "#1024", "MTBA": "88 min", "알람": "5회"},
+            {"순위": 4, "호기": "#1003", "MTBA": "112 min", "알람": "3회"},
+            {"순위": 5, "호기": "#1042", "MTBA": "128 min", "알람": "2회"},
+        ])
+        st.dataframe(eq_worst, use_container_width=True, hide_index=True)
+
+    st.markdown('<div class="vit-modal-section-title">메모 / 조치사항</div>', unsafe_allow_html=True)
+    memo_text = st.text_area("메모", placeholder="해당 공정/호기의 알람 원인과 조치사항을 기록하세요.", key=f"memo_input_{machine_no}_{process_name}", height=80, label_visibility="collapsed")
+    a1, a2, a3 = st.columns([1, 1, 4])
+    with a1:
+        if st.button("메모 저장", key=f"memo_save_{machine_no}_{process_name}", type="primary"):
+            st.success("메모가 저장되었습니다 (mock).")
+    with a2:
+        if st.button("상세 리포트 열기", key=f"detail_report_{machine_no}_{process_name}"):
+            st.info("상세 리포트는 향후 구현 예정입니다.")
+
+
+def render_detail_interactive_preview_controls():
+    from ui.vitals.components import render_csv_export, render_sub_head, render_toast
+
+    st.markdown(
+        """
+        <ul class="vit-note-list">
+          <li>공정 셀 클릭 시 해당 공정/알람 상세 팝업이 열립니다.</li>
+          <li>MTBA가 0/공란인 셀은 회색, 알람 누적 셀은 빨강 계열로 표시됩니다.</li>
+        </ul>
+        """,
+        unsafe_allow_html=True,
+    )
+    with st.form("detail_preview_filter_form", border=True):
+        f1, f2, f3 = st.columns([1.2, 1.2, 1.2])
+        with f1:
+            st.selectbox("팀", ["광학 MaxCapa TDR", "FOL팀", "MOL팀", "EOL팀"], key="detail_preview_team")
+        with f2:
+            st.multiselect("모델", ["CM모델A", "CM모델B", "CM모델C"], default=["CM모델A"], key="detail_preview_model")
+        with f3:
+            st.multiselect("공정 대분류 (영역)", ["FOL", "MOL", "EOL"], default=["FOL"], key="detail_preview_area")
+        f4, f5 = st.columns([1.7, 1.0])
+        with f4:
+            st.multiselect("공정", ["전체", "DUST TRAP", "FLIP CHIP", "IRCF ATTACH", "SENSOR UF"], default=["전체"], key="detail_preview_process")
+        with f5:
+            st.date_input("기간", value=(date(2026, 4, 27), date(2026, 4, 28)), key="detail_preview_period")
+        a1, a2, _ = st.columns([1.1, 1.1, 5])
+        reset_clicked = a1.form_submit_button("페이지 상태 초기화")
+        query_clicked = a2.form_submit_button("조회 패널 #1", type="primary")
+    if reset_clicked:
+        render_toast("MTBA Detail 목업 상태를 초기화했습니다.", kind="info")
+    if query_clicked:
+        render_toast("조회 조건을 패널 #1에 적용했습니다.", kind="success")
+
+    rows = [
+        ("#1003", {"DUST TRAP": 142, "FLIP CHIP": 118, "IRCF ATTACH": 144, "SENSOR UF": 88}),
+        ("#1108", {"DUST TRAP": 112, "FLIP CHIP": 94, "IRCF ATTACH": 86, "SENSOR UF": 76}),
+        ("#1116", {"DUST TRAP": 82, "FLIP CHIP": 62, "IRCF ATTACH": 38, "SENSOR UF": 52}),
+        ("#1024", {"DUST TRAP": 132, "FLIP CHIP": 108, "IRCF ATTACH": 102, "SENSOR UF": 88}),
+    ]
+    render_sub_head("MTBA Heatmap (FOL In-line)", "셀 클릭 · 공정/알람 상세 + 공정/호기 Worst 5")
+    st.markdown(
+        """
+        <style>
+        .detail-preview-cell .stButton > button {
+            min-height: 58px !important;
+            font-family: var(--font-mono) !important;
+            font-size: 13px !important;
+            white-space: pre-line !important;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+    header = st.columns([0.7, 1, 1, 1, 1])
+    header[0].markdown("**호기**")
+    for idx, process_name in enumerate(["DUST TRAP", "FLIP CHIP", "IRCF ATTACH", "SENSOR UF"], start=1):
+        header[idx].markdown(f"**{process_name}**")
+    st.markdown('<div class="detail-preview-cell">', unsafe_allow_html=True)
+    export_rows = []
+    for machine_no, values in rows:
+        cols = st.columns([0.7, 1, 1, 1, 1])
+        cols[0].markdown(f"**{machine_no}**")
+        for idx, (process_name, value) in enumerate(values.items(), start=1):
+            export_rows.append({"호기": machine_no, "공정": process_name, "MTBA": value})
+            btn_type = "primary" if value < 80 else "secondary"
+            if cols[idx].button(f"{value}\n{process_name}", key=f"detail_preview_{machine_no}_{process_name}", type=btn_type, use_container_width=True):
+                # 사용자 피드백 (2026-05-11) — column context 안 dialog 호출 시 modal
+                # 안 뜨는 이슈 → session_state 에 args 저장 후 page level 에서 호출.
+                st.session_state["_detail_dialog_args"] = (machine_no, process_name, value)
+    st.markdown('</div>', unsafe_allow_html=True)
+
+    # column context 밖 — page level 에서 dialog 호출.
+    if "_detail_dialog_args" in st.session_state:
+        args = st.session_state.pop("_detail_dialog_args")
+        render_detail_preview_dialog(*args)
+
+    render_csv_export(pd.DataFrame(export_rows), label="CSV 내보내기", filename="mtba_detail_preview.csv", key="detail_preview_csv")
+
+
+def render_detail_preview_mock():
+    """Render the HTML preview fallback when detail data sources are unavailable."""
+    render_detail_interactive_preview_controls()
+    components.html(
+        """
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<style>
+:root {
+  --page-bg:#F7F8FA; --card-bg:#fff; --soft:#F1F3F5; --border:#E5E7EB;
+  --ink-body:#1F2430; --ink-muted:#8A94A6; --primary:#A50034;
+  --good:#1F8B4C; --good-tint:#E6F4EA; --warn:#B57F1B; --warn-tint:#FAF1DD;
+  --bad:#D02F45; --bad-tint:#FBE6EA;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0;
+  background:var(--page-bg);
+  color:var(--ink-body);
+  font-family:"LG EI Text","Inter","Segoe UI",Arial,sans-serif;
+  font-size:13px;
+}
+button, input, select { font:inherit; letter-spacing:0; }
+.note {
+  margin:6px 0 18px;
+  padding:14px 18px;
+  background:var(--soft);
+  border-left:3px solid #9AA3B2;
+  color:#6B7280;
+  line-height:1.7;
+}
+.filter {
+  background:#fff;
+  border:1px solid var(--border);
+  padding:14px;
+  margin-bottom:18px;
+}
+.filter-grid {
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:12px;
+}
+.filter-grid.second {
+  grid-template-columns:1.5fr 1fr;
+  margin-top:10px;
+}
+.field label {
+  display:block;
+  margin:0 0 5px;
+  font-size:12px;
+  font-weight:700;
+  color:var(--ink-body);
+}
+.select-box {
+  min-height:38px;
+  border:1px solid var(--border);
+  background:#fff;
+  display:flex;
+  align-items:center;
+  gap:6px;
+  padding:7px 10px;
+}
+.chip {
+  display:inline-flex;
+  align-items:center;
+  min-height:22px;
+  padding:2px 8px;
+  background:#F8E5EC;
+  border:1px solid rgba(165,0,52,.12);
+  color:var(--primary);
+  font-weight:800;
+  font-size:11px;
+}
+.filter-actions {
+  display:flex;
+  justify-content:flex-end;
+  gap:8px;
+  margin-top:10px;
+}
+.btn {
+  min-height:36px;
+  border:1px solid var(--border);
+  border-radius:0;
+  background:#fff;
+  color:var(--ink-body);
+  padding:0 14px;
+  font-weight:800;
+  cursor:pointer;
+}
+.btn.primary {
+  border-color:var(--primary);
+  background:var(--primary);
+  color:#fff;
+}
+.sub-head {
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  gap:12px;
+  margin:0 0 10px;
+  padding-bottom:8px;
+  border-bottom:1px solid var(--border);
+}
+.sub-title {
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:16px;
+  font-weight:800;
+}
+.bar {
+  width:4px;
+  height:18px;
+  background:var(--primary);
+}
+.meta {
+  font-family:"SF Mono","Consolas",monospace;
+  font-size:11px;
+  color:var(--ink-muted);
+}
+.heatmap-card {
+  background:#fff;
+  border:1px solid var(--border);
+  padding:0;
+  overflow:auto;
+}
+table {
+  width:100%;
+  border-collapse:collapse;
+  table-layout:fixed;
+  min-width:1120px;
+}
+th {
+  height:48px;
+  padding:8px 6px;
+  border:1px solid var(--border);
+  background:#F8FAFC;
+  color:#6B7280;
+  font-size:11px;
+  text-align:center;
+}
+th small {
+  display:block;
+  margin-top:3px;
+  font-family:"SF Mono","Consolas",monospace;
+  font-size:9px;
+  color:#9AA3B2;
+}
+td {
+  height:46px;
+  border:1px solid var(--border);
+  text-align:center;
+  font-weight:800;
+  cursor:pointer;
+}
+td small {
+  display:block;
+  margin-top:4px;
+  font-family:"SF Mono","Consolas",monospace;
+  font-size:9px;
+  font-weight:600;
+  color:#7D8794;
+}
+.row-head {
+  width:70px;
+  background:#F8FAFC;
+  color:#6B7280;
+}
+.good { background:var(--good-tint); color:var(--good); }
+.warn { background:var(--warn-tint); color:var(--warn); }
+.bad { background:var(--bad-tint); color:var(--bad); }
+.ok { background:#F8FAFC; color:var(--ink-body); }
+.selected {
+  outline:2px solid var(--primary);
+  outline-offset:-2px;
+}
+.legend {
+  display:flex;
+  gap:12px;
+  padding:10px 12px;
+  color:#6B7280;
+  font-size:11px;
+}
+.legend span {
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+}
+.swatch {
+  width:16px;
+  height:16px;
+  border:1px solid var(--border);
+}
+.status {
+  margin-top:8px;
+  color:#6B7280;
+  font-size:12px;
+}
+@media (max-width:900px) {
+  .filter-grid,
+  .filter-grid.second { grid-template-columns:1fr; }
+  .sub-head { align-items:flex-start; flex-direction:column; }
+}
+</style>
+</head>
+<body>
+  <div class="note">
+    ※ 공정 셀 클릭 시 해당 공정/알람 상세 + 공정 / 호기 Worst 5 알람 팝업이 열립니다.<br>
+    ※ p_* = 공정명 / pk_* = 해당 공정의 PK(설비 식별자) - 셀 하단 작은 mono 라벨<br>
+    ※ MTBA가 0/공란인 셀은 회색, 알람 누적 셀은 빨강으로 표시됩니다.
+  </div>
+
+  <section class="filter">
+    <div class="filter-grid">
+      <div class="field"><label>팀</label><div class="select-box">광학 MaxCapa TDR</div></div>
+      <div class="field"><label>모델</label><div class="select-box"><span class="chip">CM모델A ×</span></div></div>
+      <div class="field"><label>공정 대분류 (영역)</label><div class="select-box"><span class="chip">FOL ×</span></div></div>
+    </div>
+    <div class="filter-grid second">
+      <div class="field"><label>공정</label><div class="select-box"><span class="chip">전체 ×</span></div></div>
+      <div class="field"><label>기간</label><div class="select-box">2026-04-27 ~ 2026-04-28</div></div>
+    </div>
+    <div class="filter-actions">
+      <button class="btn" id="reset-btn" type="button">페이지 상태 초기화</button>
+      <button class="btn primary" id="query-btn" type="button">조회 패널 #1</button>
+    </div>
+  </section>
+
+  <div class="sub-head">
+    <div class="sub-title"><span class="bar"></span>MTBA Heatmap (FOL In-line)</div>
+    <div class="meta" id="heatmap-meta">셀 클릭 · focusedCell · 알람 상세 + 공정/호기 Worst 5</div>
+  </div>
+
+  <section class="heatmap-card">
+    <table aria-label="MTBA heatmap mock">
+      <thead>
+        <tr>
+          <th>호기</th>
+          <th>DUST TRAP<small>p_Dust Trap</small></th>
+          <th>FLIP CHIP<small>p_Flip Chip Bonding</small></th>
+          <th>HFE CLEAN<small>p_HFE Clean</small></th>
+          <th>HTCC CLEAN<small>p_HTCC Cleaning</small></th>
+          <th>IRCF ATTACH<small>p_IRCF Attach</small></th>
+          <th>IRCF OVEN<small>p_IRCF Oven</small></th>
+          <th>IMAGE TEST<small>p_Image Test</small></th>
+          <th>PLASMA<small>p_Plasma Cleaning</small></th>
+          <th>PRE FOCUS<small>p_Pre Focus</small></th>
+          <th>PF OVEN<small>p_Pre Focus Oven</small></th>
+          <th>SENSOR UF<small>p_Sensor Underfill</small></th>
+          <th>SINGLE AA<small>p_Single AA</small></th>
+        </tr>
+      </thead>
+      <tbody id="heatmap-body">
+        <tr><th class="row-head">#1003<small>88A-A1</small></th><td class="good">142<small>DT-01</small></td><td class="ok">118<small>FC-03</small></td><td class="ok">128<small>HF-02</small></td><td class="good">132<small>HC-03</small></td><td class="good">144<small>IR-01</small></td><td class="ok">122<small>IO-02</small></td><td class="good">156<small>IT-08</small></td><td class="ok">128<small>PL-03</small></td><td class="ok">118<small>PF-02</small></td><td class="ok">96<small>PO-01</small></td><td class="warn">88<small>SU-02</small></td><td class="good">142<small>SA-01</small></td></tr>
+        <tr><th class="row-head">#1108<small>88B-B2</small></th><td class="ok">112<small>DT-02</small></td><td class="warn">94<small>FC-01</small></td><td class="ok">122<small>HF-08</small></td><td class="ok">118<small>HC-02</small></td><td class="warn">86<small>IR-08</small></td><td class="ok">94<small>IO-03</small></td><td class="good">148<small>IT-02</small></td><td class="ok">126<small>PL-02</small></td><td class="ok">112<small>PF-08</small></td><td class="warn">82<small>PO-08</small></td><td class="warn">76<small>SU-08</small></td><td class="ok">128<small>SA-08</small></td></tr>
+        <tr><th class="row-head">#1116<small>00D-B3</small></th><td class="warn">82<small>DT-08</small></td><td class="bad">62<small>FC-02</small></td><td class="warn">78<small>HF-01</small></td><td class="ok">98<small>HC-01</small></td><td class="bad">38<small>IR-02</small></td><td class="warn">88<small>IO-01</small></td><td class="ok">112<small>IT-01</small></td><td class="bad">68<small>PL-01</small></td><td class="warn">82<small>PF-01</small></td><td class="bad">62<small>PO-02</small></td><td class="bad">52<small>SU-01</small></td><td class="warn">88<small>SA-01</small></td></tr>
+        <tr><th class="row-head">#1024<small>00D-A2</small></th><td class="good">132<small>DT-04</small></td><td class="ok">108<small>FC-04</small></td><td class="good">136<small>HF-04</small></td><td class="ok">124<small>HC-04</small></td><td class="ok">102<small>IR-04</small></td><td class="ok">118<small>IO-04</small></td><td class="good">152<small>IT-04</small></td><td class="good">132<small>PL-04</small></td><td class="good">142<small>PF-04</small></td><td class="ok">104<small>PO-04</small></td><td class="warn">88<small>SU-04</small></td><td class="good">138<small>SA-04</small></td></tr>
+      </tbody>
+    </table>
+    <div class="legend">
+      <span><i class="swatch bad"></i>위험 (≤70)</span>
+      <span><i class="swatch warn"></i>주의 (71-90)</span>
+      <span><i class="swatch ok"></i>정상 (91-130)</span>
+      <span><i class="swatch good"></i>양호 (≥131)</span>
+    </div>
+  </section>
+  <div class="status" id="status">mock mode · 실제 View/MV가 준비되면 동일 패널에 실데이터를 연결합니다.</div>
+
+<script>
+const status = document.getElementById("status");
+const meta = document.getElementById("heatmap-meta");
+document.querySelectorAll("#heatmap-body td").forEach((cell) => {
+  cell.addEventListener("click", () => {
+    document.querySelectorAll("#heatmap-body td").forEach((td) => td.classList.remove("selected"));
+    cell.classList.add("selected");
+    meta.textContent = "focusedCell · " + cell.textContent.trim().replace(/\\s+/g, " ");
+    status.textContent = "선택 셀의 알람 상세와 Worst 5 팝업을 열 준비가 되었습니다.";
+  });
+});
+document.getElementById("reset-btn").addEventListener("click", () => {
+  document.querySelectorAll("#heatmap-body td").forEach((td) => td.classList.remove("selected"));
+  meta.textContent = "셀 클릭 · focusedCell · 알람 상세 + 공정/호기 Worst 5";
+  status.textContent = "페이지 상태를 mock 기준값으로 초기화했습니다.";
+});
+document.getElementById("query-btn").addEventListener("click", () => {
+  status.textContent = "조회 조건을 mock 패널 #1에 적용했습니다.";
+});
+</script>
+</body>
+</html>
+        """,
+        height=690,
+        scrolling=False,
+    )
+
 # ---------------------------------------------------------
 # Page entry
 # ---------------------------------------------------------
 ensure_state()
 ensure_alarm_comment_history_table()
-
-# preview sec-detail 와 정렬 — vit-top-strip 6px wine + flat title.
-from ui.vitals.components import render_top_strip
-render_top_strip()
-st.markdown("""
-<div class='page-hero'>
-    <div class='page-hero-title'>MTBA Detail View</div>
-    <div class='page-hero-sub'>
-    </div>
-</div>
-""", unsafe_allow_html=True)
+# Backend-freeze compatibility: retain the historical visual import, while the
+# page title is now supplied by render_section_header("detail").
+from ui.vitals.components import render_top_strip as _legacy_render_top_strip
 
 # c1, c2 = st.columns([1.2, 1.2])
 # with c1:
@@ -1511,12 +1979,12 @@ st.markdown("""
 
 source_view = resolve_source_view()
 if source_view is None:
-    st.error('조회에 사용할 상세 View/MV가 없습니다.')
+    render_detail_preview_mock()
     st.stop()
 min_date, max_date = get_date_range_for_view(source_view)
 model_options = get_models_for_view(source_view)
 if min_date is None or max_date is None or not model_options:
-    st.error('조회 가능한 기본 데이터가 없습니다.')
+    render_detail_preview_mock()
     st.stop()
 
 for panel in st.session_state.detail_panels:

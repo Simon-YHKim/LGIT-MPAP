@@ -26,6 +26,22 @@ require_login(
 from ui.vitals import apply_vitals_theme
 apply_vitals_theme()
 
+# preview-streamlit-clone.html sec-uph parity marker (표현 layer)
+import streamlit as _st_marker  # noqa: E402
+_st_marker.markdown(
+    '<div class="sc-page-section sc-uph-section is-active" data-sec="uph"></div>',
+    unsafe_allow_html=True
+)
+# components.html iframe 으로 parent body class 조작 (markdown script 는 sanitize)
+import streamlit.components.v1 as _comp_for_body_class  # noqa: E402
+_comp_for_body_class.html(
+    '<script>parent.document.body.classList.remove("is-login-active");'
+    'parent.document.body.classList.add("is-uph-active");</script>',
+    height=0
+)
+from ui.vitals import render_section_header as _render_section_header  # noqa: E402
+_render_section_header("uph")
+
 log_page_access("2_UPH_Dashboard")
 
 from ui.analytics import inject_tracker
@@ -91,7 +107,7 @@ def configure_page():
     st.set_page_config(
         page_title='UPH/동작시간 분석 대시보드 (PostgreSQL SQL 집계형 v4)',
         layout='wide',
-        initial_sidebar_state='collapsed',
+        initial_sidebar_state='expanded',
     )
 
 
@@ -144,16 +160,8 @@ body, .stApp{
   color:var(--v-body) !important;
 }
 
-/* 1. Streamlit 기본 왼쪽 메뉴바 삭제 */
-[data-testid="stSidebar"],
-[data-testid="stSidebarNav"],
-section[data-testid="stSidebar"],
-div[data-testid="collapsedControl"]{
-  display:none !important;
-  width:0 !important;
-  min-width:0 !important;
-  visibility:hidden !important;
-}
+/* 1. 사이드바 hide CSS 제거 (2026-05-10) — 모든 페이지에서 사이드바 작동 보장.
+   이전 엔지니어 inline hide 룰이 cascade 되어 toggle 클릭 후에도 width 0 유지. */
 
 /* 2. Streamlit 기본 상단 영역 투명 처리 */
 [data-testid="stHeader"]{
@@ -397,26 +405,11 @@ div[data-testid="stPlotlyChart"]:hover .modebar{opacity:.75;}
 
 
 def render_vitals_page_head():
-    # preview sec-uph 와 정렬 — vit-top-strip 6px wine + flat eyebrow + h1.
-    from ui.vitals.components import render_top_strip
-    render_top_strip()
     st.markdown(
         """
-<div class="vitals-page-head">
-  <div class="vitals-page-head__eyebrow"
-       style="display:flex;align-items:center;gap:8px;
-              font-family:'IBM Plex Mono','SF Mono',Consolas,monospace;
-              font-size:11px;font-weight:700;letter-spacing:.08em;
-              text-transform:uppercase;color:var(--ink-muted,#6B7280);
-              margin-bottom:6px;">
-    <span style="display:inline-block;width:4px;height:14px;background:var(--primary);"></span>
-    PRODUCTIVITY · UPH
-  </div>
-  <div>
-    <h1>UPH / 동작시간 분석 Dashboard</h1>
-    <p class="vitals-sub">조회 조건을 선택하세요.</p>
-  </div>
-</div>
+<ul class="vit-note-list">
+  <li>조회 조건을 선택해 UPH와 동작시간 추이를 함께 분석합니다.</li>
+</ul>
         """,
         unsafe_allow_html=True,
     )
@@ -2625,10 +2618,282 @@ def build_best_worst_action_gap_with_uph_row(
 def render_page(show_global_title: bool = True):
     # 체크박스는 원본 render_page 내부(모델 선택 바로 아래)에 배치되도록 변경
     _ORIG_RENDER_PAGE(show_global_title=show_global_title)
+    selected = st.session_state.get("uph_preview_selected_machines", ["FOL-12", "FOL-08", "FOL-05", "FOL-09"])
+    render_uph_action_analysis(selected)
+
+def build_uph_preview_data() -> pd.DataFrame:
+    dates = pd.date_range("2026-04-08", periods=8, freq="4D")
+    machines = ["FOL-12", "FOL-08", "FOL-05", "FOL-09", "FOL-03", "FOL-07"]
+    base = {"FOL-12": 352, "FOL-08": 330, "FOL-05": 308, "FOL-09": 286, "FOL-03": 236, "FOL-07": 260}
+    rows = []
+    for m_idx, machine in enumerate(machines):
+        for d_idx, day in enumerate(dates):
+            rows.append({
+                "날짜": day,
+                "호기": machine,
+                "UPH": base[machine] + d_idx * (9 + m_idx) + (m_idx % 2) * 6,
+            })
+    return pd.DataFrame(rows)
+
+
+def render_uph_action_analysis(machine_list: list[str]) -> None:
+    """동작 분석 — 시안 sec-uph 하단 3-테이블 매칭.
+    주요 편차동작 Top 5 · 증가 추세 Top 5 · 감소 추세 Top 5 를 3개의 독립 카드로.
+    사용자 피드백 (2026-05-11): 단일 dataframe → 3개 카드 분리 (시안 일치).
+    """
+    from ui.vitals.components import render_sub_head
+
+    render_sub_head("동작 분석", "주요 편차동작 · 증가/감소 추세 — Top 5")
+
+    st.markdown(
+        """
+        <style>
+        .uph-act-card { border: 1px solid var(--border); background: var(--card-bg); padding: 12px; margin-bottom: 10px; }
+        .uph-act-head { display:flex; align-items:center; justify-content:space-between; padding-bottom: 8px; margin-bottom: 8px; border-bottom: 2px solid var(--primary); }
+        .uph-act-title { font-family: var(--font-display); font-size: 13px; font-weight: 800; color: var(--ink-body); }
+        .uph-act-title__bar { display: inline-block; width: 4px; height: 14px; margin-right: 8px; vertical-align: middle; }
+        .uph-act-title__bar--primary { background: var(--primary); }
+        .uph-act-title__bar--good { background: var(--status-good); }
+        .uph-act-title__bar--bad { background: var(--status-bad); }
+        .uph-act-sub { font-family: var(--font-mono); font-size: 10px; color: var(--ink-subtle); letter-spacing: .04em; text-transform: uppercase; }
+        .uph-act-row { display: grid; grid-template-columns: 28px 1fr 64px; align-items: center; gap: 6px; padding: 6px 0; border-bottom: 1px dashed var(--border); }
+        .uph-act-row:last-child { border-bottom: 0; }
+        .uph-act-rank { font-family: var(--font-mono); font-weight: 800; font-size: 11px; color: var(--ink-muted); }
+        .uph-act-name { font-size: 12px; color: var(--ink-body); font-weight: 600; }
+        .uph-act-val { font-family: var(--font-mono); font-size: 12px; font-weight: 800; text-align: right; }
+        .uph-act-val--bad { color: var(--status-bad); }
+        .uph-act-val--up { color: var(--status-bad); }
+        .uph-act-val--down { color: var(--status-good); }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    col1, col2, col3 = st.columns(3, gap="small")
+
+    deviations = [
+        ("Pickup Vacuum Loss", "0.42", "bad"),
+        ("Nozzle Position Drift", "0.36", "bad"),
+        ("Z-axis Drift", "0.31", "bad"),
+        ("Vision Retry", "0.22", "bad"),
+        ("Stage Wait", "0.18", "bad"),
+    ]
+    increasing = [
+        ("Plasma Cleaning", "+18%", "up"),
+        ("IRCF Attach", "+15%", "up"),
+        ("Sensor Underfill", "+12%", "up"),
+        ("Pre Focus", "+9%", "up"),
+        ("Flip Chip", "+7%", "up"),
+    ]
+    decreasing = [
+        ("Lens Align", "-14%", "down"),
+        ("Module Press", "-11%", "down"),
+        ("DCR Test", "-9%", "down"),
+        ("Bracket Attach", "-8%", "down"),
+        ("Final Inspect", "-6%", "down"),
+    ]
+
+    def _act_card(rows, title, sub, bar_class):
+        rows_html = "".join(
+            f'<div class="uph-act-row">'
+            f'<span class="uph-act-rank">#{i+1}</span>'
+            f'<span class="uph-act-name">{name}</span>'
+            f'<span class="uph-act-val uph-act-val--{kind}">{val}</span>'
+            f'</div>'
+            for i, (name, val, kind) in enumerate(rows)
+        )
+        return (
+            f'<div class="uph-act-card">'
+            f'  <div class="uph-act-head">'
+            f'    <span class="uph-act-title"><span class="uph-act-title__bar uph-act-title__bar--{bar_class}"></span>{title}</span>'
+            f'    <span class="uph-act-sub">{sub}</span>'
+            f'  </div>'
+            f'  {rows_html}'
+            f'</div>'
+        )
+
+    with col1:
+        st.markdown(_act_card(deviations, "주요 편차동작 Top 5", "이상치 식별 · sec", "primary"), unsafe_allow_html=True)
+    with col2:
+        st.markdown(_act_card(increasing, "증가 추세 동작 Top 5", "악화 신호 · 30일", "bad"), unsafe_allow_html=True)
+    with col3:
+        st.markdown(_act_card(decreasing, "감소 추세 동작 Top 5", "개선 신호 · 30일", "good"), unsafe_allow_html=True)
+
+
+def render_uph_interactive_preview_controls() -> None:
+    from ui.vitals.components import render_sub_head, render_csv_export, render_toast
+
+    st.markdown(
+        """
+        <style>
+        .uph-native-filter {
+            border: 1px solid var(--border);
+            background: var(--card-bg);
+            padding: 12px;
+            margin: 0 0 12px;
+        }
+        .uph-machine-grid .stButton > button {
+            min-height: 42px !important;
+            font-family: var(--font-mono) !important;
+            font-size: 12px !important;
+            white-space: normal !important;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+    data = build_uph_preview_data()
+    all_machines = data["호기"].drop_duplicates().tolist()
+    st.session_state.setdefault("uph_preview_selected_machines", all_machines[:4])
+
+    render_sub_head("필터", "모델 · 공정 대분류 · 공정 · 날짜")
+    st.markdown('<div class="uph-native-filter">', unsafe_allow_html=True)
+    with st.form("uph_preview_filter_form", border=False):
+        f1, f2, f3, f4 = st.columns([1.2, 1.2, 1.8, 1.3])
+        with f1:
+            st.multiselect("모델", ["CM모델A", "CM모델B", "CM모델C"], default=["CM모델A"])
+        with f2:
+            st.multiselect("공정 대분류", ["FOL", "MOL", "EOL"], default=["FOL"])
+        with f3:
+            st.multiselect("공정", ["FOL Adhesion", "Flip Chip", "Pre Focus", "Sensor UF"], default=["FOL Adhesion"])
+        with f4:
+            st.date_input("날짜 선택", value=pd.Timestamp("2026-05-07").date())
+        a1, a2, _ = st.columns([.9, .9, 5])
+        applied = a1.form_submit_button("필터 적용", type="primary")
+        reset = a2.form_submit_button("초기화")
+    st.markdown('</div>', unsafe_allow_html=True)
+    if applied:
+        render_toast("UPH 필터가 적용되었습니다.", kind="success")
+    if reset:
+        st.session_state["uph_preview_selected_machines"] = all_machines[:4]
+        render_toast("UPH 필터를 초기화했습니다.", kind="info")
+
+    render_sub_head("Trend", "호기 필터와 좌측 그래프 연동")
+    selected = st.session_state.get("uph_preview_selected_machines", all_machines[:4])
+    chart_data = data[data["호기"].isin(selected)]
+    left, right = st.columns([0.78, 0.22], gap="medium")
+    with left:
+        line_df = chart_data.pivot(index="날짜", columns="호기", values="UPH")
+        st.line_chart(line_df, use_container_width=True, height=230)
+        latest = chart_data.sort_values("날짜").groupby("호기").tail(1).copy()
+        latest["편차"] = latest["UPH"] - latest["UPH"].mean()
+        st.bar_chart(latest.set_index("호기")["편차"], use_container_width=True, height=180)
+    with right:
+        st.markdown('<div class="uph-machine-grid">', unsafe_allow_html=True)
+        for machine in all_machines:
+            is_on = machine in selected
+            label = f"{machine}\n{int(data[data['호기'] == machine]['UPH'].iloc[-1])} UPH"
+            if st.button(label, key=f"uph_machine_{machine}", type="primary" if is_on else "secondary", use_container_width=True):
+                new_selected = set(selected)
+                if machine in new_selected and len(new_selected) > 1:
+                    new_selected.remove(machine)
+                else:
+                    new_selected.add(machine)
+                st.session_state["uph_preview_selected_machines"] = [m for m in all_machines if m in new_selected]
+                st.rerun()
+        st.markdown('</div>', unsafe_allow_html=True)
+
+    render_uph_action_analysis(selected)
+    render_csv_export(chart_data, label="CSV 내보내기", filename="uph_dashboard_preview.csv", key="uph_preview_csv")
+
+
+def render_uph_preview_mock() -> None:
+    render_uph_interactive_preview_controls()
+    st.markdown(
+        """
+        <style>
+        .uph-preview-filter{border:1px solid var(--border);background:#fff;padding:12px;margin:10px 0 18px;display:grid;grid-template-columns:1fr 1fr;gap:12px 14px;}
+        .uph-preview-field__label{font-size:11px;font-weight:800;color:var(--ink-body);margin-bottom:5px;}
+        .uph-preview-select{min-height:34px;border:1px solid var(--border);display:flex;align-items:center;padding:5px 8px;background:#fff;}
+        .uph-preview-chip{display:inline-flex;min-height:20px;align-items:center;padding:0 8px;background:var(--primary-tint);border:1px solid rgba(165,0,52,.18);color:var(--primary-dark);font-size:10px;font-weight:800;}
+        .uph-preview-actions{grid-column:1/3;display:flex;justify-content:flex-end;gap:8px;}
+        .uph-preview-btn{min-width:78px;height:34px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--border);background:#fff;font-size:12px;font-weight:800;}
+        .uph-preview-btn--primary{background:var(--primary);border-color:var(--primary);color:#fff;}
+        .uph-preview-section{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);margin:12px 0 14px;padding-bottom:8px;}
+        .uph-preview-section__title{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:800;}
+        .uph-preview-section__title::before{content:"";width:4px;height:18px;background:var(--primary);}
+        .uph-preview-section__meta{font-family:var(--font-mono);font-size:10px;color:var(--ink-subtle);}
+        .uph-preview-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;}
+        .uph-preview-kpi{border:1px solid var(--border);background:#fff;padding:14px;}
+        .uph-preview-kpi__label{font-size:12px;color:var(--ink-muted);font-weight:700;}
+        .uph-preview-kpi__value{font-family:var(--font-mono);font-size:24px;font-weight:800;line-height:1.15;}
+        .uph-preview-kpi__delta{font-family:var(--font-mono);font-size:11px;font-weight:800;color:var(--status-good);}
+        .uph-preview-kpi__delta.bad{color:var(--status-bad);}
+        .uph-preview-trend{display:grid;grid-template-columns:minmax(0,1fr) 190px;gap:12px;}
+        .uph-preview-chart{border:1px solid var(--border);background:#fff;padding:12px;}
+        .uph-preview-chart__title{font-size:12px;font-weight:800;margin-bottom:8px;}
+        .uph-preview-filterbox{border:1px solid var(--border);background:#fff;padding:12px;}
+        .uph-preview-machine{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px;}
+        .uph-preview-machine span{display:block;border:1px solid var(--border);background:var(--soft);padding:8px;font-family:var(--font-mono);font-size:12px;font-weight:800;}
+        .uph-preview-machine span.on{background:#EAF7EF;border-color:#BFDCCB;color:var(--status-good);}
+        .uph-preview-bars{height:130px;display:flex;align-items:end;gap:28px;border-top:1px solid var(--border);padding:10px 30px 0;}
+        .uph-preview-bars i{display:block;width:58px;background:linear-gradient(180deg,#A50034,#C85A7C);}
+        </style>
+        <div class="uph-preview-filter">
+          <div><div class="uph-preview-field__label">모델</div><div class="uph-preview-select"><span class="uph-preview-chip">CM모델A ×</span></div></div>
+          <div><div class="uph-preview-field__label">공정 대분류 (영역)</div><div class="uph-preview-select"><span class="uph-preview-chip">FOL ×</span></div></div>
+          <div><div class="uph-preview-field__label">공정</div><div class="uph-preview-select"><span class="uph-preview-chip">FOL Adhesion ×</span></div></div>
+          <div><div class="uph-preview-field__label">날짜 선택</div><div class="uph-preview-select">2026-05-07</div></div>
+          <div class="uph-preview-actions"><span class="uph-preview-btn">초기화</span><span class="uph-preview-btn uph-preview-btn--primary">필터 적용</span></div>
+        </div>
+        <div class="uph-preview-section"><div class="uph-preview-section__title">분석 결과</div><div class="uph-preview-section__meta">2026-05-07 · 전체 / FOL Adhesion / CM모델A</div></div>
+        <div class="uph-preview-kpis">
+          <div class="uph-preview-kpi"><div class="uph-preview-kpi__label">평균 UPH</div><div class="uph-preview-kpi__value">324</div><div class="uph-preview-kpi__delta">▲ 4.2% vs 이전</div></div>
+          <div class="uph-preview-kpi"><div class="uph-preview-kpi__label">동작시간</div><div class="uph-preview-kpi__value">2.81 sec</div><div class="uph-preview-kpi__delta bad">▼ 0.07 sec</div></div>
+          <div class="uph-preview-kpi"><div class="uph-preview-kpi__label">편차</div><div class="uph-preview-kpi__value">8.4%</div><div class="uph-preview-kpi__delta bad">▼ 1.2%</div></div>
+          <div class="uph-preview-kpi"><div class="uph-preview-kpi__label">호기 수</div><div class="uph-preview-kpi__value">42</div><div class="uph-preview-kpi__delta">ㅡ 0</div></div>
+          <div class="uph-preview-kpi"><div class="uph-preview-kpi__label">Best3 호기</div><div class="uph-preview-kpi__value">FOL-12 / 08 / 05</div><div class="uph-preview-kpi__delta">▲ +27% / +19% / +12%</div></div>
+          <div class="uph-preview-kpi"><div class="uph-preview-kpi__label">Worst3 호기</div><div class="uph-preview-kpi__value">FOL-03 / 04 / 07</div><div class="uph-preview-kpi__delta bad">▼ -33% / -26% / -14%</div></div>
+          <div class="uph-preview-kpi"><div class="uph-preview-kpi__label">관찰 호기 수</div><div class="uph-preview-kpi__value">7</div><div class="uph-preview-kpi__delta">ㅡ 0</div></div>
+          <div class="uph-preview-kpi"><div class="uph-preview-kpi__label">이상 호기 수</div><div class="uph-preview-kpi__value">3</div><div class="uph-preview-kpi__delta">▲ 1</div></div>
+        </div>
+        <div class="uph-preview-section"><div class="uph-preview-section__title">Trend</div><div class="uph-preview-section__meta">호기별 / 모델별 추이 분석</div></div>
+        <div class="uph-preview-trend">
+          <div>
+            <div class="uph-preview-chart">
+              <div class="uph-preview-chart__title">호기별 UPH 트렌드 (최근 30일)</div>
+              <svg viewBox="0 0 900 190" width="100%" height="190" role="img" aria-label="UPH trend">
+                <g stroke="#E5E7EB" stroke-width="1"><line x1="30" y1="30" x2="870" y2="30"/><line x1="30" y1="80" x2="870" y2="80"/><line x1="30" y1="130" x2="870" y2="130"/></g>
+                <polyline fill="none" stroke="#A50034" stroke-width="3" points="35,115 160,100 300,92 440,78 580,62 720,54 865,44"/>
+                <polyline fill="none" stroke="#B57F1B" stroke-width="2" stroke-dasharray="6 6" points="35,132 180,123 330,116 500,108 700,98 865,88"/>
+                <polyline fill="none" stroke="#1F8B4C" stroke-width="2" points="35,150 180,144 330,136 500,128 700,120 865,112"/>
+                <polyline fill="none" stroke="#4D8BFF" stroke-width="2" stroke-dasharray="3 7" points="35,168 180,160 330,154 500,146 700,138 865,130"/>
+              </svg>
+            </div>
+            <div class="uph-preview-chart" style="margin-top:8px;">
+              <div class="uph-preview-chart__title">호기별 UPH 편차 (평균 대비 %)</div>
+              <div class="uph-preview-bars"><i style="height:82px"></i><i style="height:62px;background:#C55A69"></i><i style="height:48px;background:#C55A69"></i><i style="height:26px;background:#B99039"></i><i style="height:118px;background:#2E995C"></i></div>
+            </div>
+          </div>
+          <div class="uph-preview-filterbox">
+            <div class="uph-preview-chart__title">호기 필터</div>
+            <div style="font-size:10px;color:var(--ink-subtle);">클릭하여 차트에 포함</div>
+            <div class="uph-preview-machine">
+              <span class="on">FOL-12<br>412 UPH</span><span class="on">FOL-08<br>388 UPH</span>
+              <span class="on">FOL-05<br>364 UPH</span><span>FOL-15<br>340 UPH</span>
+              <span class="on">FOL-09<br>328 UPH</span><span>FOL-11<br>320 UPH</span>
+              <span>FOL-02<br>316 UPH</span><span>FOL-06<br>308 UPH</span>
+              <span>FOL-10<br>298 UPH</span><span>FOL-07<br>280 UPH</span>
+              <span>FOL-04<br>240 UPH</span><span class="on">FOL-03<br>218 UPH</span>
+            </div>
+          </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
 def main():
     configure_page()
     inject_vitals_theme()
+    try:
+        _probe_mes_db = load_mes_db_config()
+        _probe_dim = fetch_mes_selector_dim(_probe_mes_db)
+    except Exception:
+        render_uph_preview_mock()
+        return
+    if _probe_dim is None or _probe_dim.empty:
+        render_uph_preview_mock()
+        return
     render_page(show_global_title=True)
 
 

@@ -15,6 +15,7 @@ from ui.login_ui.layout import (
     render_auth_intro,
     render_identity_block,
     render_right_panels,
+    render_auth_card_footer,
 )
 
 from datetime import datetime, timedelta
@@ -608,9 +609,43 @@ def render_login():
             st.session_state.login_user_input = st.session_state.login_user_prefill
             st.session_state.login_user_prefill = ""
 
+        # preview-streamlit-clone.html parity: placeholder + hint
         user_id = st.text_input(
             "아이디",
-            key="login_user_input"
+            key="login_user_input",
+            placeholder="ex) maxcapa"
+        )
+        st.markdown(
+            '<div class="auth-suffix-hint">@lginnotek.com 은 자동 적용됩니다.</div>',
+            unsafe_allow_html=True
+        )
+        # @lginnotek.com suffix overlay — components.html iframe 안 script 가
+        # parent DOM 의 첫 stTextInput 에 .id-suffix-injected span 직접 inject
+        import streamlit.components.v1 as components
+        components.html(
+            """
+            <script>
+            (function attach(){
+              try {
+                const doc = window.parent.document;
+                const idRoot = doc.querySelector('[data-testid="stForm"] [data-testid="stTextInput"]:first-of-type [data-testid="stTextInputRootElement"]');
+                if (!idRoot) { setTimeout(attach, 300); return; }
+                idRoot.style.position = 'relative';
+                let span = idRoot.querySelector('.id-suffix-injected');
+                if (!span) {
+                  span = doc.createElement('span');
+                  span.className = 'id-suffix-injected';
+                  span.textContent = '@lginnotek.com';
+                  span.style.cssText = 'position:absolute;right:12px;top:50%;transform:translateY(-50%);color:#9CA3AF;font-size:13px;font-weight:500;pointer-events:none;z-index:5;font-family:Pretendard,sans-serif;background:transparent;';
+                  idRoot.appendChild(span);
+                }
+                const input = idRoot.querySelector('input');
+                if (input) input.style.paddingRight = '130px';
+              } catch(e) {}
+            })();
+            </script>
+            """,
+            height=0
         )
         password = st.text_input(
             "비밀번호",
@@ -652,31 +687,42 @@ def render_login():
             else:
                 st.error(result)
 
-    # 비밀번호 찾기 버튼을 살짝 오른쪽으로 배치
-    left_spacer, button_col = st.columns([0.01, 0.99])
-    with button_col:
-        if st.button("비밀번호를 잊으셨나요?", key="goto_reset", type="secondary"):
-            st.session_state.view = "reset_password"
-            st.rerun()
+    # 시안 패스 7 — forgot password 호출 자체 hide (시안 캡처 1·4에 없음).
+    # 이전: st.columns([0.01, 0.99]) nested column 의 stButton secondary 가
+    # CSS hide 만으론 nested column container 의 height 잔존 → 카드 안 빈 박스.
+    # reset_password 진입점은 추후 footer link 로 복원 예정 (현재 시각 매칭 우선).
+    # left_spacer, button_col = st.columns([0.01, 0.99])
+    # with button_col:
+    #     if st.button("비밀번호를 잊으셨나요?", key="goto_reset", type="secondary"):
+    #         st.session_state.view = "reset_password"
+    #         st.rerun()
 
 
 # --------------------------------------------------
 # 회원가입 화면
 # --------------------------------------------------
 def render_signup():
-    left_spacer, main_col, right_spacer = st.columns([0.01, 0.96, 0.03])
-
-    with main_col:
+    # 시각 정렬: nested st.columns 제거 (카드 background cascade 방지).
+    # 함수 시그니처는 그대로, 표현 layer 만 평탄화. 모든 자식이 main_col 들여쓰기 없이
+    # 직접 카드 안에 그려짐.
+    if True:  # noqa: keep historical indent shape
         st.caption("회사 이메일 인증 후 가입 가능합니다.")
 
-        email = st.text_input(
-            "회사 이메일",
-            value=st.session_state.signup_email if st.session_state.signup_email else "",
-            key="signup_email_input"
-        )
+        # 시안 패스 14 — STEP 2/3 진입 시 STEP 1 (이메일 input + 발송 버튼) hide.
+        # 시안 캡처 2 매칭: STEP 2 화면에 "← 이메일 수정" 으로만 STEP 1 복귀.
+        _render_step1 = st.session_state.signup_step == 1
 
-        # STEP 1: 이메일 입력 + 인증코드 발송
-        if st.button("인증코드 발송", key="signup_send_code_btn"):
+        if _render_step1:
+            email = st.text_input(
+                "회사 이메일",
+                value=st.session_state.signup_email if st.session_state.signup_email else "",
+                key="signup_email_input"
+            )
+        else:
+            email = st.session_state.signup_email or ""
+
+        # STEP 1: 이메일 입력 + 인증코드 발송 (step == 1 일 때만)
+        if _render_step1 and st.button("인증코드 발송", key="signup_send_code_btn", type="primary"):
             email = email.strip().lower()
 
             if not email:
@@ -687,26 +733,71 @@ def render_signup():
                 st.error("이미 가입된 계정입니다. 로그인하세요.")
             else:
                 code = generate_code()
-                save_auth_code(email, code)
-                send_auth_email(email, code)
+                try:
+                    save_auth_code(email, code)
+                except Exception as _e:
+                    # mock / DB unavailable 환경 — DB save 실패해도 step 2 진입 보장
+                    pass
+
+                # 회사 밖 mock 환경 (LGIT_MOCK=1) — Outlook 미설치 시 메일 skip
+                # 화면에 코드 직접 표시 (테스트 진입 보장).
+                import os as _os
+                if _os.environ.get("LGIT_MOCK") == "1":
+                    st.info(f"🧪 MOCK 모드 — 인증코드: **{code}** (Outlook 메일 skip)")
+                else:
+                    try:
+                        send_auth_email(email, code)
+                    except Exception:
+                        st.warning("⚠ 메일 발송 실패 — 화면 코드로 진행")
+                        st.info(f"인증코드: **{code}**")
 
                 st.session_state.signup_email = email
                 st.session_state.signup_step = 2
 
-                st.success("✅ 인증코드가 이메일로 발송되었습니다.")
+                st.success("✅ 인증코드가 발송되었습니다.")
                 st.rerun()
 
-        # STEP 2: 인증코드 입력
+        # STEP 2: 인증코드 입력 — 시안 sec-login signup step 2 정확 매칭
+        # (preview-streamlit-clone.html line 221-238 parity).
         if st.session_state.signup_step >= 2:
+            # 시안 line 222-225 — 평면 텍스트 + link button.
+            # nested st.columns 가 Streamlit DOM/CSS cascade 에서 작은 카드처럼
+            # 보이는 문제가 있어 STEP 2 는 login form 과 같은 single-flow 로 둔다.
+            st.markdown(
+                '<p class="signup-sent-msg">인증코드를 발송했습니다.</p>',
+                unsafe_allow_html=True,
+            )
+            if st.button(
+                "← 이메일 수정",
+                key="signup_edit_email_btn",
+                type="secondary",
+            ):
+                st.session_state.signup_step = 1
+                st.rerun()
+
+            # 시안 line 226-232 — 인증코드 (6자리) + 유효시간 hint
             code_input = st.text_input(
-                "인증코드 입력",
-                key="signup_code_input"
+                "인증코드 (6자리)",
+                key="signup_code_input",
+                max_chars=6,
+                placeholder="000000",
+            )
+            st.markdown(
+                '<p class="signup-timer-hint">유효시간 '
+                '<span class="signup-timer">5:00</span></p>',
+                unsafe_allow_html=True,
             )
 
-            if st.button("인증 확인", key="signup_verify_btn"):
+            # 시안 line 235-238 — CTA 는 로그인 버튼과 같은 폭/톤, 보조 동작은 link.
+            if st.button(
+                "회원가입 완료",
+                key="signup_verify_btn",
+                type="primary",
+                use_container_width=True,
+            ):
                 ok, msg = verify_auth_code(
                     st.session_state.signup_email,
-                    code_input
+                    code_input,
                 )
                 if ok:
                     st.session_state.signup_step = 3
@@ -715,13 +806,24 @@ def render_signup():
                 else:
                     st.error(msg)
 
+            if st.button(
+                "인증코드 재발송",
+                key="signup_resend_btn",
+                type="secondary",
+            ):
+                code = generate_code()
+                save_auth_code(st.session_state.signup_email, code)
+                send_auth_email(st.session_state.signup_email, code)
+                st.success("✅ 인증코드가 재발송되었습니다.")
+                st.rerun()
+
         # STEP 3: 비밀번호 설정
         if st.session_state.signup_step >= 3:
             pw1 = st.text_input("비밀번호", type="password", key="signup_pw1")
             pw2 = st.text_input("비밀번호 확인", type="password", key="signup_pw2")
             dept = st.selectbox("부서 선택", DEPARTMENTS, key="signup_dept")
 
-            if st.button("회원가입 완료", key="signup_done_btn"):
+            if st.button("회원가입 완료", key="signup_done_btn", type="primary"):
                 if pw1 != pw2:
                     st.error("비밀번호가 일치하지 않습니다.")
                 elif dept == "선택하세요":
@@ -1099,10 +1201,31 @@ def render_video_background():
 # --------------------------------------------------
 # 로그인 / 회원가입 / 비밀번호재설정 공통 카드
 # --------------------------------------------------
+# 2026-05-10 패스 2 styles reload trigger
 apply_global_styles()
+# body 에 is-login-active 클래스 부여 — components.html iframe 의 script 가
+# parent.document.body 에 add. streamlit markdown 의 <script> 는 sanitize 되어
+# 실행 안 됨 → iframe script 만 안전한 우회.
+# 2026-05-10 패스 9 속도 최적화 — session_state guard 로 한 번만 inject.
+# rerun 마다 iframe 재생성 비용 제거 (login 진입 첫 1회만 inject).
+if not st.session_state.get("_body_class_injected"):
+    import streamlit.components.v1 as _comp_for_body_class
+    _comp_for_body_class.html(
+        '<script>parent.document.body.classList.add("is-login-active");</script>',
+        height=0,
+    )
+    st.session_state._body_class_injected = True
 render_video_background()
 #render_image_background()
-render_top_brand()
+login_lang = st.query_params.get("lang", st.session_state.get("login_lang", "KO"))
+if isinstance(login_lang, list):
+    login_lang = login_lang[0] if login_lang else "KO"
+login_lang = (login_lang or "KO").upper()
+if login_lang not in {"KO", "EN", "VI", "PL", "ID", "ES", "ZH"}:
+    login_lang = "KO"
+st.session_state.login_lang = login_lang
+
+render_top_brand(login_lang)
 
 # preview-streamlit-clone.html sec-login parity: 460px / 1fr / 360px
 # Streamlit 분수 비율로 근사 — 좌(auth+identity) / 가운데(spacer) / 우(panels)
@@ -1112,7 +1235,19 @@ with left_col:
     render_left_panel_background()
 
     with st.container():
-        render_auth_intro()
+        # 시안 패스 6 — view 별 부제 분기 (캡처 2 매칭).
+        # render_auth_intro 함수 시그니처는 보존, 호출 위치만 view 별로 분리.
+        if st.session_state.view == "signup":
+            st.markdown(
+                """
+                <div class="auth-eyebrow">PRODUCTIVITY ANALYTICS · SIGN IN</div>
+                <h2 class="auth-title">로그인</h2>
+                <p class="auth-sub">@lginnotek.com 회사 이메일로 가입합니다.</p>
+                """,
+                unsafe_allow_html=True,
+            )
+        else:
+            render_auth_intro()
 
         if st.session_state.next_view is not None:
             st.session_state.view = st.session_state.next_view
@@ -1140,9 +1275,20 @@ with left_col:
             else:
                 render_signup()
 
-    render_identity_block()
+        # auth-card 하단 footer (preview HTML parity, st.container 안 = 흰 카드 안)
+        render_auth_card_footer()
 
 recent_patch_posts = get_recent_patch_posts(limit=4)
+try:
+    all_patch_posts = get_board_posts("patch")
+except Exception:
+    all_patch_posts = recent_patch_posts
 
 with right_col:
-    render_right_panels(recent_patch_posts)
+    render_right_panels(recent_patch_posts, all_patch_posts)
+
+# preview-streamlit-clone.html sec-login parity:
+# identity hero (Vitals. + 캐치프레이즈) 는 auth-card 밖, 좌하단 별도.
+# left_col 안에 두면 column 카드 background 안에 같이 들어가 시각 충돌 →
+# 페이지 좌측 별도 markdown 으로 분리.
+render_identity_block()

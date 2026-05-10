@@ -16,7 +16,7 @@ from access_logger import log_page_access
 st.set_page_config(
     page_title="설비생산성 분석 플랫폼",
     layout="wide",
-    initial_sidebar_state="collapsed",
+    initial_sidebar_state="expanded",
 )
 require_login(page_name="home", page_path="pages/0_Home.py")
 
@@ -65,7 +65,7 @@ PAGES = {
     "uph": "pages/2_UPH_Dashboard.py",
     "mtba": "pages/3_MTBA_Dashboard.py",
     "mtba_detail": "pages/4_MTBA_Detail_View.py",
-    "chat": "pages/5_MaxCapa_Chat.py",
+    "chat": "pages/6_MaxCapa_Chat.py",
 }
 
 CONTACT_MAIL_TO = [
@@ -142,6 +142,176 @@ def inject_css() -> None:
             color:var(--ink-body);
         }
         .home-sub{margin:0;color:var(--ink-muted);font-size:14px;}
+
+        /* preview-streamlit-clone.html sec-home-1 --------------------
+           Hero grid: MaxCapa Chat 1 large card + 4 analysis cards. */
+        .sc-mode-card{
+            background: transparent;
+            border: 0;
+            padding: 0;
+            margin: 0;
+        }
+        .sc-nav-cards{
+            display:grid;
+            grid-template-columns:repeat(5,1fr);
+            gap:0.625rem;
+        }
+        .sc-nav-cards--hero{
+            grid-template-columns:1.25fr 1fr 1fr;
+            grid-template-rows:1fr 1fr;
+            gap:0.75rem;
+            max-width:1080px;
+            margin:0 auto;
+        }
+        .sc-nav-card{
+            display:flex;
+            flex-direction:column;
+            gap:16px;
+            padding:24px;
+            background:var(--card-bg);
+            border:1px solid var(--border);
+            border-radius:8px;
+            position:relative;
+            text-decoration:none !important;
+            color:var(--ink-body) !important;
+            cursor:pointer;
+            transition:border-color 160ms cubic-bezier(.2,.6,.3,1), box-shadow 160ms cubic-bezier(.2,.6,.3,1);
+            overflow:hidden;
+            min-height:132px;
+        }
+        .sc-nav-card::before{
+            content:"";
+            position:absolute;
+            left:0;
+            top:0;
+            bottom:0;
+            width:3px;
+            background:var(--primary);
+        }
+        .sc-nav-card:hover{
+            border-color:var(--border-strong);
+            box-shadow:0 1px 3px rgba(31,36,48,.04);
+        }
+        .sc-nav-card[aria-disabled="true"]{
+            opacity:.55;
+            cursor:not-allowed;
+            pointer-events:none;
+        }
+        .sc-nav-card__head{
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            gap:12px;
+            flex:1 1 auto;
+            min-height:96px;
+        }
+        .sc-nav-card__icon{
+            width:96px;
+            height:96px;
+            background:var(--soft);
+            display:grid;
+            place-items:center;
+            flex:0 0 auto;
+            color:var(--primary);
+            transition:background 160ms, color 160ms;
+        }
+        .sc-nav-card__icon svg{
+            width:48px;
+            height:48px;
+            stroke-width:1.5;
+        }
+        .sc-nav-card:hover .sc-nav-card__icon{
+            background:var(--primary-tint);
+            color:var(--primary-dark);
+        }
+        .sc-nav-card__badge{
+            display:inline-flex;
+            align-items:center;
+            padding:2px 8px;
+            border-radius:4px;
+            font-family:var(--font-mono);
+            font-size:11px;
+            font-weight:700;
+            letter-spacing:.04em;
+            text-transform:uppercase;
+            line-height:1.4;
+            background:var(--soft);
+            color:var(--ink-subtle);
+            position:absolute;
+            top:12px;
+            right:12px;
+        }
+        .sc-nav-card__badge--good{
+            color:var(--status-good);
+            background:rgba(31,139,76,.08);
+        }
+        .sc-nav-card__badge--warn{
+            color:var(--status-warn);
+            background:rgba(181,127,27,.08);
+        }
+        .sc-nav-card__body{
+            display:flex;
+            flex-direction:column;
+            gap:4px;
+            flex:0 0 auto;
+            min-width:0;
+            text-align:center;
+        }
+        .sc-nav-card__title{
+            margin:0;
+            font-family:var(--font-display);
+            font-size:16px;
+            font-weight:700;
+            letter-spacing:-0.01em;
+            line-height:1.4;
+            color:var(--ink-body);
+        }
+        .sc-nav-card__desc{
+            margin:0;
+            font-size:13px;
+            color:var(--ink-muted);
+            line-height:1.5;
+        }
+        .sc-nav-cards--hero > .sc-nav-card:first-child{
+            grid-column:1 / 2;
+            grid-row:1 / 3;
+            min-height:280px;
+            padding:24px 24px 24px 28px;
+        }
+        .sc-nav-cards--hero > .sc-nav-card:first-child .sc-nav-card__title{
+            font-size:22px;
+        }
+        .sc-nav-cards--hero > .sc-nav-card:first-child .sc-nav-card__desc{
+            font-size:14px;
+        }
+        .sc-nav-cards--hero > .sc-nav-card:first-child .sc-nav-card__icon{
+            width:140px;
+            height:140px;
+        }
+        .sc-nav-cards--hero > .sc-nav-card:first-child .sc-nav-card__icon svg{
+            width:70px;
+            height:70px;
+        }
+        @media (max-width:880px){
+            .sc-nav-cards--hero{
+                grid-template-columns:1fr 1fr;
+                grid-template-rows:auto auto auto;
+            }
+            .sc-nav-cards--hero > .sc-nav-card:first-child{
+                grid-column:1 / 3;
+                grid-row:1 / 2;
+                min-height:200px;
+            }
+        }
+        @media (max-width:640px){
+            .sc-nav-cards--hero{
+                grid-template-columns:1fr;
+            }
+            .sc-nav-cards--hero > .sc-nav-card:first-child{
+                grid-column:auto;
+                grid-row:auto;
+            }
+        }
 
         /* Vitals 3-카테고리 헤딩 (생산 / 설비 성능 / 설비 효율) ----------- */
         .vit-cat-head{
@@ -392,15 +562,9 @@ def inject_css() -> None:
             background:transparent !important;
             box-shadow:none !important;
         }
-        section[data-testid="stSidebar"],
-        [data-testid="stSidebar"],
-        [data-testid="stSidebarNav"],
-        [data-testid="collapsedControl"]{
-            display:none !important;
-            width:0 !important;
-            min-width:0 !important;
-            visibility:hidden !important;
-        }
+        /* 사이드바 hide CSS 제거 (2026-05-10) — 모든 페이지에서 사이드바 작동 보장.
+           이전 엔지니어 inline hide 룰이 cascade 되어 toggle 클릭 후에도 width 0
+           유지. 표현 layer 만 변경, 백엔드 무영향. */
         [data-testid="stToolbar"],
         [data-testid="stDecoration"],
         [data-testid="stStatusWidget"],
@@ -435,7 +599,7 @@ def inject_css() -> None:
             color:#fff !important;
             transform:translateY(-1px);
         }
-        
+
 
         /* =========================================================
            CMP 요약 상황판 추가/보정 CSS
@@ -1837,6 +2001,31 @@ def get_cmp_engine():
 
 @st.cache_data(show_spinner=False, ttl=600)
 def load_cmp_data() -> pd.DataFrame:
+    # 회사 밖 (offline) — mock_data 분기 (env LGIT_MOCK=1).
+    # 운영에선 자동 비활성, 기존 SQL 쿼리 그대로 동작.
+    try:
+        from ui.vitals.mock_data import is_mock_mode, mock_cmp_achievement
+        if is_mock_mode():
+            from datetime import date, timedelta
+            today = date.today()
+            mock = mock_cmp_achievement()
+            rows = []
+            for i in range(60):  # 60 day window
+                d = today - timedelta(days=i)
+                period = f"{d.year}-W{d.isocalendar()[1]}"
+                for r in mock:
+                    rows.append({
+                        DATE_COL: pd.Timestamp(d),
+                        PERIOD_COL: period,
+                        AREA_COL: "광주공장" if r["model"] != "R53B" else "구미공장",
+                        MODEL_COL: r["model"],
+                        PROCESS_COL: r["process"],
+                        CMP_COL: r["achievement_pct"] / 100.0,
+                    })
+            return pd.DataFrame(rows)
+    except Exception:
+        pass
+
     query = text(f"""
         SELECT
             {quote_ident(DB_WORK_DATE_COL)} AS work_date,
@@ -2065,17 +2254,8 @@ def render_cmp_summary_section():
         return
     init_filter_state(df)
 
-    # preview sec-home-1 와 정렬 — vit-top-strip 6px wine + flat title.
-    from ui.vitals.components import render_top_strip
-    render_top_strip()
-    st.markdown(
-        """
-        <div class="cmp-page-title-top">
-            <h1>전체 CMP 요약 상황판</h1>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
+    # preview sec-home-3 와 정렬 — Vitals header + compact filters.
+    render_home_preview_chrome()
 
     view_mode, areas, models = render_cmp_filter(df)
     summary = build_summary(df, areas, models, view_mode)
@@ -2101,6 +2281,303 @@ def _render_category_heading(ko: str, en: str, desc: str = "") -> None:
             <span class="vit-cat-bar"></span>
             <h3 class="vit-cat-title">{ko}<span class="vit-cat-sub">{en}</span></h3>
             {f'<p class="vit-cat-desc">{desc}</p>' if desc else ''}
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+def render_home_preview_chrome() -> None:
+    """Shared Home_2/Home_3 chrome from preview sec-home-2/3."""
+    st.markdown(
+        """
+        <style>
+        .block-container{
+            max-width:100% !important;
+            padding-top:0.85rem !important;
+            padding-left:1.25rem !important;
+            padding-right:1.25rem !important;
+        }
+        .cmp-top-strip,
+        .vit-top-strip{
+            display:block !important;
+            height:6px !important;
+            background:var(--primary) !important;
+            margin:6px 0 10px !important;
+        }
+        .vit-page-head{
+            margin:0 0 12px !important;
+            padding:0 0 10px !important;
+            border-bottom:1px solid var(--ink-body);
+        }
+        .vit-page-head h1{
+            margin:0 0 4px !important;
+            font-family:var(--font-display);
+            font-size:18px !important;
+            line-height:1.15 !important;
+            font-weight:800 !important;
+            letter-spacing:-0.02em !important;
+            color:var(--ink-body) !important;
+        }
+        .vit-page-head p{
+            margin:0 !important;
+            color:var(--ink-muted) !important;
+            font-size:12px !important;
+            line-height:1.35 !important;
+        }
+        .vit-dot{ color:var(--primary); }
+        .cmp-page-title-top{ margin:0 !important; }
+        .cmp-page-title-top h1{ display:none !important; }
+        .cmp-filter-title{ margin:0 0 4px 0 !important; }
+        .vit-analysis-strip-head{
+            display:flex;
+            align-items:baseline;
+            gap:10px;
+            margin:14px 0 8px;
+            padding:0 0 8px;
+            border-bottom:1px solid var(--ink-body);
+        }
+        .vit-analysis-strip-head::before{
+            content:"";
+            width:4px;
+            height:18px;
+            background:var(--primary);
+            display:inline-block;
+        }
+        .vit-analysis-strip-head__title{
+            font-size:14px;
+            font-weight:800;
+            color:var(--ink-body);
+        }
+        .vit-analysis-strip-head__sub{
+            font-family:var(--font-mono);
+            font-size:9px;
+            font-weight:800;
+            letter-spacing:.08em;
+            text-transform:uppercase;
+            color:var(--ink-subtle);
+        }
+        .vit-tool-strip{
+            display:grid;
+            grid-template-columns:repeat(5, minmax(160px, 1fr));
+            gap:8px;
+            margin:0 0 18px;
+        }
+        .vit-tool-card{
+            min-height:118px;
+            border:1px solid var(--border);
+            border-left:3px solid var(--primary);
+            background:#fff;
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            justify-content:center;
+            gap:8px;
+            text-align:center;
+            text-decoration:none !important;
+            color:var(--ink-body) !important;
+            position:relative;
+            padding:14px 12px;
+        }
+        .vit-tool-card__icon{
+            width:56px;
+            height:56px;
+            display:grid;
+            place-items:center;
+            background:var(--soft);
+            color:var(--primary);
+        }
+        .vit-tool-card__icon svg{
+            width:30px;
+            height:30px;
+            stroke-width:1.7;
+        }
+        .vit-tool-card__title{
+            font-size:13px;
+            font-weight:800;
+            line-height:1.25;
+        }
+        .vit-tool-card__desc{
+            color:var(--ink-muted);
+            font-size:10px;
+            line-height:1.35;
+        }
+        .vit-tool-card__badge{
+            position:absolute;
+            right:10px;
+            top:8px;
+            padding:2px 6px;
+            background:rgba(181,127,27,.08);
+            color:var(--status-warn);
+            font-size:9px;
+            font-weight:800;
+            line-height:1.2;
+        }
+        .vit-tool-card__badge--good{
+            background:rgba(31,139,76,.08);
+            color:var(--status-good);
+        }
+        .vit-tool-card__badge--idle{
+            background:var(--soft);
+            color:var(--ink-subtle);
+        }
+        @media (max-width:1200px){
+            .vit-tool-strip{grid-template-columns:repeat(2, minmax(160px,1fr));}
+        }
+        </style>
+        <div class="vit-top-strip" aria-hidden="true"></div>
+        <header class="vit-page-head">
+            <h1>Vitals<span class="vit-dot">.</span></h1>
+            <p>공정의 호흡을 데이터로 듣다.</p>
+        </header>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+def render_analysis_tools_strip() -> None:
+    st.markdown(
+        """
+        <div class="vit-analysis-strip-head">
+            <span class="vit-analysis-strip-head__title">분석 도구</span>
+            <span class="vit-analysis-strip-head__sub">Production Analytics</span>
+        </div>
+        <div class="vit-tool-strip">
+            <a class="vit-tool-card" href="./CMP_Dashboard" target="_self">
+                <span class="vit-tool-card__badge vit-tool-card__badge--good">정식</span>
+                <span class="vit-tool-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span>
+                <span class="vit-tool-card__title">CMP Dashboard (정식 5/22E)</span>
+                <span class="vit-tool-card__desc">공정별 CMP 달성률 추이</span>
+            </a>
+            <a class="vit-tool-card" href="./UPH_Dashboard" target="_self">
+                <span class="vit-tool-card__badge">가오픈</span>
+                <span class="vit-tool-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></span>
+                <span class="vit-tool-card__title">UPH Dashboard (가오픈 4/29~, 정식 5/22E)</span>
+                <span class="vit-tool-card__desc">UPH / 동작시간 분석</span>
+            </a>
+            <a class="vit-tool-card" href="./MTBA_Dashboard" target="_self">
+                <span class="vit-tool-card__badge">가오픈</span>
+                <span class="vit-tool-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span>
+                <span class="vit-tool-card__title">MTBA Dashboard (가오픈 4/29~, 정식 5/15E)</span>
+                <span class="vit-tool-card__desc">공정별 MTBA 통계</span>
+            </a>
+            <a class="vit-tool-card" href="./MTBA_Detail_View" target="_self">
+                <span class="vit-tool-card__badge">가오픈</span>
+                <span class="vit-tool-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></span>
+                <span class="vit-tool-card__title">MTBA Detail View (가오픈 4/29~, 정식 5/15E)</span>
+                <span class="vit-tool-card__desc">패널 기반 드릴다운 분석</span>
+            </a>
+            <a class="vit-tool-card" href="./MaxCapa_Chat" target="_self" aria-disabled="true">
+                <span class="vit-tool-card__badge vit-tool-card__badge--idle">오픈예정</span>
+                <span class="vit-tool-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
+                <span class="vit-tool-card__title">MaxCapa Chat (대화형 생산지표 조회, 오픈 예정)</span>
+                <span class="vit-tool-card__desc">대화형 생산지표 조회</span>
+            </a>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+def render_home1_hero_grid() -> None:
+    """preview-streamlit-clone.html sec-home-1 clone.
+
+    The preview's default Home is a pure navigation surface: a flat Vitals
+    heading and a 1-large + 4-small hero grid. This keeps navigation in
+    Markdown anchors so the page body can match the HTML mock without adding
+    backend state or query changes.
+    """
+    st.markdown(
+        """
+        <div class="sc-mode-card">
+          <div class="vit-top-strip" aria-hidden="true"></div>
+          <header class="vit-page-head">
+            <h1>Vitals<span class="vit-dot">.</span></h1>
+            <p>공정의 호흡을 데이터로 듣다.</p>
+          </header>
+          <div class="sc-nav-cards sc-nav-cards--hero">
+            <a class="sc-nav-card" href="#" aria-disabled="true">
+              <div class="sc-nav-card__head">
+                <div class="sc-nav-card__icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                       stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                  </svg>
+                </div>
+                <span class="sc-nav-card__badge">오픈예정</span>
+              </div>
+              <div class="sc-nav-card__body">
+                <h2 class="sc-nav-card__title">MaxCapa Chat</h2>
+                <p class="sc-nav-card__desc">대화형 생산지표 조회 · 자연어 질의로 MES UPH / ITAS UPH / MTBA / 알람 모두 한 번에.</p>
+              </div>
+            </a>
+            <a class="sc-nav-card" href="./CMP_Dashboard" target="_self">
+              <div class="sc-nav-card__head">
+                <div class="sc-nav-card__icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                       stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <rect x="3" y="3" width="7" height="7" rx="1"/>
+                    <rect x="14" y="3" width="7" height="7" rx="1"/>
+                    <rect x="3" y="14" width="7" height="7" rx="1"/>
+                    <rect x="14" y="14" width="7" height="7" rx="1"/>
+                  </svg>
+                </div>
+                <span class="sc-nav-card__badge sc-nav-card__badge--good">정식</span>
+              </div>
+              <div class="sc-nav-card__body">
+                <h2 class="sc-nav-card__title">CMP Dashboard</h2>
+                <p class="sc-nav-card__desc">공정별 CMP 달성률 추이</p>
+              </div>
+            </a>
+            <a class="sc-nav-card" href="./UPH_Dashboard" target="_self">
+              <div class="sc-nav-card__head">
+                <div class="sc-nav-card__icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                       stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
+                    <polyline points="16 7 22 7 22 13"/>
+                  </svg>
+                </div>
+                <span class="sc-nav-card__badge sc-nav-card__badge--warn">가오픈</span>
+              </div>
+              <div class="sc-nav-card__body">
+                <h2 class="sc-nav-card__title">UPH Dashboard</h2>
+                <p class="sc-nav-card__desc">UPH / 동작시간 분석</p>
+              </div>
+            </a>
+            <a class="sc-nav-card" href="./MTBA_Dashboard" target="_self">
+              <div class="sc-nav-card__head">
+                <div class="sc-nav-card__icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                       stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                  </svg>
+                </div>
+                <span class="sc-nav-card__badge sc-nav-card__badge--warn">가오픈</span>
+              </div>
+              <div class="sc-nav-card__body">
+                <h2 class="sc-nav-card__title">MTBA Dashboard</h2>
+                <p class="sc-nav-card__desc">공정별 MTBA 통계</p>
+              </div>
+            </a>
+            <a class="sc-nav-card" href="./MTBA_Detail_View" target="_self">
+              <div class="sc-nav-card__head">
+                <div class="sc-nav-card__icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                       stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+                    <polyline points="2 17 12 22 22 17"/>
+                    <polyline points="2 12 12 17 22 12"/>
+                  </svg>
+                </div>
+                <span class="sc-nav-card__badge sc-nav-card__badge--warn">가오픈</span>
+              </div>
+              <div class="sc-nav-card__body">
+                <h2 class="sc-nav-card__title">MTBA Detail View</h2>
+                <p class="sc-nav-card__desc">패널 기반 드릴다운 분석</p>
+              </div>
+            </a>
+          </div>
         </div>
         """,
         unsafe_allow_html=True,
@@ -2170,93 +2647,33 @@ def render_contact_box():
 
 def render_home_mode_selector() -> str:
     """Home 페이지 상단 3-모드 선택기.
-    - current  : 우리 home.html 디자인 (3 카테고리 메뉴) — 기본
-    - case1    : 심플 필터 + Best 3 / Worst 3 CMP 카드
-    - case2    : 원본 zip 의 CMP 요약 상황판 (디자인은 Vitals 톤)
+    - current  : preview sec-home-1 hero grid
+    - case1    : preview sec-home-2 Best/Worst 카드
+    - case2    : preview sec-home-3 CMP 요약 상황판
     Returns: 현재 선택된 모드 키.
     """
-    st.markdown(
-        """
-        <style>
-        .vit-mode-bar {
-            display:flex; align-items:center; gap:6px; flex-wrap:wrap;
-            padding: 6px;
-            background: var(--soft);
-            border: 1px solid var(--border);
-            border-radius: 0;
-            margin-bottom: 22px;
-            width: max-content;
-        }
-        .vit-mode-bar .vit-mode-eyebrow{
-            font-family: var(--font-mono);
-            font-size: 10px; font-weight: 700; letter-spacing: .1em;
-            color: var(--ink-subtle); text-transform: uppercase;
-            padding: 0 10px;
-        }
-        /* 모드 버튼 — st-key 로 스코프 */
-        div[class*="st-key-vit_mode_btn_"] button {
-            background: transparent !important;
-            border: 1px solid transparent !important;
-            color: var(--ink-muted) !important;
-            font-weight: 600 !important;
-            min-height: 32px !important;
-            padding: 0 14px !important;
-            border-radius: 0!important;
-            box-shadow: none !important;
-        }
-        div[class*="st-key-vit_mode_btn_"] button:hover {
-            background: rgba(255,255,255,0.7) !important;
-            color: var(--ink-body) !important;
-        }
-        div[class*="st-key-vit_mode_btn_"] button:disabled,
-        div[class*="st-key-vit_mode_btn_"] button[disabled] {
-            background: var(--card-bg) !important;
-            border-color: var(--border) !important;
-            color: var(--ink-body) !important;
-            font-weight: 700 !important;
-            box-shadow: 0 1px 2px rgba(15,17,21,0.04) !important;
-            opacity: 1 !important;
-            cursor: default !important;
-        }
-        </style>
-        """,
-        unsafe_allow_html=True,
-    )
-
-    # 기본값: 'current'
-    mode = st.session_state.get("home_mode", "current")
-
-    # 모드 바 — 3 버튼 + 안내 eyebrow
-    st.markdown('<div class="vit-mode-bar">', unsafe_allow_html=True)
-    cols = st.columns([1.4, 1.6, 2.0, 2.6, 1.0])
-    with cols[0]:
-        st.markdown('<span class="vit-mode-eyebrow">View</span>', unsafe_allow_html=True)
-    with cols[1]:
-        if st.button("기본", key="vit_mode_btn_current", disabled=(mode == "current")):
-            st.session_state["home_mode"] = "current"
-            st.rerun()
-    with cols[2]:
-        if st.button("Best · Worst 카드", key="vit_mode_btn_case1", disabled=(mode == "case1")):
-            st.session_state["home_mode"] = "case1"
-            st.rerun()
-    with cols[3]:
-        if st.button("CMP 요약 상황판", key="vit_mode_btn_case2", disabled=(mode == "case2")):
-            st.session_state["home_mode"] = "case2"
-            st.rerun()
-    with cols[4]:
-        st.empty()
-    st.markdown('</div>', unsafe_allow_html=True)
-
+    labels = {
+        "current": "Home_1 (S2-B)",
+        "case1": "Home_2 (Best/Worst)",
+        "case2": "Home_3 (S3-B)",
+    }
+    query_mode = st.query_params.get("home_mode")
+    if isinstance(query_mode, list):
+        query_mode = query_mode[0] if query_mode else None
+    mode = str(query_mode or st.session_state.get("home_mode", "current"))
+    if mode not in labels:
+        mode = "current"
+    st.session_state["home_mode"] = mode
     return mode
 
 
 def _render_simple_cmp_filter(df):
-    """Case 1 전용 — 심플 필터: 일/주 토글 + 영역(전체 또는 선택). 모델 필터는 생략 (직관적).
+    """Case 1 전용 — 심플 필터: 일/주 토글 + 모델 + 영역.
     Returns: (view_mode, areas, models) — build_summary 호환.
     """
     init_filter_state(df)
     st.markdown('<div class="cmp-filter-title">요약 필터</div>', unsafe_allow_html=True)
-    c1, c2, c3 = st.columns([0.85, 4.0, 1.5], gap="small")
+    c1, c2, c3, c4 = st.columns([0.85, 3.4, 3.4, 1.2], gap="small")
     with c1:
         view_mode = st.radio(
             "기간",
@@ -2267,24 +2684,33 @@ def _render_simple_cmp_filter(df):
             label_visibility="collapsed",
         )
     with c2:
+        all_models = sorted(df[MODEL_COL].dropna().unique().tolist())
+        models = st.multiselect(
+            "모델",
+            options=all_models,
+            default=st.session_state.get("home_models_simple", all_models),
+            key="home_models_simple",
+            label_visibility="collapsed",
+            placeholder="모델",
+        )
+    with c3:
         all_areas = sorted(df[AREA_COL].dropna().unique().tolist())
         areas = st.multiselect(
-            "영역",
+            "공정 대분류",
             options=all_areas,
             default=st.session_state.get("home_areas_simple", all_areas),
             key="home_areas_simple",
             label_visibility="collapsed",
-            placeholder="영역(전체) — 비우면 모든 영역",
+            placeholder="공정 대분류",
         )
-    with c3:
+    with c4:
         st.markdown(
             f'<div style="font-family:var(--font-mono);font-size:11px;color:var(--ink-subtle);'
             f'letter-spacing:.06em;text-transform:uppercase;text-align:right;padding-top:6px;">'
             f"latest · {df[DATE_COL].max().strftime('%Y-%m-%d') if not df.empty else '-'}</div>",
             unsafe_allow_html=True,
         )
-    # 모델 미선택 = 전체
-    return view_mode, areas, []
+    return view_mode, areas, models
 
 
 def _compute_best_worst_processes(summary, n: int = 3):
@@ -2355,17 +2781,8 @@ def render_case1_best_worst_cards():
         st.warning("CMP 데이터가 없습니다.")
         return
 
-    # preview sec-home-2 와 정렬 — vit-top-strip 6px wine + flat title.
-    from ui.vitals.components import render_top_strip
-    render_top_strip()
-    st.markdown(
-        """
-        <div class="cmp-page-title-top">
-            <h1>전체 CMP 요약 · Best 3 / Worst 3</h1>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
+    # preview sec-home-2 와 정렬 — Vitals header + compact filters.
+    render_home_preview_chrome()
     view_mode, areas, models = _render_simple_cmp_filter(df)
     summary = build_summary(df, areas, models, view_mode)
     if summary is None or summary.get("cur") is None or summary["cur"].empty:
@@ -2467,22 +2884,31 @@ def render_case1_best_worst_cards():
 
 def main():
     inject_css()
+    # preview-streamlit-clone.html sec-home parity marker — body class 부여로
+    # streamlit-clone.css 의 sc-home-section 룰 활성화 (대원칙: 표현 layer).
+    st.markdown(
+        '<div class="sc-page-section sc-home-section is-active" data-sec="home"></div>',
+        unsafe_allow_html=True
+    )
+    import streamlit.components.v1 as _comp_for_body_class
+    _comp_for_body_class.html(
+        '<script>parent.document.body.classList.remove("is-login-active");'
+        'parent.document.body.classList.add("is-home-active");</script>',
+        height=0
+    )
     mode = render_home_mode_selector()
 
     if mode == "case1":
         # Case 1 — 심플 필터 + Best/Worst 카드
         render_case1_best_worst_cards()
-        render_menu_section()
-        render_contact_box()
+        render_analysis_tools_strip()
     elif mode == "case2":
         # Case 2 — 원본 zip 의 CMP 요약 상황판 구조 (디자인은 Vitals 톤)
         render_cmp_summary_section()
-        render_menu_section()
-        render_contact_box()
+        render_analysis_tools_strip()
     else:
-        # Current (default) — 우리 home.html 디자인 (3 카테고리 메뉴 only)
-        render_menu_section()
-        render_contact_box()
+        # Home_1 (S2-B) — preview-streamlit-clone.html sec-home-1 hero grid.
+        render_home1_hero_grid()
 
 
 if __name__ == "__main__":

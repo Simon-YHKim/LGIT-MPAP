@@ -18,8 +18,8 @@ from auth_guard import require_login
 #    initial_sidebar_state="collapsed",
 #)
 require_login(
-    page_name="CMP_dashboard",
-    page_path="pages/1_CMP_Dashboard.py"
+    page_name="Alarm_Action_List",
+    page_path="pages/5_Alarm_Action_List.py"
 )
 
 
@@ -36,6 +36,22 @@ st.set_page_config(page_title='Alarm Action List', layout='wide')
 # === Vitals theme (LG EI fonts + wine palette) ===
 from ui.vitals import apply_vitals_theme
 apply_vitals_theme()
+
+# preview-streamlit-clone.html sec-alarm parity marker (표현 layer)
+import streamlit as _st_marker  # noqa: E402
+_st_marker.markdown(
+    '<div class="sc-page-section sc-alarm-section is-active" data-sec="alarm"></div>',
+    unsafe_allow_html=True
+)
+# components.html iframe 으로 parent body class 조작 (markdown script 는 sanitize)
+import streamlit.components.v1 as _comp_for_body_class  # noqa: E402
+_comp_for_body_class.html(
+    '<script>parent.document.body.classList.remove("is-login-active");'
+    'parent.document.body.classList.add("is-alarm-active");</script>',
+    height=0
+)
+from ui.vitals import render_section_header as _render_section_header  # noqa: E402
+_render_section_header("alarm")
 
 from ui.analytics import inject_tracker
 inject_tracker(page_name="5_Alarm_Action_List", page_path="pages/5_Alarm_Action_List.py")
@@ -114,7 +130,7 @@ st.markdown(f"""
 .proc-card-sub {{ color:var(--sub); font-size:12px; }}
 div[data-baseweb="select"] > div, div[data-baseweb="input"] > div, .stDateInput > div > div, .stTextArea textarea {{ border-radius:0!important; border:1px solid var(--border) !important; box-shadow:none !important; background:#fff !important; }}
 .stButton > button {{ border-radius:0!important; border:1px solid var(--border) !important; min-height:2.5rem; }}
-button[kind="primary"] {{ background:linear-gradient(135deg,var(--primary) 0%, var(--primary2) 100%) !important; color:#fff !important; box-shadow:0 8px 16px rgba(109,16,40,.15) !important; }}
+button[kind="primary"] {{ background:var(--primary) !important; color:#fff !important; box-shadow:none !important; filter:none !important; }}
 </style>
 """, unsafe_allow_html=True)
 
@@ -343,6 +359,136 @@ def render_timeline_cards(display_df: pd.DataFrame):
         st.markdown("</div>", unsafe_allow_html=True)
 
 
+@st.dialog("알람 상세", width="large")
+def render_alarm_detail_dialog(row: dict):
+    """Alarm 상세 모달 — 시안 alarm-detail-modal 매칭."""
+    severity = row.get("상태", "주의")
+    sev_class = "vit-pill--bad" if severity == "반복알람" else ("vit-pill--good" if severity == "조치 완료" else "vit-pill--warn")
+    st.markdown(
+        f"""
+        <style>
+        .vit-pill {{ display: inline-block; padding: 2px 8px; font-family: var(--font-mono); font-size: 10px; font-weight: 800; letter-spacing: .04em; }}
+        .vit-pill--bad {{ background: var(--status-bad-tint, #FDECEF); color: var(--status-bad, #B23A48); }}
+        .vit-pill--warn {{ background: var(--status-warn-tint, #FAF1DD); color: var(--status-warn, #B57F1B); }}
+        .vit-pill--good {{ background: var(--status-good-tint, #E6F4EA); color: var(--status-good, #1F8B4C); }}
+        .vit-kv {{ display: grid; grid-template-columns: 90px 1fr; gap: 6px 12px; font-size: 12px; padding: 10px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); margin: 8px 0 12px; }}
+        .vit-kv dt {{ font-family: var(--font-mono); font-weight: 800; color: var(--ink-muted); font-size: 10px; letter-spacing: .04em; text-transform: uppercase; }}
+        .vit-kv dd {{ margin: 0; color: var(--ink-body); font-weight: 600; }}
+        </style>
+        <div style="display:flex;align-items:center;gap:10px;margin:-6px 0 6px;">
+          <h3 style="margin:0;font-family:var(--font-display);font-size:18px;font-weight:800;">알람 상세</h3>
+          <span class="vit-pill {sev_class}">{severity}</span>
+          <span style="margin-left:auto;font-family:var(--font-mono);font-size:11px;color:var(--ink-muted);">{row.get('알람코드')} · {row.get('일자')} {row.get('시간')}</span>
+        </div>
+        <dl class="vit-kv">
+          <dt>알람코드</dt><dd>{row.get('알람코드','-')}</dd>
+          <dt>공정</dt><dd>{row.get('공정','-')}</dd>
+          <dt>호기</dt><dd>{row.get('호기','-')}</dd>
+          <dt>내용</dt><dd>{row.get('내용','-')}</dd>
+          <dt>발생시각</dt><dd>{row.get('일자')} {row.get('시간')}</dd>
+          <dt>상태</dt><dd>{severity}</dd>
+        </dl>
+        """,
+        unsafe_allow_html=True,
+    )
+    st.markdown("**조치 / 메모**")
+    memo = st.text_area("조치 메모", placeholder="이 알람에 대한 원인 분석과 조치 내역을 기록하세요.",
+                        key=f"alarm_memo_{row.get('알람코드')}_{row.get('시간')}", height=80, label_visibility="collapsed")
+    a1, a2, a3 = st.columns([1, 1, 4])
+    with a1:
+        if st.button("조치 완료로 변경", key=f"alarm_done_{row.get('알람코드')}_{row.get('시간')}", type="primary"):
+            st.success("조치 완료로 변경되었습니다 (mock).")
+    with a2:
+        if st.button("메모 저장", key=f"alarm_memo_save_{row.get('알람코드')}_{row.get('시간')}"):
+            st.info("메모가 저장되었습니다 (mock).")
+
+
+def render_alarm_preview_mock(start_date, end_date, team_name):
+    """HTML sec-alarm no-data fallback with functional mock controls."""
+    from ui.vitals.components import render_csv_export, render_sub_head, render_toast
+
+    mock_df = pd.DataFrame(
+        [
+            {"일자": "2026-05-07", "시간": "14:22", "알람코드": "ALM-2031", "공정": "IRCF Attach", "호기": "FOL-12", "내용": "Pickup Vacuum Loss · 3회 반복", "상태": "반복알람"},
+            {"일자": "2026-05-07", "시간": "11:05", "알람코드": "ALM-1042", "공정": "Flip Chip", "호기": "FOL-08", "내용": "Nozzle Position Drift", "상태": "주의"},
+            {"일자": "2026-05-07", "시간": "09:48", "알람코드": "ALM-1117", "공정": "Pre Focus", "호기": "FOL-05", "내용": "Z-axis Drift · 캘리브레이션 완료", "상태": "조치 완료"},
+            {"일자": "2026-05-06", "시간": "22:48", "알람코드": "ALM-1881", "공정": "IRCF Attach", "호기": "FOL-12", "내용": "Force Calibration Fail · 3회 반복", "상태": "반복알람"},
+            {"일자": "2026-05-06", "시간": "16:32", "알람코드": "ALM-2014", "공정": "Plasma", "호기": "FOL-12", "내용": "Vibration Out-of-spec", "상태": "주의"},
+            {"일자": "2026-05-05", "시간": "11:42", "알람코드": "ALM-1117", "공정": "Pre Focus", "호기": "FOL-08", "내용": "Z-axis Drift · 보정 완료", "상태": "조치 완료"},
+        ]
+    )
+
+    st.markdown(
+        """
+        <ul class="vit-note-list">
+          <li>선택한 팀에 따라 공정 선택 카드 제목과 저장 버튼 문구가 동적으로 바뀝니다.</li>
+          <li>DB Comment 이력이 없을 때도 HTML 시안과 같은 알람 타임라인 목업을 표시합니다.</li>
+          <li>각 알람 행을 클릭하면 상세 모달이 열립니다.</li>
+        </ul>
+        <style>
+        /* 사용자 피드백 (2026-05-11) — 알람 행 클릭 가능 버튼 톤 (status pill 유지). */
+        .alarm-row-btn .stButton > button {
+            background: var(--card-bg) !important;
+            border: 1px solid var(--border) !important;
+            color: var(--ink-body) !important;
+            text-align: left !important;
+            justify-content: flex-start !important;
+            padding: 10px 12px !important;
+            font-family: var(--font-body) !important;
+            font-weight: 600 !important;
+            min-height: 44px !important;
+            box-shadow: none !important;
+            font-size: 12px !important;
+            white-space: normal !important;
+            line-height: 1.35 !important;
+        }
+        .alarm-row-btn .stButton > button:hover {
+            border-color: var(--primary) !important;
+            background: var(--primary-tint, #F8E5EC) !important;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+    k1, k2, k3, k4 = st.columns(4)
+    k1.metric("총 알람", "142", "+18 vs 전주")
+    k2.metric("반복 알람", "12", "+4")
+    k3.metric("조치 완료", "98", "+22")
+    k4.metric("미조치", "8", "-3")
+
+    if st.button("목업 알람 조회", type="primary"):
+        render_toast(f"{team_name} · {start_date} ~ {end_date} 조건으로 목업 알람을 조회했습니다.", kind="success")
+
+    render_sub_head("알람 타임라인", "날짜별 누적 알람 / 조치 / 댓글 · 행 클릭 → 상세")
+    st.markdown('<div class="alarm-row-btn">', unsafe_allow_html=True)
+    for day, day_df in mock_df.groupby("일자", sort=False):
+        st.markdown(
+            f"<div class='timeline-day'><div class='timeline-day-header'>"
+            f"<div class='timeline-date'>{day}</div>"
+            f"<div class='timeline-stats'>알람 {len(day_df)}건 · 조치 {int((day_df['상태'] == '조치 완료').sum())}건</div>"
+            f"</div></div>",
+            unsafe_allow_html=True,
+        )
+        for idx, row in enumerate(day_df.to_dict("records")):
+            status_emoji = "✓" if row["상태"] == "조치 완료" else ("!" if row["상태"] == "반복알람" else "⚠")
+            label = (
+                f"{row['시간']}  ·  {row['알람코드']}  ·  {row['공정']}  ·  {row['호기']}\n"
+                f"{row['내용']}   [{row['상태']}]"
+            )
+            if st.button(label, key=f"alarm_row_{day}_{idx}_{row['알람코드']}", use_container_width=True):
+                # 사용자 피드백 (2026-05-11) — column context 안 dialog 호출 회피.
+                # session_state 에 args 저장 후 page level 에서 호출.
+                st.session_state["_alarm_dialog_row"] = row
+    st.markdown('</div>', unsafe_allow_html=True)
+
+    # page level — dialog 호출 (consume + clear).
+    if "_alarm_dialog_row" in st.session_state:
+        row = st.session_state.pop("_alarm_dialog_row")
+        render_alarm_detail_dialog(row)
+
+    render_csv_export(mock_df, label="CSV 내보내기", filename="alarm_action_preview.csv", key="alarm_preview_csv")
+
+
 ensure_comment_table(engine)
 all_min_date, all_max_date = get_comment_date_range(engine)
 if 'aal_team' not in st.session_state:
@@ -351,18 +497,7 @@ if 'aal_period' not in st.session_state:
     default_start = max(all_min_date, all_max_date - timedelta(days=6))
     st.session_state.aal_period = (default_start, all_max_date)
 
-# preview sec-alarm 와 동일 — vit-top-strip 6px wine + flat 페이지 타이틀.
-from ui.vitals.components import render_top_strip, render_sub_head
-render_top_strip()
-st.markdown(
-    '<div class="board-top-title vit-page-head" '
-    'style="font-family:\'LG EI Headline\',\'LG EI Text\',sans-serif;'
-    'font-size:28px;font-weight:700;color:var(--ink-body,#1F2430);'
-    'letter-spacing:-0.02em;margin:0 0 6px;'
-    'border-bottom:1px solid var(--border,#E5E7EB);padding-bottom:8px;">'
-    'Alarm Action List · 알람 액션 이력</div>',
-    unsafe_allow_html=True,
-)
+from ui.vitals.components import render_sub_head
 
 st.markdown("""
 <div class='soft-card'>
@@ -464,7 +599,8 @@ metric3.metric('조회 종료일', str(end_date))
 metric4.metric('팀', team_name)
 
 if result_df.empty:
-    st.info('선택한 조건에 해당하는 Comment 이력이 없습니다.')
+    st.info('선택한 조건에 해당하는 Comment 이력이 없어 HTML 시안 기준 목업 타임라인을 표시합니다.')
+    render_alarm_preview_mock(start_date, end_date, team_name)
     st.stop()
 
 display_df = rename_display(result_df)

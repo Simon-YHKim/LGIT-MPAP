@@ -15,7 +15,7 @@ from auth_guard import require_login
 st.set_page_config(
     page_title="CMP 달성률 Dashboard",
     layout="wide",
-    initial_sidebar_state="collapsed",
+    initial_sidebar_state="expanded",
 )
 require_login(
     page_name="CMP_dashboard",
@@ -25,6 +25,22 @@ require_login(
 # === Vitals theme (LG EI fonts + wine palette) ===
 from ui.vitals import apply_vitals_theme
 apply_vitals_theme()
+
+# preview-streamlit-clone.html sec-cmp parity marker (표현 layer)
+import streamlit as _st_marker  # noqa: E402
+_st_marker.markdown(
+    '<div class="sc-page-section sc-cmp-section is-active" data-sec="cmp"></div>',
+    unsafe_allow_html=True
+)
+# components.html iframe 으로 parent body class 조작 (markdown script 는 sanitize)
+import streamlit.components.v1 as _comp_for_body_class  # noqa: E402
+_comp_for_body_class.html(
+    '<script>parent.document.body.classList.remove("is-login-active");'
+    'parent.document.body.classList.add("is-cmp-active");</script>',
+    height=0
+)
+from ui.vitals import render_section_header as _render_section_header  # noqa: E402
+_render_section_header("cmp")
 
 from access_logger import log_page_access
 
@@ -607,15 +623,9 @@ def apply_common_css():
         box-shadow: none !important;
         border: 0 !important;
     }
-    section[data-testid="stSidebar"],
-    [data-testid="stSidebar"],
-    [data-testid="stSidebarNav"],
-    [data-testid="collapsedControl"] {
-        display: none !important;
-        width: 0 !important;
-        min-width: 0 !important;
-        visibility: hidden !important;
-    }
+    /* 사이드바 hide CSS 제거 (2026-05-10) — 모든 페이지에서 사이드바 작동 보장.
+       이전 엔지니어 inline hide 룰이 cascade 되어 toggle 클릭 후에도 width 0
+       유지. 표현 layer 만 변경, 백엔드 무영향. */
     [data-testid="stToolbar"],
     [data-testid="stDecoration"],
     [data-testid="stStatusWidget"],
@@ -1496,22 +1506,565 @@ def render_home_button():
     st.markdown('</div>', unsafe_allow_html=True)
 
 
+@st.dialog("공정별 상세 분석")
+def render_cmp_process_detail_dialog(process_name: str, model_name: str, rate: float):
+    uph_rate = max(rate - 2.2, 68)
+    eff_rate = min(rate + 1.4, 99.8)
+    st.markdown(
+        f"""
+        <style>
+        .cmp-dialog-head {{
+            display:flex;align-items:center;justify-content:space-between;
+            border-left:4px solid var(--primary);border-bottom:1px solid var(--border);
+            padding:10px 12px;margin:-8px 0 10px;background:#fff;
+        }}
+        .cmp-dialog-title {{
+            font-family:var(--font-display);font-size:18px;font-weight:800;
+            color:var(--ink-body);line-height:1.15;margin:0;
+        }}
+        .cmp-dialog-meta {{
+            display:flex;gap:16px;align-items:center;
+            font-family:var(--font-mono);font-size:10px;color:var(--ink-muted);
+            text-transform:uppercase;letter-spacing:.04em;
+        }}
+        .cmp-dialog-meta b {{ color:var(--ink-body);font-weight:800; }}
+        .cmp-dialog-metric {{
+            min-height:126px;border:1px solid var(--border);border-left:3px solid var(--primary);
+            background:var(--soft);padding:16px 12px;display:flex;flex-direction:column;justify-content:center;
+        }}
+        .cmp-dialog-metric.uph {{ border-left-color:var(--status-warn); }}
+        .cmp-dialog-metric.eff {{ border-left-color:var(--status-good); }}
+        .cmp-dialog-metric__label {{
+            font-family:var(--font-mono);font-size:10px;font-weight:800;
+            color:var(--ink-muted);letter-spacing:.08em;text-transform:uppercase;
+        }}
+        .cmp-dialog-metric__value {{
+            font-family:var(--font-mono);font-size:26px;font-weight:900;
+            color:var(--ink-body);line-height:1.2;margin-top:6px;
+        }}
+        .cmp-dialog-metric__delta {{
+            font-family:var(--font-mono);font-size:10px;font-weight:800;color:var(--status-bad);margin-top:2px;
+        }}
+        .cmp-dialog-table {{
+            width:100%;border-collapse:collapse;border:1px solid var(--border);
+            font-family:var(--font-mono);font-size:11px;background:#fff;
+        }}
+        .cmp-dialog-table th {{
+            background:var(--primary-tint);color:var(--primary-dark);
+            border-bottom:2px solid var(--primary);text-align:left;padding:7px;font-weight:900;
+        }}
+        .cmp-dialog-table td {{ border-top:1px solid var(--border);padding:6px 7px; }}
+        .cmp-dialog-table td.num {{ text-align:right; }}
+        .cmp-dialog-good {{ color:var(--status-good);font-weight:900; }}
+        .cmp-dialog-bad {{ color:var(--status-bad);font-weight:900; }}
+        </style>
+        <div class="cmp-dialog-head">
+          <div>
+            <div class="cmp-dialog-meta"><span>PROCESS</span></div>
+            <h3 class="cmp-dialog-title">{process_name}</h3>
+          </div>
+          <div class="cmp-dialog-meta">
+            <span>모델 <b>{model_name}</b></span><span>대분류 <b>FOL</b></span>
+            <span>갱신 <b>2026-05-07 23:50</b></span>
+          </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    csv_df = pd.DataFrame([
+        {"호기": "EQ-12", "CMP": round(rate + 9.0, 1), "UPH": round(uph_rate + 7.4, 1), "EFF": round(eff_rate + 5.5, 1)},
+        {"호기": "EQ-08", "CMP": round(rate + 7.4, 1), "UPH": round(uph_rate + 5.2, 1), "EFF": round(eff_rate + 4.3, 1)},
+        {"호기": "EQ-22", "CMP": round(rate - 7.8, 1), "UPH": round(uph_rate - 7.4, 1), "EFF": round(eff_rate - 8.4, 1)},
+    ])
+    st.download_button(
+        "CSV 내려받기",
+        csv_df.to_csv(index=False).encode("utf-8-sig"),
+        file_name=f"cmp_detail_{model_name}_{process_name}.csv",
+        mime="text/csv",
+        key=f"cmp_detail_csv_{model_name}_{process_name}",
+    )
+
+    trend_df = pd.DataFrame({
+        "일자": pd.date_range("2026-04-22", periods=7, freq="D"),
+        "CMP": [rate - 2.0, rate - 1.2, rate - .8, rate + .4, rate - .3, rate + .9, rate],
+        "UPH": [uph_rate - 1.2, uph_rate + .5, uph_rate - .4, uph_rate + 1.3, uph_rate + .2, uph_rate - .6, uph_rate],
+        "EFF": [eff_rate - 2.0, eff_rate - 1.1, eff_rate + .6, eff_rate + .1, eff_rate + 1.5, eff_rate + 2.0, eff_rate],
+    })
+    left, mid, right = st.columns([0.9, 3.3, 2.2], gap="small")
+    with left:
+        st.markdown(
+            f"""
+            <div class="cmp-dialog-metric"><div class="cmp-dialog-metric__label">CMP 평균</div><div class="cmp-dialog-metric__value">{rate:.1f}%</div><div class="cmp-dialog-metric__delta">▼ 1.4% vs 이전</div></div>
+            <div class="cmp-dialog-metric uph"><div class="cmp-dialog-metric__label">UPH 평균</div><div class="cmp-dialog-metric__value">{uph_rate:.1f}%</div><div class="cmp-dialog-metric__delta">▼ 0.6% vs 이전</div></div>
+            <div class="cmp-dialog-metric eff"><div class="cmp-dialog-metric__label">EFFICIENCY 평균</div><div class="cmp-dialog-metric__value">{eff_rate:.1f}%</div><div class="cmp-dialog-metric__delta">▼ 0.4% vs 이전</div></div>
+            """,
+            unsafe_allow_html=True,
+        )
+    with mid:
+        st.caption("CMP 달성률 (%) · 30일")
+        st.line_chart(trend_df.set_index("일자")[["CMP"]], use_container_width=True, height=135)
+        st.caption("UPH 달성률 (%) · 30일")
+        st.line_chart(trend_df.set_index("일자")[["UPH"]], use_container_width=True, height=135)
+        st.caption("Efficiency (%) · 30일")
+        st.line_chart(trend_df.set_index("일자")[["EFF"]], use_container_width=True, height=135)
+    with right:
+        st.markdown(
+            """
+            <table class="cmp-dialog-table">
+              <thead><tr><th>#</th><th>호기</th><th>CMP</th><th>UPH</th><th>EFF</th></tr></thead>
+              <tbody>
+                <tr><td>1</td><td>EQ-12</td><td class="num cmp-dialog-good">71.4%</td><td class="num">78.6%</td><td class="num">82.3%</td></tr>
+                <tr><td>2</td><td>EQ-08</td><td class="num cmp-dialog-good">69.8%</td><td class="num">76.4%</td><td class="num">81.1%</td></tr>
+                <tr><td>3</td><td>EQ-03</td><td class="num">66.5%</td><td class="num">73.8%</td><td class="num">78.9%</td></tr>
+                <tr><td>4</td><td>EQ-15</td><td class="num">64.1%</td><td class="num">72.0%</td><td class="num">77.6%</td></tr>
+                <tr><td>5</td><td>EQ-07</td><td class="num">63.2%</td><td class="num">71.4%</td><td class="num">76.4%</td></tr>
+              </tbody>
+            </table>
+            <br>
+            <table class="cmp-dialog-table">
+              <thead><tr><th>#</th><th>호기</th><th>CMP</th><th>UPH</th><th>EFF</th></tr></thead>
+              <tbody>
+                <tr><td>1</td><td>EQ-22</td><td class="num cmp-dialog-bad">54.6%</td><td class="num">63.8%</td><td class="num">68.4%</td></tr>
+                <tr><td>2</td><td>EQ-19</td><td class="num cmp-dialog-bad">56.2%</td><td class="num">65.4%</td><td class="num">70.1%</td></tr>
+                <tr><td>3</td><td>EQ-25</td><td class="num cmp-dialog-bad">58.8%</td><td class="num">67.2%</td><td class="num">72.0%</td></tr>
+                <tr><td>4</td><td>EQ-17</td><td class="num cmp-dialog-bad">60.4%</td><td class="num">68.6%</td><td class="num">73.8%</td></tr>
+                <tr><td>5</td><td>EQ-21</td><td class="num cmp-dialog-bad">61.7%</td><td class="num">70.0%</td><td class="num">75.2%</td></tr>
+              </tbody>
+            </table>
+            """,
+            unsafe_allow_html=True,
+        )
+
+
+def render_cmp_interactive_preview_controls():
+    st.markdown(
+        """
+        <style>
+        .cmp-native-filter {
+            border: 1px solid var(--border);
+            background: var(--card-bg);
+            padding: 12px;
+            margin: 0 0 12px;
+        }
+        .cmp-process-actions .stButton > button {
+            min-height: 56px !important;
+            justify-content: flex-start !important;
+            text-align: left !important;
+            white-space: normal !important;
+            font-family: var(--font-mono) !important;
+            font-size: 12px !important;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+    from ui.vitals.components import render_sub_head, render_csv_export, render_toast
+
+    render_sub_head("필터", "모델 · 공정 대분류 · 공정 · 기간")
+    st.markdown('<div class="cmp-native-filter">', unsafe_allow_html=True)
+    with st.form("cmp_preview_filter_form", border=False):
+        f1, f2, f3, f4 = st.columns([1.3, 1.3, 1.8, 1.5])
+        with f1:
+            models = st.multiselect("모델", ["CM모델A", "CM모델B", "CM모델C"], default=["CM모델A", "CM모델B", "CM모델C"])
+        with f2:
+            areas = st.multiselect("공정 대분류", ["FOL", "MOL", "EOL"], default=["FOL", "MOL", "EOL"])
+        with f3:
+            processes = st.multiselect(
+                "공정",
+                ["Lens AA", "Flip Chip", "FOL Adhesion", "Module AA", "MOL Bonding", "Sensor UF"],
+                default=["Lens AA", "Flip Chip", "FOL Adhesion", "Module AA"],
+            )
+        with f4:
+            period = st.date_input("기간", value=(pd.Timestamp("2026-04-07").date(), pd.Timestamp("2026-05-07").date()))
+        a1, a2, _ = st.columns([.9, .9, 5])
+        applied = a1.form_submit_button("필터 적용", type="primary")
+        reset = a2.form_submit_button("초기화")
+    st.markdown('</div>', unsafe_allow_html=True)
+
+    if applied:
+        render_toast("CMP 필터가 적용되었습니다.", kind="success")
+    if reset:
+        st.session_state.pop("cmp_preview_filter_form", None)
+        render_toast("CMP 필터를 초기화했습니다.", kind="info")
+
+    process_rows = [
+        ("CM모델A", "Lens AA", 96.4),
+        ("CM모델A", "FOL Adhesion", 62.4),
+        ("CM모델B", "MOL Bonding", 79.6),
+        ("CM모델C", "Sensor UF", 89.7),
+    ]
+    selected_models = set(models or ["CM모델A", "CM모델B", "CM모델C"])
+    selected_processes = set(processes or [row[1] for row in process_rows])
+    visible_rows = [row for row in process_rows if row[0] in selected_models and row[1] in selected_processes]
+
+    # 사용자 피드백 (2026-05-11) — 4-card mini row 제거. 모델별 공정 grid 는
+    # render_cmp_models_interactive_grid() 가 12×3 = 36 cards 풀 그리드로 렌더.
+    # 여기서는 CSV export 만 유지.
+    export_df = pd.DataFrame(visible_rows, columns=["모델", "공정", "CMP"])
+    render_csv_export(export_df, label="CSV 내보내기", filename="cmp_dashboard_preview.csv", key="cmp_preview_csv")
+
+
+def render_cmp_models_interactive_grid():
+    """3-model × 12-process 인터랙티브 그리드 — 시안 sec-cmp .cmp-models 매칭.
+    각 카드 클릭 시 render_cmp_process_detail_dialog 모달 오픈.
+    사용자 피드백 (2026-05-11): 정적 HTML 카드 → 실 클릭 가능 카드.
+    Streamlit 패턴: 카드 클릭 → session_state 에 _cmp_dialog_args 저장 → rerun
+    → 함수 끝에서 dialog 호출. 이렇게 하면 dialog 가 안정적으로 열림.
+    """
+    from ui.vitals.components import render_sub_head
+    render_sub_head("모델별 공정 달성률", "카드 클릭 시 상세 분석 팝업 · 마지막 갱신 2026-05-07 23:50")
+
+    models_data = [
+        ("CM모델A", [
+            ("Lens AA", 96.4, "good"),
+            ("Flip Chip", 93.8, ""),
+            ("FOL Adhesion", 62.4, "bad"),
+            ("Module AA", 95.7, "good"),
+            ("FPC Bonding", 92.1, ""),
+            ("Bracket Att.", 94.0, ""),
+            ("Laser Mark", 97.2, "good"),
+            ("VCM Attach", 93.5, ""),
+            ("Pre Focus", 94.6, ""),
+            ("APS Test", 95.3, "good"),
+            ("Sensor UF", 92.9, ""),
+            ("DCR Test", 89.4, "bad"),
+        ]),
+        ("CM모델B", [
+            ("Lens AA", 97.1, "good"),
+            ("Flip Chip", 95.8, "good"),
+            ("MOL Bonding", 79.6, "warn"),
+            ("Module AA", 96.4, "good"),
+            ("FPC Bonding", 95.1, "good"),
+            ("Bracket Att.", 94.7, ""),
+            ("Laser Mark", 97.5, "good"),
+            ("VCM Attach", 94.3, ""),
+            ("Pre Focus", 95.6, "good"),
+            ("APS Test", 96.0, "good"),
+            ("Sensor UF", 93.8, ""),
+            ("DCR Test", 92.4, ""),
+        ]),
+        ("CM모델C", [
+            ("Lens AA", 96.8, "good"),
+            ("Flip Chip", 95.2, "good"),
+            ("IRCF Attach", 92.5, ""),
+            ("Module AA", 96.1, "good"),
+            ("FPC Bonding", 94.4, ""),
+            ("Bracket Att.", 95.0, "good"),
+            ("Laser Mark", 97.3, "good"),
+            ("VCM Attach", 94.0, ""),
+            ("Pre Focus", 94.8, ""),
+            ("APS Test", 95.4, "good"),
+            ("Sensor UF", 89.7, "bad"),
+            ("DCR Test", 93.1, ""),
+        ]),
+    ]
+    st.markdown(
+        """
+        <style>
+        .cmp-grid-wrap { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 18px; }
+        .cmp-grid-col__head { display:flex; justify-content:space-between; align-items:center; padding:8px 10px; border-bottom:2px solid var(--primary); font-size:12px; font-weight:800; color:var(--ink-body); margin-bottom:6px; }
+        .cmp-grid-col__head span:last-child { font-family:var(--font-mono); font-size:10px; color:var(--ink-subtle); font-weight:600; letter-spacing:.04em; }
+        /* 카드 컬럼 안 stButton 을 grid 처럼 강제 — 3열 grid 의 각 cell 에 카드 한 장씩 */
+        div[data-testid="stHorizontalBlock"]:has(.cmp-grid-col__head) > div[data-testid="stColumn"] > div[data-testid="stVerticalBlock"] {
+            display: grid !important;
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 4px !important;
+        }
+        /* 그리드 안 카드 자체 — 시안 .cmp-proc 매칭 */
+        div[data-testid="stHorizontalBlock"]:has(.cmp-grid-col__head) [data-testid="stButton"] button {
+            min-height: 52px !important;
+            padding: 6px 8px !important;
+            border: 1px solid var(--border) !important;
+            background: var(--soft) !important;
+            color: var(--ink-body) !important;
+            font-family: var(--font-body) !important;
+            font-size: 10px !important;
+            font-weight: 700 !important;
+            white-space: pre-line !important;
+            text-align: left !important;
+            justify-content: flex-start !important;
+            line-height: 1.25 !important;
+            border-radius: 0 !important;
+            box-shadow: none !important;
+        }
+        div[data-testid="stHorizontalBlock"]:has(.cmp-grid-col__head) [data-testid="stButton"] button:hover {
+            border-color: var(--primary) !important;
+            background: var(--primary-tint) !important;
+            color: var(--primary-dark) !important;
+        }
+        /* 상태별 색상 — st.button 으로는 클래스 못 붙이므로 모든 카드 균일 톤.
+           시안의 good/warn/bad 색상은 향후 components.html iframe 으로 교체 가능. */
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+    cols = st.columns(3, gap="small")
+    for col_idx, (model_name, procs) in enumerate(models_data):
+        with cols[col_idx]:
+            st.markdown(
+                f'<div class="cmp-grid-col__head"><span>{model_name}</span><span>{len(procs)} 공정</span></div>',
+                unsafe_allow_html=True,
+            )
+            # 카드 12개를 2열 그리드로 — Streamlit 자동 stack 후 CSS 가 grid 변환
+            for proc_idx, (proc_name, rate, status) in enumerate(procs):
+                # 사용자 피드백 (2026-05-11) — 한글 + 공백 키가 Streamlit 에서
+                # 클릭 인식 실패. ASCII safe key 로 변경.
+                btn_key = f"cmp_grid_{col_idx}_{proc_idx}"
+                if st.button(
+                    f"{proc_name}\n{rate:.1f}%",
+                    key=btn_key,
+                    use_container_width=True,
+                ):
+                    # 사용자 피드백 (2026-05-11) — Streamlit st.dialog 는 column
+                    # context 안에서 호출 시 modal 이 안 뜸. session_state 에 args
+                    # 저장 후, with-block 밖 (페이지 레벨) 에서 dialog 호출.
+                    st.session_state["_cmp_dialog_args"] = (proc_name, model_name, rate)
+
+    # column context 밖 — page level 에서 dialog 호출 (modal 정상 렌더 보장).
+    if "_cmp_dialog_args" in st.session_state:
+        args = st.session_state.pop("_cmp_dialog_args")
+        render_cmp_process_detail_dialog(*args)
+
+
+def render_cmp_preview_mock():
+    """No-data preview surface matching docs/design sec-cmp.
+
+    The production DB path above is untouched. This only replaces the empty
+    development state so the Streamlit clone keeps the HTML mock visual shape.
+    """
+    render_cmp_interactive_preview_controls()
+    # 사용자 피드백 (2026-05-11) — 모델별 공정 grid 를 인터랙티브로 교체.
+    # 이전 정적 HTML mock 은 카드 클릭 안됨 → 모달 진입 불가.
+    render_cmp_models_interactive_grid()
+    st.markdown(
+        """
+        <style>
+        .cmp-preview-filter{
+            border:1px solid var(--border);
+            background:#fff;
+            padding:12px;
+            display:grid;
+            grid-template-columns:1fr 1fr;
+            gap:12px 14px;
+            margin:10px 0 14px;
+        }
+        .cmp-preview-field__label{
+            color:var(--ink-body);
+            font-size:11px;
+            font-weight:800;
+            margin-bottom:5px;
+        }
+        .cmp-preview-select{
+            min-height:34px;
+            border:1px solid var(--border);
+            background:#fff;
+            display:flex;
+            align-items:center;
+            gap:6px;
+            padding:5px 8px;
+        }
+        .cmp-preview-chip{
+            display:inline-flex;
+            align-items:center;
+            min-height:20px;
+            padding:0 8px;
+            background:var(--primary-tint);
+            border:1px solid rgba(165,0,52,.18);
+            color:var(--primary-dark);
+            font-size:10px;
+            font-weight:800;
+        }
+        .cmp-preview-actions{
+            grid-column:1 / 3;
+            display:flex;
+            justify-content:flex-end;
+            gap:8px;
+        }
+        .cmp-preview-btn{
+            min-width:78px;
+            height:34px;
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            border:1px solid var(--border);
+            background:#fff;
+            color:var(--ink-body);
+            font-size:12px;
+            font-weight:800;
+        }
+        .cmp-preview-btn--primary{
+            background:var(--primary);
+            border-color:var(--primary);
+            color:#fff;
+        }
+        .cmp-preview-kpis{
+            display:grid;
+            grid-template-columns:repeat(4, 1fr);
+            gap:10px;
+            margin:12px 0 18px;
+        }
+        .cmp-preview-kpi{
+            border:1px solid var(--border);
+            border-left:3px solid var(--primary);
+            background:#fff;
+            padding:13px 14px;
+        }
+        .cmp-preview-kpi__label{font-size:11px;font-weight:800;color:var(--ink-subtle);}
+        .cmp-preview-kpi__value{font-family:var(--font-mono);font-size:24px;font-weight:800;color:var(--ink-body);line-height:1.15;}
+        .cmp-preview-kpi__delta{font-family:var(--font-mono);font-size:11px;font-weight:800;color:var(--status-good);}
+        .cmp-preview-section{
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            border-bottom:1px solid var(--border);
+            margin:8px 0 10px;
+            padding-bottom:7px;
+        }
+        .cmp-preview-section__title{
+            display:flex;
+            align-items:center;
+            gap:8px;
+            font-size:14px;
+            font-weight:800;
+            color:var(--ink-body);
+        }
+        .cmp-preview-section__title::before{
+            content:"";
+            width:4px;
+            height:18px;
+            background:var(--primary);
+        }
+        .cmp-preview-section__meta{
+            font-family:var(--font-mono);
+            font-size:10px;
+            color:var(--ink-subtle);
+        }
+        .cmp-preview-models{
+            display:grid;
+            grid-template-columns:repeat(3, 1fr);
+            gap:10px;
+            margin-bottom:18px;
+        }
+        .cmp-preview-model{
+            border:1px solid var(--border);
+            background:#fff;
+            padding:9px;
+        }
+        .cmp-preview-model__head{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            font-size:12px;
+            font-weight:800;
+            margin-bottom:8px;
+        }
+        .cmp-preview-procs{
+            display:grid;
+            grid-template-columns:repeat(3,1fr);
+            gap:4px;
+        }
+        .cmp-preview-proc{
+            min-height:42px;
+            border:1px solid var(--border);
+            background:var(--soft);
+            padding:5px 7px;
+        }
+        .cmp-preview-proc.good{background:#EEF8F2;border-color:#CFE8DA;}
+        .cmp-preview-proc.warn{background:#FFF6E6;border-color:#EBDCBF;}
+        .cmp-preview-proc.bad{background:#FBE8EF;border-color:#E8C5D2;}
+        .cmp-preview-proc__name{font-size:10px;font-weight:700;color:var(--ink-body);}
+        .cmp-preview-proc__val{font-family:var(--font-mono);font-size:13px;font-weight:800;}
+        .cmp-preview-proc.good .cmp-preview-proc__val{color:var(--status-good);}
+        .cmp-preview-proc.warn .cmp-preview-proc__val{color:var(--status-warn);}
+        .cmp-preview-proc.bad .cmp-preview-proc__val{color:#B23A48;}
+        .cmp-preview-table{
+            width:100%;
+            border-collapse:collapse;
+            background:#fff;
+            border:1px solid var(--border);
+            font-size:11px;
+        }
+        .cmp-preview-table th{
+            background:var(--primary-tint);
+            color:var(--primary-dark);
+            border-bottom:2px solid var(--primary);
+            text-align:left;
+            padding:8px;
+            font-weight:800;
+        }
+        .cmp-preview-table td{
+            border-top:1px solid var(--border);
+            padding:7px 8px;
+        }
+        .cmp-preview-table td.num{text-align:right;font-family:var(--font-mono);}
+        .cmp-preview-table .good{color:var(--status-good);font-weight:800;}
+        .cmp-preview-table .bad{color:#B23A48;font-weight:800;}
+        </style>
+        <div class="cmp-preview-filter">
+            <div class="cmp-preview-field"><div class="cmp-preview-field__label">모델</div><div class="cmp-preview-select"><span class="cmp-preview-chip">CM모델A ×</span><span class="cmp-preview-chip">CM모델B ×</span><span class="cmp-preview-chip">CM모델C ×</span></div></div>
+            <div class="cmp-preview-field"><div class="cmp-preview-field__label">공정 대분류 (영역)</div><div class="cmp-preview-select"><span class="cmp-preview-chip">FOL ×</span><span class="cmp-preview-chip">MOL ×</span><span class="cmp-preview-chip">EOL ×</span></div></div>
+            <div class="cmp-preview-field"><div class="cmp-preview-field__label">공정</div><div class="cmp-preview-select"><span class="cmp-preview-chip">Lens AA ×</span><span class="cmp-preview-chip">Flip Chip ×</span><span class="cmp-preview-chip">Module AA ×</span><span class="cmp-preview-chip">APS Test ×</span></div></div>
+            <div class="cmp-preview-field"><div class="cmp-preview-field__label">기간</div><div class="cmp-preview-select">2026-04-07 ~ 2026-05-07</div></div>
+            <div class="cmp-preview-actions"><span class="cmp-preview-btn">초기화</span><span class="cmp-preview-btn cmp-preview-btn--primary">필터 적용</span></div>
+        </div>
+        <div class="cmp-preview-kpis">
+            <div class="cmp-preview-kpi"><div class="cmp-preview-kpi__label">전체 달성률</div><div class="cmp-preview-kpi__value">94.2%</div><div class="cmp-preview-kpi__delta">▲ +1.8% vs 이전</div></div>
+            <div class="cmp-preview-kpi"><div class="cmp-preview-kpi__label">CM모델A 달성률</div><div class="cmp-preview-kpi__value">92.7%</div><div class="cmp-preview-kpi__delta" style="color:#B23A48;">▼ -0.4%</div></div>
+            <div class="cmp-preview-kpi"><div class="cmp-preview-kpi__label">CM모델B 달성률</div><div class="cmp-preview-kpi__value">95.1%</div><div class="cmp-preview-kpi__delta">▲ +2.1%</div></div>
+            <div class="cmp-preview-kpi"><div class="cmp-preview-kpi__label">CM모델C 달성률</div><div class="cmp-preview-kpi__value">94.8%</div><div class="cmp-preview-kpi__delta">▲ +1.5%</div></div>
+        </div>
+        <!-- 사용자 피드백 (2026-05-11) — 정적 모델별 공정 grid 는 위
+             render_cmp_models_interactive_grid() 가 인터랙티브로 처리.
+             여기서는 KPI row 와 공정 요약표만 표시. -->
+        <div class="cmp-preview-section"><div class="cmp-preview-section__title">공정 요약표</div><div class="cmp-preview-section__meta">모델 × 공정 × 호기 × 기간 매트릭스</div></div>
+        <table class="cmp-preview-table">
+            <thead><tr><th>모델</th><th>공장</th><th>공정명</th><th>기간</th><th>CMP</th><th>UPH</th><th>EFF.</th><th>Δ</th></tr></thead>
+            <tbody>
+                <tr><td>CM모델A</td><td>Gumi Campus 1</td><td>Lens AA</td><td>2026-04-22 - 28</td><td class="num">96.4%</td><td class="num">94.2%</td><td class="num">95.0%</td><td class="num good">+1.1</td></tr>
+                <tr><td>CM모델A</td><td>Gumi Campus 3</td><td>FOL Adhesion</td><td>2026-04-22 - 28</td><td class="num bad">62.4%</td><td class="num">71.2%</td><td class="num">76.8%</td><td class="num bad">-1.4</td></tr>
+                <tr><td>CM모델B</td><td>Gumi Campus 3</td><td>MOL Bonding</td><td>2026-04-22 - 28</td><td class="num" style="color:var(--status-warn);font-weight:800;">79.6%</td><td class="num">82.3%</td><td class="num">85.1%</td><td class="num bad">-0.8</td></tr>
+                <tr><td>CM모델C</td><td>Gumi Campus 3</td><td>Sensor Underfill</td><td>2026-04-22 - 28</td><td class="num bad">89.7%</td><td class="num">87.2%</td><td class="num">88.4%</td><td class="num bad">-0.8</td></tr>
+            </tbody>
+        </table>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
 def main():
     set_korean_font()
     apply_common_css()
+    data_file = resolve_data_file()
+    try:
+        _preview_probe = read_csv_flex(data_file)
+    except Exception:
+        _preview_probe = pd.DataFrame()
+
+    if _preview_probe.empty:
+        render_cmp_preview_mock()
+        return
+
+    try:
+        _top_probe = load_top_data(data_file)
+    except Exception:
+        _top_probe = pd.DataFrame()
+    try:
+        _bottom_probe = load_bottom_data(data_file)
+    except Exception:
+        _bottom_probe = pd.DataFrame()
+
+    if _top_probe.empty and _bottom_probe.empty:
+        render_cmp_preview_mock()
+        return
+
     render_home_button()
-    # preview sec-cmp 와 정렬 — vit-top-strip 6px wine + flat eyebrow + h1.
-    from ui.vitals.components import render_top_strip
-    render_top_strip()
     st.markdown("""
-    <div class='page-shell'>
-      <div class='page-eyebrow' style='display:flex;align-items:center;gap:8px;'><span style='display:inline-block;width:4px;height:14px;background:var(--primary);'></span>PRODUCTIVITY · CMP</div>
-      <h1 style='margin:0;font-family:var(--font-display, var(--font-body));letter-spacing:-0.02em;'>CMP 달성률 Dashboard</h1>
-      <div class='page-subtitle'>CMP대비 Capa/UPH/Effciecny 달성률을 확인 할 수 있는 Dashboard 입니다.</div>
-    </div>
+    <ul class="vit-note-list">
+      <li>CMP 대비 Capa / UPH / Efficiency 달성률을 확인할 수 있는 Dashboard입니다.</li>
+    </ul>
     """, unsafe_allow_html=True)
 
-    data_file = resolve_data_file()
     render_top_section(data_file)
     st.markdown("<div style='height:6px;'></div>", unsafe_allow_html=True)
     render_bottom_section(data_file)

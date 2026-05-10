@@ -32,6 +32,19 @@ from .components import (
     LOGO_WHITE_DATA_URI,
     LOGO_GRAY_DATA_URI,
 )
+from .clone_styles import apply_clone_styles, get_clone_css_path
+from .section_headers import render_section_header
+from .mock_data import (
+    is_mock_mode,
+    mock_dim_plant,
+    mock_dim_model,
+    mock_dim_process,
+    mock_cmp_achievement,
+    mock_uph_trend,
+    mock_mtba_alarms,
+    mock_best_worst,
+    mock_patch_posts,
+)
 
 __all__ = [
     "apply_vitals_theme",
@@ -48,4 +61,6 @@ __all__ = [
     "render_lang_switcher",
     "LOGO_WHITE_DATA_URI",
     "LOGO_GRAY_DATA_URI",
+    "apply_clone_styles",
+    "get_clone_css_path",
 ]
