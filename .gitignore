@@ -30,3 +30,11 @@ Thumbs.db
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
+
+# 사용자 피드백 (2026-05-11) — 폐쇄망 zip 다운로드 시 운영 PC 노이즈 방지
+# Streamlit 실행 출력 + 임시 편집 백업 + Claude 세션 파일 제외.
+_streamlit.out
+_streamlit.err
+*.tmp.*
+.claude/worktrees/
+streamlit-app/ui/analytics/frontend/_build/
